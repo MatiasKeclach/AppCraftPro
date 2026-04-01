@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Ultra ProHacker - AppCraft</title>
+  <link rel="stylesheet" href="/css/panel.css">
+  <!-- FontAwesome 6 CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <!--Estilos del botón cerrar del sidebar-->
+  <style>
+.close-sidebar {
+  display: none;
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #517b6f;
+  cursor: pointer;
+  z-index: 15;
+}
+
+@media(max-width:1023px){
+  .close-sidebar {
+    display: block;
+  }
+}
+  </style>
+</head>
+<body data-theme="light">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <button id="closeSidebar" class="close-sidebar">✖</button>
+    <div class="logo">
+      AppCraft <span class="probadge">Ultra ProHacker</span>
+    </div>
+    <nav>
+      <a href="/panel"><i class="icon">🏠</i> Panel</a>
+      <a href="/panel/framework"><i class="icon">📦</i> Apps</a>
+      <a href="/panel/users/new"><i class="icon">👥</i> Usuarios</a>
+      <a href="/templates"><i class="icon">📁</i> Plantillas</a>
+      <a href="/auth/logout"><i class="icon">🚪</i> Cerrar Sesión</a>
+    </nav>
+  </aside>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="hamburger" id="hamburger">☰</div>
+    <div class="welcome">
+      Bienvenido, <span class="username"><%= username %></span> | Rol: <span class="role"><%= role %></span>
+    </div>
+    <button id="toggleTheme" class="theme-btn">🌙</button>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Card Crear Usuario -->
+    <% if(role === "superadmin") { %>
+    <div class="card clickable" onclick="location.href='/panel/users/new'">
+      <div class="card-header"><h3>Crear Usuario</h3></div>
+      <div class="card-body">Agregar un nuevo usuario al sistema</div>
+      <div class="badge">Nuevo</div>
+    </div>
+    <% } %>
+
+    <!-- Card Total Apps -->
+    <div class="card">
+      <div class="card-header"><h3>Total Apps</h3></div>
+      <div class="card-body counter" data-target="<%= apps ? apps.length : 0 %>">0</div>
+      <canvas id="appsChart" height="100"></canvas>
+    </div>
+
+    <!-- Card Total Usuarios -->
+    <div class="card">
+      <div class="card-header"><h3>Total Usuarios</h3></div>
+      <div class="card-body counter" data-target="<%= usuarios ? usuarios.length : 0 %>">0</div>
+      <canvas id="usersChart" height="100"></canvas>
+    </div>
+
+    <!-- Card Total Plantillas 
+    <div class="card">
+      <div class="card-header"><h3>Total Plantillas</h3></div>
+      <div class="card-body counter" data-target="<%= plantillas ? plantillas.length : 0 %>">0</div>
+      <canvas id="templatesChart" height="100"></canvas>
+    </div>-->
+    <!-- Card Total Plantillas -->
+<div class="card">
+  <div class="card-header"><h3>Total Plantillas</h3></div>
+  <div class="card-body counter"
+       data-target="<%= plantillas ? plantillas.length : 0 %>"
+       title="<%= plantillas && plantillas.length > 0 ? plantillas.join(', ') : 'No hay plantillas' %>">
+    0
+  </div>
+  <canvas id="templatesChart" height="100"></canvas>
+</div>
+
+<!-- Card AppCraft Framework -->
+<!-- Card Creador de Sitios y Apps 
+<div class="card clickable" onclick="location.href='/panel/framework'">
+  <div class="card-header">
+    <h3>Crea tu App</h3>
+  </div>
+  <div class="card-body">
+    <div class="card-icon" style="font-size:40px; text-align:center; margin-bottom:10px;">🖥️📱</div>
+    <p style="text-align:center; color:#555; font-weight:500;">
+      Diseña y crea tus páginas, aplicaciones y plantillas de forma interactiva.
+    </p>
+  </div>
+  <div class="badge" style="background:#4f46e5;">Nuevo</div>
+</div>-->
+
+<!-- Card AppCraft Framework - Ultra Premium Circular -->
+<div class="card clickable create-app-card" onclick="location.href='/panel/framework'">
+  <div class="card-header">
+    <h3>Crea tu App</h3>
+  </div>
+  <div class="card-body">
+    <p>Diseña y crea tus páginas y aplicaciones directamente desde el panel.</p>
+    <div class="app-mockup">
+      <div class="mockup-screen">
+        <div class="icon orbit orbit1"><i class="fas fa-desktop"></i></div>
+        <div class="icon orbit orbit2"><i class="fas fa-mobile-alt"></i></div>
+        <div class="icon orbit orbit3"><i class="fas fa-paint-brush"></i></div>
+        <div class="icon orbit orbit4"><i class="fas fa-cogs"></i></div>
+        <div class="icon orbit orbit5"><i class="fas fa-database"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">Nuevo</div>
+</div>
+
+ <!-- Card Crear Usuario -->
+    <% if(role === "superadmin") { %>
+        
+    <div class="card clickable chat-ai-card" onclick="location.href='/panel/chat-ia'">
+  <div class="card-header">
+    <h3><i class="fas fa-robot"></i> Chat IA</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="chat-icon">
+      <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <p class="chat-desc">
+      Automatizá respuestas con inteligencia artificial y atendé clientes en tiempo real.
+    </p>
+  </div>
+
+  <div class="badge">IA</div>
+</div>
+    <% } %>
+  </main>
+
+  <script>
+  // eslint-disable-next-line
+  const appsData = <%- JSON.stringify(apps ? apps.map(a => a.name) : []) %>;
+  // eslint-disable-next-line
+  const usersData = <%- JSON.stringify(usuarios ? usuarios.map(u => u.username) : []) %>;
+  // eslint-disable-next-line
+  const templatesData = <%- JSON.stringify(plantillas ? plantillas : []) %>;
+</script>
+
+<script src="/js/panel.js"></script>
+</body>
+</html>

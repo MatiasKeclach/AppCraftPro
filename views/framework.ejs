@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCraft Builder - Wilder</title>
+
+<style>
+/* ========================
+   RESET Y BASE
+======================== */
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+html, body{height:100%;width:100%;overflow:hidden}
+
+/* ========================
+   ROOT VARIABLES
+======================== */
+:root{
+  --bg:#f4f6f8;
+  --panel:#ffffff;
+  --border:#d1d5db;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#4f46e5;
+  --hover:#6366f1;
+}
+
+body.dark{
+  --bg:#0f172a;
+  --panel:#111827;
+  --border:#374151;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --primary:#818cf8;
+  --hover:#a5b4fc;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* ========================
+   HEADER / TOPBAR
+======================== */
+#topbar{
+  height:60px;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  flex-shrink:0;
+  position:relative;
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+#backBtn{
+  padding:6px 12px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  cursor:pointer;
+}
+
+#deviceToggle button{
+  border:none;
+  padding:6px 10px;
+  margin-left:6px;
+  border-radius:6px;
+  cursor:pointer;
+  background:var(--border);
+  transition:0.2s;
+}
+
+#deviceToggle button.active{
+  background:var(--primary);
+  color:#fff;
+}
+
+#themeToggle{
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-size:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px;
+  border-radius:8px;
+  transition:background .2s;
+}
+
+#themeToggle:hover{
+  background:rgba(0,0,0,0.06);
+}
+
+body.dark #themeToggle:hover{
+  background:rgba(255,255,255,0.08);
+}
+
+.top-right{
+  font-size:14px;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* ========================
+   LAYOUT PRINCIPAL
+======================== */
+#workspace{
+  flex:1;
+  display:flex;
+  overflow:hidden;
+}
+
+/* ========================
+   SIDEBAR
+======================== */
+#sidebar{
+  width:240px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  padding:12px;
+  overflow:auto;
+  flex-shrink:0;
+}
+
+.comp{
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  margin-bottom:8px;
+  cursor:grab;
+  text-align:center;
+  background:var(--bg);
+  transition:0.2s;
+}
+
+.comp:hover{
+  border-color:var(--primary);
+  background:var(--hover);
+  color:#fff;
+}
+
+/* ========================
+   CANVAS AREA
+======================== */
+#canvas-area{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto;
+  padding:12px;
+}
+
+#canvas-wrapper{
+  background:#9ca3af22;
+  padding:20px;
+  border-radius:10px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+#canvas{
+  background:var(--panel);
+  width:100%;
+  max-width:1200px;
+  min-width:250px;
+  height:700px;
+  position:relative;
+  border:2px dashed #9ca3af;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+body.dark #canvas{
+  background:#0b1220;
+}
+
+/* COMPONENTES DRAGGED */
+.dragged{
+  position:absolute;
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  cursor:move;
+  background:var(--panel);
+  color:var(--text);
+  user-select:none;
+}
+
+/* ========================
+   FOOTER
+======================== */
+#bottombar{
+  height:50px;
+  background:var(--panel);
+  border-top:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  padding:0 12px;
+  flex-shrink:0;
+}
+
+#bottombar button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  background:var(--primary);
+  color:#fff;
+  transition:0.2s;
+}
+
+#bottombar button:hover{
+  background:var(--hover);
+}
+
+/* ========================
+   PROJECT SELECTOR
+======================== */
+#project-selector{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.selector-header{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.project-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  width:80%;
+  max-width:900px;
+}
+
+.project-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.project-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--primary);
+}
+
+.project-card .icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+/* ========================
+   MEDIA QUERY
+======================== */
+@media(max-width:700px){
+  #sidebar{width:200px;}
+}
+
+@media(max-width:500px){
+  #topbar{flex-direction:column;align-items:flex-start;height:auto;padding:10px;}
+  .top-left{margin-bottom:8px;}
+}
+
+@media(max-width:780px){
+  #workspace{
+    flex-direction: column;
+    overflow: visible; /* para que no corte nada */
+  }
+
+  #sidebar{
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #canvas-area{
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  #canvas-wrapper{
+    justify-content: center; /* que quede centrado */
+  }
+}
+
+/*Estilos btn panel modo dark mode*/
+#backBtn{
+  padding:6px 12px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text); /* esto hace que cambie según root */
+  cursor:pointer;
+  transition:0.2s;
+}
+
+#backBtn:hover{
+  background:var(--primary);
+  color:#fff;
+}
+</style>
+</head>
+<body>
+
+<!-- PROJECT SELECTOR -->
+<div id="project-selector">
+  <div id="topbar">
+    <div class="top-left">
+      <button id="backBtn" onclick="backToPanel()">← Panel</button>
+     
+    </div>
+  </div>
+  <div class="selector-header">
+    <h1>Crear nuevo proyecto</h1>
+    <p>Bienvenido <b><%= username %></b>, elegí qué querés construir</p>
+  </div>
+
+  <div class="project-grid">
+    <div class="project-card" onclick="startProject('web')">
+      <div class="icon">🌐</div>
+      <h3>Sitio Web</h3>
+      <p>Páginas y sitios</p>
+    </div>
+    <div class="project-card" onclick="startProject('app')">
+      <div class="icon">📱</div>
+      <h3>App</h3>
+      <p>Aplicaciones interactivas</p>
+    </div>
+    <div class="project-card" onclick="startProject('crm')">
+      <div class="icon">📊</div>
+      <h3>CRM / Panel</h3>
+      <p>Sistemas y dashboards</p>
+    </div>
+    <div class="project-card" onclick="startProject('store')">
+      <div class="icon">🛒</div>
+      <h3>Tienda</h3>
+      <p>Ecommerce</p>
+    </div>
+  </div>
+</div>
+
+<!-- BUILDER -->
+<div id="builder" style="display:none;flex:1;flex-direction:column">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="top-left">
+      <button id="backBtn" onclick="backToPanel()">← Panel</button>
+      <div id="deviceToggle">
+        <button id="pcBtn" class="active" onclick="setDevice('pc')">PC</button>
+        <button id="mobileBtn" onclick="setDevice('mobile')">Móvil</button>
+      <button id="gridToggle" title="Activa/desactiva la rejilla">Rejilla ⚪</button>
+<span id="gridInfo" style="margin-left:8px; font-size:12px; color:var(--muted)">
+  Al activar la rejilla, los componentes se alinean automáticamente a la cuadrícula, facilitando la organización y mantenimiento del diseño ordenado.
+</span>
+      </div>
+      
+      <button id="themeToggle" title="Cambiar modo">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+
+    <div class="top-right">
+      <span>Proyecto: <b id="projType"></b></span> |
+      Usuario: <b><%= username %></b>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div id="workspace">
+    <div id="sidebar">
+      <div class="comp" draggable="true" data-type="text">Texto</div>
+      <div class="comp" draggable="true" data-type="button">Botón</div>
+      <div class="comp" draggable="true" data-type="image">Imagen</div>
+      <div class="comp" draggable="true" data-type="input">Input</div>
+      <div class="comp" draggable="true" data-type="container">Container</div>
+    </div>
+
+    <div id="canvas-area">
+      <div id="canvas-wrapper">
+       
+        <div id="canvas">
+           <canvas id="gridLayer" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOMBAR -->
+  <div id="bottombar">
+    <button>Nuevo</button>
+    <button>Guardar</button>
+    <button>Exportar</button>
+  </div>
+
+</div>
+
+<script>
+/* =========================
+   MOTOR DEL WILDER
+========================= */
+let project = { components: [] };
+let dragged = null;
+const canvas = document.getElementById("canvas");
+
+/* =========================
+   REJILLA FIJA
+========================= */
+let gridActive = false; // estado inicial
+const gridSize = 20; // tamaño de la cuadrícula en píxeles
+
+// Crear canvas de rejilla y ponerlo dentro del canvas principal
+const gridCanvas = document.createElement("canvas");
+gridCanvas.style.position = "absolute";
+gridCanvas.style.left = "0";
+gridCanvas.style.top = "0";
+gridCanvas.style.width = "100%";
+gridCanvas.style.height = "100%";
+gridCanvas.style.zIndex = "0"; // detrás de los componentes
+canvas.appendChild(gridCanvas);
+const gridCtx = gridCanvas.getContext("2d");
+
+// Función para dibujar la rejilla
+function drawGrid() {
+  // Ajustar tamaño del canvas a su contenedor
+  gridCanvas.width = canvas.clientWidth;
+  gridCanvas.height = canvas.clientHeight;
+
+  gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+
+  if (!gridActive) return; // Si no está activada, no dibuja
+
+  gridCtx.strokeStyle = "#cccccc44"; // Color suave
+  gridCtx.lineWidth = 1;
+
+  // Dibujar líneas verticales
+  for (let x = 0; x <= gridCanvas.width; x += gridSize) {
+    gridCtx.beginPath();
+    gridCtx.moveTo(x, 0);
+    gridCtx.lineTo(x, gridCanvas.height);
+    gridCtx.stroke();
+  }
+
+  // Dibujar líneas horizontales
+  for (let y = 0; y <= gridCanvas.height; y += gridSize) {
+    gridCtx.beginPath();
+    gridCtx.moveTo(0, y);
+    gridCtx.lineTo(gridCanvas.width, y);
+    gridCtx.stroke();
+  }
+}
+
+// Botón de rejilla en el topbar
+const gridBtn = document.getElementById("gridToggle");
+gridBtn.addEventListener("click", () => {
+  gridActive = !gridActive;
+  gridBtn.textContent = gridActive ? "Rejilla 🟢" : "Rejilla ⚪";
+  drawGrid();
+});
+
+/* =========================
+   RENDER COMPONENTES
+========================= */
+function renderProject() {
+  // Solo limpiar los componentes, no la rejilla
+  const existingComponents = Array.from(canvas.querySelectorAll(".dragged"));
+  existingComponents.forEach(el => el.remove());
+
+  project.components.forEach(comp => {
+    const el = document.createElement("div");
+    el.className = "dragged";
+    el.innerText = comp.content;
+    el.style.left = comp.x + "px";
+    el.style.top = comp.y + "px";
+    el.dataset.id = comp.id;
+    makeDraggable(el);
+    el.style.zIndex = 1; // siempre encima de la rejilla
+    canvas.appendChild(el);
+  });
+}
+
+/* =========================
+   PROYECTO START
+========================= */
+function startProject(type) {
+  document.getElementById("project-selector").style.display = "none";
+  document.getElementById("builder").style.display = "flex";
+  document.getElementById("projType").innerText = type.toUpperCase();
+  drawGrid(); // dibujar la rejilla al iniciar
+}
+
+function backToPanel() { window.location = "/panel" }
+
+/* =========================
+   THEME DARK/LIGHT
+========================= */
+const themeBtn = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+function setTheme(mode) {
+  document.body.classList.toggle("dark", mode === "dark");
+  themeIcon.textContent = mode === "dark" ? "☀️" : "🌙";
+  localStorage.setItem("builderTheme", mode);
+}
+const saved = localStorage.getItem("builderTheme") || "light";
+setTheme(saved);
+themeBtn.onclick = () => {
+  const cur = document.body.classList.contains("dark") ? "dark" : "light";
+  setTheme(cur === "dark" ? "light" : "dark");
+}
+
+/* =========================
+   DEVICE PC/MÓVIL
+========================= */
+function setDevice(dev) {
+  const pcBtn = document.getElementById("pcBtn");
+  const mobileBtn = document.getElementById("mobileBtn");
+  if (dev === "pc") { canvas.style.width = "100%"; pcBtn.classList.add("active"); mobileBtn.classList.remove("active"); }
+  else { canvas.style.width = "375px"; pcBtn.classList.remove("active"); mobileBtn.classList.add("active"); }
+}
+
+/* =========================
+   SIDEBAR DRAG & DROP
+========================= */
+document.querySelectorAll(".comp").forEach(comp => {
+  comp.addEventListener("dragstart", e => { dragged = { type: comp.dataset.type, content: comp.innerText }; })
+});
+
+canvas.addEventListener("dragover", e => { e.preventDefault(); });
+canvas.addEventListener("drop", e => {
+  e.preventDefault();
+  if (!dragged) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const newComp = {
+    id: Date.now().toString(),
+    type: dragged.type,
+    content: dragged.content,
+    x: x,
+    y: y
+  };
+  project.components.push(newComp);
+  console.log("COMP JSON:", newComp);
+  console.log("PROJECT JSON:", project);
+  renderProject();
+});
+
+/* =========================
+   DRAG DENTRO DEL CANVAS
+========================= */
+function makeDraggable(el) {
+  let offsetX, offsetY, isDragging = false;
+
+  el.addEventListener("mousedown", e => {
+    isDragging = true;
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+    el.style.zIndex = 9999;
+  });
+
+  window.addEventListener("mousemove", e => {
+    if (!isDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    let left = e.clientX - rect.left - offsetX;
+    let top = e.clientY - rect.top - offsetY;
+
+    // Evitar salir del canvas
+    if (left < 0) left = 0;
+    if (top < 0) top = 0;
+    if (left + el.offsetWidth > canvas.clientWidth) left = canvas.clientWidth - el.offsetWidth;
+    if (top + el.offsetHeight > canvas.clientHeight) top = canvas.clientHeight - el.offsetHeight;
+
+    // Snap a rejilla si está activada
+    if (gridActive) {
+      left = Math.round(left / gridSize) * gridSize;
+      top = Math.round(top / gridSize) * gridSize;
+    }
+
+    el.style.left = left + "px";
+    el.style.top = top + "px";
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      el.style.zIndex = 1;
+
+      // Actualizar coordenadas del componente
+      const compId = el.dataset.id;
+      const comp = project.components.find(c => c.id === compId);
+      if (comp) {
+        comp.x = parseInt(el.style.left);
+        comp.y = parseInt(el.style.top);
+        console.log("COMP JSON ACTUALIZADO:", comp);
+        console.log("PROJECT JSON ACTUALIZADO:", project);
+      }
+    }
+  });
+
+  // =========================
+  // ELIMINAR COMPONENTE CON DOBLE CLICK
+  // =========================
+  el.addEventListener("dblclick", () => {
+    const compId = el.dataset.id;
+    project.components = project.components.filter(c => c.id !== compId);
+    console.log("COMP ELIMINADO. PROJECT JSON:", project);
+    el.remove();
+  });
+}
+</script>
+
+</body>
+</html>

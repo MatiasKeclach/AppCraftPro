@@ -1,0 +1,182 @@
+/* login.css */
+
+/* =========================
+   Variables y temas
+========================= */
+:root {
+  --bg-light: #f5f5f5;
+  --bg-dark: #1e1e2f;
+  --card-light: #ffffff;
+  --card-dark: #2c2c3a;
+  --text-light: #111;
+  --text-dark: #f5f5f5;
+  --accent: #ff6f61;
+  --input-bg-light: #fff;
+  --input-bg-dark: #3a3a4a;
+  --input-border-light: #ccc;
+  --input-border-dark: #555;
+  --transition: 0.3s;
+  --radius: 10px;
+  --btn-bg: var(--accent);
+  --btn-color: #fff;
+}
+
+/* =========================
+   Reset básico
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body[data-theme="light"] {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+body[data-theme="dark"] {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* =========================
+   Contenedor login
+========================= */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-card {
+  background-color: var(--card-light);
+  color: var(--text-light);
+  padding: 40px 30px;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+body[data-theme="dark"] .login-card {
+  background-color: var(--card-dark);
+  color: var(--text-dark);
+}
+
+/* =========================
+   Título
+========================= */
+.login-card h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+/* =========================
+   Inputs
+========================= */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.input-group input {
+  padding: 12px 15px;
+  border-radius: var(--radius);
+  border: 1px solid var(--input-border-light);
+  background-color: var(--input-bg-light);
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: background-color var(--transition), color var(--transition), border var(--transition);
+}
+
+body[data-theme="dark"] .input-group input {
+  background-color: var(--input-bg-dark);
+  border: 1px solid var(--input-border-dark);
+  color: var(--text-dark);
+}
+
+/* =========================
+   Botón login
+========================= */
+.login-card button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.login-card button[type="submit"]:hover {
+  opacity: 0.85;
+}
+
+/* =========================
+   Footer / toggle de tema
+========================= */
+.login-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#toggleTheme {
+  background: none;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  padding: 8px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all var(--transition);
+}
+
+#toggleTheme:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* =========================
+   Mensaje de error
+========================= */
+.error-msg {
+  color: #ff4d4f;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 20px;
+  }
+  .login-card h1 {
+    font-size: 1.5rem;
+  }
+  .input-group input {
+    font-size: 0.95rem;
+  }
+  .login-card button[type="submit"] {
+    font-size: 0.95rem;
+  }
+  #toggleTheme {
+    padding: 6px 12px;
+  }
+}
