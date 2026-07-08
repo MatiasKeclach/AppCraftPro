@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Clientes - Logística</title>
+
+<link rel="stylesheet" href="/css/panel.css">
+
+<style>
+
+body{
+    margin:0;
+    background:#f5f6fa;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.header{
+    background:#1e293b;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px;
+}
+
+.box{
+
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    margin-bottom:25px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+input{
+
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+
+}
+
+button{
+
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+th,td{
+
+    padding:12px;
+    border-bottom:1px solid #ddd;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+<h2>👥 Clientes Logística</h2>
+
+<p>Usuario: <%= username %></p>
+
+</div>
+
+
+<div class="container">
+
+
+<div class="box">
+
+<h3>Nuevo cliente</h3>
+
+
+<form method="POST" action="/panel/logistica/clientes">
+
+
+<input 
+name="nombre"
+placeholder="Nombre del cliente"
+required
+>
+
+
+<input 
+name="empresa"
+placeholder="Empresa"
+>
+
+
+<input 
+name="telefono"
+placeholder="Teléfono"
+>
+
+
+<input 
+name="email"
+placeholder="Email"
+>
+
+
+<input 
+name="direccion"
+placeholder="Dirección"
+>
+
+
+<button>
+Guardar cliente
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+<div class="box">
+
+<h3>Clientes registrados</h3>
+
+
+<table>
+
+<tr>
+
+<th>ID</th>
+<th>Nombre</th>
+<th>Empresa</th>
+<th>Teléfono</th>
+
+</tr>
+
+
+<% clientes.forEach(cliente => { %>
+
+<tr>
+
+<td><%= cliente.id %></td>
+
+<td><%= cliente.nombre %></td>
+
+<td><%= cliente.empresa || "-" %></td>
+
+<td><%= cliente.telefono || "-" %></td>
+
+
+</tr>
+
+<% }) %>
+
+
+</table>
+
+
+</div>
+
+
+
+</div>
+
+
+</body>
+
+</html>
