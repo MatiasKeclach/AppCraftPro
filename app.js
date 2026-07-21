@@ -1,185 +1,413 @@
-/*const express = require("express");
-const session = require("express-session");
-const path = require("path");
-const isAuthenticated = require("./middleware/authMiddleware");
-
-// DB
-const db = require("./models/db");
-require("./models/initDB");*/
 
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const isAuthenticated = require("./middleware/authMiddleware");
 
-// 👇 AGREGÁ ESTO
-const { startBinanceStream } = require("./services/binanceService");
+// ------------------ Base de datos ------------------ //
 
-// DB
 const db = require("./models/db");
-require("./models/initDB2");
+require("./models/initDB");
+
+
+// ------------------ Aplicación ------------------ //
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
+
 // ------------------ Motor de vistas ------------------ //
+
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+
+app.set(
+  "views",
+  path.join(__dirname, "views")
+);
+
 
 // ------------------ Middlewares ------------------ //
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+
+app.use(
+  express.json()
+);
+
+
+// ------------------ Sesiones ------------------ //
 
 app.use(
   session({
     secret: "appcraft_secret_key",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: true
   })
 );
 
-// ------------------ Archivos públicos ------------------ //
-app.use(express.static(path.join(__dirname, "public")));
 
-// ------------------ Rutas ------------------ //
+// ------------------ Archivos públicos ------------------ //
+
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
+
+
+// ==================================================
+// RUTAS
+// ==================================================
+
+
+// ------------------ Rutas de usuarios ------------------ //
+
 const userRoutes = require("./routes/users");
+
+app.use(
+  "/panel/users",
+  userRoutes
+);
+
+
+// ------------------ Rutas de autenticación ------------------ //
+
 const authRoutes = require("./routes/auth");
 
-const logisticaRoutes = require("./routes/logistica");
+app.use(
+  "/auth",
+  authRoutes
+);
 
-// Vistas usuarios (panel)
-app.use("/panel/users", userRoutes);
 
-// Auth
-app.use("/auth", authRoutes);
+// ==================================================
+// PANEL PRINCIPAL
+// ==================================================
 
-app.use("/panel/logistica", logisticaRoutes);
+app.get(
+  "/panel",
+  isAuthenticated,
+  (req, res) => {
 
-// ------------------ Panel ------------------ //
-app.get("/panel", isAuthenticated, (req, res) => {
-  const fs = require("fs");
+    const fs = require("fs");
 
-  try {
-    const apps = db.prepare("SELECT * FROM apps").all();
-    const usuarios = db.prepare("SELECT * FROM users").all();
+    try {
 
-    const totalPorRol = {
-      superadmin: usuarios.filter(u => u.role === "superadmin").length,
-      admin: usuarios.filter(u => u.role === "admin").length,
-      usuario: usuarios.filter(u => u.role === "usuario").length
-    };
+      // Obtener aplicaciones
+      const apps = db
+        .prepare("SELECT * FROM apps")
+        .all();
 
-    const plantillas = fs.existsSync("./templates")
-      ? fs.readdirSync("./templates").filter(f =>
-         `fs.lstatSync(./templates/${f}).isDirectory()`
-        )
-      : [];
 
-    res.render("panel", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-      apps,
-      usuarios,
-      plantillas,
-      totalPorRol
-    });
+      // Obtener usuarios
+      const usuarios = db
+        .prepare("SELECT * FROM users")
+        .all();
 
-  } catch (err) {
-    console.error("Error cargando panel:", err);
-    res.render("panel", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-      apps: [],
-      usuarios: [],
-      plantillas: [],
-      totalPorRol: { superadmin: 0, admin: 0, usuario: 0 }
-    });
+
+      // Contar usuarios por rol
+      const totalPorRol = {
+
+        superadmin: usuarios.filter(
+          u => u.role === "superadmin"
+        ).length,
+
+        admin: usuarios.filter(
+          u => u.role === "admin"
+        ).length,
+
+        usuario: usuarios.filter(
+          u => u.role === "usuario"
+        ).length
+
+      };
+
+
+      // Obtener plantillas
+      let plantillas = [];
+
+      if (
+        fs.existsSync("./templates")
+      ) {
+
+        plantillas = fs
+          .readdirSync("./templates")
+          .filter(file => {
+
+            try {
+
+              return fs
+                .lstatSync(
+                  `./templates/${file}`
+                )
+                .isDirectory();
+
+            } catch (error) {
+
+              return false;
+
+            }
+
+          });
+
+      }
+
+
+      // Renderizar panel
+      res.render(
+        "panel",
+        {
+
+          username:
+            req.session.user.username,
+
+          role:
+            req.session.user.role,
+
+          apps,
+
+          usuarios,
+
+          plantillas,
+
+          totalPorRol
+
+        }
+      );
+
+
+    } catch (err) {
+
+      console.error(
+        "❌ Error cargando panel:",
+        err
+      );
+
+
+      // Renderizar panel vacío
+      // si ocurre algún error
+
+      res.render(
+        "panel",
+        {
+
+          username:
+            req.session.user.username,
+
+          role:
+            req.session.user.role,
+
+          apps: [],
+
+          usuarios: [],
+
+          plantillas: [],
+
+          totalPorRol: {
+
+            superadmin: 0,
+
+            admin: 0,
+
+            usuario: 0
+
+          }
+
+        }
+      );
+
+    }
+
   }
-});
+);
 
-// ------------------ Panel Framework ------------------ //
-app.get("/panel/framework", isAuthenticated, (req, res) => {
-  // Renderizamos la vista del framework
-  res.render("framework", {
-    user: req.session.user, // info del usuario logueado
-    username: req.session.user.username,
-    role: req.session.user.role
-  });
-});
 
-// ------------------ Trading Bot ------------------ //
-// ------------------ Trading Bot ------------------ //
-app.get("/panel/trading-bot", isAuthenticated, (req, res) => {
+// ==================================================
+// APPCRAFT FRAMEWORK
+// ==================================================
 
-  const symbol = req.query.symbol || "BTCUSDT";
+app.get(
+  "/panel/framework",
+  isAuthenticated,
+  (req, res) => {
 
-  res.render("tradingBot", {
-    symbol,
-    username: req.session.user.username,
-    role: req.session.user.role
-  });
+    res.render(
+      "framework",
+      {
 
-});
+        user:
+          req.session.user,
 
-// ------------------ Trading Selector ------------------ //
-app.get("/panel/trading", isAuthenticated, (req, res) => {
+        username:
+          req.session.user.username,
 
-  const symbols = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "SOLUSDT",
-    "BNBUSDT",
-    "XRPUSDT"
-  ];
+        role:
+          req.session.user.role
 
-  res.render("tradingSelect", {
-    username: req.session.user.username,
-    role: req.session.user.role,
-    symbols
-  });
+      }
+    );
 
-});
+  }
+);
 
-// ------------------ Logística ------------------ //
-app.get("/panel/logistica", isAuthenticated, (req, res) => {
 
-    res.render("logistica/dashboard", {
-        username: req.session.user.username,
-        role: req.session.user.role
-    });
+// ==================================================
+// LOGÍSTICA
+// ==================================================
+//
+// Esta ruta será utilizada por la tarjeta
+// "Logística" del panel.
+//
+// Más adelante vamos a crear el módulo:
+//
+// /panel/logistica
+//
+// y dentro:
+//
+// Fleet Scanner
+// Gestión de paquetes
+// Clientes
+// Choferes
+// Colectas
+// Consultas
+//
+// ==================================================
 
-});
+app.get(
+  "/panel/logistica",
+  isAuthenticated,
+  (req, res) => {
 
-// ------------------ Login ------------------ //
-app.get("/", (req, res) => {
-  res.render("login");
-});
-// ------------------ Server ------------------ //
-//app.listen(PORT, () => {
- // console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-//});
+    res.render(
+      "logistica/dashboard",
+      {
+
+        username:
+          req.session.user.username,
+
+        role:
+          req.session.user.role
+
+      }
+    );
+
+  }
+);
+
+
+// ==================================================
+// LOGIN
+// ==================================================
+
+app.get(
+  "/",
+  (req, res) => {
+
+    res.render("login");
+
+  }
+);
+
+
+// ==================================================
+// SERVIDOR HTTP
+// ==================================================
 
 const http = require("http");
-const { Server } = require("socket.io");
 
-const server = http.createServer(app);
+const {
+  Server
+} = require("socket.io");
 
-const io = new Server(server, {
-  cors: {
-    origin: "*"
+
+const server =
+  http.createServer(app);
+
+
+// ==================================================
+// SOCKET.IO
+// ==================================================
+
+const io =
+  new Server(
+    server,
+    {
+
+      cors: {
+
+        origin: "*"
+
+      }
+
+    }
+  );
+
+
+io.on(
+  "connection",
+  (socket) => {
+
+    console.log(
+      "⚡ Cliente conectado:",
+      socket.id
+    );
+
+
+    socket.on(
+      "disconnect",
+      () => {
+
+        console.log(
+          "❌ Cliente desconectado:",
+          socket.id
+        );
+
+      }
+    );
+
   }
-});
+);
 
-io.on("connection", (socket) => {
-  console.log("⚡ Cliente conectado:", socket.id);
 
-  socket.on("disconnect", () => {
-    console.log("❌ Cliente desconectado:", socket.id);
-  });
-});
+// ==================================================
+// BINANCE / TRADING
+// ==================================================
+//
+// TEMPORALMENTE DESACTIVADO.
+//
+// No se carga:
+// services/binanceService.js
+//
+// No se ejecuta:
+// startBinanceStream(io)
+//
+// Esto evita que Render falle por:
+//
+// Cannot find module '../bot/engine'
+//
+// Más adelante podemos volver a activar
+// Trading sin afectar Logística.
+//
+// ==================================================
 
-startBinanceStream(io);
 
-server.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-});
+// ==================================================
+// INICIAR SERVIDOR
+// ==================================================
+
+server.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `🚀 Servidor corriendo en el puerto ${PORT}`
+    );
+
+  }
+);
+
