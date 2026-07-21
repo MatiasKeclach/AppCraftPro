@@ -17,7 +17,7 @@ const { startBinanceStream } = require("./services/binanceService");
 
 // DB
 const db = require("./models/db");
-require("./models/initDB");
+require("./models/initDB2");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
