@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentación Tienda Virtual "Las Gladiolas"</title>
+<style>
+  /* ===== RESET Y TIPOGRAFÍA ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background: #f4f4f4; color: #333; transition: background 0.3s, color 0.3s;}
+  h1,h2,h3 { color: #0a74da; margin-bottom: 0.5em; }
+  p, ul, pre { margin-bottom: 1em; }
+  ul { list-style: disc inside; }
+
+  /* ===== CONTAINER PRINCIPAL ===== */
+  .container { max-width: 1000px; margin: 2em auto; padding: 2em; background: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+
+  /* ===== SECCIONES ===== */
+  section { margin-bottom: 2em; }
+  pre { background: #eaeaea; padding: 1em; overflow-x: auto; border-radius: 6px; font-family: monospace; }
+
+  /* ===== ESQUEMA ASCII ===== */
+  .ascii-diagram { background: #f7f7f7; padding: 1em; border-radius: 6px; font-family: monospace; overflow-x: auto; }
+
+  /* ===== BOTONES DE DARK MODE ===== */
+  .toggle-dark { position: fixed; top: 20px; right: 20px; padding: 10px 15px; background: #0a74da; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+
+  /* ===== DARK MODE ===== */
+  body.dark { background: #1e1e1e; color: #ddd; }
+  body.dark .container { background: #2a2a2a; }
+  body.dark pre, body.dark .ascii-diagram { background: #333; color: #f0f0f0; }
+  body.dark h1,h2,h3 { color: #4aa3ff; }
+  body.dark .toggle-dark { background: #4aa3ff; }
+
+  /* ===== ESTILO TABLAS SIMULADAS ===== */
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+  th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
+  th { background: #0a74da; color: #fff; }
+  body.dark th { background: #4aa3ff; }
+</style>
+</head>
+<body>
+
+<button class="toggle-dark">Modo Dark</button>
+
+<div class="container">
+  <header>
+    <h1>Tienda Virtual "Las Gladiolas"</h1>
+    <p>Presentación de arquitectura, diseño y funcionamiento para el cliente</p>
+  </header>
+
+  <main>
+    <!-- 1. Resumen Arquitectura -->
+    <section>
+      <h2>1. Resumen de la Arquitectura</h2>
+      <p>La tienda virtual está diseñada para ser <strong>escalable</strong>, <strong>SEO friendly</strong> y <strong>en tiempo real</strong>. Se compone de:</p>
+      <ul>
+        <li>Base de datos ligera y rápida con BetterSQLite3.</li>
+        <li>Backend con Node.js + Express para manejo de APIs REST y sockets.</li>
+        <li>Frontend con Next.js + React para renderizado rápido y SEO.</li>
+        <li>Panel CMS para gestión de productos, clientes y pedidos.</li>
+        <li>Chat IA integrado para atención y soporte al cliente.</li>
+      </ul>
+    </section>
+
+    <!-- 2. Base de datos -->
+    <section>
+      <h2>2. Base de datos</h2>
+      <p>Tablas principales para el funcionamiento del negocio:</p>
+      <table>
+        <tr><th>Tabla</th><th>Descripción</th><th>Columnas principales</th></tr>
+        <tr><td>usuarios</td><td>Clientes mayoristas y minoristas</td><td>id, nombre, apellido, correo, contraseña(hasheada), tipo_cliente, fecha_registro</td></tr>
+        <tr><td>productos</td><td>Catálogo de ropa</td><td>id, nombre, descripción, precio_menorista, precio_mayorista, stock, imágenes(URL), categoría</td></tr>
+        <tr><td>pedidos</td><td>Control de pedidos</td><td>id, id_usuario, fecha, total, estado</td></tr>
+        <tr><td>detalle_pedidos</td><td>Productos dentro de cada pedido</td><td>id, id_pedido, id_producto, cantidad, precio_unitario</td></tr>
+        <tr><td>categorias</td><td>Filtrado de productos</td><td>id, nombre</td></tr>
+        <tr><td>cms_admin</td><td>Usuarios del panel administrativo</td><td>id, usuario, contraseña(hasheada), rol</td></tr>
+      </table>
+
+      <h3>Esquema ASCII de la base de datos</h3>
+      <div class="ascii-diagram">
+<pre>
+┌───────────┐     ┌─────────────┐     ┌──────────────┐
+│ usuarios  │     │  productos  │     │  categorias  │
+├───────────┤     ├─────────────┤     ├──────────────┤
+│ id        │◄──┐ │ id          │     │ id           │
+│ nombre    │   │ │ nombre      │     │ nombre       │
+│ apellido  │   │ │ descripcion │     └──────────────┘
+│ correo    │   │ │ precio_men  │
+│ contraseña│   │ │ precio_may  │
+│ tipo_cli  │   │ │ stock       │
+│ fecha_reg │   │ │ imagenes    │
+└───────────┘   └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│  pedidos    │
+├─────────────┤
+│ id          │
+│ id_usuario  │
+│ fecha       │
+│ total       │
+│ estado      │
+└─────────────┘
+       │
+       ▼
+┌───────────────────┐
+│ detalle_pedidos   │
+├───────────────────┤
+│ id                │
+│ id_pedido         │
+│ id_producto       │
+│ cantidad          │
+│ precio_unitario   │
+└───────────────────┘
+</pre>
+      </div>
+    </section>
+
+    <!-- 3. Funcionamiento -->
+    <section>
+      <h2>3. Funcionamiento General</h2>
+      <p>Flujo del cliente y administrador:</p>
+      <ul>
+        <li>El cliente entra al sitio → se muestran los productos destacados y promociones.</li>
+        <li>Agrega productos al carrito → persistente en sesión o localStorage.</li>
+        <li>Finaliza compra en <em>checkout</em> → se crea el pedido en la base de datos.</li>
+        <li>El administrador recibe notificación en tiempo real vía <strong>Socket.io</strong>.</li>
+        <li>Stock y pedidos se actualizan instantáneamente en frontend y CMS.</li>
+        <li>Chat IA disponible para consultas, sugerencias y soporte al cliente.</li>
+        <li>CMS permite gestionar clientes, productos, stock y generar reportes.</li>
+      </ul>
+    </section>
+
+    <!-- 4. Beneficios -->
+    <section>
+      <h2>4. Ventajas de esta Arquitectura</h2>
+      <ul>
+        <li><strong>Escalable:</strong> se puede replicar la tienda para otras marcas sin cambiar la arquitectura.</li>
+        <li><strong>SEO friendly:</strong> Next.js permite renderizado en servidor para mejor indexación.</li>
+        <li><strong>Tiempo real:</strong> stock y pedidos se actualizan instantáneamente.</li>
+        <li><strong>Modular:</strong> frontend, backend y chat IA separados para fácil mantenimiento.</li>
+        <li><strong>Interactividad:</strong> Chat IA y notificaciones en tiempo real aumentan la experiencia de usuario.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 M@tt Developer - Presentación Tienda Virtual "Las Gladiolas"</p>
+  </footer>
+</div>
+
+<script>
+  // Toggle Dark Mode
+  const btn = document.querySelector('.toggle-dark');
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+  });
+</script>
+
+</body>
+</html>

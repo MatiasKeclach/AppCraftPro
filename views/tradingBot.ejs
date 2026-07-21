@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trading Bot</title>
+</head>
+<body>
+
+<h1>🚀 Trading MattBot</h1>
+
+<select id="intervalSelector">
+  <option value="1m">1 Min</option>
+  <option value="5m">5 Min</option>
+  <option value="15m">15 Min</option>
+  <option value="1h">1 Hora</option>
+  <option value="4h">4 Horas</option>
+  <option value="1d">1 Día</option>
+</select>
+
+<select id="symbolSelector">
+  <option value="btcusdt">BTC/USDT</option>
+  <option value="ethusdt">ETH/USDT</option>
+  <option value="solusdt">SOL/USDT</option>
+  <option value="bnbusdt">BNB/USDT</option>
+</select>
+
+<h2 id="symbol">Cargando...</h2>
+<h1 id="price">Cargando...</h1>
+<h3 id="ema9">EMA9: --</h3>
+<h3 id="ema21">EMA21: --</h3>
+
+<div
+  id="chart"
+  style="
+    width:100%;
+    height:500px;
+    margin-top:20px;
+    border:1px solid #ccc;
+  "
+></div>
+
+<div id="signalBox"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const socket = io();
+
+const chart = LightweightCharts.createChart(
+  document.getElementById("chart"),
+  {
+    width: document.getElementById("chart").clientWidth,
+    height: 500
+  }
+);
+
+const candleSeries = chart.addCandlestickSeries();
+
+const ema9Series = chart.addLineSeries({
+  color: "dodgerblue",
+  lineWidth: 2
+});
+
+const ema21Series = chart.addLineSeries({
+  color: "orange",
+  lineWidth: 2
+});
+
+let candlesHistory = [];
+
+const selector = document.getElementById("symbolSelector");
+const intervalSelector = document.getElementById("intervalSelector");
+
+function updateMarket() {
+  socket.emit("change-symbol", {
+    symbol: selector.value,
+    interval: intervalSelector.value
+  });
+}
+
+// =========================
+// HISTORIAL
+// =========================
+socket.on("candles-history", (candles) => {
+  candlesHistory = candles;
+  candleSeries.setData(candles);
+  chart.timeScale().fitContent();
+});
+
+// =========================
+// VELAS LIVE
+// =========================
+socket.on("candle-update", (candle) => {
+  candleSeries.update(candle);
+
+  candlesHistory.push(candle);
+  if (candlesHistory.length > 300) candlesHistory.shift();
+});
+
+// =========================
+// PRICE
+// =========================
+socket.on("price-update", (data) => {
+  document.getElementById("symbol").innerText = data.symbol.toUpperCase();
+  document.getElementById("price").innerText =
+    "$" + Number(data.price).toLocaleString();
+});
+
+// =========================
+// EMA HISTORY
+// =========================
+socket.on("ema-history", (data) => {
+
+  const minLen = Math.min(candlesHistory.length, data.ema9.length);
+
+  const ema9Data = [];
+  const ema21Data = [];
+
+  for (let i = 0; i < minLen; i++) {
+
+    const candle = candlesHistory[i];
+    if (!candle) continue;
+
+    ema9Data.push({
+      time: candle.time,
+      value: data.ema9[i]
+    });
+
+    ema21Data.push({
+      time: candle.time,
+      value: data.ema21[i]
+    });
+  }
+
+  ema9Series.setData(ema9Data);
+  ema21Series.setData(ema21Data);
+});
+
+// =========================
+// EMA LIVE
+// =========================
+socket.on("ema-update", (data) => {
+
+  const lastCandle = candlesHistory[candlesHistory.length - 1];
+  if (!lastCandle) return;
+
+  ema9Series.update({
+    time: lastCandle.time,
+    value: data.ema9
+  });
+
+  ema21Series.update({
+    time: lastCandle.time,
+    value: data.ema21
+  });
+
+  document.getElementById("ema9").innerText = "EMA9: " + data.ema9;
+  document.getElementById("ema21").innerText = "EMA21: " + data.ema21;
+});
+
+// =========================
+// SIGNALS
+// =========================
+socket.on("bot-signal", (signal) => {
+
+  const box = document.getElementById("signalBox");
+
+  box.innerHTML = `
+    <div style="
+      padding:12px;
+      margin-top:10px;
+      border-radius:10px;
+      color:white;
+      font-weight:bold;
+      background:${signal.type === "BUY" ? "#16a34a" : "#dc2626"};
+    ">
+      <div>${signal.type}</div>
+      <div>Precio: ${signal.price}</div>
+      <div>${signal.reason}</div>
+    </div>
+  `;
+});
+
+socket.on("ema-update", (data) => {
+  console.log("EMA LIVE:", data);
+
+  document.getElementById("ema9").innerText = "EMA9: " + data.ema9;
+  document.getElementById("ema21").innerText = "EMA21: " + data.ema21;
+});
+
+selector.addEventListener("change", updateMarket);
+intervalSelector.addEventListener("change", updateMarket);
+
+updateMarket();
+
+window.addEventListener("resize", () => {
+  chart.applyOptions({
+    width: document.getElementById("chart").clientWidth
+  });
+});
+</script>
+</body>
+</html>

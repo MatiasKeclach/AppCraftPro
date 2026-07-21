@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentación Tienda Virtual - Proyecto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Scroll suave para anclas */
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Resaltar JSON */
+    pre.json {
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      color: #d1d5db;
+    }
+    /* Esquema ASCII */
+    pre.ascii {
+      font-family: monospace;
+      background-color: #111827;
+      color: #34d399;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+<header class="bg-gray-800 p-6 text-center">
+  <h1 class="text-3xl font-bold text-green-400">Documentación Técnica - Tienda Virtual</h1>
+  <p class="text-gray-300 mt-2">Proyecto CMS y tienda virtual escalable con automatización y roles diferenciados</p>
+</header>
+
+<nav class="bg-gray-700 p-4 flex flex-wrap justify-center gap-4">
+  <a href="#stack" class="text-green-400 hover:text-green-200">Stack & Tecnologías</a>
+  <a href="#roles" class="text-green-400 hover:text-green-200">Roles</a>
+  <a href="#crud" class="text-green-400 hover:text-green-200">CRUD & Productos</a>
+  <a href="#json" class="text-green-400 hover:text-green-200">Automatización JSON</a>
+  <a href="#ascii" class="text-green-400 hover:text-green-200">Arquitectura ASCII</a>
+  <a href="#cliente" class="text-green-400 hover:text-green-200">Explicación Cliente</a>
+  <a href="doc2.html" target="_blank" rel="noopener noreferrer">Otro</a>
+  
+</nav>
+
+<main class="p-6 space-y-12">
+
+  <!-- Stack y tecnologías -->
+  <section id="stack">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">1️⃣ Stack & Tecnologías</h2>
+    <ul class="list-disc list-inside space-y-2">
+      <li><strong>Backend:</strong> Node.js + Express.js + Socket.io</li>
+      <li><strong>Base de Datos:</strong> SQLite para local / PostgreSQL en producción</li>
+      <li><strong>Frontend:</strong> React + Next.js + Tailwind CSS</li>
+      <li><strong>CMS:</strong> Sistema propio integrado con roles y gestión de stock</li>
+      <li><strong>Automatización:</strong> JSON para carga masiva de productos y fotos</li>
+      <li><strong>Hosting:</strong> Render + Supabase para DB en nube</li>
+      <li><strong>Integraciones:</strong> Email notificaciones, IA para predicción de stock y ventas</li>
+    </ul>
+  </section>
+
+  <!-- Roles -->
+  <section id="roles">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">2️⃣ Roles del Sistema</h2>
+    <ul class="list-disc list-inside space-y-2">
+      <li><strong>Owner / Founder:</strong> Gestión completa de todas las tiendas, supervisión de superadmins, notificaciones críticas.</li>
+      <li><strong>Superadmin:</strong> Cliente principal de la tienda, puede gestionar todo el CMS pero ciertas acciones críticas requieren autorización del Owner.</li>
+      <li><strong>Admin:</strong> Personal autorizado para gestión de productos, stock, pedidos y clientes.</li>
+      <li><strong>Cliente:</strong> Usuario final que compra productos, visualiza stock y realiza pedidos.</li>
+    </ul>
+  </section>
+
+  <!-- CRUD y productos -->
+  <section id="crud">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">3️⃣ CRUD & Gestión de Productos</h2>
+    <ul class="list-disc list-inside space-y-2">
+      <li>Crear, leer, actualizar y eliminar productos de forma dinámica.</li>
+      <li>Stock por producto, talle y color, con código único de identificación (SKU).</li>
+      <li>Alertas automáticas de <em>sin stock</em> cuando no quedan unidades.</li>
+      <li>Posibilidad de carga masiva vía JSON.</li>
+      <li>Galerías de imágenes vinculadas automáticamente a productos.</li>
+      <li>Permite curvas de talles y venta mayorista / minorista.</li>
+    </ul>
+  </section>
+
+  <!-- Automatización JSON -->
+  <section id="json">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">4️⃣ Automatización con JSON</h2>
+    <p>Ejemplo de JSON para cargar productos automáticamente:</p>
+    <pre class="json">
+{
+  "productos": [
+    {
+      "nombre": "Remera Básica",
+      "categoria": "Remeras",
+      "talle": "M",
+      "color": "Rojo",
+      "precio": 1500,
+      "stock": 20,
+      "imagenes": ["remera-roja-1.jpg", "remera-roja-2.jpg"]
+    },
+    {
+      "nombre": "Jeans Slim",
+      "categoria": "Pantalones",
+      "talle": "32",
+      "color": "Azul",
+      "precio": 3500,
+      "stock": 15,
+      "imagenes": ["jeans-azul-1.jpg", "jeans-azul-2.jpg"]
+    }
+  ]
+}
+    </pre>
+    <p class="mt-2">Al importar este JSON, el sistema asigna automáticamente códigos SKU y actualiza el stock de cada producto.</p>
+  </section>
+
+  <!-- Arquitectura ASCII -->
+  <section id="ascii">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">5️⃣ Arquitectura del Sistema (Esquema ASCII)</h2>
+    <pre class="ascii">
++------------------+
+|      Owner       |
++------------------+
+         |
++------------------+
+|   Superadmin     |
++------------------+
+         |
++------------------+       +------------------+
+|      Admin       | <-->  |      Cliente     |
++------------------+       +------------------+
+         |
++-----------------------------+
+|           CMS               |
+|  - Gestión productos        |
+|  - Stock automático         |
+|  - Curvas y talles          |
+|  - JSON import/export        |
+|  - Pedidos y clientes       |
++-----------------------------+
+         |
++-----------------------------+
+|    Base de Datos            |
+|  SQLite local / PostgreSQL  |
++-----------------------------+
+         |
++-----------------------------+
+|   Frontend React + Next.js  |
+|  Tailwind CSS                |
++-----------------------------+
+    </pre>
+  </section>
+
+  <!-- Explicación Cliente -->
+  <section id="cliente">
+    <h2 class="text-2xl font-bold text-green-400 mb-4">6️⃣ Explicación para el Cliente</h2>
+    <p class="mb-2">
+      Esta tienda virtual está pensada para que puedas gestionar tus productos de manera muy simple. Cada producto tiene un código único y se puede ver la cantidad de stock disponible. Si se agota un producto, el sistema automáticamente muestra “sin stock”.
+    </p>
+    <p class="mb-2">
+      Podés cargar productos de forma masiva usando un archivo JSON que contiene toda la información de cada producto: nombre, categoría, talle, color, precio y fotos. El sistema lo interpreta y genera todo automáticamente.
+    </p>
+    <p class="mb-2">
+      Hay distintos roles: como cliente podés comprar, como admin podés gestionar productos y pedidos, como superadmin podés gestionar toda la tienda, y yo, como Owner, superviso todo el sistema para evitar errores graves y mantener la plataforma funcionando sin problemas.
+    </p>
+    <p>
+      Esto permite que el sistema sea escalable, seguro y que funcione de forma automática, ahorrando tiempo y evitando errores. Además, si algún día querés otra tienda virtual, podemos replicar toda esta arquitectura sin necesidad de rehacer nada desde cero.
+    </p>
+  </section>
+
+</main>
+
+<footer class="bg-gray-800 p-6 text-center text-gray-400">
+  <p>© 2026 - Proyecto Tienda Virtual | Creado por Matías Keclach</p>
+</footer>
+
+</body>
+</html>

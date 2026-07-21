@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framework Tienda Virtual</title>
+<style>
+/* Reset básico */
+* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
+body {display:flex; min-height:100vh;}/* Menú lateral */ nav {width:250px; background:#1f1f1f; color:white; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;} nav a {padding:15px; color:white; text-decoration:none; border-bottom:1px solid #333;} nav a.active {background:#333;}
+
+/* Contenido principal */ main {flex:1; padding:20px; overflow-x:hidden;} section {margin-bottom:40px;} section h2 {margin-bottom:10px;}
+
+/* Consola tipo CMD */ .console {background:#111; color:#0f0; padding:10px; font-family: monospace; overflow-x:auto; border-radius:5px;}
+
+/* Productos */ .product {border:1px solid #ccc; padding:15px; margin:10px; border-radius:5px; display:flex; flex-direction:column; justify-content:space-between; width:200px;} .products-grid {display:flex; flex-wrap:wrap;} .product button {margin-top:10px; cursor:pointer; padding:5px;}
+
+/* Carrito */ #cart {position:fixed; top:10px; right:10px; background:#fff; border:1px solid #ccc; padding:15px; width:250px; max-height:80vh; overflow-y:auto; border-radius:5px;} #cart h3 {margin-bottom:10px;} .cart-item {display:flex; justify-content:space-between; margin-bottom:5px;}
+
+/* Animaciones */ .flash {animation:flash 0.5s;} @keyframes flash {0%{background:yellow;}100%{background:white;}}
+
+/* Filtros */ .filters {margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;} .filters input, .filters select {padding:5px;}
+
+/* Responsive */ @media(max-width:768px){nav{width:100%; height:auto; position:relative;} body{flex-direction:column;} #cart{position:relative; width:100%; margin-top:10px;}} </style>
+
+</head>
+<body><nav id="menu"></nav><main id="content"><section id="inteligencia-artificial">
+  <h2>🤖 Inteligencia Artificial</h2>
+  <p>La inteligencia artificial (IA) permite automatizar procesos y tomar decisiones basadas en datos.</p>
+  <p>En nuestra fábrica de tiendas virtuales, la IA ayuda a generar productos dinámicamente, recomendar artículos y optimizar stock.</p>
+</section>
+<section id="usuarios"></section>
+<section id="api">
+  <h2>🔑 API</h2>
+  <p>La API permite conectar la tienda virtual con sistemas externos, gestionar productos, stock y usuarios.</p>
+</section><section id="roles-permisos">
+  <h2>👥 Roles y Permisos</h2>
+  <div class="console">
+    Owner: acceso total, genera API Key, administra roles y tiendas<br>
+    Superadmin: gestiona tiendas, usuarios y contenido (sin API Key)<br>
+    Admin: acceso limitado a contenido y operaciones de tiendas asignadas<br>
+    Cliente: usuario que consume la tienda<br>
+    <br>
+    Ejemplo verificación de rol:<br>
+    if(user.role==='Owner'){ ejecutarAccion(); }
+  </div>
+</section><section id="productos">
+  <h2>🛒 Productos</h2>
+  <div class="filters">
+    <select id="filter-category"><option value="all">Todas las categorías</option></select>
+    <input type="text" id="search" placeholder="Buscar producto...">
+  </div>
+  <div class="products-grid" id="products-grid"></div>
+</section></main><div id="cart">
+  <h3>Carrito</h3>
+  <div id="cart-items"></div>
+  <strong>Total: $<span id="cart-total">0</span></strong>
+</div><script>
+// Menú dinámico
+const sections = document.querySelectorAll('main section');
+const menu = document.getElementById('menu');
+sections.forEach(sec=>{
+  const link = document.createElement('a');
+  link.href='#'+sec.id;
+  link.textContent = sec.querySelector('h2').textContent;
+  menu.appendChild(link);
+});
+
+// Resaltar menú scroll
+window.addEventListener('scroll',()=>{
+  let scrollPos = window.scrollY;
+  sections.forEach(sec=>{
+    const top = sec.offsetTop-50;
+    const bottom = top+sec.offsetHeight;
+    const link = [...menu.children].find(a=>a.getAttribute('href')==='#'+sec.id);
+    if(scrollPos>=top && scrollPos<bottom){link.classList.add('active');}
+    else{link.classList.remove('active');}
+  });
+});
+
+// Productos dinámicos
+const products = [
+  {id:1,name:'Producto 1',category:'A',desc:'Descripción 1',price:100,stock:5},
+  {id:2,name:'Producto 2',category:'B',desc:'Descripción 2',price:200,stock:3},
+  {id:3,name:'Producto 3',category:'A',desc:'Descripción 3',price:150,stock:10},
+  {id:4,name:'Producto 4',category:'C',desc:'Descripción 4',price:50,stock:0}
+];
+
+const productsGrid = document.getElementById('products-grid');
+const filterCategory = document.getElementById('filter-category');
+const searchInput = document.getElementById('search');
+const cartItems = document.getElementById('cart-items');
+const cartTotal = document.getElementById('cart-total');
+let cart=[];
+
+// Categorías dinámicas
+const categories = [...new Set(products.map(p=>p.category))];
+categories.forEach(cat=>{
+  const opt = document.createElement('option'); opt.value=cat; opt.textContent=cat; filterCategory.appendChild(opt);
+});
+
+function renderProducts(){
+  productsGrid.innerHTML='';
+  const search = searchInput.value.toLowerCase();
+  const category = filterCategory.value;
+  products.filter(p=> (category==='all'||p.category===category) && p.name.toLowerCase().includes(search) ).forEach(p=>{
+    const div = document.createElement('div'); div.className='product';
+    div.innerHTML=`<h3>${p.name}</h3><p>${p.desc}</p><p>Stock: ${p.stock}</p><p>Precio: $${p.price}</p>`;
+    const btn = document.createElement('button'); btn.textContent='Agregar al carrito';
+    btn.disabled = p.stock===0;
+    btn.onclick=()=>addToCart(p.id,div);
+    div.appendChild(btn);
+    productsGrid.appendChild(div);
+  });
+}
+
+function addToCart(id,div){
+  const product = products.find(p=>p.id===id);
+  const cartProduct = cart.find(c=>c.id===id);
+  if(cartProduct){cartProduct.qty++;} else {cart.push({id:id,qty:1,price:product.price,name:product.name});}
+  renderCart();
+  div.classList.add('flash'); setTimeout(()=>div.classList.remove('flash'),500);
+}
+
+function renderCart(){
+  cartItems.innerHTML='';
+  let total=0;
+  cart.forEach(c=>{
+    total+=c.qty*c.price;
+    const div = document.createElement('div'); div.className='cart-item';
+    div.textContent=`${c.name} x ${c.qty} - $${c.price*c.qty}`;
+    cartItems.appendChild(div);
+  });
+  cartTotal.textContent=total;
+}
+
+filterCategory.addEventListener('change',renderProducts);
+searchInput.addEventListener('input',renderProducts);
+renderProducts();
+</script></body>
+</html>

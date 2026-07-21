@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Markets</title>
+
+  <style>
+    
+    *{
+      padding: 0;
+      margin: 0;
+      
+    }
+
+    body{
+      margin:0;
+      padding:40px;
+      background:#0f172a;
+      color:white;
+      font-family:Arial;
+    }
+
+    h1{
+      margin-bottom:30px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:#1e293b;
+      border-radius:20px;
+      padding:30px;
+      cursor:pointer;
+      transition:0.2s;
+      border:1px solid #334155;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+      background:#334155;
+    }
+
+    .symbol{
+      font-size:28px;
+      font-weight:bold;
+      margin-bottom:10px;
+    }
+
+    .desc{
+      color:#94a3b8;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Seleccioná un mercado</h1>
+
+  <div class="grid">
+
+    <% symbols.forEach(symbol => { %>
+
+      <div class="card"
+           onclick="location.href='/panel/trading-bot?symbol=<%= symbol %>'">
+
+        <div class="symbol">
+          <%= symbol %>
+        </div>
+
+        <div class="desc">
+          Abrir bot de trading
+        </div>
+
+      </div>
+
+    <% }) %>
+
+  </div>
+
+</body>
+</html>

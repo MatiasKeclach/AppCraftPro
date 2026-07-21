@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Proyecto - Tienda Virtual</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  body { background-color: #f5f5f5; }
+  .section-title { color: #1f2937; font-weight: 700; margin-bottom: 0.5rem; }
+  .sub-title { color: #4b5563; font-weight: 600; margin-top: 1rem; }
+  .card { background-color: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .role-badge { display:inline-block; background-color:#10b981; color:white; padding:0.2rem 0.6rem; border-radius:6px; font-weight:600; margin-right:0.5rem; }
+  .tech-badge { display:inline-block; background-color:#3b82f6; color:white; padding:0.2rem 0.6rem; border-radius:6px; font-weight:600; margin:0.2rem; }
+</style>
+</head>
+<body class="p-6 font-sans text-gray-800">
+
+<header class="mb-8">
+  <h1 class="text-3xl font-bold mb-2">Tienda Virtual y CMS - Manual de Proyecto</h1>
+  <p class="text-gray-600">Presentación del sistema, roles, arquitectura y funcionalidades.</p>
+</header>
+
+<section class="card">
+  <h2 class="section-title">1️⃣ Roles y Permisos</h2>
+  <p>El sistema maneja distintos niveles de acceso para asegurar seguridad, control y escalabilidad:</p>
+  <ul class="mt-2 list-disc list-inside">
+    <li><span class="role-badge">Owner</span>: Control total del sistema, recibe alertas críticas, puede aprobar o revertir cambios de superadmins.</li>
+    <li><span class="role-badge">Superadmin</span>: Cada tienda tiene su superadmin, puede gestionar productos, stock y usuarios, pero limitado en cambios críticos.</li>
+    <li><span class="role-badge">Admin</span>: Gestiona partes del CMS según permisos asignados por superadmin.</li>
+    <li><span class="role-badge">Cliente</span>: Usuario final que puede comprar en la tienda virtual y consultar su historial de pedidos.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2 class="section-title">2️⃣ Lógica de Backend y Funcionalidades</h2>
+  <p>El CMS y la tienda virtual funcionan de forma integrada:</p>
+  <ul class="mt-2 list-disc list-inside">
+    <li>CRUD completo de productos: agregar, editar, eliminar productos.</li>
+    <li>Gestión de stock: cada producto tiene color, talle, código único y cantidad disponible.</li>
+    <li>Notificación automática si un superadmin intenta cambios críticos.</li>
+    <li>Carga masiva de productos mediante JSON: fotos, categorías, variantes y precios se insertan automáticamente.</li>
+    <li>Automatización de estado de stock: si se agota, el producto se marca automáticamente como “Sin stock”.</li>
+    <li>Conexión en tiempo real entre CMS y tienda mediante WebSockets para reflejar cambios instantáneamente.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2 class="section-title">3️⃣ Arquitectura del Sistema</h2>
+  <p>El sistema está estructurado para ser escalable, seguro y eficiente:</p>
+  <ul class="mt-2 list-disc list-inside">
+    <li><strong>Frontend:</strong> Next.js + React + Tailwind CSS, para UI rápida, responsive y moderna.</li>
+    <li><strong>Backend:</strong> Node.js + Express para manejar rutas, APIs y lógica de negocios.</li>
+    <li><strong>Base de datos:</strong> SQLite para desarrollo local, migrable a PostgreSQL en producción con Supabase.</li>
+    <li><strong>Automatización e IA:</strong> IA para analizar stock, generar códigos únicos, alertas y recomendaciones.</li>
+    <li><strong>Integración JSON:</strong> Facilita la carga masiva de productos, categorías y variantes.</li>
+    <li><strong>CMS y tienda virtual:</strong> Conectados en tiempo real, reflejando cambios instantáneamente.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2 class="section-title">4️⃣ Tecnologías Usadas</h2>
+  <div class="mt-2">
+    <span class="tech-badge">Node.js</span>
+    <span class="tech-badge">Express</span>
+    <span class="tech-badge">Next.js</span>
+    <span class="tech-badge">React</span>
+    <span class="tech-badge">Tailwind CSS</span>
+    <span class="tech-badge">SQLite</span>
+    <span class="tech-badge">PostgreSQL</span>
+    <span class="tech-badge">SupaBase</span>
+    <span class="tech-badge">WebSockets</span>
+    <span class="tech-badge">JSON</span>
+    <span class="tech-badge">IA / Automatización</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2 class="section-title">5️⃣ Explicación para el Cliente</h2>
+  <p>En palabras simples, esto es lo que hace tu tienda y CMS:</p>
+  <ul class="mt-2 list-disc list-inside">
+    <li>Cada tienda tiene su panel de control (CMS) donde el superadmin puede agregar productos, talles, colores y fotos.</li>
+    <li>El sistema crea un código único por producto, lo que permite gestionar el stock automáticamente.</li>
+    <li>Si algún producto se agota, se muestra como “Sin stock” en la tienda automáticamente.</li>
+    <li>Si el superadmin intenta hacer un cambio crítico, el Owner recibe una notificación y decide si se autoriza.</li>
+    <li>Todo el proceso se puede automatizar para que, por ejemplo, con un archivo JSON se carguen decenas o cientos de productos de una sola vez.</li>
+    <li>La tienda virtual está conectada en tiempo real con el CMS, así los cambios se reflejan al instante.</li>
+    <li>El sistema está pensado para crecer: si mañana hay 100 o 200 tiendas, cada una puede gestionarse de forma independiente, pero vos siempre tendrás control total.</li>
+    <li>Además, la tecnología usada permite que la tienda sea rápida, segura y moderna, y que se pueda mantener y escalar sin rehacer nada.</li>
+  </ul>
+</section>
+
+<footer class="mt-6 text-gray-500 text-sm">
+  <p>Documento generado para presentación de proyecto y manual de referencia. Creado por MattDeveloper.</p>
+</footer>
+
+</body>
+</html>

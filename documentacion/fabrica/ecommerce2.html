@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentación Fábrica Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+  :root {
+    --bg-color:#f9f9f9;
+    --text-color:#1f2937;
+    --menu-bg:#ffffff;
+    --menu-text:#1f2937;
+    --menu-hover:#e5e7eb;
+    --accent:#4f46e5;
+    --section-bg:#ffffff;
+    --section-border:#e5e7eb;
+    --card-bg:#f3f4f6;
+    --card-hover:#e0e7ff;
+    --flow-bg: #f0f4f8;
+  --flow-text: #1f2937;
+   --mapa-bg: #ffffff;
+  --mapa-text: #1f2937;
+  }
+  body.dark {
+    --bg-color:#121212;
+    --text-color:#f0f0f0;
+    --menu-bg:#1f1f1f;
+    --menu-text:#f0f0f0;
+    --menu-hover:#333;
+    --accent:#6366f1;
+    --section-bg:#1e1e1e;
+    --section-border:#333;
+    --card-bg:#272727;
+    --card-hover:#3b3b3b;
+    --flow-bg: #272727; /* fondo oscuro */
+  --flow-text: #f0f0f0; /* texto claro */
+   
+    --mapa-bg: #1e1e1e;
+  --mapa-text: #f0f0f0;
+  }
+
+  body { background-color: var(--bg-color); color: var(--text-color); display:flex; min-height:100vh; flex-direction:column; }
+
+  /* Menú lateral */
+  #sidebar {
+    width: 260px;
+    background-color: var(--menu-bg);
+    color: var(--menu-text);
+    position: fixed; top:0; left:0; bottom:0;
+    padding: 30px 20px; overflow-y:auto;
+    transition: transform 0.3s ease, background-color 0.3s;
+    box-shadow:2px 0 10px rgba(0,0,0,0.1);
+    z-index:999;
+  }
+  #sidebar h2 { font-weight:700; font-size:1.5rem; margin-bottom:25px; color:var(--accent);}
+  #sidebar a { display:block; color:var(--menu-text); text-decoration:none; margin:12px 0; padding:8px 12px; border-radius:8px; transition:0.3s; }
+  #sidebar a.active { background-color: var(--accent); color:#fff; }
+  #sidebar a:hover { background-color: var(--menu-hover); color:var(--accent); }
+
+  section h1 { font-size:1rem; margin-bottom:30px; color:var(--accent); text-align:center; }
+  /* Contenido principal */
+  #content { margin-left:260px; padding:30px; flex:1; transition: margin-left 0.3s ease; }
+
+  section { margin-bottom:50px; background-color:var(--section-bg); padding:30px; border-radius:15px; border:1px solid var(--section-border); box-shadow:0 8px 20px rgba(0,0,0,0.05); transition: transform 0.3s; }
+  section:hover { transform: translateY(-3px); }
+  section h2 { margin-bottom:20px; border-bottom:2px solid var(--accent); padding-bottom:8px; font-weight:600; display:flex; align-items:center; gap:10px; }
+  section p, section ul { margin-top:12px; line-height:1.6; }
+  section ul li { margin-bottom:10px; }
+
+  /* Tarjetas stack tecnológico */
+  /*.tech-grid { display:flex; flex-wrap:wrap; gap:15px; margin-top:15px; }
+  .tech-card { background-color: var(--card-bg); padding:15px 20px; border-radius:10px; flex:1 1 200px; box-shadow:0 4px 12px rgba(0,0,0,0.1); transition:0.3s; cursor:default; display:flex; align-items:center; gap:10px; position:relative; }
+  .tech-card:hover { background-color: var(--card-hover); transform:translateY(-3px); }
+  .tech-card span.tooltip { display:none; position:absolute; top:-35px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; padding:5px 10px; border-radius:5px; font-size:0.85rem; white-space:nowrap; }
+  .tech-card:hover span.tooltip { display:block; }*/
+  .tech-grid { display:flex; flex-wrap:wrap; gap:15px; margin-top:15px; }
+  .tech-card { background-color: var(--card-bg); padding:15px 20px; border-radius:10px; flex:1 1 200px; box-shadow:0 4px 12px rgba(0,0,0,0.1); transition:0.3s; cursor:default; display:flex; align-items:center; gap:10px; position:relative; }
+  .tech-card:hover { background-color: var(--card-hover); transform:translateY(-3px); }
+  .tech-card span { display:none; position:absolute; bottom:110%; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; padding:5px 10px; border-radius:6px; font-size:0.85rem; white-space:nowrap; z-index:10; pointer-events:none; }
+  .tech-card:hover span { display:block; }
+
+  /* Botones */
+  #menu-toggle { display:none; position:fixed; top:25px; right:100px; background-color:var(--menu-bg); border:none; padding:12px 16px; font-size:22px; border-radius:10px; box-shadow:0 3px 6px rgba(0,0,0,0.15); cursor:pointer; transition:0.3s; z-index:1001; }
+  #menu-toggle:hover { background-color:var(--menu-hover); }
+  #dark-mode-toggle { position:fixed; top:25px; right:25px; background-color:var(--menu-bg); border:none; padding:12px; font-size:22px; border-radius:50%; cursor:pointer; z-index:1001; box-shadow:0 3px 6px rgba(0,0,0,0.15); transition:0.3s; }
+  #dark-mode-toggle:hover { background-color:var(--menu-hover); }
+
+  /* Burbuja chatbot */
+  #chatbot { position:fixed; bottom:25px; right:25px; width:65px; height:65px; background-color:var(--accent); border-radius:50%; display:flex; justify-content:center; align-items:center; color:#fff; font-size:32px; cursor:pointer; z-index:1001; box-shadow:0 4px 12px rgba(0,0,0,0.2); transition:0.2s; }
+  #chatbot:hover { transform:scale(1.1); }
+
+  #chat-window { position:fixed; bottom:100px; right:25px; width:320px; max-height:400px; background:var(--section-bg); border:1px solid var(--section-border); border-radius:15px; display:none; flex-direction:column; box-shadow:0 8px 20px rgba(0,0,0,0.2); overflow:hidden; z-index:1001; }
+  #chat-window header { background:var(--accent); color:#fff; padding:10px 15px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+  #chat-window #messages { flex:1; padding:15px; overflow-y:auto; font-size:0.9rem; }
+  #chat-window input { border:none; border-top:1px solid var(--section-border); padding:10px 15px; font-size:0.9rem; outline:none; width:100%; background:var(--section-bg); color:var(--text-color); }
+
+  /* Footer */
+  footer { text-align:center; padding:20px; background-color:var(--menu-bg); border-top:1px solid var(--section-border); color:var(--text-color); margin-top:auto; }
+
+  /* Título principal */
+  #main-title { text-align:center; font-size:3rem; font-weight:700; margin:40px 0; color:var(--accent); }
+
+  /* Responsive */
+  @media (max-width:768px) {
+    #sidebar { transform:translateX(-100%); position:fixed; z-index:1000; }
+    #sidebar.show { transform:translateX(0); }
+    #content { margin-left:0; }
+    #menu-toggle { display:block; top:25px; right:100px; }
+  }
+
+  /* =========================
+   🚑 PARCHE RESPONSIVE GLOBAL
+   ========================= */
+
+/* Evita que cualquier cosa rompa el viewport */
+* {
+  box-sizing: border-box;
+}
+
+/* 🔥 SOLUCIÓN GLOBAL PARA CÓDIGO */
+pre, code {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 🔥 ARREGLA LOS <pre> (CLAVE) */
+pre {
+  white-space: pre-wrap !important;   /* permite saltos */
+  word-break: break-word;             /* rompe strings largos */
+  overflow-x: auto;                  /* scroll si hace falta */
+}
+
+/* 🔥 SI USÁS console-box */
+.console-box {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 🔥 POR SI HAY <pre><code> */
+pre code {
+  white-space: inherit;
+}
+
+/* 🔥 TEXTOS LARGOS (URLs, paths, etc) */
+p, li, span {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* 🔥 EVITA DESBORDE GENERAL */
+body, html {
+  overflow-x: hidden;
+}
+
+/* 🔥 IMÁGENES Y ELEMENTOS FLEX */
+img, iframe, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 🔥 FLEX FIX */
+.flex, .row, .container {
+  flex-wrap: wrap;
+}
+
+/* 🔥 TOOLTIP FIX */
+.tech-card span {
+  white-space: normal !important;
+  max-width: 200px;
+}
+
+/* 🔥 EXTRA DEFENSIVO */
+section, div {
+  max-width: 100%;
+}
+
+.ecosistema {
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #637fa8, #737a89);
+  text-align: center;
+}
+
+.ecosistema-title {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.ecosistema-sub {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 40px;
+}
+
+.ecosistema-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.eco-card {
+  background: #11161c;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #b6763a;
+  text-align: left;
+}
+
+.eco-card h3 {
+  margin-bottom: 10px;
+  color: #e5e7eb;
+}
+
+.eco-card p {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  font-family: monospace;
+}
+
+.flow-step {
+  background-color: var(--flow-bg);
+  color: var(--flow-text);
+  padding: 15px 25px;
+  border-radius: 8px;
+  text-align: center;
+  width: 280px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin: 10px 0;
+}
+
+.arrow {
+  font-size: 24px;
+  margin: 0;
+}
+
+.cmd-snippet {
+  background-color: var(--card-bg); /* ya tienes esta variable para modo oscuro */
+  color: var(--text-color);
+  padding: 15px;
+  border-radius: 6px;
+  font-family: monospace;
+  overflow-x: auto;
+}
+
+
+/*Estilos de mapa visual*/
+
+.mapa-visual {
+  background-color: var(--mapa-bg);
+  color: var(--mapa-text);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--section-border);
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: background-color 0.3s, color 0.3s;
+ 
+
+   }
+
+  /* Centrado solo en versión PC */
+
+.mapa-centrar {
+  display: block;          /* asegura que se comporte como bloque */
+  margin: 0 auto;          /* esto lo centra horizontalmente */
+  max-width: 1200px;       /* opcional: el mismo ancho que tus tarjetas */
+  width: 100%;             /* ocupa todo el ancho disponible */
+  text-align: center;      /* centra contenido interno, si hay texto o elementos inline */
+  padding: 10px;  
+           /* opcional, para separar del borde */
+}
+/* Modo oscuro */
+/*body.dark-mode .mapa-visual {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+}*/
+
+/*Frase Artísitica Final -Estilos*/
+.ecosistema-footer {
+  text-align: center;
+  margin: 40px 0 60px 0;
+  font-size: 1.5rem; /* letra más grande */
+  font-style: italic; /* cursiva */
+  color: #ff3b3b; /* rojo */
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 1px;
+  min-height: 50px; /* espacio para que no se mueva el layout */
+}
+   </style>
+</head>
+<body>
+
+<!--<h1 id="main-title">Documentación Fábrica Digital</h1>-->
+
+<button id="menu-toggle">☰</button>
+<button id="dark-mode-toggle">🌙</button>
+<div id="chatbot">🤖</div>
+
+<nav id="sidebar">
+  <h2>Menú</h2>
+</nav>
+
+
+
+
+<div id="content">
+<!--
+<section id="ecosistema" class="ecosistema">
+
+  <h2>🧠 Ecosistema de Desarrollo</h2>
+
+  <p>
+    Este sistema se compone de tres pilares fundamentales que trabajan en conjunto
+    para transformar ideas en productos digitales funcionales.
+  </p>
+
+  <h3>🟣 Mad Developer</h3>
+  <p>
+    Es la identidad creadora detrás del sistema. Representa la visión, el diseño y la lógica
+    aplicada en cada solución desarrollada.
+  </p>
+
+  <h3>🔵 Upcraft</h3>
+  <p>
+    Es la plataforma que procesa, automatiza y ejecuta la construcción de sistemas.
+    Actúa como el núcleo operativo donde todo se integra y se lleva a producción.
+  </p>
+
+  <h3>🧩 La Fábrica</h3>
+  <p>
+    Es el método mediante el cual las ideas se convierten en productos reales.
+    Funciona dentro de Upcraft y define el flujo de creación, estructuración y despliegue.
+  </p>
+
+  <p>
+    En conjunto, este ecosistema permite desarrollar soluciones de forma escalable,
+    ordenada y profesional.
+  </p>
+</section>
+-->
+
+
+
+
+
+  <section id="introduccion">
+    <h2>💡 Introducción</h2>
+    <p>Esta documentación explica la creación y funcionamiento de la Fábrica Digital de Tiendas Virtuales. Permite instalar tiendas virtuales completas usando un único comando por consola, con CMS y automatización integrada.</p>
+  </section>
+
+  <section id="arquitectura">
+    <h2>🏗️ Arquitectura</h2>
+    <p>El kernel del sistema funciona como motor principal. Integra frontend, backend, base de datos y CMS propio, permitiendo una instalación automatizada y completa de la tienda virtual.</p>
+  </section>
+
+<!-- Sección: Inteligencia Artificial -->
+<section id="ia" style="margin: 20px 0; font-family: Arial, sans-serif; line-height: 1.6;">
+  <h2 style="display: flex; align-items: center; gap: 10px;">
+    🤖 Inteligencia Artificial
+  </h2>
+
+  <!-- 1. Qué es la IA -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>1️⃣ Qué es la Inteligencia Artificial (IA)</h3>
+    <p>
+      La Inteligencia Artificial (IA) es un sistema que imita procesos de inteligencia humana para tomar decisiones y automatizar tareas. 
+      En nuestra fábrica de tiendas e-commerce, la IA analiza datos de la tienda y optimiza la configuración, las sugerencias y los procesos automáticamente.
+    </p>
+  </div>
+
+  <!-- 2. Cómo funciona la IA en la tienda -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>2️⃣ Cómo funciona la IA en la tienda e-commerce</h3>
+    <ul>
+      <li><strong>Alta automática de productos:</strong> sugiere categorías, precios y etiquetas optimizadas.</li>
+      <li><strong>Optimización de inventario:</strong> predice qué productos venderán más y cuándo reponer stock.</li>
+      <li><strong>Recomendaciones personalizadas:</strong> analiza el comportamiento del usuario y genera sugerencias automáticas.</li>
+      <li><strong>Automatización de marketing:</strong> campañas de emails o notificaciones automáticas según patrones de compra.</li>
+      <li><strong>Análisis de rendimiento:</strong> reportes sobre ventas, productos más populares y comportamiento del usuario.</li>
+    </ul>
+  </div>
+
+  <!-- 3. Integración práctica -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>3️⃣ Integración práctica en la fábrica</h3>
+    <p>
+      Cada tienda creada desde la fábrica tiene habilitada la IA por defecto. Funciona en segundo plano mediante el <strong>módulo de predicción</strong>, que interactúa con la base de datos y la API.
+      Los desarrolladores pueden activar o desactivar la IA por tienda, o personalizar su comportamiento mediante la configuración avanzada.
+    </p>
+  </div>
+
+  <!-- 4. Ventajas -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>4️⃣ Ventajas</h3>
+    <ul>
+      <li>Ahorro de tiempo: la tienda se configura automáticamente de manera inteligente.</li>
+      <li>Mejora en ventas: recomendaciones y optimización de stock.</li>
+      <li>Personalización: cada usuario recibe una experiencia adaptada.</li>
+      <li>Escalabilidad: se puede replicar en múltiples tiendas sin intervención manual.</li>
+    </ul>
+  </div>
+
+  <!-- 5. Desventajas -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>5️⃣ Desventajas / Consideraciones</h3>
+    <ul>
+      <li>Requiere datos correctos: productos o usuarios incompletos generan predicciones incorrectas.</li>
+      <li>No reemplaza al humano: la IA es asistente, no sustituto total.</li>
+      <li>Consumo extra de recursos: habilitar en exceso múltiples tiendas simultáneamente puede ralentizar el sistema.</li>
+    </ul>
+  </div>
+
+  <!-- 6. Errores comunes -->
+  <div style="margin-left: 20px; margin-top: 10px;">
+    <h3>6️⃣ Errores comunes</h3>
+    <ul>
+      <li>Desactivar la IA sin revisar la configuración avanzada → pérdida de predicciones.</li>
+      <li>Subir productos sin datos completos → sugerencias incorrectas.</li>
+      <li>Ignorar actualizaciones del módulo de predicción → resultados menos precisos.</li>
+    </ul>
+  </div>
+
+  <div style="margin-left: 20px; margin-top:10px">
+    <h3>7️⃣ Buenas prácticas</h3>
+    <ul>
+      <li>Revisar y completar los datos de productos y usuarios para mejorar las predicciones.</li>
+      <li>Monitorear el rendimiento de la IA y ajustar la configuración según sea necesario.</li>
+      <li>Combinar la IA con la supervisión humana para obtener los mejores resultados.</li>
+    </ul>
+  </div>
+</section>
+
+  <section id="comando">
+    <h2>💻 Comando por Consola</h2>
+    <p>Un solo comando permite instalar toda la estructura, configurar backend, frontend y CMS automáticamente, dejando la tienda lista para ser personalizada según el rubro.</p>
+  </section>
+
+  <section id="api">
+    <h2>🔌 API</h2>
+    <p>La herramienta se puede exponer como <a href="" target="_blank" rel="noopener noreferrer">API</a>. La versión freemium tiene limitaciones, mientras que la versión premium completa la instalación y permite integración con otros sistemas.</p>
+  </section>
+
+  <section id="modulos">
+    <h2>🧩 Módulos</h2>
+    <p>Contiene módulos de gestión:</p>
+    <ul>
+      <li>Productos y stock</li>
+      <li>Clientes y pedidos</li>
+      <li>Pagos y facturación</li>
+      <li>Roles y permisos</li>
+      <li>Administración general del CMS</li>
+    </ul>
+  </section>
+
+  
+
+<!-- Sección Roles y Permisos -->
+<section id="roles-permisos" style="margin: 2rem 0;">
+  <h2 style="display: flex; align-items: center; gap: 0.5rem;">
+    🛡 ⚙️ Roles y Permisos
+  </h2>
+
+  <p>En la fábrica, los roles definen los niveles de acceso y operaciones permitidas:</p>
+
+  <ul>
+    <li><strong>Owner:</strong> Acceso total. Puede generar API Key, crear tiendas y administrar roles.</li>
+    <li><strong>Superadmin:</strong> Gestiona tiendas, usuarios y contenidos, pero no puede generar la API Key del Owner.</li>
+    <li><strong>Admin:</strong> Acceso limitado a gestión de contenido y operaciones dentro de tiendas asignadas.</li>
+    <li><strong>Cliente:</strong> Usuarios que consumen la tienda.</li>
+  </ul>
+
+  <h3>Ejemplo de verificación de rol antes de ejecutar una acción:</h3>
+
+  <div class="cmd-snippet" style="
+      background: #1e1e1e;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      white-space: pre;
+      font-family: monospace;
+      max-width: 100%;
+  ">
+// Verificación de rol antes de ejecutar acción
+if (usuario.rol === 'Owner') {
+    ejecutarAccion();
+} else if (usuario.rol === 'Superadmin') {
+    ejecutarAccionLimitada();
+} else {
+    denegarAccion();
+}
+  </div>
+</section>
+  <!--<section id="tecnologias">
+    <h2>🖥️ Tecnologías</h2>
+    <div class="tech-grid">
+      <div class="tech-card">⚡ Node.js<span>Servidor backend para lógica y API</span></div>
+      <div class="tech-card">🔗 Express.js<span>Framework para rutas y servidor web</span></div>
+      <div class="tech-card">💬 Socket.io<span>Comunicación en tiempo real</span></div>
+      <div class="tech-card">🗄️ SQLite (local)<span>Base de datos para pruebas locales</span></div>
+      <div class="tech-card">🗄️ PostgreSQL (producción)<span>Base de datos en producción</span></div>
+      <div class="tech-card">⚛️ React<span>Frontend interactivo</span></div>
+      <div class="tech-card">⏭️ Next.js<span>Framework para React con SSR y rutas</span></div>
+      <div class="tech-card">🎨 Tailwind CSS<span>Estilos y diseño rápido</span></div>
+      <div class="tech-card">🛠️ CMS propio con roles y stock<span>Gestión de productos y permisos</span></div>
+      <div class="tech-card">📦 ShaveZone (automatización de productos)<span>Carga masiva de productos y fotos</span></div>
+    </div>
+  </section>-->
+    <section id="tecnologias">
+    <h2>🖥️ Tecnologías</h2>
+    <div class="tech-grid">
+      <div class="tech-card">⚡ Node.js<span>Servidor backend para lógica y API</span></div>
+      <div class="tech-card">🔗 Express.js<span>Framework para rutas y servidor web</span></div>
+      <div class="tech-card">💬 Socket.io<span>Comunicación en tiempo real</span></div>
+      <div class="tech-card">🗄️ SQLite (local)<span>Base de datos para pruebas locales</span></div>
+      <div class="tech-card">🗄️ PostgreSQL (producción)<span>Base de datos en producción</span></div>
+      <div class="tech-card">⚛️ React<span>Frontend interactivo</span></div>
+      <div class="tech-card">⏭️ Next.js<span>Framework para React con SSR y rutas</span></div>
+      <div class="tech-card">🎨 Tailwind CSS<span>Estilos y diseño rápido</span></div>
+      <div class="tech-card">🛠️ CMS propio con roles y stock<span>Gestión de productos y permisos</span></div>
+      <div class="tech-card">📦 ShaveZone (automatización de productos)<span>Carga masiva de productos y fotos</span></div>
+    </div>
+  </section>
+
+  
+
+  <section id="versiones">
+    <h2>🗂️ Versiones</h2>
+    <p>Se soportan múltiples versiones y actualizaciones automáticas, manteniendo compatibilidad entre ellas.</p>
+  </section>
+
+<section id="seguridad">
+  <h2>Seguridad</h2>
+  <p>La Fábrica de Tiendas prioriza la seguridad de datos, accesos y transacciones.</p>
+  <ul>
+    <li><strong>API Key privada:</strong> Cada owner genera su API Key única. Nunca compartirla.</li>
+    <li><strong>Validación por IP:</strong> Solo solicitudes desde servidores autorizados son aceptadas.</li>
+    <li><strong>Control de errores:</strong> Validación de roles y permisos antes de realizar acciones críticas.</li>
+    <li><strong>Cifrado de datos:</strong> Toda la información sensible se almacena y transmite cifrada.</li>
+  </ul>
+  <p>Errores comunes a evitar:</p>
+  <ul>
+    <li>Exponer la API Key públicamente.</li>
+    <li>No limitar solicitudes a IPs confiables.</li>
+    <li>No validar roles antes de modificar datos críticos.</li>
+  </ul>
+</section>
+
+<section id="herramienta-fabrica">
+  <h2>🏭 Fábrica de Tiendas y Herramienta de Automatización</h2>
+  <p>Esta sección describe la creación de la herramienta que automatiza la generación de tiendas virtuales, permitiendo clonar de forma rápida y consistente cualquier proyecto.</p>
+  
+  <h3>Concepto</h3>
+  <p>La fábrica de tiendas es una herramienta que, a partir de un único comando en consola, genera la estructura completa de una tienda virtual. Esto incluye:</p>
+  <ul>
+    <li>Instalación del <strong>stack completo</strong> (backend, base de datos, front-end, CMS).</li>
+    <li>Generación de roles y permisos predefinidos.</li>
+    <li>Integración de la API para automatización y administración.</li>
+    <li>Front-end base listo para personalizar y agregar productos, categorías y filtros.</li>
+  </ul>
+
+  <h3>Flujo recomendado de creación</h3>
+  <p>Para crear la fábrica de tiendas de manera eficiente, se recomienda seguir este flujo:</p>
+  <ol>
+    <li><strong>Instalar todo el stack:</strong> configurar servidor, base de datos, PHP/Node.js (según tu elección), front-end base y CMS.</li>
+    <li><strong>Crear la tienda base:</strong> generar la estructura inicial de la tienda dentro del stack, con CMS y roles predefinidos.</li>
+    <li><strong>Verificar que todo funcione:</strong> probar front-end, back-end, permisos de usuario, API y CMS.</li>
+    <li><strong>Crear el comando de la fábrica:</strong> escribir un script que, al ejecutarse, genere automáticamente una nueva tienda con todas las configuraciones predeterminadas.</li>
+    <li><strong>Pruebas del comando:</strong> ejecutar la herramienta para asegurarse de que la tienda se crea correctamente, incluyendo CMS, roles, API y front-end base.</li>
+  </ol>
+
+  <h3>Soporte para múltiples tecnologías</h3>
+  <p>Si en el futuro quieres crear tiendas con otra tecnología (por ejemplo, distinto framework de front-end, base de datos, o CMS), simplemente se debe generar otro comando específico para esa tecnología. Esto permite mantener la fábrica flexible y adaptable.</p>
+
+  <h3>Recomendaciones importantes</h3>
+  <ul>
+    <li>Siempre crear primero la tienda base y probarla antes de crear el comando.</li>
+    <li>Mantener un estándar de roles, API y estructura de carpetas para que el comando funcione de manera confiable.</li>
+    <li>Documentar cada comando creado para futuras referencias y posibles expansiones.</li>
+    <li>Si agregas funciones adicionales (carrito, filtros, animaciones, paginación), incluirlas en la tienda base antes de automatizar el comando.</li>
+  </ul>
+
+  <h3>Ejemplo de comando</h3>
+  <div class="cmd-snippet">
+# Crear nueva tienda con la fábrica
+fabrica_crear_tienda --nombre "TiendaDemo" --usuario "owner" --template "moderno"
+
+# Crear nueva tienda con otro stack/tecnología
+fabrica_crear_tienda_v2 --nombre "TiendaReact" --usuario "owner" --template "react"
+  </div>
+
+  <p>De esta manera, cada vez que necesites generar una tienda, solo ejecutarás el comando correspondiente y la herramienta creará toda la estructura automáticamente.</p>
+</section>
+
+<section id="fabrica-visual">
+  <h2>🏭 Fábrica de Tiendas – Flujo Visual</h2>
+  <p>Este diagrama muestra cómo se crea una tienda virtual usando la herramienta de la fábrica, desde la instalación del stack hasta la ejecución del comando.</p>
+
+  <div class="flowchart">
+    <div class="flow-step">1. Instalar Stack<br><small>Servidor, DB, Backend, Front, CMS</small></div>
+    <div class="arrow">⬇️</div>
+    <div class="flow-step">2. Crear tienda base<br><small>Estructura inicial + CMS + roles</small></div>
+    <div class="arrow">⬇️</div>
+    <div class="flow-step">3. Verificar funcionamiento<br><small>Prueba front, back, roles, API</small></div>
+    <div class="arrow">⬇️</div>
+    <div class="flow-step">4. Crear comando fábrica<br><small>Script que genera tiendas automáticamente</small></div>
+    <div class="arrow">⬇️</div>
+    <div class="flow-step">5. Ejecutar comando<br><small>Genera nueva tienda lista para usar</small></div>
+  </div>
+
+  <h3>Soporte para múltiples tecnologías</h3>
+  <p>Para diferentes stacks o frameworks, crea un comando específico por tecnología. Esto mantiene la fábrica flexible y adaptable.</p>
+
+  <h3>Recomendaciones</h3>
+  <ul>
+    <li>Siempre probar la tienda base antes de crear el comando.</li>
+    <li>Mantener estándar de roles, API y estructura de carpetas.</li>
+    <li>Documentar cada comando para futuras referencias.</li>
+    <li>Incluir funciones adicionales (carrito, filtros, animaciones) en la tienda base antes de automatizar.</li>
+  </ul>
+
+  <h3>Ejemplo de comando</h3>
+  <div class="cmd-snippet">
+# Genera tienda con la fábrica
+fabrica_crear_tienda --nombre "TiendaDemo" --usuario "owner" --template "moderno"
+
+# Genera tienda con otro stack/tecnología
+fabrica_crear_tienda_v2 --nombre "TiendaReact" --usuario "owner" --template "react"
+  </div>
+
+  
+ 
+</section>
+
+<section id="flujo-creacion-tiendas">
+  <h2>⚙️ Flujo de creación de tiendas automatizadas</h2>
+
+  <div class="console-box">
+    <pre>
+[BOOT] Inicializando sistema de fábrica de tiendas...
+[OK] Cargando configuración base
+[OK] Validando entorno
+[OK] Sistema listo para generar instancias
+    </pre>
+  </div>
+
+  <p>Este módulo define el flujo completo para la creación automática de tiendas virtuales a partir de una plantilla base, utilizando un comando único que ejecuta todo el proceso.</p>
+
+  <h3>① Preparar el stack base</h3>
+  <div class="console-box">
+    <pre>
+> Verificando entorno...
+✔ Servidor (Apache/Nginx / Node)
+✔ Base de datos (MySQL/MariaDB)
+✔ Backend listo
+✔ Frontend listo
+✔ Dependencias instaladas (npm / composer)
+✔ CMS operativo
+    </pre>
+  </div>
+
+  <h3>② Crear tienda modelo</h3>
+  <div class="console-box">
+    <pre>
+> Generando estructura base...
+/public
+/src
+/assets
+/config
+/routes
+
+✔ CMS configurado
+✔ Base de datos conectada
+✔ API funcional
+✔ Carrito operativo
+    </pre>
+  </div>
+
+  <h3>③ Diseñar comando automatizador</h3>
+  <div class="console-box">
+    <pre>
+> Ejecutando comando:
+
+mattdev create-store mi_tienda
+
+[OK] Creando estructura
+[OK] Copiando archivos base
+[OK] Generando .env
+[OK] Instalando dependencias
+[OK] Inicializando proyecto
+    </pre>
+  </div>
+
+  <h3>④ Compatibilidad con múltiples stacks</h3>
+  <div class="console-box">
+    <pre>
+> Seleccionando stack...
+
+--stack=node
+--stack=php
+
+[OK] Plantilla cargada
+[OK] Dependencias verificadas
+[OK] Configuración aplicada
+    </pre>
+  </div>
+
+  <h3>⑤ Seguridad y validaciones</h3>
+  <div class="console-box">
+    <pre>
+> Ejecutando validaciones...
+
+✔ Nombre de proyecto disponible
+✔ Base de datos accesible
+✔ Dependencias correctas
+✔ Permisos verificados
+
+[LOG] Registro guardado en /logs/install.log
+    </pre>
+  </div>
+
+  <h3>⑥ Flujo completo</h3>
+  <div class="console-box">
+    <pre>
+[1] Setup del entorno
+[2] Creación tienda modelo
+[3] Testeo completo
+[4] Creación del comando
+[5] Generación automática
+[6] Deploy listo
+
+[SUCCESS] Nueva tienda creada correctamente
+    </pre>
+  </div>
+
+  <p>💡 <strong>Concepto clave:</strong> Cada ejecución del comando genera una nueva instancia completamente funcional de la tienda, lista para personalización sin repetir configuraciones manuales.</p>
+</section>
+
+<section id="cli-fabrica-tiendas">
+  <h2>🧠 CLI – Motor de generación de tiendas</h2>
+
+  <div class="console-box">
+    <pre>
+[INIT] Cargando CLI MattDeveloper...
+[OK] Núcleo operativo listo
+[OK] Comandos disponibles cargados
+    </pre>
+  </div>
+
+  <p>El CLI (Command Line Interface) es el núcleo ejecutor de la fábrica de tiendas. Permite generar nuevas tiendas mediante comandos simples, automatizando toda la instalación del sistema.</p>
+
+  <h3>📌 Concepto</h3>
+  <p>El CLI actúa como un <strong>intérprete de órdenes</strong> que traduce comandos en acciones reales sobre el sistema: creación de carpetas, instalación de dependencias, configuración del entorno y despliegue inicial.</p>
+
+  <div class="console-box">
+    <pre>
+Usuario → Comando → CLI → Motor → Tienda creada
+    </pre>
+  </div>
+
+  <h3>⚙️ Comando principal</h3>
+
+  <div class="console-box">
+    <pre>
+mattdev create-store nombre_tienda
+    </pre>
+  </div>
+
+  <p>Este comando ejecuta todo el flujo de creación de una tienda nueva basada en la plantilla configurada.</p>
+
+  <h3>🧩 Parámetros disponibles</h3>
+
+  <div class="console-box">
+    <pre>
+--stack=php        → Usa entorno PHP + MySQL
+--stack=node       → Usa entorno Node.js
+
+--cms=default      → CMS base del sistema
+--cms=custom       → CMS personalizado
+
+--template=basic   → Tienda simple
+--template=pro     → Tienda avanzada
+
+--install-deps     → Instala dependencias automáticamente
+--no-install       → Omite instalación
+
+--force            → Sobrescribe si ya existe
+    </pre>
+  </div>
+
+  <h3>🚀 Ejemplos de uso</h3>
+
+  <div class="console-box">
+    <pre>
+mattdev create-store tienda1
+
+mattdev create-store tienda2 --stack=node --template=pro
+
+mattdev create-store tienda3 --stack=php --no-install
+    </pre>
+  </div>
+
+  <h3>🔄 Flujo interno del comando</h3>
+
+  <div class="console-box">
+    <pre>
+[1] Validar parámetros
+[2] Verificar entorno
+[3] Crear estructura de carpetas
+[4] Copiar archivos base
+[5] Generar configuración (.env)
+[6] Crear base de datos
+[7] Instalar dependencias
+[8] Inicializar servidor
+
+[SUCCESS] Tienda creada correctamente
+    </pre>
+  </div>
+
+  <h3>🛡️ Manejo de errores</h3>
+
+  <div class="console-box">
+    <pre>
+[ERROR] Carpeta ya existe
+[ERROR] Base de datos inaccesible
+[ERROR] Dependencias faltantes
+
+[LOG] Ver detalles en /logs/error.log
+    </pre>
+  </div>
+
+  <h3>📁 Estructura del CLI</h3>
+
+  <div class="console-box">
+    <pre>
+/cli
+ ├── index.js / index.php
+ ├── commands/
+ │    ├── createStore.js
+ │    ├── installDeps.js
+ │    └── validateEnv.js
+ ├── templates/
+ ├── config/
+ └── utils/
+    </pre>
+  </div>
+
+  <h3>💡 Filosofía del sistema</h3>
+  <p>El CLI no es solo una herramienta, es el <strong>motor central de la fábrica</strong>. Toda tienda debe poder generarse únicamente a través de comandos, sin intervención manual.</p>
+
+  <div class="console-box">
+    <pre>
+"Si no se puede crear con un comando,
+no forma parte del sistema."
+    </pre>
+  </div>
+
+</section>
+
+<section id="cli-codigo-implementacion">
+  <h2>💻 Implementación real del CLI (Node.js)</h2>
+
+  <p>En esta sección se define la implementación funcional del CLI de la fábrica de tiendas. Este comando permite generar nuevas tiendas automáticamente desde la consola.</p>
+
+  <h3>📦 Inicialización del proyecto</h3>
+
+  <div class="console-box">
+    <pre>
+mkdir mattdev-cli
+cd mattdev-cli
+npm init -y
+npm install fs-extra inquirer chalk
+    </pre>
+  </div>
+
+  <h3>📁 Estructura del CLI</h3>
+
+  <div class="console-box">
+    <pre>
+/mattdev-cli
+ ├── index.js
+ ├── commands/
+ │    └── createStore.js
+ ├── templates/
+ │    └── base/
+ └── utils/
+    </pre>
+  </div>
+
+  <h3>🧠 Archivo principal (index.js)</h3>
+
+  <pre><code>
+#!/usr/bin/env node
+
+const args = process.argv.slice(2);
+const command = args[0];
+
+switch(command) {
+  case 'create-store':
+    require('./commands/createStore')(args);
+    break;
+
+  default:
+    console.log('Comando no reconocido');
+}
+  </code></pre>
+
+  <h3>⚙️ Comando create-store</h3>
+
+  <pre><code>
+const fs = require('fs-extra');
+const path = require('path');
+
+module.exports = async function(args) {
+
+  const storeName = args[1];
+
+  if (!storeName) {
+    console.log('⚠️ Debes especificar un nombre para la tienda');
+    return;
+  }
+
+  const targetPath = path.join(process.cwd(), storeName);
+
+  if (fs.existsSync(targetPath)) {
+    console.log('❌ La carpeta ya existe');
+    return;
+  }
+
+  try {
+    console.log('🚀 Creando tienda...');
+
+    await fs.copy(
+      path.join(__dirname, '../templates/base'),
+      targetPath
+    );
+
+    console.log('✅ Estructura creada');
+
+    // Crear archivo .env básico
+    const envContent = `
+PORT=3000
+DB_NAME=${storeName}
+DB_USER=root
+DB_PASS=
+    `;
+
+    fs.writeFileSync(path.join(targetPath, '.env'), envContent);
+
+    console.log('✅ Configuración generada');
+
+    console.log('🎉 Tienda creada con éxito');
+
+  } catch (error) {
+    console.log('❌ Error al crear la tienda');
+    console.error(error);
+  }
+
+};
+  </code></pre>
+
+  <h3>📄 package.json (ejecutable CLI)</h3>
+
+  <pre><code>
+{
+  "name": "mattdev-cli",
+  "version": "1.0.0",
+  "bin": {
+    "mattdev": "./index.js"
+  }
+}
+  </code></pre>
+
+  <h3>🔗 Activar el comando global</h3>
+
+  <div class="console-box">
+    <pre>
+npm link
+    </pre>
+  </div>
+
+  <h3>🚀 Uso del CLI</h3>
+
+  <div class="console-box">
+    <pre>
+mattdev create-store mi_tienda
+    </pre>
+  </div>
+
+  <h3>🧪 Resultado</h3>
+
+  <div class="console-box">
+    <pre>
+[OK] Carpeta creada
+[OK] Archivos copiados
+[OK] .env generado
+
+[SUCCESS] Tienda lista para trabajar
+    </pre>
+  </div>
+
+  <h3>💡 Nota técnica</h3>
+  <p>Este es el núcleo inicial del CLI. A partir de aquí se pueden agregar módulos para instalación de dependencias, conexión automática a base de datos, selección de stack y generación dinámica de frontend.</p>
+
+</section>
+
+<section id="cli-profesional">
+  <h2>🚀 CLI Profesional – Versión Avanzada (Interactive + UX)</h2>
+
+  <p>Esta versión del CLI evoluciona el sistema básico a una herramienta profesional con interacción en tiempo real, validaciones dinámicas y experiencia de usuario optimizada.</p>
+
+  <h3>📦 Instalación de dependencias</h3>
+
+  <div class="console-box">
+    <pre>
+npm install inquirer chalk ora fs-extra
+    </pre>
+  </div>
+
+  <h3>🧠 Comando interactivo (createStore.js)</h3>
+
+  <pre><code>
+const fs = require('fs-extra');
+const path = require('path');
+const inquirer = require('inquirer');
+const chalk = require('chalk');
+const ora = require('ora');
+
+module.exports = async function() {
+
+  console.log(chalk.cyan('\n🧠 MattDev CLI - Generador de Tiendas\n'));
+
+  const answers = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'storeName',
+      message: 'Nombre de la tienda:',
+      validate: input => input ? true : 'Debes ingresar un nombre'
+    },
+    {
+      type: 'list',
+      name: 'stack',
+      message: 'Selecciona el stack:',
+      choices: ['node', 'php']
+    },
+    {
+      type: 'list',
+      name: 'template',
+      message: 'Selecciona template:',
+      choices: ['basic', 'pro']
+    },
+    {
+      type: 'confirm',
+      name: 'installDeps',
+      message: '¿Instalar dependencias automáticamente?',
+      default: true
+    }
+  ]);
+
+  const targetPath = path.join(process.cwd(), answers.storeName);
+
+  if (fs.existsSync(targetPath)) {
+    console.log(chalk.red('❌ La carpeta ya existe'));
+    return;
+  }
+
+  const spinner = ora('Creando tienda...').start();
+
+  try {
+    await fs.copy(
+      path.join(__dirname, ../templates/${answers.template}),
+      targetPath
+    );
+
+    spinner.text = 'Generando configuración...';
+
+    const envContent = `
+PORT=3000
+STACK=${answers.stack}
+DB_NAME=${answers.storeName}
+DB_USER=root
+DB_PASS=
+    `;
+
+    fs.writeFileSync(path.join(targetPath, '.env'), envContent);
+
+    spinner.succeed('✅ Tienda creada correctamente');
+
+    if (answers.installDeps) {
+      console.log(chalk.yellow('\n📦 Instalando dependencias...'));
+
+      const { execSync } = require('child_process');
+      execSync('npm install', { cwd: targetPath, stdio: 'inherit' });
+
+      console.log(chalk.green('✅ Dependencias instaladas'));
+    }
+
+    console.log(chalk.green('\n🎉 Proyecto listo para usar\n'));
+
+  } catch (error) {
+    spinner.fail('❌ Error al crear la tienda');
+    console.error(error);
+  }
+
+};
+  </code></pre>
+
+  <h3>🎯 Ejecución</h3>
+
+  <div class="console-box">
+    <pre>
+mattdev create-store
+    </pre>
+  </div>
+
+  <h3>🖥️ Experiencia en consola</h3>
+
+  <div class="console-box">
+    <pre>
+🧠 MattDev CLI - Generador de Tiendas
+
+? Nombre de la tienda: mi_tienda
+? Selecciona el stack: node
+? Selecciona template: pro
+? ¿Instalar dependencias? Yes
+
+⏳ Creando tienda...
+✔ Tienda creada correctamente
+
+📦 Instalando dependencias...
+✔ Dependencias instaladas
+
+🎉 Proyecto listo para usar
+    </pre>
+  </div>
+
+  <h3>💡 Mejores prácticas implementadas</h3>
+
+  <ul>
+    <li>UX clara y guiada (wizard paso a paso)</li>
+    <li>Feedback visual con spinners</li>
+    <li>Validación de entradas</li>
+    <li>Logs claros y profesionales</li>
+    <li>Estructura escalable para nuevos comandos</li>
+  </ul>
+
+  <h3>🧠 Filosofía avanzada</h3>
+
+  <div class="console-box">
+    <pre>
+"El usuario no debe pensar cómo crear una tienda.
+El sistema debe guiarlo paso a paso."
+    </pre>
+  </div>
+
+</section>
+
+<section id="cli-sistema-plugins">
+  <h2>🧩 Sistema de Plugins – Extensión del CLI</h2>
+
+  <p>El sistema de plugins permite extender las funcionalidades del CLI sin modificar su núcleo. Cada plugin agrega nuevas capacidades a la fábrica de tiendas.</p>
+
+  <div class="console-box">
+    <pre>
+[CORE] MattDev CLI
+   ├── create-store
+   ├── install
+   └── plugins
+        ├── payments
+        ├── auth
+        └── seo
+    </pre>
+  </div>
+
+  <h3>📌 Concepto</h3>
+  <p>Cada plugin es un módulo independiente que puede ejecutarse automáticamente durante la creación de una tienda o manualmente.</p>
+
+  <div class="console-box">
+    <pre>
+CLI → Detecta plugins → Ejecuta módulos → Extiende la tienda
+    </pre>
+  </div>
+
+  <h3>📁 Estructura de plugins</h3>
+
+  <div class="console-box">
+    <pre>
+/plugins
+ ├── payments/
+ │    └── index.js
+ ├── auth/
+ │    └── index.js
+ └── seo/
+      └── index.js
+    </pre>
+  </div>
+
+  <h3>⚙️ Ejemplo de plugin (payments)</h3>
+
+  <pre><code>
+module.exports = async function(context) {
+
+  const { targetPath } = context;
+
+  console.log('💳 Instalando sistema de pagos...');
+
+  const fs = require('fs-extra');
+  const path = require('path');
+
+  const paymentsPath = path.join(targetPath, 'payments');
+
+  await fs.ensureDir(paymentsPath);
+
+  fs.writeFileSync(
+    path.join(paymentsPath, 'payment.js'),
+    '// lógica de pagos'
+  );
+
+  console.log('✅ Plugin de pagos instalado');
+
+};
+  </code></pre>
+
+  <h3>🧠 Integración en el CLI</h3>
+
+  <pre><code>
+// Dentro de createStore.js
+
+const plugins = ['payments', 'seo'];
+
+for (const plugin of plugins) {
+  const pluginPath = require(../plugins/${plugin});
+  
+  await pluginPath({
+    targetPath
+  });
+}
+  </code></pre>
+
+  <h3>🚀 Ejecución automática</h3>
+
+  <div class="console-box">
+    <pre>
+mattdev create-store tienda_pro --plugins=payments,seo
+    </pre>
+  </div>
+
+  <h3>🧪 Resultado</h3>
+
+  <div class="console-box">
+    <pre>
+[OK] Tienda creada
+[PLUGIN] payments instalado
+[PLUGIN] seo instalado
+
+[SUCCESS] Sistema extendido correctamente
+    </pre>
+  </div>
+
+  <h3>💡 Filosofía</h3>
+
+  <div class="console-box">
+    <pre>
+"El core crea la tienda.
+Los plugins la convierten en un producto."
+    </pre>
+  </div>
+
+</section>
+
+
+<section id="ejemplos-plugins-futuros">
+  <h2>🧩 Plugins futuros (roadmap de expansión)</h2>
+
+  <p>Esta sección documenta posibles plugins a implementar una vez que el sistema base (tienda + CMS + CLI) esté completamente funcional y estable.</p>
+
+  <div class="console-box">
+    <pre>
+[INFO] Estos módulos NO forman parte del core actual
+[INFO] Implementar solo cuando el sistema esté validado
+    </pre>
+  </div>
+
+  <h3>📦 Plugins planificados</h3>
+
+  <ul>
+    <li><strong>payments</strong> → Integración con pasarelas de pago (MercadoPago, Stripe)</li>
+    <li><strong>auth</strong> → Sistema de autenticación (login, registro, roles)</li>
+    <li><strong>seo</strong> → Optimización SEO (metadatos, sitemap, URLs amigables)</li>
+    <li><strong>analytics</strong> → Integración con herramientas de análisis (Google Analytics, tracking propio)</li>
+    <li><strong>invoices</strong> → Sistema de facturación y comprobantes</li>
+    <li><strong>shipping</strong> → Gestión de envíos y logística</li>
+    <li><strong>themes</strong> → Sistema de templates visuales intercambiables</li>
+    <li><strong>notifications</strong> → Emails automáticos y notificaciones</li>
+  </ul>
+
+  <h3>🧠 Criterio de implementación</h3>
+
+  <div class="console-box">
+    <pre>
+[1] Sistema base funcionando
+[2] CLI estable
+[3] Flujo validado sin errores
+[4] Recién ahí → comenzar plugins
+    </pre>
+  </div>
+
+  <h3>💡 Nota estratégica</h3>
+  <p>Los plugins deben desarrollarse como módulos independientes para no afectar el núcleo del sistema. Cada uno debe poder activarse o desactivarse sin romper la aplicación principal.</p>
+
+  <div class="console-box">
+    <pre>
+"Primero estabilidad.
+Después expansión."
+    </pre>
+  </div>
+
+<h3>🛑 Regla de oro</h3>
+
+<div class="console-box">
+  <pre>
+Ningún plugin debe romper:
+- Creación de tienda
+- CMS
+- CLI base
+
+Si lo hace → el problema es del plugin, no del core
+  </pre>
+</div>
+
+</section>
+
+
+<section id="modulo-wysiwyg">
+  <h2>🧩 Módulo Futuro: Generador de Documentos (WYSIWYG)</h2>
+
+  <p>
+    Se plantea la implementación de un módulo dentro de la plataforma (AppCraft) que permita la creación de documentos estructurados
+    mediante un editor visual tipo WYSIWYG (What You See Is What You Get).
+  </p>
+
+  <p>
+    El objetivo es permitir que el usuario genere contenido sin necesidad de conocimientos técnicos, escribiendo de forma similar a herramientas
+    como Word, pero obteniendo como resultado documentos con formato profesional listos para web o exportación.
+  </p>
+
+  <h3>🎯 Objetivos</h3>
+  <ul>
+    <li>Permitir la creación de documentos sin escribir código</li>
+    <li>Separar estructura (template) de contenido (input del usuario)</li>
+    <li>Generar documentos automáticamente a partir de plantillas predefinidas</li>
+    <li>Facilitar exportación y publicación</li>
+  </ul>
+
+  <h3>⚙️ Funcionalidades principales</h3>
+  <ul>
+    <li>Editor WYSIWYG embebido</li>
+    <li>Sistema de secciones dinámicas</li>
+    <li>Inserción de contenido estructurado (títulos, bloques, listas, código)</li>
+    <li>Render automático en formato visual tipo “manual profesional”</li>
+    <li>Vista previa en tiempo real</li>
+  </ul>
+
+  <h3>🧱 Sistema de Templates</h3>
+  <p>
+    El sistema permitirá definir estructuras reutilizables para distintos tipos de documentos:
+  </p>
+
+  <ul>
+    <li>📘 Manual técnico</li>
+    <li>📄 Currículum Vitae (CV)</li>
+    <li>📑 Propuesta comercial</li>
+    <li>🌐 Documento tipo landing informativa</li>
+  </ul>
+
+  <p>
+    Cada template contará con una estructura predefinida, estilos aplicados automáticamente y secciones editables por el usuario.
+  </p>
+
+  <h3>📤 Salidas del sistema</h3>
+  <ul>
+    <li>HTML renderizado (visualización web)</li>
+    <li>Exportación a PDF</li>
+    <li>Generación de link público (opcional)</li>
+  </ul>
+
+  <h3>💡 Casos de uso</h3>
+  <ul>
+    <li>Usuarios sin conocimientos técnicos creando CV profesionales</li>
+    <li>Freelancers generando propuestas comerciales</li>
+    <li>Documentación técnica automatizada</li>
+    <li>Presentación de servicios o productos</li>
+  </ul>
+
+  <h3>🚀 Escalabilidad futura</h3>
+  <ul>
+    <li>Marketplace de templates</li>
+    <li>Personalización avanzada de estilos</li>
+    <li>Versionado de documentos</li>
+    <li>Integración con CRM y otros módulos de AppCraft</li>
+  </ul>
+
+  <h3>🧠 Nota</h3>
+  <p>
+    Este módulo no es prioritario en la etapa actual del proyecto.
+    Se documenta como funcionalidad futura debido a su alto potencial como producto independiente
+    y como feature dentro del ecosistema AppCraft.
+  </p>
+</section>
+
+  <section id="ejemplos">
+    <h2>📚 Ejemplos</h2>
+    <p>Ejemplos de uso, scripts y configuraciones personalizadas para distintos rubros de tiendas virtuales.</p>
+  </section>
+
+  <section id="ecosistema" class="ecosistema">
+  <div class="ecosistema-container">
+
+    <h2 class="ecosistema-title">
+      Ecosistema de Desarrollo
+    </h2>
+
+    <p class="ecosistema-sub">
+      Mad Developer crea. Upcraft ejecuta. La Fábrica transforma.
+    </p>
+
+    <div class="ecosistema-grid">
+
+      <div class="eco-card">
+        <h3>🧠  M@tt Developer</h3>
+        <p>
+          Es la identidad creadora detrás del sistema. Define la visión, la arquitectura
+          y la lógica aplicada en cada solución desarrollada.
+        </p>
+      </div>
+
+      <div class="eco-card">
+        <h3>⚡ Appcraft Pro</h3>
+        <p>
+          Plataforma que procesa, automatiza y ejecuta la construcción de sistemas.
+          Es el núcleo operativo donde las ideas se convierten en software real.
+        </p>
+      </div>
+
+      <div class="eco-card">
+        <h3>🔥  La Fábrica</h3>
+        <p>
+          Método interno que transforma ideas en productos. Define el flujo de creación,
+          estructuración y despliegue dentro de Upcraft.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+   <p class="ecosistema-sub">
+      Mad Developer crea. Upcraft ejecuta. La Fábrica transforma.
+    </p>
+</section>
+
+
+
+  <!-- Mapa Visual - Ecosistema de Desarrollo -->
+<section id="mapa-visual" class="mapa-centrar">
+  <h2>Mapa Visual - Ecosistema de Desarrollo</h2>
+ 
+  <pre>
+┌─────────────┐
+│ Matt Developer │
+│   (Visionario) │
+└─────┬───────┘
+      │
+┌─────┴─────┐                       ┌─────┴─────┐
+│ Manual de │                       │ Upcraft    │
+│ Fábrica   │                       │ Plataforma │
+│ (Documenta│                       │ Pro)       │
+│   ideas)  │                       └─────┬─────┘
+└─────┬─────┘                             │
+      │                                   │
+┌─────┴─────────┐                 ┌───────┴─────────┐
+│ Secciones      │                 │ Módulo WYSIWYG  │
+│ dinámicas      │                 │ - Templates     │
+│ - Introducción │                 │ - Currículums   │
+│ - Ecosistema   │                 │ - Manuales auto │
+│ - Proyectos    │                 └───────┬─────────┘
+└─────┬─────────┘                         │
+      │                                   │
+┌─────┴─────────┐                 ┌───────┴─────────┐
+│ CMS / Tienda  │                 │ Snippets / Código│
+│ Virtual       │                 │ Compartido       │
+│ - Productos   │                 │ - CLI            │
+│ - Pagos       │                 │ - Automatización │
+│ - Admin Panel │                 └───────┬─────────┘
+└─────┬─────────┘                         │
+      │                                   │
+┌─────┴─────────┐                 ┌───────┴─────────┐
+│ Usuarios /    │                 │ Equipo / Roles  │
+│ Clientes      │                 │ - Primo (Ciber) │
+│ - Registro    │                 │ - Alex (Backend)│
+│ - Login       │                 │ - Matt (Visionario)│
+│ - Acceso      │                 └─────────────────┘
+└───────────────┘
+  </pre>
+
+  <!--<div style="width: 100%; text-align: center; margin-bottom: 10px; font-family: 'Inter', sans-serif; font-style: italic; font-weight: 600; font-size: 1rem; color: #ff4500;">
+  M@ttDeveloper crea, AppCraft ejecuta, la fábrica transforma...
+</div>-->
+<!-- Contenedor del cierre -->
+<div class="ecosistema-footer">
+  <span id="frase-final"></span>
+</div>
+</section>
+
+
+</div>
+
+
+<div id="chat-window">
+  <header>
+    ChatBot 🤖
+    <span id="close-chat" style="cursor:pointer;">✖️</span>
+  </header>
+  <div id="messages"></div>
+  <input type="text" placeholder="Escribe un mensaje..." />
+</div>
+
+<footer>
+
+  
+
+  © 2026 MAT Developer - Todos los derechos reservados
+
+</footer>
+
+<script>
+  // Elementos
+  const menuBtn = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const darkBtn = document.getElementById('dark-mode-toggle');
+  const chatbot = document.getElementById('chatbot');
+  const chatWindow = document.getElementById('chat-window');
+  const closeChat = document.getElementById('close-chat');
+
+  // Dark mode
+  darkBtn.addEventListener('click', ()=>{
+    document.body.classList.toggle('dark');
+    darkBtn.textContent = document.body.classList.contains('dark')?'☀️':'🌙';
+  });
+
+  // Menú hamburguesa
+  menuBtn.addEventListener('click', ()=> sidebar.classList.toggle('show'));
+  document.addEventListener('click', (e)=>{
+    if(!sidebar.contains(e.target) && !menuBtn.contains(e.target)) sidebar.classList.remove('show');
+  });
+
+  // Generar menú automáticamente
+  /*const menu = sidebar;
+  const sections = document.querySelectorAll('#content section');
+  const links = [];
+  sections.forEach(sec=>{
+    const link = document.createElement('a');
+    link.href = `#${sec.id}`;
+    link.textContent = sec.querySelector('h2').textContent.replace(/^[^\w\s]+/, '');
+    link.addEventListener('click', ()=> sidebar.classList.remove('show'));
+    menu.appendChild(link);
+    links.push(link);
+  });*/
+
+  // Scroll highlight
+ /* window.addEventListener('scroll', ()=>{
+    let current = '';
+    sections.forEach(sec=>{
+      const sectionTop = sec.offsetTop - 120;
+      if(window.scrollY >= sectionTop) current = sec.id;
+    });
+    links.forEach(link => link.classList.remove('active'));
+    if(current) menu.querySelector(a[href="#${current}"])?.classList.add('active');
+  }); */
+// Generar menú automáticamente
+  const menu = sidebar;
+  const sections = document.querySelectorAll('#content section');
+  sections.forEach(sec=>{
+    const link=document.createElement('a');
+    link.href=`#${sec.id}`;
+    link.textContent=sec.querySelector('h2').textContent.replace(/^[^\w\s]+/,'');
+    link.addEventListener('click',()=>sidebar.classList.remove('show'));
+    menu.appendChild(link);
+  });
+
+  // Scroll animado y highlight de sección activa
+  const menuLinks = document.querySelectorAll('#sidebar a');
+  window.addEventListener('scroll', ()=>{
+    let current = '';
+    sections.forEach(sec=>{
+      const top = sec.offsetTop - 150;
+      if(pageYOffset >= top) current = sec.id;
+    });
+    menuLinks.forEach(link=>{
+      link.classList.remove('active');
+      if(link.getAttribute('href') === `#${current}`) link.classList.add('active');
+    });
+  });
+  
+  
+  // Tooltips (para title)
+  document.querySelectorAll('.tech-card').forEach(card=>{
+    const text = card.textContent.trim();
+    card.setAttribute('title', 'Tecnología usada: ' + text);
+  });
+
+  // Chatbot
+  chatbot.addEventListener('click', ()=> chatWindow.style.display = 'flex');
+  closeChat.addEventListener('click', ()=> chatWindow.style.display = 'none');
+
+  //Efecto máquina de escribir -Frase artística
+  const frase = "M@tt Developer crea, Appcraft Pro ejecuta, La Fábrica transforma...";
+const container = document.getElementById("frase-final");
+let index = 0;
+
+function maquinaEscribir() {
+  if(index < frase.length) {
+    container.innerHTML += frase.charAt(index);
+    index++;
+    setTimeout(maquinaEscribir, 100); // velocidad de escritura (ms)
+  } else {
+    setTimeout(() => {
+      container.innerHTML = ""; // borra para repetir
+      index = 0;
+      maquinaEscribir();
+    }, 2000); // pausa antes de reiniciar
+  }
+}
+
+// iniciar efecto
+maquinaEscribir();
+</script>
+</body>
+</html>

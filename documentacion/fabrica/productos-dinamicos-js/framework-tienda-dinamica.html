@@ -1,0 +1,156 @@
+<!DOCTYPE html><html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framework Tienda Virtual</title>
+<style>
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; line-height: 1.6; background: #f4f4f4; }/* Menú */ nav { position: sticky; top: 0; background: #333; color: #fff; padding: 10px; display: flex; gap: 10px; z-index: 1000; } nav a { color: #fff; text-decoration: none; padding: 5px 10px; } nav a.active { background: #555; border-radius: 5px; }
+
+/* Secciones */ section { padding: 50px 20px; border-bottom: 1px solid #ccc; background: #fff; margin: 10px 0; border-radius: 5px; } section h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+/* Productos */ #productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; } .producto { background: #eee; padding: 15px; border-radius: 5px; text-align: center; } .producto button { margin-top: 10px; padding: 5px 10px; }
+
+/* Carrito */ #carrito { background: #333; color: #fff; padding: 15px; border-radius: 5px; margin-top: 20px; } #carrito ul { list-style: none; } #carrito li { margin-bottom: 5px; }
+
+/* Filtros */ #filtros { margin-bottom: 20px; } #filtros select { padding: 5px; margin-right: 10px; }
+
+@media(max-width: 600px){ nav { flex-direction: column; } #productos { grid-template-columns: 1fr; } } </style>
+
+</head>
+<body><nav id="menu"></nav><div id="content">
+  <section id="inteligencia-artificial">
+    <h2>🤖 Inteligencia Artificial</h2>
+    <p>La inteligencia artificial (IA) permite automatizar tareas dentro de tu tienda virtual, optimizando procesos y personalizando la experiencia del usuario.</p>
+    <p>Funcionamiento en la tienda: la IA puede sugerir productos, predecir stock, recomendar descuentos y mejorar la navegación.</p>
+  </section>  <section id="api">
+    <h2>🔑 API</h2>
+    <p>La API permite conectar la tienda con otros sistemas, generar productos, actualizar stock y obtener información de ventas de manera automatizada.</p>
+    <p>Seguridad: es importante proteger la API Key y limitar los roles que pueden generar acciones críticas.</p>
+  </section>  <section id="roles-permisos">
+    <h2>👥 Roles y Permisos</h2>
+    <p>Definición de roles y permisos dentro de la tienda virtual:</p>
+    <ul>
+      <li><b>Owner</b>: acceso total, genera API Key, administra roles.</li>
+      <li><b>SuperAdmin</b>: gestiona tiendas, usuarios y contenidos, pero no genera API Key.</li>
+      <li><b>Admin</b>: acceso limitado a gestión de contenidos y operaciones en tiendas asignadas.</li>
+      <li><b>Cliente</b>: usuarios finales que consumen la tienda.</li>
+    </ul>
+    <pre><code>// Ejemplo de verificación de rol antes de ejecutar acción
+if(userRole === 'Owner'){
+  generarAPIKey();
+} else {
+  alert('No tiene permisos');
+}
+    </code></pre>
+  </section>  <section id="productos">
+    <h2>🛒 Productos</h2>
+    <div id="filtros">
+      <select id="filtro-categoria">
+        <option value="all">Todas las categorías</option>
+        <option value="tecnologia">Tecnología</option>
+        <option value="hogar">Hogar</option>
+      </select>
+      <select id="filtro-stock">
+        <option value="all">Todos</option>
+        <option value="disponible">Disponibles</option>
+        <option value="agotado">Agotados</option>
+      </select>
+    </div>
+    <div id="productos"></div>
+    <div id="carrito">
+      <h3>Carrito</h3>
+      <ul id="carrito-list"></ul>
+      <p>Total: $<span id="total">0</span></p>
+    </div>
+  </section>
+</div><script>
+// Datos de productos
+const productosData = [
+  {id:1,nombre:'Laptop',categoria:'tecnologia',stock:5,precio:1000},
+  {id:2,nombre:'Mouse',categoria:'tecnologia',stock:0,precio:25},
+  {id:3,nombre:'Silla',categoria:'hogar',stock:10,precio:80},
+  {id:4,nombre:'Mesa',categoria:'hogar',stock:2,precio:150}
+];
+
+let carrito = [];
+
+// Función para generar menú dinámico
+const menu = document.getElementById('menu');
+document.querySelectorAll('section').forEach(sec => {
+  const link = document.createElement('a');
+  link.href = `#${sec.id}`;
+  link.textContent = sec.querySelector('h2').textContent;
+  link.addEventListener('click', e=>{
+    e.preventDefault();
+    document.getElementById(sec.id).scrollIntoView({behavior:'smooth'});
+  });
+  menu.appendChild(link);
+});
+
+// Resaltar sección en menú
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('section');
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    const link = [...menu.children].find(a => a.href.includes(sec.id));
+    if(rect.top >= 0 && rect.top < window.innerHeight/2){
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+});
+
+// Renderizar productos
+function renderProductos(){
+  const cont = document.getElementById('productos');
+  cont.innerHTML = '';
+  let categoria = document.getElementById('filtro-categoria').value;
+  let stock = document.getElementById('filtro-stock').value;
+  let filtrados = productosData.filter(p => 
+    (categoria==='all' || p.categoria===categoria) &&
+    (stock==='all' || (stock==='disponible'? p.stock>0 : p.stock===0))
+  );
+  filtrados.forEach(p=>{
+    const div = document.createElement('div');
+    div.classList.add('producto');
+    div.innerHTML = `<h4>${p.nombre}</h4><p>Stock: ${p.stock}</p><p>Precio: $${p.precio}</p><button>Agregar al carrito</button>`;
+    div.querySelector('button').addEventListener('click', ()=>addCarrito(p));
+    cont.appendChild(div);
+  });
+}
+
+// Agregar al carrito
+function addCarrito(prod){
+  const item = carrito.find(i=>i.id===prod.id);
+  if(item){ item.cantidad++; } else { carrito.push({...prod,cantidad:1}); }
+  renderCarrito();
+}
+
+// Renderizar carrito
+function renderCarrito(){
+  const lista = document.getElementById('carrito-list');
+  lista.innerHTML = '';
+  let total = 0;
+  carrito.forEach(i=>{
+    total += i.precio*i.cantidad;
+    const li = document.createElement('li');
+    li.textContent = `${i.nombre} x ${i.cantidad} - $${i.precio*i.cantidad}`;
+    li.addEventListener('click', ()=>{
+      carrito = carrito.filter(c=>c.id!==i.id);
+      renderCarrito();
+    });
+    lista.appendChild(li);
+  });
+  document.getElementById('total').textContent = total;
+}
+
+// Filtros
+document.getElementById('filtro-categoria').addEventListener('change', renderProductos);
+document.getElementById('filtro-stock').addEventListener('change', renderProductos);
+
+renderProductos();
+</script></body>
+</html>

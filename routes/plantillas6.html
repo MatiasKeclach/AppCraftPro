@@ -1,0 +1,2926 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Sistema de Colecta de Paquetes</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+    background:#0f172a;
+
+    color:white;
+
+    padding:20px;
+
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+}
+
+.dashboard{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(5,1fr);
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+}
+
+.card{
+
+    background:#1e293b;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    text-align:center;
+
+}
+
+.card h2{
+
+    font-size:30px;
+
+    color:#38bdf8;
+
+    margin-top:8px;
+
+}
+
+.formulario{
+
+    background:#1e293b;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+}
+
+.formulario h3{
+
+    margin-bottom:15px;
+
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:15px;
+
+}
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.campo label{
+
+    margin-bottom:5px;
+
+    font-weight:bold;
+
+}
+
+input,
+select{
+
+    width:100%;
+
+    padding:11px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:white;
+
+    color:#111827;
+
+}
+
+button{
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    color:white;
+
+    margin-top:15px;
+
+    font-weight:bold;
+
+}
+
+button:hover{
+
+    opacity:.9;
+
+}
+
+.guardar{
+
+    background:#16a34a;
+
+}
+
+.procesar{
+
+    background:#2563eb;
+
+}
+
+.editar{
+
+    background:#eab308;
+
+    color:black;
+
+}
+
+.eliminar{
+
+    background:#dc2626;
+
+}
+
+.buscar{
+
+    width:100%;
+
+    margin:20px 0;
+
+}
+
+.tabla-contenedor{
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    min-width:1200px;
+
+    border-collapse:collapse;
+
+    background:#1e293b;
+
+}
+
+th{
+
+    background:#2563eb;
+
+    padding:12px;
+
+}
+
+td{
+
+    padding:10px;
+
+    text-align:center;
+
+    border-bottom:
+    1px solid #374151;
+
+}
+
+.estado{
+
+    color:#22c55e;
+
+    font-weight:bold;
+
+}
+
+.tipo-flex{
+
+    color:#38bdf8;
+
+    font-weight:bold;
+
+}
+
+.tipo-particular{
+
+    color:#facc15;
+
+    font-weight:bold;
+
+}
+
+.tipo-sin{
+
+    color:#f87171;
+
+    font-weight:bold;
+
+}
+
+#progreso{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#0f172a;
+
+    border-radius:6px;
+
+    display:none;
+
+}
+
+#resultadoOCR{
+
+    margin-top:15px;
+
+}
+
+.preview{
+
+    background:#0f172a;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    border-radius:8px;
+
+    border-left:
+    4px solid #38bdf8;
+
+}
+
+.preview-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:10px;
+
+}
+
+.preview input,
+.preview select{
+
+    margin-top:5px;
+
+}
+
+.acciones-preview{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.btn-confirmar{
+
+    background:#16a34a;
+
+}
+
+.btn-descartar{
+
+    background:#dc2626;
+
+}
+
+.btn-editar{
+
+    background:#eab308;
+
+    color:black;
+
+}
+
+@media(max-width:1100px){
+
+.dashboard{
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+}
+
+}
+
+@media(max-width:700px){
+
+body{
+
+    padding:10px;
+
+}
+
+.dashboard{
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+}
+
+.grid{
+
+    grid-template-columns:1fr;
+
+}
+
+.preview-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+📦 Sistema de Colecta de Paquetes
+</h1>
+
+
+<!-- ========================= -->
+<!-- DASHBOARD -->
+<!-- ========================= -->
+
+<div class="dashboard">
+
+
+<div class="card">
+
+<h3>Total</h3>
+
+<h2 id="total">
+0
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>Pendientes</h3>
+
+<h2 id="pendientes">
+0
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>Asignados</h3>
+
+<h2 id="asignados">
+0
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>Entregados</h3>
+
+<h2 id="entregados">
+0
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>Flex</h3>
+
+<h2 id="totalFlex">
+0
+</h2>
+
+</div>
+
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- CARGA MANUAL -->
+<!-- ========================= -->
+
+
+<div class="formulario">
+
+
+<h3>
+📦 Agregar paquete manualmente
+</h3>
+
+
+<div class="grid">
+
+
+<div class="campo">
+
+<label>
+Cliente interno
+</label>
+
+<input
+id="cliente"
+placeholder="Ej: GIM SA"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Código
+</label>
+
+<input
+id="codigo"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Destinatario
+</label>
+
+<input
+id="destinatario"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Dirección
+</label>
+
+<input
+id="direccion"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Localidad
+</label>
+
+<input
+id="localidad"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Tipo
+</label>
+
+<select id="tipo">
+
+<option value="PARTICULAR">
+PARTICULAR
+</option>
+
+<option value="FLEX">
+FLEX
+</option>
+
+<option value="SIN IDENTIFICAR">
+SIN IDENTIFICAR
+</option>
+
+</select>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Chofer
+</label>
+
+<select id="chofer">
+
+<option>
+Sin asignar
+</option>
+
+<option>
+Lili
+</option>
+
+<option>
+Sole
+</option>
+
+<option>
+Ivan
+</option>
+
+<option>
+Tomas
+</option>
+
+<option>
+Pablo
+</option>
+
+<option>
+Juanchi
+</option>
+
+<option>
+Nuevo
+</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+<button
+class="guardar"
+onclick="guardarManual()"
+>
+
+Agregar Paquete
+
+</button>
+
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- IMPORTAR FOTOS -->
+<!-- ========================= -->
+
+
+<div class="formulario">
+
+
+<h3>
+📷 Importar etiquetas
+</h3>
+
+
+<p style="margin-bottom:15px;color:#cbd5e1;">
+
+Seleccioná el cliente interno y luego todas las fotos.
+El sistema intentará detectar automáticamente si cada paquete es FLEX o PARTICULAR.
+
+</p>
+
+
+<div class="grid">
+
+
+<div class="campo">
+
+<label>
+Cliente interno
+</label>
+
+<select id="clienteImportacion">
+
+<option value="">
+Seleccionar cliente
+</option>
+
+<option>
+GIM SA
+</option>
+
+<option>
+Almacen de Remeras
+</option>
+
+<option>
+Taller de Remeras
+</option>
+
+<option>
+Martinez
+</option>
+
+<option>
+Jazak
+</option>
+
+<option>
+Viamonte
+</option>
+
+<option>
+Celta
+</option>
+
+<option>
+Otro
+</option>
+
+</select>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Fotos de etiquetas
+</label>
+
+<input
+type="file"
+id="fotos"
+multiple
+accept="image/*"
+>
+
+</div>
+
+
+</div>
+
+
+<button
+class="procesar"
+onclick="procesarFotos()"
+>
+
+📷 Leer etiquetas y crear paquetes
+
+</button>
+
+
+<div id="progreso">
+
+Procesando...
+
+</div>
+
+
+<div id="resultadoOCR">
+
+</div>
+
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- BUSCADOR -->
+<!-- ========================= -->
+
+
+<input
+
+class="buscar"
+
+id="buscar"
+
+placeholder="🔎 Buscar paquete..."
+
+onkeyup="mostrar()"
+
+>
+
+
+
+<!-- ========================= -->
+<!-- TABLA -->
+<!-- ========================= -->
+
+
+<div class="tabla-contenedor">
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Cliente
+</th>
+
+<th>
+Tipo
+</th>
+
+<th>
+Código
+</th>
+
+<th>
+Destinatario
+</th>
+
+<th>
+Dirección
+</th>
+
+<th>
+Localidad
+</th>
+
+<th>
+Chofer
+</th>
+
+<th>
+Estado
+</th>
+
+<th>
+Fecha
+</th>
+
+<th>
+Acciones
+</th>
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="tabla">
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- LIBRERÍAS -->
+<!-- ========================= -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js">
+</script>
+
+
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js">
+</script>
+
+
+
+<script>
+
+
+// ==================================================
+// DATOS
+// ==================================================
+
+
+let paquetes =
+JSON.parse(
+localStorage.getItem("paquetes")
+) || [];
+
+
+// ==================================================
+// GUARDAR
+// ==================================================
+
+
+function guardarLocal(){
+
+localStorage.setItem(
+
+"paquetes",
+
+JSON.stringify(paquetes)
+
+);
+
+}
+
+
+// ==================================================
+// ID ÚNICO
+// ==================================================
+
+
+function generarID(){
+
+return (
+
+Date.now().toString(36)
+
++
+
+Math.random()
+.toString(36)
+.substring(2,8)
+
+).toUpperCase();
+
+}
+
+
+// ==================================================
+// FECHA
+// ==================================================
+
+
+function fechaActual(){
+
+return new Date()
+.toLocaleString(
+"es-AR"
+);
+
+}
+
+
+// ==================================================
+// GUARDAR MANUAL
+// ==================================================
+
+
+function guardarManual(){
+
+
+let cliente =
+document.getElementById(
+"cliente"
+).value.trim();
+
+
+let codigo =
+document.getElementById(
+"codigo"
+).value.trim();
+
+
+let destinatario =
+document.getElementById(
+"destinatario"
+).value.trim();
+
+
+let direccion =
+document.getElementById(
+"direccion"
+).value.trim();
+
+
+let localidad =
+document.getElementById(
+"localidad"
+).value.trim();
+
+
+let tipo =
+document.getElementById(
+"tipo"
+).value;
+
+
+let chofer =
+document.getElementById(
+"chofer"
+).value;
+
+
+
+if(
+
+cliente === "" &&
+
+codigo === "" &&
+
+destinatario === "" &&
+
+direccion === ""
+
+){
+
+alert(
+"Completá al menos un dato"
+);
+
+return;
+
+}
+
+
+
+let paquete = {
+
+id:
+generarID(),
+
+cliente:
+cliente,
+
+tipo:
+tipo,
+
+codigo:
+codigo,
+
+destinatario:
+destinatario,
+
+direccion:
+direccion,
+
+localidad:
+localidad,
+
+chofer:
+chofer,
+
+estado:
+chofer ===
+"Sin asignar"
+
+?
+"Pendiente"
+
+:
+"Asignado",
+
+fecha:
+fechaActual(),
+
+origen:
+"Manual"
+
+};
+
+
+
+paquetes.push(
+paquete
+);
+
+
+guardarLocal();
+
+
+limpiarManual();
+
+
+mostrar();
+
+
+}
+
+
+
+// ==================================================
+// LIMPIAR MANUAL
+// ==================================================
+
+
+function limpiarManual(){
+
+
+document.getElementById(
+"cliente"
+).value="";
+
+
+document.getElementById(
+"codigo"
+).value="";
+
+
+document.getElementById(
+"destinatario"
+).value="";
+
+
+document.getElementById(
+"direccion"
+).value="";
+
+
+document.getElementById(
+"localidad"
+).value="";
+
+
+document.getElementById(
+"tipo"
+).value=
+"PARTICULAR";
+
+
+}
+
+
+
+// ==================================================
+// MOSTRAR
+// ==================================================
+
+
+function mostrar(){
+
+
+let texto =
+
+document.getElementById(
+"buscar"
+).value
+.toLowerCase();
+
+
+let tabla =
+
+document.getElementById(
+"tabla"
+);
+
+
+tabla.innerHTML="";
+
+
+let total=0;
+
+let pendientes=0;
+
+let asignados=0;
+
+let entregados=0;
+
+let flex=0;
+
+
+
+paquetes.forEach(
+
+(p,i)=>{
+
+
+let contenido = (
+
+(p.cliente || "") +
+
+(p.tipo || "") +
+
+(p.codigo || "") +
+
+(p.destinatario || "") +
+
+(p.direccion || "") +
+
+(p.localidad || "") +
+
+(p.chofer || "") +
+
+(p.estado || "")
+
+).toLowerCase();
+
+
+
+if(
+
+contenido.includes(texto)
+
+){
+
+
+let claseTipo="tipo-sin";
+
+
+if(
+p.tipo ===
+"FLEX"
+){
+
+claseTipo=
+"tipo-flex";
+
+}
+
+
+if(
+p.tipo ===
+"PARTICULAR"
+){
+
+claseTipo=
+"tipo-particular";
+
+}
+
+
+
+tabla.innerHTML += `
+
+<tr>
+
+<td>
+${p.cliente || ""}
+</td>
+
+<td class="${claseTipo}">
+${p.tipo || "SIN IDENTIFICAR"}
+</td>
+
+<td>
+${p.codigo || ""}
+</td>
+
+<td>
+${p.destinatario || ""}
+</td>
+
+<td>
+${p.direccion || ""}
+</td>
+
+<td>
+${p.localidad || ""}
+</td>
+
+<td>
+${p.chofer || ""}
+</td>
+
+<td class="estado">
+${p.estado || ""}
+</td>
+
+<td>
+${p.fecha || ""}
+</td>
+
+<td>
+
+<button
+
+class="editar"
+
+onclick="editar(${i})"
+
+>
+
+Editar
+
+</button>
+
+
+<button
+
+class="eliminar"
+
+onclick="eliminarPaquete(${i})"
+
+>
+
+Eliminar
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+
+
+total++;
+
+
+
+if(
+p.estado ===
+"Pendiente"
+){
+
+pendientes++;
+
+}
+
+
+
+if(
+p.estado ===
+"Asignado"
+){
+
+asignados++;
+
+}
+
+
+
+if(
+p.estado ===
+"Entregado"
+){
+
+entregados++;
+
+}
+
+
+
+if(
+p.tipo ===
+"FLEX"
+){
+
+flex++;
+
+}
+
+
+
+}
+
+);
+
+
+
+document.getElementById(
+"total"
+).innerText=
+total;
+
+
+document.getElementById(
+"pendientes"
+).innerText=
+pendientes;
+
+
+document.getElementById(
+"asignados"
+).innerText=
+asignados;
+
+
+document.getElementById(
+"entregados"
+).innerText=
+entregados;
+
+
+document.getElementById(
+"totalFlex"
+).innerText=
+flex;
+
+
+}
+
+
+
+// ==================================================
+// ELIMINAR
+// ==================================================
+
+
+function eliminarPaquete(i){
+
+
+if(
+
+confirm(
+"¿Eliminar este paquete?"
+)
+
+){
+
+
+paquetes.splice(
+i,
+1
+);
+
+
+guardarLocal();
+
+
+mostrar();
+
+
+}
+
+}
+
+
+
+// ==================================================
+// EDITAR
+// ==================================================
+
+
+function editar(i){
+
+
+let p =
+paquetes[i];
+
+
+document.getElementById(
+"cliente"
+).value =
+p.cliente || "";
+
+
+document.getElementById(
+"codigo"
+).value =
+p.codigo || "";
+
+
+document.getElementById(
+"destinatario"
+).value =
+p.destinatario || "";
+
+
+document.getElementById(
+"direccion"
+).value =
+p.direccion || "";
+
+
+document.getElementById(
+"localidad"
+).value =
+p.localidad || "";
+
+
+document.getElementById(
+"tipo"
+).value =
+p.tipo ||
+"PARTICULAR";
+
+
+document.getElementById(
+"chofer"
+).value =
+p.chofer ||
+"Sin asignar";
+
+
+
+paquetes.splice(
+i,
+1
+);
+
+
+guardarLocal();
+
+
+mostrar();
+
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+
+}
+
+
+
+// ==================================================
+// OCR
+// ==================================================
+
+
+async function leerOCR(
+foto
+){
+
+
+try{
+
+
+let resultado =
+
+await Tesseract.recognize(
+
+foto,
+
+"spa",
+
+{
+
+logger:
+m => {
+
+if(
+m.status ===
+"recognizing text"
+){
+
+console.log(
+
+"Progreso OCR:",
+
+Math.round(
+m.progress * 100
+),
+
+"%"
+
+);
+
+}
+
+}
+
+}
+
+);
+
+
+return resultado
+.data
+.text || "";
+
+
+}
+
+catch(error){
+
+
+console.error(
+"Error OCR",
+error
+);
+
+
+return "";
+
+
+}
+
+}
+
+
+
+// ==================================================
+// DETECTAR TIPO
+// ==================================================
+
+
+async function detectarTipo(
+foto
+){
+
+
+try{
+
+
+let imagen =
+
+await createImageBitmap(
+foto
+);
+
+
+let canvas =
+
+document.createElement(
+"canvas"
+);
+
+
+canvas.width =
+imagen.width;
+
+
+canvas.height =
+imagen.height;
+
+
+let ctx =
+
+canvas.getContext(
+"2d"
+);
+
+
+ctx.drawImage(
+imagen,
+0,
+0
+);
+
+
+
+if(
+
+typeof ZXing ===
+"undefined"
+
+){
+
+console.warn(
+"ZXing no disponible"
+);
+
+return
+"SIN IDENTIFICAR";
+
+}
+
+
+
+let reader =
+
+new ZXing.BrowserMultiFormatReader();
+
+
+
+let resultado =
+
+await reader.decodeFromImageUrl(
+
+canvas.toDataURL(
+"image/jpeg"
+)
+
+);
+
+
+
+if(
+resultado
+){
+
+let formato =
+
+resultado
+.getBarcodeFormat();
+
+
+
+console.log(
+"Formato detectado:",
+formato
+);
+
+
+
+let nombre =
+
+String(
+formato
+)
+.toUpperCase();
+
+
+
+if(
+
+nombre.includes(
+"QR"
+)
+
+){
+
+return "FLEX";
+
+}
+
+
+
+return "PARTICULAR";
+
+
+}
+
+
+
+}
+
+catch(error){
+
+
+console.log(
+
+"No se detectó código visual:",
+
+error
+
+);
+
+
+}
+
+
+
+return
+"SIN IDENTIFICAR";
+
+}
+
+
+
+// ==================================================
+// EXTRAER CÓDIGO
+// ==================================================
+
+
+function extraerCodigo(
+texto
+){
+
+
+let textoLimpio =
+
+texto
+.replace(
+/\r/g,
+""
+);
+
+
+
+let patrones = [
+
+
+/(?:pack\s*id|packid)\s*[:#]?\s*(\d{7,20})/i,
+
+
+/(?:env[ií]o|envio)\s*[:#]?\s*([A-Z0-9]{5,20})/i,
+
+
+/(?:orden|order)\s*[:#]?\s*(\d{7,20})/i,
+
+
+/(?:c[oó]digo|codigo)\s*[:#]?\s*([A-Z0-9]{5,20})/i
+
+
+];
+
+
+
+for(
+
+let patron of patrones
+
+){
+
+
+let encontrado =
+
+textoLimpio
+.match(
+patron
+);
+
+
+
+if(
+encontrado
+){
+
+return
+encontrado[1]
+.trim();
+
+}
+
+}
+
+
+
+// números largos
+
+
+let numeros =
+
+textoLimpio.match(
+/\b\d{7,20}\b/g
+);
+
+
+
+if(
+numeros &&
+numeros.length
+){
+
+numeros.sort(
+
+(a,b)=>
+
+b.length -
+a.length
+
+);
+
+
+return numeros[0];
+
+}
+
+
+
+return "";
+
+
+}
+
+
+
+// ==================================================
+// EXTRAER DESTINATARIO
+// ==================================================
+
+
+function extraerDestinatario(
+texto
+){
+
+
+let lineas =
+
+texto
+.split(
+"\n"
+)
+.map(
+x=>x.trim()
+)
+.filter(
+x=>x.length
+);
+
+
+
+for(
+
+let i=0;
+
+i<lineas.length;
+
+i++
+
+){
+
+
+let linea =
+
+lineas[i]
+.toLowerCase();
+
+
+
+if(
+
+linea.includes(
+"destinatario"
+)
+
+){
+
+
+let mismaLinea =
+
+lineas[i]
+.match(
+
+/destinatario\s*[:\-]?\s*(.+)/i
+
+);
+
+
+
+if(
+
+mismaLinea &&
+
+mismaLinea[1].trim().length > 3
+
+){
+
+return limpiarNombre(
+
+mismaLinea[1]
+
+);
+
+}
+
+
+
+for(
+
+let j=i+1;
+
+j<Math.min(
+i+4,
+lineas.length
+);
+
+j++
+
+){
+
+
+let candidato =
+
+lineas[j];
+
+
+if(
+
+esTextoInvalido(
+candidato
+)
+
+){
+
+continue;
+
+}
+
+
+
+if(
+
+candidato.length > 3 &&
+
+candidato.length < 80
+
+){
+
+return limpiarNombre(
+candidato
+);
+
+}
+
+
+}
+
+
+}
+
+
+}
+
+
+
+return "";
+
+
+}
+
+
+
+// ==================================================
+// LIMPIAR NOMBRE
+// ==================================================
+
+
+function limpiarNombre(
+texto
+){
+
+
+return texto
+
+.replace(
+/\(.*?\)/g,
+""
+)
+
+.replace(
+/[|]+/g,
+""
+)
+
+.replace(
+/^\W+/,
+""
+)
+
+.trim();
+
+
+}
+
+
+
+// ==================================================
+// EXTRAER DIRECCIÓN
+// ==================================================
+
+
+function extraerDireccion(
+texto
+){
+
+
+let lineas =
+
+texto
+.split(
+"\n"
+)
+.map(
+x=>x.trim()
+)
+.filter(
+x=>x.length
+);
+
+
+
+let patrones = [
+
+/direcci[oó]n\s*[:\-]\s*(.+)/i,
+
+/direccion\s*[:\-]\s*(.+)/i,
+
+/domicilio\s*[:\-]\s*(.+)/i
+
+];
+
+
+
+for(
+
+let patron of patrones
+
+){
+
+
+let encontrado =
+
+texto.match(
+patron
+);
+
+
+
+if(
+
+encontrado
+
+){
+
+
+let direccion =
+
+encontrado[1]
+.trim();
+
+
+
+if(
+
+pareceDireccion(
+direccion
+)
+
+){
+
+return limpiarDireccion(
+direccion
+);
+
+}
+
+
+}
+
+}
+
+
+
+// Buscar línea que contenga calle + número
+
+
+for(
+
+let linea of lineas
+
+){
+
+
+if(
+
+esTextoInvalido(
+linea
+)
+
+){
+
+continue;
+
+}
+
+
+
+if(
+
+pareceDireccion(
+linea
+)
+
+){
+
+return limpiarDireccion(
+linea
+);
+
+}
+
+
+}
+
+
+
+return "";
+
+
+}
+
+
+
+// ==================================================
+// DETECTAR DIRECCIÓN
+// ==================================================
+
+
+function pareceDireccion(
+texto
+){
+
+
+if(
+
+texto.length < 5 ||
+
+texto.length > 100
+
+){
+
+return false;
+
+}
+
+
+
+if(
+
+/CP\s*:/i.test(
+texto
+)
+
+){
+
+return false;
+
+}
+
+
+
+if(
+
+/pack|envio|destinatario|referencia|mercado|libre/i.test(
+texto
+)
+
+){
+
+return false;
+
+}
+
+
+
+return (
+
+/[a-záéíóúñ]{3,}.*\d{1,5}/i.test(
+texto
+)
+
+);
+
+
+}
+
+
+
+// ==================================================
+// LIMPIAR DIRECCIÓN
+// ==================================================
+
+
+function limpiarDireccion(
+texto
+){
+
+
+return texto
+
+.replace(
+/^\s*(direcci[oó]n|direccion)\s*[:\-]?\s*/i,
+""
+)
+
+.replace(
+/[|]+/g,
+""
+)
+
+.trim();
+
+
+}
+
+
+
+// ==================================================
+// LOCALIDAD
+// ==================================================
+
+
+function extraerLocalidad(
+texto
+){
+
+
+let lineas =
+
+texto
+.split(
+"\n"
+)
+.map(
+x=>x.trim()
+)
+.filter(
+x=>x.length
+);
+
+
+
+let localidades = [
+
+
+"barracas",
+
+"villa lugano",
+
+"parque patricios",
+
+"parque chacabuco",
+
+"villa luro",
+
+"balvanera",
+
+"san telmo",
+
+"nuñez",
+
+"nunez",
+
+"palermo",
+
+"belgrano",
+
+"caballito",
+
+"almagro",
+
+"boedo",
+
+"flores",
+
+"floresta",
+
+"retiro",
+
+"recoleta",
+
+"san nicolas",
+
+"monserrat",
+
+"constitucion",
+
+"boca",
+
+"la boca",
+
+"puerto madero",
+
+"villa devoto",
+
+"villa del parque",
+
+"villa crespo",
+
+"colegiales",
+
+"chacarita",
+
+"saavedra",
+
+"villa urquiza",
+
+"paternal",
+
+"mataderos",
+
+"liniers",
+
+"versalles",
+
+"villa real",
+
+"agronomia",
+
+"caba",
+
+"capital federal"
+
+];
+
+
+
+let textoMinus =
+
+texto.toLowerCase();
+
+
+
+for(
+
+let localidad of localidades
+
+){
+
+
+if(
+
+textoMinus.includes(
+localidad
+)
+
+){
+
+return localidad
+.toUpperCase();
+
+}
+
+
+}
+
+
+
+for(
+
+let i=0;
+
+i<lineas.length;
+
+i++
+
+){
+
+
+if(
+
+/C\.?P\.?\s*:/i.test(
+lineas[i]
+)
+
+){
+
+
+if(
+lineas[i+1]
+){
+
+return lineas[i+1];
+
+}
+
+
+}
+
+
+}
+
+
+
+return "";
+
+
+}
+
+
+
+// ==================================================
+// TEXTO INVÁLIDO
+// ==================================================
+
+
+function esTextoInvalido(
+texto
+){
+
+
+return (
+
+texto.length < 3 ||
+
+/^\d+$/.test(
+texto
+) ||
+
+/CP\s*:/i.test(
+texto
+) ||
+
+/pack\s*id/i.test(
+texto
+) ||
+
+/envio/i.test(
+texto
+)
+
+);
+
+
+}
+
+
+
+// ==================================================
+// PROCESAR FOTOS
+// ==================================================
+
+
+async function procesarFotos(){
+
+
+let clienteInterno =
+
+document.getElementById(
+"clienteImportacion"
+).value;
+
+
+
+let fotos =
+
+document.getElementById(
+"fotos"
+).files;
+
+
+
+if(
+
+clienteInterno === ""
+
+){
+
+alert(
+"Seleccioná el cliente interno"
+);
+
+return;
+
+}
+
+
+
+if(
+
+fotos.length === 0
+
+){
+
+alert(
+"Seleccioná al menos una foto"
+);
+
+return;
+
+}
+
+
+
+let progreso =
+
+document.getElementById(
+"progreso"
+);
+
+
+let resultadoDiv =
+
+document.getElementById(
+"resultadoOCR"
+);
+
+
+
+progreso.style.display =
+"block";
+
+
+resultadoDiv.innerHTML =
+"";
+
+
+let creados = 0;
+
+
+let errores = 0;
+
+
+
+for(
+
+let i=0;
+
+i<fotos.length;
+
+i++
+
+){
+
+
+let foto =
+
+fotos[i];
+
+
+
+progreso.innerHTML =
+
+`
+
+Procesando foto
+${i+1}
+de
+${fotos.length}
+
+<br>
+
+<strong>
+${foto.name}
+</strong>
+
+`;
+
+
+
+console.log(
+
+"========================"
+
+);
+
+
+console.log(
+
+"PROCESANDO:",
+
+foto.name
+
+);
+
+
+
+try{
+
+
+// OCR
+
+
+let texto =
+
+await leerOCR(
+foto
+);
+
+
+
+console.log(
+"TEXTO OCR:",
+texto
+);
+
+
+
+// Tipo automático
+
+
+let tipo =
+
+await detectarTipo(
+foto
+);
+
+
+
+console.log(
+"TIPO:",
+tipo
+);
+
+
+
+// Datos
+
+
+let codigo =
+
+extraerCodigo(
+texto
+);
+
+
+let destinatario =
+
+extraerDestinatario(
+texto
+);
+
+
+let direccion =
+
+extraerDireccion(
+texto
+);
+
+
+let localidad =
+
+extraerLocalidad(
+texto
+);
+
+
+
+// Crear paquete
+
+
+let paquete = {
+
+
+id:
+generarID(),
+
+
+cliente:
+clienteInterno,
+
+
+tipo:
+tipo,
+
+
+codigo:
+codigo,
+
+
+destinatario:
+destinatario,
+
+
+direccion:
+direccion,
+
+
+localidad:
+localidad,
+
+
+chofer:
+"Sin asignar",
+
+
+estado:
+"Pendiente",
+
+
+fecha:
+fechaActual(),
+
+
+origen:
+"OCR"
+
+
+};
+
+
+
+// IMPORTANTE:
+//
+// NO hacemos:
+// destinatario duplicado
+//
+// NO hacemos:
+// dirección duplicada
+//
+// NO hacemos:
+// cliente duplicado
+//
+// Solo verificamos el ID generado.
+
+
+console.log(
+
+"PAQUETE DETECTADO:",
+
+paquete
+
+);
+
+
+
+// Guardar directamente
+
+
+paquetes.push(
+paquete
+);
+
+
+creados++;
+
+
+
+// Mostrar resultado
+
+
+resultadoDiv.innerHTML += `
+
+<div class="preview">
+
+<strong>
+✅ Paquete procesado
+</strong>
+
+<br><br>
+
+Cliente:
+${paquete.cliente}
+
+<br>
+
+Tipo:
+${paquete.tipo}
+
+<br>
+
+Código:
+${paquete.codigo || "No detectado"}
+
+<br>
+
+Destinatario:
+${paquete.destinatario || "No detectado"}
+
+<br>
+
+Dirección:
+${paquete.direccion || "No detectada"}
+
+<br>
+
+Localidad:
+${paquete.localidad || "No detectada"}
+
+<br>
+
+Fecha:
+${paquete.fecha}
+
+</div>
+
+`;
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+
+"ERROR:",
+
+error
+
+);
+
+
+errores++;
+
+
+}
+
+
+}
+
+
+
+guardarLocal();
+
+
+mostrar();
+
+
+
+progreso.innerHTML =
+
+`
+
+✅ Proceso terminado
+
+<br><br>
+
+Fotos procesadas:
+${fotos.length}
+
+<br>
+
+Paquetes creados:
+${creados}
+
+<br>
+
+Errores:
+${errores}
+
+`;
+
+
+
+document.getElementById(
+"fotos"
+).value="";
+
+
+alert(
+
+"Proceso terminado.\n\n" +
+
+"Paquetes creados: " +
+
+creados +
+
+"\n\nErrores: " +
+
+errores
+
+);
+
+
+}
+
+
+
+// ==================================================
+// INICIAR
+// ==================================================
+
+
+mostrar();
+
+
+console.log(
+
+"Sistema iniciado."
+
+);
+
+
+console.log(
+
+"Paquetes existentes:",
+
+paquetes.length
+
+);
+
+
+</script>
+
+
+</body>
+
+</html>

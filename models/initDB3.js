@@ -61,12 +61,12 @@ CREATE TABLE IF NOT EXISTS projects (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+
 -- ==============================
 -- Módulo Logística
 -- ==============================
-
--- Clientes de logística
 CREATE TABLE IF NOT EXISTS logistica_clientes (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     nombre TEXT NOT NULL,
@@ -87,11 +87,8 @@ CREATE TABLE IF NOT EXISTS logistica_clientes (
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
 
--- ==============================
--- Colectas de paquetes
--- ==============================
+);
 
 CREATE TABLE IF NOT EXISTS logistica_colectas (
 
@@ -101,7 +98,7 @@ CREATE TABLE IF NOT EXISTS logistica_colectas (
 
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    chofer TEXT,
+    colectado_por TEXT,
 
     cantidad_paquetes INTEGER DEFAULT 0,
 
@@ -111,114 +108,28 @@ CREATE TABLE IF NOT EXISTS logistica_colectas (
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
+    FOREIGN KEY(cliente_id)
+    REFERENCES logistica_clientes(id)
 
 );
 
--- Choferes
 CREATE TABLE IF NOT EXISTS logistica_choferes (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     nombre TEXT NOT NULL,
+
     telefono TEXT,
+
     vehiculo TEXT,
+
     patente TEXT,
+
     estado TEXT DEFAULT 'activo',
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Paquetes
-CREATE TABLE IF NOT EXISTS logistica_paquetes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cliente_id INTEGER NOT NULL,
-    codigo TEXT,
-    descripcion TEXT,
-    foto TEXT,
-    estado TEXT DEFAULT 'pendiente',
-    fecha_recepcion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
-);
-
--- Asignaciones de paquetes a choferes
-CREATE TABLE IF NOT EXISTS logistica_asignaciones (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    paquete_id INTEGER NOT NULL,
-    chofer_id INTEGER NOT NULL,
-    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado TEXT DEFAULT 'asignado',
-    FOREIGN KEY (paquete_id) REFERENCES logistica_paquetes(id),
-    FOREIGN KEY (chofer_id) REFERENCES logistica_choferes(id)
-);
-
--- Colectas de paquetes
-
-CREATE TABLE IF NOT EXISTS logistica_colectas (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    chofer TEXT,
-
-    cantidad_paquetes INTEGER DEFAULT 0,
-
-    observaciones TEXT,
-
-    estado TEXT DEFAULT 'recibida',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
 
 );
-
-`);
-
-
-
-
-// ------------------ Actualizar tabla users ------------------ //
-
-// ------------------ Actualizar tabla users ------------------ //
-
-const tableName = "users";
-
-const newColumns = {
-  nombre: "TEXT",
-  apellido: "TEXT",
-  email: "TEXT"
-};
-
-const existingColumns = db
-  .prepare(`PRAGMA table_info(${tableName})`)
-  .all()
-  .map(c => c.name);
-
-
-for (const columnName in newColumns) {
-
-  if (!existingColumns.includes(columnName)) {
-
-    console.log(`🔹 Agregando columna '${columnName}' a la tabla '${tableName}'`);
-
-    db.prepare(
-      `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${newColumns[columnName]}`
-    ).run();
-
-  }
-
-}
-
-console.log("✅ Tabla 'users' actualizada");
-
-// ==========================================
-// ACTUALIZACIÓN MÓDULO PAQUETES LOGÍSTICA
-// ==========================================
-
-
-// Paquetes completos
-db.exec(`
 
 CREATE TABLE IF NOT EXISTS logistica_paquetes (
 
@@ -227,135 +138,79 @@ CREATE TABLE IF NOT EXISTS logistica_paquetes (
     cliente_id INTEGER NOT NULL,
 
     tipo TEXT DEFAULT 'flex',
-    -- flex | particular
-
 
     codigo_externo TEXT,
-    -- código original del paquete
-
 
     codigo_interno TEXT UNIQUE,
-    -- generado por sistema
-
 
     qr_codigo TEXT,
-    -- código para QR interno
-
 
     descripcion TEXT,
 
     foto TEXT,
 
-
     colectado_por TEXT,
-
 
     fecha_colecta DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-
     estado TEXT DEFAULT 'recibido',
-    -- recibido
-    -- asignado
-    -- en_reparto
-    -- entregado
-    -- rechazado
-
 
     chofer_id INTEGER,
 
-
     fecha_entrega DATETIME,
-
 
     observaciones TEXT,
 
-
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
 
     FOREIGN KEY(cliente_id)
     REFERENCES logistica_clientes(id),
-
 
     FOREIGN KEY(chofer_id)
     REFERENCES logistica_choferes(id)
 
 );
-
-
-
-
-
--- Asignaciones de entrega
 
 CREATE TABLE IF NOT EXISTS logistica_asignaciones (
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-
     paquete_id INTEGER NOT NULL,
-
 
     chofer_id INTEGER NOT NULL,
 
-
     fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-
 
     estado TEXT DEFAULT 'asignado',
 
-
     observaciones TEXT,
-
 
     FOREIGN KEY(paquete_id)
     REFERENCES logistica_paquetes(id),
-
 
     FOREIGN KEY(chofer_id)
     REFERENCES logistica_choferes(id)
 
 );
 
-
-
-
-
-
--- Historial de movimientos
-
 CREATE TABLE IF NOT EXISTS logistica_movimientos (
-
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-
     paquete_id INTEGER NOT NULL,
-
 
     accion TEXT,
 
-
     detalle TEXT,
-
 
     usuario TEXT,
 
-
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
 
     FOREIGN KEY(paquete_id)
     REFERENCES logistica_paquetes(id)
 
 );
-
-
-`);
-
-
-
-
 
 // ==========================================
 // AGREGAR COLUMNAS SI FALTAN

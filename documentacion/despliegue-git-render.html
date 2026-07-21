@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de despliegue: AppCraftPro</title>
+<style>
+  /* --- Reset y base --- */
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+  body { background-color: #121212; color: #e0e0e0; line-height: 1.6; }
+  a { color: #1e90ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* --- Contenedor --- */
+  .container { max-width: 900px; margin: 2rem auto; padding: 1rem; }
+
+  /* --- Títulos --- */
+  h1, h2, h3 { margin-bottom: 0.5rem; }
+  h1 { font-size: 2rem; border-bottom: 2px solid #1e90ff; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.5rem; margin-top: 2rem; color: #00bcd4; }
+  h3 { font-size: 1.2rem; color: #ffa500; }
+
+  /* --- Secciones --- */
+  section { margin-bottom: 2rem; padding: 1rem; background-color: #1e1e1e; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
+  /* --- Listas --- */
+  ul { list-style: inside disc; margin-top: 0.5rem; }
+  li { margin-bottom: 0.5rem; }
+
+  /* --- Código --- */
+  pre { background-color: #272727; padding: 1rem; border-radius: 5px; overflow-x: auto; }
+  code { font-family: 'Fira Code', monospace; color: #ffd700; }
+
+  /* --- Botones --- */
+  .btn { display: inline-block; padding: 0.5rem 1rem; background-color: #1e90ff; color: #fff; border-radius: 5px; cursor: pointer; margin-top: 0.5rem; }
+  .btn:hover { background-color: #0b72d1; }
+
+  /* --- Tips --- */
+  .tip { background-color: #333; border-left: 4px solid #ffa500; padding: 0.5rem 1rem; margin: 1rem 0; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Guía de despliegue de AppCraftPro</h1>
+
+  <section id="github">
+    <h2>1. Preparar el repositorio en GitHub</h2>
+    <p>Ya subiste tu proyecto a GitHub. Verifica que tengas:</p>
+    <ul>
+      <li>Todos los archivos del proyecto.</li>
+      <li>Archivo <code>.gitignore</code> para excluir <code>node_modules</code> y archivos temporales.</li>
+      <li>Token personal para autenticar los pushes desde consola.</li>
+    </ul>
+    <pre><code>git init
+git add .
+git commit -m "Versión inicial"
+git branch -M master
+git remote add origin &lt;URL_DEL_REPO&gt;
+git push -u origin master
+</code></pre>
+    <div class="tip">Tip: Si tienes problemas de autenticación, usa el token de GitHub en lugar de la contraseña.</div>
+  </section>
+
+  <section id="render">
+    <h2>2. Crear la app en Render</h2>
+    <ul>
+      <li>Entra a <a href="https://render.com" target="_blank">Render</a> y crea una cuenta si no la tienes.</li>
+      <li>Selecciona <strong>Web Service</strong> y conecta tu cuenta de GitHub.</li>
+      <li>Elige tu repositorio <code>AppCraftPro</code> y la rama <code>master</code>.</li>
+      <li>En <strong>Build Command</strong> coloca <code>npm install</code>.</li>
+      <li>En <strong>Start Command</strong> coloca <code>node app.js</code> o tu script principal.</li>
+      <li>Selecciona un entorno de Node.js compatible (ej: 22.x).</li>
+    </ul>
+  </section>
+
+  <section id="db">
+    <h2>3. Configurar la base de datos</h2>
+    <ul>
+      <li>Si usas SQLite3, sube el archivo <code>appcraftpro.db</code> al repositorio o usa <strong>Persistent Disk</strong> en Render.</li>
+      <li>Asegúrate de que la ruta en <code>db.js</code> coincida con la ubicación real en Render.</li>
+      <li>Si quieres iniciar limpia, crea un script como <code>initDB.js</code> para generar todas las tablas al iniciar.</li>
+    </ul>
+    <div class="tip">Tip: Render permite variables de entorno, úsalas para la configuración de paths y contraseñas si luego agregas servicios externos.</div>
+  </section>
+
+  <section id="despliegue">
+    <h2>4. Despliegue y pruebas</h2>
+    <ul>
+      <li>Render construirá la app automáticamente al detectar <code>package.json</code>.</li>
+      <li>Revisa los logs de construcción y ejecución para asegurarte que no hay errores.</li>
+      <li>Prueba el login con tu superadmin y verifica que la base de datos esté accesible.</li>
+      <li>Si agregas nuevas dependencias, haz un commit y push a GitHub; Render actualizará automáticamente.</li>
+    </ul>
+  </section>
+
+  <section id="tips">
+    <h2>5. Tips finales</h2>
+    <ul>
+      <li>Mantén tu <code>node_modules</code> en <code>.gitignore</code>, Render lo instala automáticamente.</li>
+      <li>Sube los archivos de configuración esenciales (DB, scripts de inicialización, .env si lo usas).</li>
+      <li>Para actualizaciones, solo hace falta push al repo y Render redeploy.</li>
+      <li>Si tu app crece, considera usar Postgres o MySQL en Render en lugar de SQLite para persistencia segura.</li>
+    </ul>
+  </section>
+
+  <section class="tip">
+    🚀 ¡Listo! Ahora tu AppCraftPro puede estar corriendo online en Render con tu repositorio de GitHub.
+  
+    contraseña Base de datos supabase: PVJ2ob6j5ndezqK4
+
+    cadena de conexión: postgresql://postgres:[YOUR-PASSWORD]@db.aueumewvonebyfqgteec.supabase.co:5432/postgres
+
+    anfitrión :
+db.aueumewvonebyfqgteec.supabase.co
+
+puerto :
+5432
+
+base de datos :
+PostgreSQL
+
+usuario :
+PostgreSQL
+
+
+</section>
+
+</div>
+
+<script>
+  // Modo dark dinámico si querés agregar toggle
+  const toggle = document.createElement('button');
+  toggle.textContent = "Cambiar tema";
+  toggle.className = 'btn';
+  document.body.prepend(toggle);
+  toggle.addEventListener('click', () => {
+    document.body.style.backgroundColor = document.body.style.backgroundColor === 'white' ? '#121212' : 'white';
+    document.body.style.color = document.body.style.color === 'black' ? '#e0e0e0' : 'black';
+  });
+</script>
+</body>
+</html>

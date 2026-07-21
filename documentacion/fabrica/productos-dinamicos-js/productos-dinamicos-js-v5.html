@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica de Tiendas Avanzada</title>
+<style>
+  :root {
+    --bg-color: #fff;
+    --text-color: #222;
+    --header-bg: #222;
+    --header-color: #fff;
+    --highlight-color: #f0a500;
+    --card-bg: #f9f9f9;
+    --code-bg: #222;
+    --code-color: #f0f0f0;
+  }
+  [data-theme="dark"] {
+    --bg-color: #1e1e1e;
+    --text-color: #f0f0f0;
+    --header-bg: #111;
+    --header-color: #f0f0f0;
+    --highlight-color: #ffcc00;
+    --card-bg: #2c2c2c;
+    --code-bg: #000;
+    --code-color: #fff;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    scroll-behavior: smooth;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--header-bg);
+    color: var(--header-color);
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  nav a {
+    color: var(--header-color);
+    margin-left: 15px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a.active { color: var(--highlight-color); font-weight: bold; }
+  section {
+    padding: 50px 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  section h2 { display: flex; align-items: center; font-size: 1.4rem; }
+  section h2 span.icon { margin-right: 10px; }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+    gap: 20px;
+  }
+  .product-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-5px); }
+  .product-card img { width: 100%; height: 200px; object-fit: cover; }
+  .filter-btns, .search-container { margin-bottom: 20px; }
+  .filter-btns button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .filter-btns button.active { background: var(--highlight-color); color: #fff; }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-color);
+    padding: 15px;
+    overflow-x: auto;
+    border-radius: 5px;
+  }
+  .search-container input {
+    padding: 5px 10px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+  }
+  .theme-toggle {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+    background: var(--highlight-color);
+    color: #fff;
+    border-radius: 5px;
+  }
+  @media (max-width:600px) {
+    header { flex-direction: column; align-items: flex-start; }
+    nav a { margin: 5px 0 0 0; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header>
+  <h1>Fábrica de Tiendas Virtuales</h1>
+  <div>
+    <nav id="menuNav"></nav>
+    <button class="theme-toggle" id="themeToggle">Toggle Dark/Light</button>
+  </div>
+</header>
+
+<main id="content">
+
+  <section id="inteligencia-artificial">
+    <h2><span class="icon">🤖</span>Inteligencia Artificial</h2>
+    <p>La IA automatiza la creación de tiendas virtuales, generando productos y menús dinámicos.</p>
+    <p>Cómo funciona: un JSON de productos y categorías se procesa para renderizar automáticamente la tienda.</p>
+  </section>
+
+  <section id="api">
+    <h2><span class="icon">🔑</span>API</h2>
+    <p>Permite crear tiendas automáticamente y gestionar productos, categorías y usuarios.</p>
+    <pre>
+fetch('https://midominio.com/api/tienda', {
+  method: 'POST',
+  headers: {'Authorization': 'Bearer API_KEY'},
+  body: JSON.stringify({nombre: 'Tienda Demo'})
+});
+    </pre>
+  </section>
+
+  <section id="roles-permisos">
+    <h2><span class="icon">🛡️</span>Roles y Permisos</h2>
+    <ul>
+      <li><b>Owner</b>: Acceso total, genera API Key, crea tiendas y administra roles.</li>
+      <li><b>Superadmin</b>: Gestiona tiendas, usuarios y contenidos, sin API Key del owner.</li>
+      <li><b>Admin</b>: Gestión de contenido y operaciones dentro de tiendas asignadas.</li>
+      <li><b>Cliente</b>: Usuario consumidor de la tienda.</li>
+    </ul>
+    <p>Ejemplo de verificación de rol:</p>
+    <pre>
+if(user.role !== 'owner') {
+  console.log('No tienes permisos para ejecutar esta acción');
+  return;
+}
+    </pre>
+  </section>
+
+  <section id="productos">
+    <h2><span class="icon">🛒</span>Productos Dinámicos</h2>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Buscar producto...">
+    </div>
+    <div class="filter-btns" id="filterBtns"></div>
+    <div class="products" id="productsContainer"></div>
+  </section>
+
+</main>
+
+<script>
+  // Menú dinámico
+  const sections = document.querySelectorAll('main section');
+  const menuNav = document.getElementById('menuNav');
+
+  sections.forEach(sec => {
+    const link = document.createElement('a');
+    link.href = '#' + sec.id;
+    link.textContent = sec.querySelector('h2').textContent;
+    menuNav.appendChild(link);
+  });
+
+  // Scroll highlight
+  window.addEventListener('scroll', () => {
+    let scrollPos = window.scrollY + 80;
+    sections.forEach(sec => {
+      const link = menuNav.querySelector(a[href="#${sec.id}"]);
+      if(scrollPos >= sec.offsetTop && scrollPos < sec.offsetTop + sec.offsetHeight) {
+        link.classList.add('active');
+      } else { link.classList.remove('active'); }
+    });
+  });
+
+  // Productos dinámicos
+  const products = [
+    {nombre:'Camiseta Negra',imagen:'https://picsum.photos/200/200?random=1',etiqueta:'Nuevo'},
+    {nombre:'Gorra Azul',imagen:'https://picsum.photos/200/200?random=2',etiqueta:'Oferta'},
+    {nombre:'Zapatos Rojos',imagen:'https://picsum.photos/200/200?random=3',etiqueta:'Destacado'},
+    {nombre:'Mochila Verde',imagen:'https://picsum.photos/200/200?random=4',etiqueta:'Nuevo'},
+    {nombre:'Reloj Digital',imagen:'https://picsum.photos/200/200?random=5',etiqueta:'Destacado'},
+    {nombre:'Campera Gris',imagen:'https://picsum.photos/200/200?random=6',etiqueta:'Oferta'}
+  ];
+
+  const productsContainer = document.getElementById('productsContainer');
+
+  function displayProducts(filtered = products){
+    productsContainer.innerHTML = '';
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.classList.add('product-card');
+      card.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p><b>${p.etiqueta}</b></p>
+      `;
+      productsContainer.appendChild(card);
+    });
+  }
+
+  displayProducts();
+
+  // Filtro dinámico
+  const filterBtns = document.getElementById('filterBtns');
+  const etiquetas = [...new Set(products.map(p=>p.etiqueta))];
+  const allBtn = document.createElement('button');
+  allBtn.textContent = 'Todos';
+  allBtn.classList.add('active');
+  allBtn.onclick = () => { setActive(allBtn); displayProducts(); }
+  filterBtns.appendChild(allBtn);
+
+  etiquetas.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.textContent = tag;
+    btn.onclick = () => {
+      setActive(btn);
+      displayProducts(products.filter(p=>p.etiqueta === tag));
+    };
+    filterBtns.appendChild(btn);
+  });
+
+  function setActive(btn){
+    Array.from(filterBtns.children).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Buscador
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
+    displayProducts(products.filter(p => p.nombre.toLowerCase().includes(term)));
+  });
+
+  // Dark/Light toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const current = document.body.getAttribute('data-theme');
+    document.body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+  });
+</script>
+
+</body>
+</html>

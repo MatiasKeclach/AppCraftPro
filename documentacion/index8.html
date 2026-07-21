@@ -1,0 +1,480 @@
+<!DOCTYPE html><html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infraestructura Profesional - Matt Developer</title>
+<style>
+body{margin:0;font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#eaeaea}
+.container{max-width:1200px;margin:auto;padding:40px 20px}
+h1,h2,h3{color:#00ffae}
+.card{background:#141414;padding:25px;border-radius:16px;margin-bottom:25px;box-shadow:0 15px 40px rgba(0,0,0,.5)}
+code{display:block;background:#000;padding:12px;border-radius:10px;color:#00ffae;margin-top:10px;white-space:pre-wrap}
+ul{padding-left:20px}
+p{line-height:1.6}
+.highlight{color:#00ffae}
+</style>
+</head>
+<body>
+<div class="container"><h1>🚀 Infraestructura Profesional</h1>
+<p>Guía completa para pasar de desarrollador a creador de sistemas escalables y con ingresos recurrentes.</p><div class="card">
+<h2>🖥️ VPS (Servidor)</h2>
+<p>Un VPS es tu propio servidor en internet. Acá vas a alojar todos tus sistemas.</p>
+<ul>
+<li>Contratar VPS (DigitalOcean / Vultr)</li>
+<li>Acceso root por SSH</li>
+<li>Instalar Node.js para correr tu backend</li>
+<li>Instalar NGINX como servidor web</li>
+</ul>
+<p><b>Objetivo:</b> tener control total sobre tu infraestructura y no depender de terceros.</p>
+</div><div class="card">
+<h2>🌐 Dominios</h2>
+<p>Cada cliente necesita una dirección web. Esto se conecta con tu servidor.</p>
+<ul>
+<li>Comprar dominio (Namecheap / GoDaddy)</li>
+<li>Configurar DNS → apuntar a IP del VPS</li>
+<li>Usar subdominios para múltiples clientes</li>
+</ul>
+<code>
+cliente1.tusistema.com
+cliente2.tusistema.com
+</code>
+<p><b>Estrategia:</b> sistema multi-tenant para escalar sin duplicar código.</p>
+</div><div class="card">
+<h2>🗄️ Base de Datos</h2>
+<p>Donde se guarda toda la información de los clientes.</p>
+<ul>
+<li>Inicio: SQLite (simple y rápido)</li>
+<li>Escalado: PostgreSQL o MySQL</li>
+<li>Separación lógica con tenant_id</li>
+</ul>
+<p><b>Clave:</b> empezar simple y migrar cuando crezcas.</p>
+</div><div class="card">
+<h2>🔐 Seguridad</h2>
+<p>Esto es lo que te diferencia de un desarrollador amateur.</p>
+<ul>
+<li>HTTPS con certificados SSL</li>
+<li>Hash de contraseñas (bcrypt)</li>
+<li>Validación de datos en backend</li>
+<li>Protección contra SQL Injection y XSS</li>
+</ul>
+<p><b>Objetivo:</b> que tu sistema no se rompa ni sea vulnerable.</p>
+</div><div class="card">
+<h2>💾 Backups</h2>
+<p>Si perdés datos, perdés clientes. Esto es crítico.</p>
+<ul>
+<li>Backup automático diario</li>
+<li>Guardar copias fuera del servidor</li>
+<li>Restauración rápida</li>
+</ul>
+<p><b>Nivel pro:</b> backups versionados + recuperación en minutos.</p>
+</div><div class="card">
+<h2>⚙️ Deploy</h2>
+<p>Proceso para subir tu sistema a producción.</p>
+<ul>
+<li>Subir código con Git</li>
+<li>Instalar dependencias</li>
+<li>Usar PM2 para mantener servidor activo</li>
+<li>NGINX como proxy inverso</li>
+</ul>
+<code>
+Cliente → Dominio → NGINX → Node API → Base de Datos
+</code>
+<p><b>Resultado:</b> sistema online, accesible y estable.</p>
+</div><div class="card">
+<h2>🧠 Arquitectura Mental</h2>
+<p>Ya no pensás en hacer webs… pensás en construir sistemas reutilizables.</p>
+<ul>
+<li>Un solo código → múltiples clientes</li>
+<li>Automatización de creación de proyectos</li>
+<li>Escalabilidad desde el inicio</li>
+</ul>
+</div><div class="card">
+<h2>💰 Modelo de Negocio</h2>
+<p>Acá es donde todo cambia.</p>
+<ul>
+<li>Setup inicial por cliente</li>
+<li>Mantenimiento mensual</li>
+<li>Hosting incluido</li>
+<li>Escalabilidad a múltiples clientes</li>
+</ul>
+<p class="highlight">Ingresos recurrentes = estabilidad financiera</p>
+</div><div class="card">
+<h2>🔥 Conclusión</h2>
+<p>Esta infraestructura no es solo técnica: es la base de un negocio. Te permite automatizar, escalar y generar ingresos constantes.</p>
+<p><b>Diferencia clave:</b></p>
+<ul>
+<li>Dev común → hace páginas</li>
+<li>Vos → construís sistemas y negocio</li>
+</ul>
+</div></div>
+<div class="card">
+<h2>🛠️ Implementación Técnica Paso a Paso</h2>
+<p>Guía real para levantar tu infraestructura desde cero.</p>
+</div><div class="card">
+<h3>1. Crear VPS</h3>
+<ul>
+<li>Elegir proveedor (DigitalOcean / Vultr)</li>
+<li>Seleccionar Ubuntu 22.04</li>
+<li>Copiar IP del servidor</li>
+</ul>
+<code>
+ssh root@IP_DEL_SERVIDOR
+</code>
+</div><div class="card">
+<h3>2. Configuración inicial</h3>
+<code>
+apt update && apt upgrade -y
+apt install nginx git curl -y
+</code>
+</div><div class="card">
+<h3>3. Instalar Node.js</h3>
+<code>
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt install -y nodejs
+node -v
+</code>
+</div><div class="card">
+<h3>4. Clonar proyecto</h3>
+<code>
+git clone https://tu-repo.git
+cd tu-repo
+npm install
+</code>
+</div><div class="card">
+<h3>5. Ejecutar con PM2</h3>
+<code>
+npm install -g pm2
+pm2 start app.js
+pm2 save
+pm2 startup
+</code>
+</div><div class="card">
+<h3>6. Configurar NGINX</h3>
+<code>
+server {
+  listen 80;
+  server_name tudominio.com;location / { proxy_pass http://localhost:3000; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection 'upgrade'; proxy_set_header Host $host; } } </code>
+
+</div><div class="card">
+<h3>7. Activar dominio</h3>
+<ul>
+<li>Ir a panel de dominio</li>
+<li>Apuntar A record → IP VPS</li>
+</ul>
+</div><div class="card">
+<h3>8. SSL (HTTPS)</h3>
+<code>
+apt install certbot python3-certbot-nginx -y
+certbot --nginx -d tudominio.com
+</code>
+</div><div class="card">
+<h3>9. Base de datos</h3>
+<p>SQLite:</p>
+<code>
+const db = new Database('database.db');
+</code>
+<p>Escalado: migrar a PostgreSQL</p>
+</div><div class="card">
+<h3>10. Backups automáticos</h3>
+<code>
+crontab -e0 2 * * * cp database.db backup-$(date +%F).db </code>
+
+</div><div class="card">
+<h3>11. Seguridad básica</h3>
+<ul>
+<li>Usar dotenv</li>
+<li>Hash passwords (bcrypt)</li>
+<li>Validar inputs</li>
+<li>Helmet.js</li>
+</ul>
+</div><div class="card">
+<h3>12. Multi-cliente (tu máquina)</h3>
+<p>Arquitectura base:</p>
+<code>
+tenant_id → separa clientes
+subdominio → identifica cliente
+config dinámica → carga tienda
+</code>
+</div></div>
+<div class="card">
+<h2>🏢 Modo Empresa (Nivel Avanzado)</h2>
+<p>Escalá tu sistema como una startup real.</p>
+</div><div class="card">
+<h3>🐳 Docker (Deploy en 1 comando)</h3>
+<p>Docker te permite correr todo tu sistema aislado y replicable.</p>
+<code>
+# Dockerfile básico
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["node","app.js"]
+</code>
+<p><b>Ventaja:</b> mismo entorno en desarrollo y producción.</p>
+</div><div class="card">
+<h3>⚙️ Docker Compose</h3>
+<code>
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres
+</code>
+<p><b>Resultado:</b> backend + DB levantan juntos.</p>
+</div><div class="card">
+<h3>🚀 CI/CD (Deploy automático)</h3>
+<p>Cada vez que subís código, se deploya solo.</p>
+<ul>
+<li>GitHub Actions</li>
+<li>Deploy automático al VPS</li>
+<li>Reinicio con PM2</li>
+</ul>
+<code>
+git push → deploy automático
+</code>
+</div><div class="card">
+<h3>📊 Logs y Monitoreo</h3>
+<ul>
+<li>PM2 logs</li>
+<li>Control de errores</li>
+<li>Alertas si se cae el server</li>
+</ul>
+<code>
+pm2 logs
+</code>
+</div><div class="card">
+<h3>🧠 Panel interno (tu máquina de negocios)</h3>
+<p>Tu propio panel para crear tiendas automáticamente.</p>
+<ul>
+<li>Crear cliente</li>
+<li>Generar subdominio</li>
+<li>Asignar base de datos</li>
+<li>Deploy automático</li>
+</ul>
+<p><b>Esto es clave:</b> automatizás ventas y producción.</p>
+</div><div class="card">
+<h3>⚡ Flujo final automatizado</h3>
+<code>
+1. Cliente paga
+2. Sistema crea tienda
+3. Se asigna dominio
+4. Se deploya solo
+5. Cliente recibe acceso
+</code>
+</div><div class="card">
+<h3>🔥 Resultado final</h3>
+<ul>
+<li>Infraestructura escalable</li>
+<li>Sistema reutilizable</li>
+<li>Automatización total</li>
+<li>Ingresos recurrentes</li>
+</ul>
+<p class="highlight">Estás construyendo una fábrica de sistemas.</p>
+</div></div>
+<div class="card">
+<h2>🧠 SaaS Posta (Arquitectura Profesional Real)</h2>
+<p>Esto ya es nivel plataforma tipo Shopify. Sistema multi-cliente, automatizado y escalable.</p>
+</div><div class="card">
+<h3>🏗️ Arquitectura SaaS</h3>
+<code>
+Cliente → Dominio/Subdominio → NGINX → API → Lógica Multi-tenant → DB
+</code>
+<ul>
+<li>Un solo backend</li>
+<li>Múltiples clientes</li>
+<li>Separación por tenant</li>
+</ul>
+</div><div class="card">
+<h3>👥 Multi-Tenant (núcleo del SaaS)</h3>
+<p>Cada cliente usa el mismo sistema pero con sus propios datos.</p>
+<code>
+tenant_id
+</code>
+<ul>
+<li>Cada request identifica cliente</li>
+<li>Se filtran datos automáticamente</li>
+</ul>
+</div><div class="card">
+<h3>🗄️ Estrategias de Base de Datos</h3>
+<ul>
+<li><b>Simple:</b> una DB con tenant_id</li>
+<li><b>Intermedio:</b> schema por cliente</li>
+<li><b>Pro:</b> DB separada por cliente</li>
+</ul>
+<p><b>Recomendado:</b> empezar simple y escalar.</p>
+</div><div class="card">
+<h3>🌐 Identificación por dominio</h3>
+<code>
+cliente1.tusistema.com → tenant_id = 1
+cliente2.tusistema.com → tenant_id = 2
+</code>
+<p>NGINX o backend detecta el host y carga config.</p>
+</div><div class="card">
+<h3>⚙️ Provisionamiento automático</h3>
+<p>Cuando entra un cliente:</p>
+<code>
+1. Se crea tenant en DB
+2. Se genera subdominio
+3. Se asigna config
+4. Se habilita tienda
+</code>
+</div><div class="card">
+<h3>💳 Pagos y Suscripciones</h3>
+<ul>
+<li>Planes mensuales</li>
+<li>Control de acceso</li>
+<li>Suspensión automática si no paga</li>
+</ul>
+<code>
+if (!pago_activo) → bloquear sistema
+</code>
+</div><div class="card">
+<h3>🔐 Seguridad SaaS</h3>
+<ul>
+<li>Aislamiento de datos por tenant</li>
+<li>JWT con tenant_id</li>
+<li>Rate limiting</li>
+<li>Logs de actividad</li>
+</ul>
+</div><div class="card">
+<h3>📊 Panel Admin Global</h3>
+<ul>
+<li>Ver todos los clientes</li>
+<li>Crear / eliminar tenants</li>
+<li>Ver pagos</li>
+<li>Monitoreo</li>
+</ul>
+<p><b>Este es tu centro de control.</b></p>
+</div><div class="card">
+<h3>🏪 Panel Cliente</h3>
+<ul>
+<li>Gestionar productos</li>
+<li>Ver ventas</li>
+<li>Configurar tienda</li>
+</ul>
+<p>Cada cliente ve solo su info.</p>
+</div><div class="card">
+<h3>⚡ Escalabilidad</h3>
+<ul>
+<li>Separar backend y frontend</li>
+<li>Usar balanceador de carga</li>
+<li>Escalar base de datos</li>
+</ul>
+</div><div class="card">
+<h3>🚀 Flujo SaaS completo</h3>
+<code>
+1. Usuario se registra
+2. Elige plan
+3. Paga
+4. Sistema crea tenant
+5. Se activa tienda
+6. Accede al panel
+</code>
+</div><div class="card">
+<h3>💰 Modelo SaaS</h3>
+<ul>
+<li>Plan básico</li>
+<li>Plan pro</li>
+<li>Plan premium</li>
+</ul>
+<p class="highlight">Ingresos mensuales automáticos escalables</p>
+</div><div class="card">
+<h3>🔥 Resultado final</h3>
+<ul>
+<li>Tenés un producto</li>
+<li>No vendés horas</li>
+<li>Ingresos recurrentes</li>
+<li>Escalás sin límite</li>
+</ul>
+<p class="highlight">Esto ya es una empresa digital.</p>
+</div></div>
+<div class="card">
+<h2>⚡ CLI Real (create-matt-app)</h2>
+<p>Tu propia herramienta para generar sistemas automáticamente como create-react-app.</p>
+</div><div class="card">
+<h3>📦 Inicializar proyecto CLI</h3>
+<code>
+mkdir create-matt-app
+cd create-matt-app
+npm init -y
+</code>
+</div><div class="card">
+<h3>📁 Estructura CLI</h3>
+<code>
+/create-matt-app
+ ├── bin/
+ │   └── index.js
+ ├── templates/
+ │   ├── tienda/
+ │   ├── academia/
+ ├── package.json
+</code>
+</div><div class="card">
+<h3>⚙️ Archivo ejecutable</h3>
+<code>
+#!/usr/bin/env nodeconst fs = require('fs'); const path = require('path');
+
+const projectName = process.argv[2];
+
+if(!projectName){ console.log('❌ Poné un nombre'); process.exit(1); }
+
+const target = path.join(process.cwd(), projectName); fs.mkdirSync(target);
+
+console.log('🚀 Proyecto creado:', projectName); </code>
+
+</div><div class="card">
+<h3>📦 package.json CLI</h3>
+<code>
+{
+  "name": "create-matt-app",
+  "bin": {
+    "create-matt-app": "bin/index.js"
+  }
+}
+</code>
+</div><div class="card">
+<h3>🔗 Linkear CLI local</h3>
+<code>
+npm link
+</code>
+<p>Ahora podés usar:</p>
+<code>
+create-matt-app mi-proyecto
+</code>
+</div><div class="card">
+<h3>🧠 Copiar template</h3>
+<code>
+const copy = (src, dest)=>{
+  fs.cpSync(src, dest, { recursive: true });
+};copy('templates/tienda', target); </code>
+
+</div><div class="card">
+<h3>⚡ Automatización total</h3>
+<code>
+1. Crear proyecto
+2. Copiar template
+3. Instalar dependencias
+4. Configurar .env
+5. Listo para deploy
+</code>
+</div><div class="card">
+<h3>🚀 Evolución</h3>
+<ul>
+<li>Elegir tipo de sistema (tienda, SaaS, panel)</li>
+<li>Configurar base de datos automática</li>
+<li>Deploy directo al VPS</li>
+</ul>
+</div><div class="card">
+<h3>🔥 Resultado final</h3>
+<ul>
+<li>Creás sistemas en segundos</li>
+<li>Estandarizás todo</li>
+<li>Escalás como producto</li>
+</ul>
+<p class="highlight">Esto ya es tu propia tecnología.</p>
+</div></div>
+</body>
+</html>

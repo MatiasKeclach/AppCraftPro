@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual Fábrica de Tiendas</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+  }
+
+  /* Menú lateral */
+  nav {
+    position: sticky;
+    top: 0;
+    background: #222;
+    color: #fff;
+    width: 220px;
+    height: 100vh;
+    overflow-y: auto;
+    float: left;
+    padding: 1rem;
+  }
+
+  nav a {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.2s;
+  }
+
+  nav a.active, nav a:hover {
+    color: #00f;
+    font-weight: bold;
+  }
+
+  /* Contenido principal */
+  main {
+    margin-left: 240px;
+    padding: 2rem;
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.3rem;
+  }
+
+  /* Snippet estilo consola */
+  .cmd-snippet {
+    background: #000;
+    color: #0f0;
+    padding: 1rem;
+    font-family: monospace;
+    overflow-x: auto;
+    white-space: pre;
+    border-radius: 5px;
+  }
+
+  /* Highlight en scroll */
+  section.in-view {
+    border-left: 4px solid #00f;
+    padding-left: 1rem;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    nav {
+      position: relative;
+      width: 100%;
+      height: auto;
+      display: flex;
+      overflow-x: auto;
+    }
+    main {
+      margin-left: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav id="menu"></nav>
+
+<main id="content">
+  <!-- Sección Inteligencia Artificial -->
+  <section id="inteligencia-artificial">
+    <h2>🤖 Inteligencia Artificial</h2>
+    <p>La inteligencia artificial (IA) es un conjunto de tecnologías que permiten a máquinas imitar comportamientos inteligentes. En nuestra fábrica de tiendas virtuales, la IA puede automatizar tareas, analizar datos y generar recomendaciones para mejorar la experiencia de usuario.</p>
+    <p><strong>Funcionamiento en la fábrica:</strong> Al crear una tienda con nuestra fábrica, la IA gestiona la estructura inicial, sugiere mejoras de layout, y puede optimizar contenido según tendencias y comportamiento del usuario.</p>
+    <p><strong>Ventajas:</strong> eficiencia, automatización, personalización, análisis predictivo.</p>
+    <p><strong>Desventajas y errores comunes:</strong> depender demasiado de la IA sin supervisión humana puede generar inconsistencias, errores de datos, o decisiones no alineadas con el negocio.</p>
+  </section>
+
+  <!-- Sección API -->
+  <section id="api">
+    <h2>🔑 API</h2>
+    <p>Nuestra API permite integrar la fábrica de tiendas con sistemas externos, automatizar la creación de tiendas, y generar llaves (API Keys) según los roles asignados.</p>
+    <p><strong>Seguridad:</strong> cada API Key está vinculada a un rol, con permisos limitados para proteger datos sensibles y garantizar que ninguna acción no autorizada pueda realizarse.</p>
+  </section>
+
+  <!-- Sección Roles y Permisos -->
+  <section id="roles-permisos">
+    <h2>🛡 Roles y Permisos</h2>
+    <p>Explicación de los roles principales dentro de la fábrica:</p>
+    <ul>
+      <li><strong>Owner:</strong> acceso total, puede generar API Key, crear tienda y administrar roles.</li>
+      <li><strong>Superadmin:</strong> gestionar tiendas, usuarios y contenidos, pero no generar API Key del owner.</li>
+      <li><strong>Admin:</strong> acceso limitado a gestión de contenido y operaciones dentro de tiendas asignadas.</li>
+      <li><strong>Cliente:</strong> usuarios que consumen la tienda.</li>
+    </ul>
+    <p>Ejemplo de verificación de rol antes de ejecutar una acción:</p>
+    <div class="cmd-snippet">
+if (user.role === "owner") {
+    console.log("Permiso concedido: puede generar API Key");
+} else {
+    console.log("Permiso denegado: acceso restringido");
+}
+    </div>
+  </section>
+
+  <!-- Sección Fábrica de Tiendas -->
+  <section id="fabrica-tiendas">
+    <h2>🏭 Fábrica de Tiendas</h2>
+    <p>Con un único comando en consola, nuestra fábrica genera automáticamente la estructura completa de una tienda virtual, con CMS, roles, API y front-end base.</p>
+    <div class="cmd-snippet">
+# Comando de ejemplo
+fabrica_crear_tienda --nombre "TiendaDemo" --template "moderno" --usuario "owner"
+    </div>
+    <p>Todo el front-end se genera dinámicamente, permitiendo agregar productos, categorías, filtros y carrito sin intervención manual en el código.</p>
+  </section>
+</main>
+
+<script>
+  // Generar menú dinámico
+  const content = document.getElementById('content');
+  const menu = document.getElementById('menu');
+  const sections = content.querySelectorAll('section');
+
+  sections.forEach(sec => {
+    const link = document.createElement('a');
+    link.href = `#${sec.id}`;
+    link.textContent = sec.querySelector('h2').textContent;
+    menu.appendChild(link);
+  });
+
+  // Highlight de sección en scroll
+  window.addEventListener('scroll', () => {
+    let scrollPos = window.scrollY || document.documentElement.scrollTop;
+    sections.forEach(sec => {
+      const offsetTop = sec.offsetTop - 10;
+      const offsetBottom = offsetTop + sec.offsetHeight;
+      const link = `Array.from(menu.children).find(a => a.href.endsWith${sec.id}))`;
+      if (scrollPos >= offsetTop && scrollPos < offsetBottom) {
+        sec.classList.add('in-view');
+        link.classList.add('active');
+      } else { 
+        sec.classList.remove('in-view');
+        link.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

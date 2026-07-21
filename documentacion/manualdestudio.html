@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Estudio</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* -------------------- Variables -------------------- */
+        :root {
+            --primary-color: #1f2937;
+            --accent-color: #3b82f6;
+            --bg-light: #f5f5f5;
+            --bg-dark: #121212;
+            --card-light: #ffffff;
+            --card-dark: #1e1e1e;
+            --text-light: #111827;
+            --text-dark: #f5f5f5;
+        }
+
+        /* -------------------- Reset y Body -------------------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+        body.dark { background-color: var(--bg-dark); color: var(--text-dark); }
+
+        /* -------------------- Header -------------------- */
+        header { text-align: center; padding: 2rem 1rem 1rem 1rem; }
+        header h1 { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); }
+        header p { margin-top: 0.5rem; color: #6b7280; font-size: 1rem; }
+
+        /* -------------------- Menú lateral -------------------- */
+        .sai {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: #fff;
+            flex-shrink: 0;
+            padding: 2rem 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sai h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .sai ul { list-style: none; }
+        .sai ul li { margin: 0.8rem 0; }
+        .sai ul li a { color: #fff; text-decoration: none; font-weight: 500; transition: color 0.2s ease; }
+        .sai ul li a:hover { color: var(--accent-color); }
+        .boton-destacado {
+            text-decoration: none;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 2rem;
+        }
+        .boton-destacado:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+
+        /* -------------------- Contenido -------------------- */
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+        .section {
+            background: var(--card-light);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        body.dark .section { background: var(--card-dark); }
+        h2 { font-weight: 700; color: var(--accent-color); margin-bottom: 1rem; }
+        h3 { font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+        ul { list-style: disc inside; margin-left: 1rem; }
+        pre { background: #1e1e1e; color: #dcdcdc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+
+        /* -------------------- Dark Mode Toggle -------------------- */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            background: var(--card-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        body.dark .dark-mode-toggle { background: var(--card-dark); }
+
+        /* -------------------- Chat IA -------------------- */
+        .chat-ia {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            z-index: 1001;
+        }
+        .chat-ia:hover { transform: scale(1.1); }
+
+        /* -------------------- Menú hamburguesa -------------------- */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color);
+            border-radius: 8px;
+            color: #fff;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        /* -------------------- Responsivo -------------------- */
+        @media (max-width: 768px) {
+            .sai { transform: translateX(-260px); }
+            .sai.active { transform: translateX(0); }
+            .content { margin-left: 0; padding: 1rem; }
+            .hamburger { display: flex; }
+        }
+
+        body { overflow-x: hidden !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Menú Hamburguesa -->
+    <div class="hamburger" id="hamburgerMenu">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Chat IA -->
+    <div class="chat-ia">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Menú Lateral -->
+    <nav class="sai" id="saiMenu">
+        <h2>SAI - Menú</h2>
+        <ul>
+            <li><a href="unidad1.html">Unidad 1: Fundamentos</a></li>
+            <li><a href="unidad2.html">Unidad 2: Técnicas</a></li>
+            <li><a href="unidad3.html">Unidad 3: Herramientas</a></li>
+            <li><a href="unidad4.html">Unidad 4: Estrategia</a></li>
+        </ul>
+        <a href="side.html" class="boton-destacado">🏠 Volver al Manual Principal</a>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="content">
+        <header>
+            <h1>Manual de Estudio</h1>
+            <p>Este manual complementa el Manual de Preparación de Ciberinteligencia con ejercicios y análisis práctico por unidad.</p>
+        </header>
+
+        <section class="section" id="unidad-1">
+            <h2>Unidad 1: Fundamentos</h2>
+            <p>Introducción a conceptos esenciales de ciberinteligencia:</p>
+            <ul>
+                <li>Definición de ciberinteligencia y tipos de amenazas.</li>
+                <li>Principios de seguridad de la información.</li>
+                <li>Normativas y estándares internacionales (ISO 27001, NIST).</li>
+            </ul>
+            <div style="text-align:right; margin-top:1rem;">
+                <a href="unidad1.html" class="boton-destacado">Ver Material →</a>
+            </div>
+        </section>
+
+        <section class="section" id="unidad-2">
+            <h2>Unidad 2: Técnicas</h2>
+            <p>Técnicas de análisis y recopilación de información:</p>
+            <ul>
+                <li>Footprinting y OSINT.</li>
+                <li>Análisis de redes y monitoreo de tráfico.</li>
+                <li>Simulación de ataques y pruebas de penetración controladas.</li>
+            </ul>
+            <div style="text-align:right; margin-top:1rem;">
+                <a href="unidad2.html" class="boton-destacado">Ver Material →</a>
+            </div>
+        </section>
+
+        <section class="section" id="unidad-3">
+            <h2>Unidad 3: Herramientas</h2>
+            <p>Herramientas profesionales para la práctica de ciberinteligencia:</p>
+            <ul>
+                <li>Wireshark, Nmap, Metasploit.</li>
+                <li>Burp Suite, Splunk, ELK Stack.</li>
+                <li>VMs y contenedores para laboratorio seguro (VirtualBox, Docker).</li>
+            </ul>
+            <div style="text-align:right; margin-top:1rem;">
+                <a href="unidad3.html" class="boton-destacado">Ver Material →</a>
+            </div>
+        </section>
+
+        <section class="section" id="unidad-4">
+            <h2>Unidad 4: Estrategia</h2>
+            <p>Aplicación práctica del pensamiento estratégico:</p>
+            <ul>
+                <li>Simulación de escenarios de ataque y defensa.</li>
+                <li>Desarrollo de criterio analítico y táctico.</li>
+                <li>Estudios de casos y análisis de hackers expertos.</li>
+            </ul>
+            <div style="text-align:right; margin-top:1rem;">
+                <a href="unidad4.html" class="boton-destacado">Ver Material →</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Toggle Dark Mode
+        const toggle = document.getElementById('darkModeToggle');
+        toggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            toggle.querySelector('i').classList.toggle('fa-sun');
+            toggle.querySelector('i').classList.toggle('fa-moon');
+        });
+
+        // Toggle Menú Hamburguesa
+        const hamburger = document.getElementById('hamburgerMenu');
+        const saiMenu = document.getElementById('saiMenu');
+        hamburger.addEventListener('click', () => {
+            saiMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

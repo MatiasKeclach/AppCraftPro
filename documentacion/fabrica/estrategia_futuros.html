@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fibonacci BTC Simulator</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.card {
+  background: #111827;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.result {
+  margin-top: 15px;
+  padding: 10px;
+  background: #0b1220;
+  border-radius: 10px;
+}
+
+.level {
+  padding: 5px 0;
+  border-bottom: 1px solid #1f2937;
+}
+
+.highlight {
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>📊 Fibonacci BTC Simulator</h1>
+
+  <div class="card">
+    <label>📉 Mínimo (inicio del impulso)</label>
+    <input type="number" id="low" placeholder="Ej: 60000">
+
+    <label>📈 Máximo (fin del impulso)</label>
+    <input type="number" id="high" placeholder="Ej: 65000">
+
+    <button onclick="calcular()">Calcular Fibonacci</button>
+
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+function calcular() {
+    let low = parseFloat(document.getElementById("low").value);
+    let high = parseFloat(document.getElementById("high").value);
+
+    if (isNaN(low) || isNaN(high) || low >= high) {
+        document.getElementById("result").innerHTML =
+        "⚠️ Ingresá valores válidos (low < high)";
+        return;
+    }
+
+    let diff = high - low;
+
+    // Retrocesos
+    let fib382 = high - diff * 0.382;
+    let fib50  = high - diff * 0.5;
+    let fib618 = high - diff * 0.618;
+
+    // Extensiones
+    let ext127 = high + diff * 0.272;
+    let ext161 = high + diff * 0.618;
+
+    document.getElementById("result").innerHTML = `
+        <div class="level">🔵 0.382: <span class="highlight">${fib382.toFixed(2)}</span></div>
+        <div class="level">🟡 0.5: <span class="highlight">${fib50.toFixed(2)}</span></div>
+        <div class="level">🟠 0.618: <span class="highlight">${fib618.toFixed(2)}</span></div>
+        <div class="level">🚀 1.272: <span class="highlight">${ext127.toFixed(2)}</span></div>
+        <div class="level">🔥 1.618: <span class="highlight">${ext161.toFixed(2)}</span></div>
+    `;
+}
+</script>
+
+</body>
+</html>

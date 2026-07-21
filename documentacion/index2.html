@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Chat IA - Matías</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* BURBUJA CHAT */
+#chat-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #FF5A5F;
+  color: white;
+  font-size: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 99999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* CONTENEDOR DEL CHAT */
+#chat-container {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 360px;
+  max-width: 90%;
+  max-height: 450px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 99998;
+}
+
+/* HEADER DEL CHAT */
+#chat-header {
+  background: #FF5A5F;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+/* BOTÓN CERRAR */
+#close-chat {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* MENSAJES */
+#chat-messages {
+  padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+  background: #f7f7f7;
+  word-wrap: break-word;
+}
+
+/* MENSAJE DEL BOT */
+.chat-msg.bot {
+  background: #FF5A5F;
+  color: white;
+  align-self: flex-start;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+/* MENSAJE DEL USUARIO */
+.chat-msg.user {
+  background: #eee;
+  color: #333;
+  align-self: flex-end;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+/* INPUT Y BOTÓN */
+#chat-input-area {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+#chat-input-area input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+}
+
+#chat-input-area button {
+  padding: 10px 15px;
+  background: #FF5A5F;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* AJUSTES MÓVIL */
+@media screen and (max-width: 480px) {
+  #chat-container { width: 95%; right: 2.5%; bottom: 80px; }
+  #chat-bubble { bottom: 15px; right: 15px; }
+}
+</style>
+</head>
+<body>
+
+<!-- BURBUJA -->
+<div id="chat-bubble">💬</div>
+
+<!-- CHAT -->
+<div id="chat-container">
+  <div id="chat-header">M@ttBot <span id="close-chat">✖</span></div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Escribí tu mensaje...">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+</div>
+
+<script>
+const chatBubble = document.getElementById('chat-bubble');
+const chatContainer = document.getElementById('chat-container');
+const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const closeChat = document.getElementById('close-chat');
+
+// Abrir/cerrar chat al tocar la burbuja
+chatBubble.addEventListener('click', () => {
+  chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
+  chatContainer.style.flexDirection = 'column';
+});
+
+// Cerrar con la cruz
+closeChat.addEventListener('click', () => {
+  chatContainer.style.display = 'none';
+});
+
+// Mensaje de bienvenida automático
+function welcomeMessage() {
+  const botMsg = document.createElement('div');
+  botMsg.classList.add('chat-msg', 'bot');
+  botMsg.textContent = '¡Hola Matías! Soy M@ttBot. ¿Querés empezar a trabajar en tus proyectos?';
+  chatMessages.appendChild(botMsg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Enviar mensaje
+function sendMessage() {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+
+  // Mensaje del usuario
+  const userMsg = document.createElement('div');
+  userMsg.classList.add('chat-msg', 'user');
+  userMsg.textContent = msg;
+  chatMessages.appendChild(userMsg);
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  // Respuesta simulada del bot
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.classList.add('chat-msg', 'bot');
+    botMsg.textContent = generateBotReply(msg);
+    chatMessages.appendChild(botMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }, 600);
+}
+
+// Respuestas por palabra clave
+function generateBotReply(userMessage) {
+  const msg = userMessage.toLowerCase();
+  if(msg.includes('precio')) return 'Nuestros precios dependen del proyecto, puedo hacer un presupuesto personalizado.';
+  if(msg.includes('tienda')) return '¡Perfecto! Podemos armar tu tienda online con gestión completa de stock y pagos.';
+  if(msg.includes('crm')) return 'Tenemos paneles de CRM y gestión de negocios totalmente adaptables a tu empresa.';
+  return '¡Gracias por tu mensaje! Puedo ayudarte con desarrollo web, SaaS, marketing digital y más.';
+}
+
+// Ejecutar mensaje de bienvenida al cargar
+window.addEventListener('load', () => {
+  welcomeMessage();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Preparación Ciberinteligencia</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* -------------------- Paleta de colores -------------------- */
+        :root {
+            --primary-color: rgba(31, 41, 55, .5); /* gris oscuro */
+            --accent-color: #3b82f6; /* azul */
+            --bg-light: #f5f5f5;
+            --bg-dark: #121212;
+            --card-light: #ffffff;
+            --card-dark: #1e1e1e;
+            --text-light: #111827;
+            --text-dark: #f5f5f5;
+            --hamburguer-color: rgba(59, 130, 246, 0.5); /* mismo azul para el botón hamburguesa */
+        }
+
+        /* -------------------- Reset y Body -------------------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        body.dark {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* -------------------- Header -------------------- */
+        header {
+            text-align: center;
+            padding: 2rem 1rem 1rem 1rem;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        header p {
+            margin-top: 0.5rem;
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        /* -------------------- Contenedor principal -------------------- */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* -------------------- Menú lateral / SAI -------------------- */
+        .sai {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: #fff;
+            flex-shrink: 0;
+            padding: 2rem 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        .sai h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .sai ul {
+            list-style: none;
+        }
+        .sai ul li {
+            margin: 0.8rem 0;
+        }
+        .sai ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        .sai ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        /* -------------------- Contenido -------------------- */
+        .content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+        .section {
+            background: var(--card-light);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        body.dark .section {
+            background: var(--card-dark);
+        }
+        h2 {
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        ul {
+            list-style: disc inside;
+            margin-left: 1rem;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        /* -------------------- Dark Mode Toggle -------------------- */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            background: var(--card-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        body.dark .dark-mode-toggle {
+            background: var(--card-dark);
+        }
+
+        /* -------------------- Footer -------------------- */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        /* -------------------- Chat Button -------------------- */
+        .chat-button {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1001;
+        }
+
+        /* -------------------- Responsivo -------------------- */
+        @media (max-width: 768px) {
+            .sai {
+                transform: translateX(-260px);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sai.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .hamburger {
+                display: flex;
+                position: fixed;
+                top: 20rem;
+                left: 20rem;
+                width: 50px;
+                height: 50px;
+                background: var(--hamburguer-color);
+                color: #fff;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 1001;
+            }
+        }
+
+        /* Estilos del menú móvil */
+#hamburger-menu {
+    display: none; /* por defecto oculto en PC */
+    position: fixed;
+    top: 0;
+    left: -250px; /* fuera de pantalla */
+    width: 250px;
+    height: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+#hamburger-menu.active {
+    left: 0; /* se desplaza desde la izquierda */
+}
+
+#hamburger-menu .close-btn {
+    display: block;
+    text-align: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+/* Botón hamburguesa */
+#hamburger-btn {
+    display: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1100;
+    color: var(--primary-color);
+}
+
+/* Responsivo: en pantallas pequeñas mostrar el botón y ocultar menú lateral */
+@media screen and (max-width: 768px) {
+    #hamburger-btn {
+        display: block;
+    }
+    #sai-menu {
+        display: none; /* ocultamos SAI original en móvil */
+    }
+    body.no-scroll {
+        overflow: hidden; /* evita scroll mientras el menú está abierto */
+    }
+}
+       /* .hamburger { display: none; }*/
+
+       /* --------- PARCHE RESPONSIVO FINAL --------- */
+
+/* Evitar scroll horizontal */
+body {
+    overflow-x: hidden !important;
+}
+
+/* Botón hamburguesa siempre visible en móviles */
+@media (max-width: 768px) {
+    .hamburger, #hamburger-btn {
+        display: flex !important;
+    }
+
+    /* Contenido ocupa todo el ancho */
+    .content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 1rem !important;
+    }
+
+    /* SAI lateral oculto por defecto */
+    .sai {
+        transform: translateX(-260px) !important;
+    }
+
+    .sai.active {
+        transform: translateX(0) !important;
+    }
+}
+
+/* Ajuste para pantallas muy pequeñas < 464px */
+@media (max-width: 463px) {
+    .content {
+        padding: 0.8rem !important;
+        font-size: 0.95rem;
+    }
+}
+
+/* Estilo Sección Especial */
+.seccion-especial {
+  border: 3px solid #1a73e8;  /* borde azul profesional */
+  background-color: #f0f4ff;  /* fondo suave */
+  padding: 20px 25px;
+  border-radius: 12px;
+  margin: 30px 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.seccion-especial h2 {
+  color: #0b3d91;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #0b3d91;
+  padding-bottom: 5px;
+}
+
+.seccion-especial h3 {
+  color: #1a73e8;
+  margin-top: 20px;
+}
+
+.seccion-especial ul, .seccion-especial ol {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.seccion-especial .nota-especial {
+  font-weight: bold;
+  color: #d93025;  /* rojo profesional */
+  background-color: #ffe6e6;
+  padding: 10px;
+  border-radius: 8px;
+}
+/* Botón destacado */
+.boton-destacado {
+  text-decoration: none;
+  background-color: #2f8090; /* verde destacado */
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: inline-block;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.boton-destacado:hover {
+  background-color: #3a95b9;
+  transform: scale(1.05);
+}
+
+/* Responsive: ocupa todo el ancho en móviles */
+@media (max-width: 768px) {
+  .boton-destacado {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- SAI Menú Lateral -->
+   <nav class="sai" id="saiMenu">
+        <h2>SAI - Menú</h2>
+        <ul>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#estructura">Estructura</a></li>
+            <li><a href="#tecnologias">Conocimientos Técnicos</a></li>
+            <li><a href="#proximas-secciones">Próximas Secciones</a></li>
+            <li><a href="#esquema-jerarquico">Esquema Jerárquico</a></li>
+            <li><a href="#pensamiento-director">Pensamiento Director</a></li>
+            <li><a href="#tecnologias-herramientas">Herramientas</a></li>
+            <li><a href="#psicologia-hackers">Psicología Hackers</a></li>
+        </ul>
+        <!-- Botón Destacado: Manual de Estudio -->
+<div style="margin-top: 2rem; text-align: center;">
+    <a href="manualdestudio.html" class="boton-destacado">📘 Manual de Estudio</a>
+</div>    </nav>
+ 
+    <!-- Botón hamburguesa móvil -->
+    <div class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+    </div>
+
+  
+
+    <!-- Contenido Principal -->
+    <div class="container">
+        <main class="content">
+            <!-- Aquí insertás todo tu contenido que ya me pasaste -->
+            <!-- Secciones 1 a 8 intactas -->
+            <!-- Introducción -->
+            <!--<section class="section" id="introduccion">
+                <h2>1️⃣ Introducción</h2>
+                <p>Este manual tiene como objetivo central prepararte integralmente en:</p>
+                <ul class="list-disc list-inside">
+                    <li>Comprender la estructura y funcionamiento de agencias de ciberinteligencia.</li>
+                    <li>Desarrollar criterio investigativo y analítico para anticipar riesgos y detectar irregularidades.</li>
+                    <li>Aprender las tecnologías clave y metodologías de ciberseguridad usadas en agencias oficiales.</li>
+                </ul>
+            </section>-->
+
+
+              <header class="mb-6">
+        <h1 class="text-3xl text-center text-gray-800">Manual de Preparación Ciberinteligencia</h1>
+        <p class="text-center text-gray-600 mt-2">Guía de conocimientos, habilidades y estrategias para desarrollarte en inteligencia digital y análisis de ciberdelitos.</p>
+    </header>
+
+    <!-- Sección 1: Introducción -->
+    <section class="section" id="introduccion">
+        <h2 class="text-2xl mb-2">1️⃣ Introducción</h2>
+        <p>Este manual tiene como objetivo central prepararte integralmente en:</p>
+        <ul class="list-disc list-inside">
+            <li>Comprender la estructura y funcionamiento de agencias de ciberinteligencia.</li>
+            <li>Desarrollar criterio investigativo y analítico para anticipar riesgos y detectar irregularidades.</li>
+            <li>Aprender las tecnologías clave y metodologías de ciberseguridad usadas en agencias oficiales.</li>
+        </ul>
+    </section>
+
+    <!-- Sección 2: Estructura y pensamiento estratégico -->
+    <section class="section" id="estructura">
+        <h2 class="text-2xl mb-2">2️⃣ Estructura y pensamiento estratégico</h2>
+        <p>Para entender cómo piensan y actúan los departamentos de ciberinteligencia:</p>
+        <ul class="list-disc list-inside">
+            <li>Director: Define la estrategia general y prioridades, delega en subdepartamentos.</li>
+            <li>Subrangos / Operativos: Ejecutan las investigaciones y tareas asignadas, siguiendo lineamientos claros.</li>
+            <li>Analistas: Filtran información, detectan patrones y anticipan riesgos.</li>
+        </ul>
+        <p>Es clave comprender la lógica jerárquica y cómo se baja línea desde el director hasta los operativos.</p>
+    </section>
+
+    <!-- Sección 3: Conocimientos técnicos indispensables -->
+    <section class="section" id="tecnologias">
+        <h2 class="text-2xl mb-2">3️⃣ Conocimientos técnicos indispensables</h2>
+        <p>Para estar preparado en el área de ciberseguridad y ciberdelitos, los conocimientos esenciales incluyen:</p>
+        <ul class="list-disc list-inside">
+            <li>Sistemas operativos: Linux avanzado, Windows Server, entornos virtuales.</li>
+            <li>Redes: TCP/IP, protocolos, firewalls, VPN, routing y sniffing.</li>
+            <li>Seguridad: Criptografía, hashing, certificados, autenticación y vulnerabilidades comunes (OWASP Top 10).</li>
+            <li>Programación y scripting: Python, Bash, JavaScript, SQL para análisis forense y automatización.</li>
+            <li>Herramientas de análisis: Wireshark, Nmap, Metasploit, Burp Suite, Splunk, ELK Stack.</li>
+            <li>Gestión de incidentes y logs: Monitoreo, correlación de eventos, detección de anomalías.</li>
+            <li>Comprender técnicas de hacking ético: Penetration testing, análisis de malware y exploits.</li>
+            <li>Investigación digital: Rastrear y anticipar comportamientos de delincuentes digitales y estafadores de alto nivel.</li>
+        </ul>
+        <p>Estos conocimientos te permitirán identificar vulnerabilidades, anticipar movimientos y desarrollar un criterio analítico sólido.</p>
+        <p>Importante: La práctica constante y la actualización continua es clave. El objetivo es que puedas leer antes de cada simulación o entrevista.</p>
+    </section>
+
+    <!-- Sección futura: espacio para agregar más contenido -->
+    <section class="section" id="proximas-secciones">
+        <h2 class="text-2xl mb-2">4️⃣ Próximas secciones</h2>
+        <p>Aquí se añadirán más módulos en el futuro, como:</p>
+        <ul class="list-disc list-inside">
+            <li>Estrategias de análisis de delincuentes digitales.</li>
+            <li>Metodologías de investigación avanzada.</li>
+            <li>Simulaciones de escenarios y prácticas de reacción.</li>
+            <li>Notas de criterio analítico y táctico.</li>
+        </ul>
+    </section>
+
+    <!-- Sección: Esquema jerárquico de la agencia -->
+<section class="section" id="esquema-jerarquico">
+    <h2 class="text-2xl mb-2">5️⃣ Esquema Jerárquico de la Agencia</h2>
+    <p>Visualización de la jerarquía y flujo de decisiones:</p>
+    <pre>
+Director / Jefe de Agencia
+│
+├─ Subdirector / Coordinación General
+│   ├─ Departamento de Inteligencia Estratégica
+│   │   ├─ Analistas Senior
+│   │   └─ Analistas Junior
+│   ├─ Departamento de Ciberdelitos
+│   │   ├─ Investigadores Forenses
+│   │   ├─ Analistas de Malware
+│   │   └─ PenTesters (Hacking Ético)
+│   └─ Departamento de Operaciones Digitales
+│       ├─ Especialistas en Monitoreo y Logs
+│       ├─ Agentes de Intervención Online
+│       └─ Soporte Técnico Estratégico
+│
+└─ Departamento de Apoyo Administrativo y Legal
+    ├─ Juristas Especializados en Tecnología
+    └─ Coordinación de Recursos y Logística
+    </pre>
+    <p>Este esquema muestra cómo se bajan las órdenes y cómo cada departamento tiene funciones específicas, pero todos reportan hacia la coordinación central.</p>
+</section>    
+
+<!-- Sección: Pensamiento del Director y Criterio Analítico -->
+<section class="section" id="pensamiento-director">
+    <h2 class="text-2xl mb-2">6️⃣ Pensamiento del Director y Criterio Analítico</h2>
+    <p>Cómo opera la agencia desde la cabeza hacia abajo, para anticipar, analizar y actuar con precisión.</p>
+    
+    <h3 class="text-xl mt-2">Director / Jefe de Agencia</h3>
+    <ul class="list-disc ml-5">
+        <li>Visión estratégica: prevé amenazas antes de que ocurran.</li>
+        <li>Baja línea clara: cada decisión se comunica de manera que todos los subrangos entiendan prioridades.</li>
+        <li>Decisión basada en datos y patrones históricos de delitos digitales.</li>
+        <li>Foco en objetivos de alto impacto y seguridad nacional.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Subdirector / Coordinación General</h3>
+    <ul class="list-disc ml-5">
+        <li>Interpreta y traduce la estrategia del director a planes operativos concretos.</li>
+        <li>Coordina departamentos y asegura que la información fluya correctamente.</li>
+        <li>Detecta fallas de comunicación o errores potenciales en la interpretación de órdenes.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Departamentos Operativos</h3>
+    <ul class="list-disc ml-5">
+        <li><strong>Inteligencia Estratégica:</strong> analiza patrones, tendencias y posibles amenazas antes de que sucedan.</li>
+        <li><strong>Ciberdelitos:</strong> investiga ataques digitales, detecta vulnerabilidades y anticipa movimientos de hackers y estafadores.</li>
+        <li><strong>Operaciones Digitales:</strong> ejecuta acciones tácticas, monitorea sistemas y reacciona rápidamente ante incidentes.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Criterios de Evaluación y Comportamiento</h3>
+    <ul class="list-disc ml-5">
+        <li>Ojo clínico: notar inconsistencias, errores y oportunidades antes de que ocurran.</li>
+        <li>Capacidad analítica: desarmar un problema en piezas y anticipar la jugada siguiente.</li>
+        <li>Disciplina y anticipación: actuar sin necesidad de supervisión directa constante.</li>
+        <li>Adaptabilidad: entender patrones de delincuentes expertos y pensar como ellos para neutralizar sus acciones.</li>
+    </ul>
+
+    <p class="mt-2">Este conocimiento permite que un agente no solo cumpla órdenes, sino que aporte visión estratégica, anticipando riesgos y proponiendo soluciones antes de que surjan problemas.</p>
+</section>
+
+<!-- Sección: Tecnologías y Herramientas para Ciberinteligencia -->
+<section class="section" id="tecnologias-herramientas">
+    <h2 class="text-2xl mb-2">7️⃣ Tecnologías y Herramientas Clave</h2>
+    <p>Todo lo que necesitás dominar para entender arquitectura, estructura y pensamiento analítico en ciberinteligencia.</p>
+    
+    <h3 class="text-xl mt-2">Lenguajes de Programación y Scripting</h3>
+    <ul class="list-disc ml-5">
+        <li><strong>Python:</strong> automatización, análisis de datos, scraping, inteligencia artificial y machine learning aplicado a ciberseguridad.</li>
+        <li><strong>JavaScript / Node.js:</strong> auditoría de aplicaciones web, pruebas de penetración en front y backend.</li>
+        <li><strong>Bash / PowerShell:</strong> administración de sistemas y scripting de tareas de seguridad.</li>
+        <li><strong>SQL / PostgreSQL / SQLite:</strong> análisis de bases de datos, detección de vulnerabilidades y extracción de información.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Herramientas de Análisis y Monitoreo</h3>
+    <ul class="list-disc ml-5">
+        <li><strong>Wireshark:</strong> análisis de tráfico de red y detección de anomalías.</li>
+        <li><strong>Nmap:</strong> escaneo de redes y detección de vulnerabilidades.</li>
+        <li><strong>Burp Suite:</strong> pruebas de seguridad web y auditoría de aplicaciones.</li>
+        <li><strong>Metasploit:</strong> explotación de vulnerabilidades y pruebas de penetración controladas.</li>
+        <li><strong>Splunk / ELK Stack:</strong> monitoreo de logs y análisis de eventos de seguridad.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Plataformas y Sistemas</h3>
+    <ul class="list-disc ml-5">
+        <li><strong>Sistemas Operativos:</strong> Linux (Kali, Ubuntu), Windows, macOS – para pruebas de seguridad y entornos de laboratorio.</li>
+        <li><strong>VM / Contenedores:</strong> VirtualBox, Docker, para aislar entornos y simular ataques o análisis forense.</li>
+        <li><strong>Redes y Firewalls:</strong> conocimiento práctico de protocolos TCP/IP, HTTP/HTTPS, VPNs y cifrado de datos.</li>
+        <li><strong>Cloud y DevOps:</strong> AWS, GCP, Azure, gestión de servicios en la nube, seguridad y auditoría.</li>
+    </ul>
+    
+    <h3 class="text-xl mt-2">Técnicas y Conocimientos Estratégicos</h3>
+    <ul class="list-disc ml-5">
+        <li>Forense digital y análisis de malware.</li>
+        <li>Honeypots y simulación de ataques para detectar intrusos.</li>
+        <li>Penetration testing y auditorías de seguridad continuas.</li>
+        <li>Criptografía y protección de datos sensibles.</li>
+        <li>Inteligencia de amenazas y análisis de patrones de ataque.</li>
+        <li>Entendimiento de cómo piensan los hackers expertos y cómo anticipar sus movimientos.</li>
+    </ul>
+
+    <p class="mt-2">Este conocimiento permite que un investigador digital no solo reaccione a incidentes, sino que los anticipe, comprenda la arquitectura de los sistemas y utilice herramientas profesionales para proteger activos críticos.</p>
+</section>
+
+<!-- Sección: Psicología y Estrategia de Hackers Expertos -->
+<!-- Sección: Psicología y Estrategia de Hackers Expertos -->
+<section class="section" id="psicologia-hackers">
+    <h2 class="text-2xl mb-2">8️⃣ Psicología y Estrategia de Hackers Expertos</h2>
+    <p>Comprender la mentalidad de hackers avanzados y cómo anticipar sus movimientos es clave para un investigador digital de alto nivel.</p>
+
+    <h3 class="text-xl mt-2">Perfil del Hacker Avanzado</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Altamente metódico y organizado, analiza escenarios posibles antes de actuar.</li>
+        <li>Busca vulnerabilidades en sistemas, redes y usuarios (ingeniería social).</li>
+        <li>Se mantiene en anonimato y cubre rastros digitales.</li>
+        <li>Evalúa riesgos y recompensas antes de ejecutar acciones.</li>
+        <li>Motivado por desafío, lucro o prestigio dentro de su círculo.</li>
+    </ul>
+
+    <h3 class="text-xl mt-2">Estrategia de Anticipación</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Analizar patrones repetitivos de posibles atacantes.</li>
+        <li>Simular ataques para entender sus pasos y métodos.</li>
+        <li>Identificar señales tempranas de actividad sospechosa.</li>
+        <li>Mantener sistemas segmentados y monitoreados para detectar movimientos anómalos.</li>
+    </ul>
+
+    <h3 class="text-xl mt-2">Métodos de Ataque Comunes</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Phishing avanzado y spear-phishing dirigido.</li>
+        <li>Malware y ransomware personalizados.</li>
+        <li>Explotación de vulnerabilidades conocidas (zero-days).</li>
+        <li>Ataques de fuerza bruta y técnicas de cracking de contraseñas.</li>
+        <li>Abuso de privilegios internos o errores humanos.</li>
+    </ul>
+
+    <h3 class="text-xl mt-2">Contramedidas y Defensa Proactiva</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Sistemas de detección y alerta temprana.</li>
+        <li>Segmentación y cifrado de datos sensibles.</li>
+        <li>Capacitación continua del personal para reconocer ingeniería social.</li>
+        <li>Simulaciones y tests periódicos de penetración.</li>
+        <li>Registro y análisis continuo de logs para identificar anomalías.</li>
+    </ul>
+
+    <h3 class="text-xl mt-2">Claves para Pensar como un Hacker</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Ponerse en los zapatos del atacante: ¿qué buscaría y dónde?</li>
+        <li>Analizar cada componente de un sistema desde vulnerabilidades mínimas hasta críticas.</li>
+        <li>Considerar siempre lo inesperado: lo improbable puede ser la entrada principal.</li>
+        <li>Nunca subestimar la creatividad del hacker.</li>
+    </ul>
+
+    <h3 class="text-xl mt-2">Cómo Anticipar Antes de Reaccionar</h3>
+    <ul class="list-disc list-inside ml-5">
+        <li>Monitorear tendencias de ataques en tiempo real.</li>
+        <li>Mantener un mapa actualizado de riesgos y vulnerabilidades.</li>
+        <li>Revisar patrones históricos y correlacionarlos con nuevos comportamientos.</li>
+        <li>Tener protocolos claros de reacción inmediata.</li>
+        <li>Entrenar la intuición mediante simulaciones y escenarios controlados.</li>
+    </ul>
+</section>
+
+<!-- Sección Especial -->
+<section class="seccion-especial">
+  <h2>🌟 Sección Especial: Mapa de Ruta para Hacker Ético</h2>
+  <p>
+    Esta sección está dedicada a estructurar un camino completo y profesional para desarrollar habilidades en ciberseguridad y hacking ético. 
+    Aquí encontrarás un mapa de aprendizaje, cómo estudiar, cómo practicar, y las herramientas clave que deberías dominar.
+  </p>
+
+  <h3>1. Fundamentos de Sistemas Operativos</h3>
+  <ul>
+    <li>Linux avanzado: permisos, procesos, servicios, shell scripting, logs.</li>
+    <li>Windows Server: Active Directory, políticas de grupo, administración de usuarios y roles.</li>
+    <li>Laboratorios virtuales: usar VirtualBox, VMware o WSL2 para practicar sin riesgos.</li>
+  </ul>
+
+  <h3>2. Redes y Protocolos</h3>
+  <ul>
+    <li>TCP/IP, routing, VLANs, subredes, NAT, VPNs.</li>
+    <li>Firewalls, IDS/IPS, Network Access Control (NAC).</li>
+    <li>Herramientas de monitoreo: Wireshark, tcpdump, Nmap.</li>
+  </ul>
+
+  <h3>3. Seguridad y Criptografía</h3>
+  <ul>
+    <li>Hashing, cifrado simétrico y asimétrico, certificados, autenticación y autorización.</li>
+    <li>Práctica: crear certificados, firmar documentos, probar autenticación segura en apps.</li>
+    <li>Herramientas: OpenSSL, Hashcat.</li>
+  </ul>
+
+  <h3>4. Programación y Automatización</h3>
+  <ul>
+    <li>Python: scripts para automatizar auditorías y análisis de logs.</li>
+    <li>Bash y PowerShell: administración y automatización de sistemas.</li>
+    <li>SQL y bases de datos: Postgres, SQLite; pruebas de inyección y manejo seguro de datos.</li>
+  </ul>
+
+  <h3>5. Pentesting y Pruebas de Vulnerabilidad</h3>
+  <ul>
+    <li>Metasploit, Burp Suite, OWASP ZAP.</li>
+    <li>Laboratorios: TryHackMe, Hack The Box, CTFs (Capture The Flag).</li>
+    <li>Practicar escenarios reales en entornos controlados y virtuales.</li>
+  </ul>
+
+  <h3>6. Monitoreo y Gestión de Incidentes</h3>
+  <ul>
+    <li>Splunk, ELK Stack: análisis de logs y eventos de seguridad.</li>
+    <li>Respuesta a incidentes: documentar hallazgos, aplicar mitigaciones, reportes.</li>
+    <li>Práctica: simulaciones de incidentes en laboratorios propios.</li>
+  </ul>
+
+  <h3>7. Ética y Legalidad</h3>
+  <ul>
+    <li>Siempre trabajar en entornos con permisos o propios.</li>
+    <li>Documentar pruebas y vulnerabilidades encontradas de manera responsable.</li>
+    <li>Conocer la normativa de ciberseguridad de tu país y estándares internacionales.</li>
+  </ul>
+
+  <h3>8. Cómo estudiar y practicar</h3>
+  <ol>
+    <li>Leer documentación oficial y libros especializados en cada área.</li>
+    <li>Configurar laboratorios propios: redes virtuales, máquinas virtuales y entornos seguros.</li>
+    <li>Practicar ejercicios diarios de scripting, redes y seguridad.</li>
+    <li>Realizar CTFs y retos de pentesting en línea.</li>
+    <li>Documentar todo lo aprendido en tu propio repositorio o diario de hacking ético.</li>
+    <li>Participar en comunidades de ciberseguridad, foros y grupos de estudio.</li>
+  </ol>
+
+  <p class="nota-especial">
+    🔒 Nota: Todo lo aprendido debe aplicarse siempre de manera ética y legal. Este camino te permite convertirte en un profesional de seguridad informática, capaz de proteger sistemas, detectar vulnerabilidades y fortalecer infraestructuras.
+  </p>
+</section>
+            <!-- El resto de tus secciones se mantienen idénticas -->
+            <!-- ... (pegá todo el contenido de secciones 2 a 8 aquí) ... -->
+
+            <footer>
+                Documentado por Made Developer
+            </footer>
+        </main>
+    </div>
+
+    <!-- Chat Bot -->
+    <div class="chat-button">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <script>
+        // -------------------- Dark Mode --------------------
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+        });
+
+        // -------------------- Menú Hamburguesa --------------------
+        const hamburger = document.getElementById('hamburger');
+        const saiMenu = document.getElementById('saiMenu');
+        hamburger.addEventListener('click', () => {
+            saiMenu.classList.toggle('active');
+        });
+
+        // -------------------- Chat ejemplo --------------------
+        const chatButton = document.querySelector('.chat-button');
+        chatButton.addEventListener('click', () => {
+            alert("Chatia lista para interactuar! (Aquí se conectará la API luego)");
+        });
+
+        //----------------------boton hamburguesa----------------------
+        $(document).ready(function() {
+    const $menu = $('#hamburger-menu');
+    const $btn = $('#hamburger-btn');
+
+    // Abrir menú
+    $btn.click(function() {
+        $menu.addClass('active');
+        $('body').addClass('no-scroll');
+    });
+
+    // Cerrar menú con cruz
+    $menu.find('.close-btn').click(function() {
+        $menu.removeClass('active');
+        $('body').removeClass('no-scroll');
+    });
+
+    // Cerrar menú al tocar fuera
+    $(document).click(function(event) {
+        if (!$(event.target).closest('#hamburger-menu, #hamburger-btn').length) {
+            $menu.removeClass('active');
+            $('body').removeClass('no-scroll');
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

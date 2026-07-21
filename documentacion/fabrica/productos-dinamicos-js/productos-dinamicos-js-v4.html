@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica de Tiendas - Demo Avanzada</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #222;
+    color: #fff;
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  nav a {
+    color: #fff;
+    margin-left: 15px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a.active { color: #f0a500; font-weight: bold; }
+  section {
+    padding: 50px 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  section h2 {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+  }
+  section h2 span.icon { margin-right: 10px; }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+    gap: 20px;
+  }
+  .product-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-5px); }
+  .product-card img { width: 100%; height: 200px; object-fit: cover; }
+  .filter-btns {
+    margin-bottom: 20px;
+  }
+  .filter-btns button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .filter-btns button.active { background: #f0a500; color: #fff; }
+  pre {
+    background: #222;
+    color: #f0f0f0;
+    padding: 15px;
+    overflow-x: auto;
+    border-radius: 5px;
+  }
+  @media (max-width:600px) {
+    header { flex-direction: column; align-items: flex-start; }
+    nav a { margin: 5px 0 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fábrica de Tiendas Virtuales</h1>
+  <nav id="menuNav"></nav>
+</header>
+
+<main id="content">
+
+  <section id="inteligencia-artificial">
+    <h2><span class="icon">🤖</span>Inteligencia Artificial</h2>
+    <p>La inteligencia artificial permite automatizar la creación de tiendas virtuales, generando productos, menús y estructuras dinámicamente.</p>
+    <p>Cómo funciona: se define un JSON con productos y categorías, y el sistema genera automáticamente la tienda completa.</p>
+  </section>
+
+  <section id="api">
+    <h2><span class="icon">🔑</span>API</h2>
+    <p>Permite crear tiendas automáticamente y gestionar productos, categorías y usuarios.</p>
+    <pre>
+fetch('https://midominio.com/api/tienda', {
+  method: 'POST',
+  headers: {'Authorization': 'Bearer API_KEY'},
+  body: JSON.stringify({nombre: 'Tienda Demo'})
+});
+    </pre>
+  </section>
+
+  <section id="roles-permisos">
+    <h2><span class="icon">🛡️</span>Roles y Permisos</h2>
+    <ul>
+      <li><b>Owner</b>: Acceso total, genera API Key, crea tiendas y administra roles.</li>
+      <li><b>Superadmin</b>: Gestiona tiendas, usuarios y contenidos, sin API Key del owner.</li>
+      <li><b>Admin</b>: Gestión de contenido y operaciones dentro de tiendas asignadas.</li>
+      <li><b>Cliente</b>: Usuario consumidor de la tienda.</li>
+    </ul>
+    <p>Ejemplo de verificación de rol antes de ejecutar acción:</p>
+    <pre>
+if(user.role !== 'owner') {
+  console.log('No tienes permisos para ejecutar esta acción');
+  return;
+}
+    </pre>
+  </section>
+
+  <section id="productos">
+    <h2><span class="icon">🛒</span>Productos Dinámicos</h2>
+    <div class="filter-btns" id="filterBtns"></div>
+    <div class="products" id="productsContainer"></div>
+  </section>
+
+</main>
+
+<script>
+  // Menú dinámico
+  const sections = document.querySelectorAll('main section');
+  const menuNav = document.getElementById('menuNav');
+
+  sections.forEach(sec => {
+    const link = document.createElement('a');
+    link.href = '#' + sec.id;
+    link.textContent = sec.querySelector('h2').textContent;
+    menuNav.appendChild(link);
+  });
+
+  // Scroll highlight
+  window.addEventListener('scroll', () => {
+    let scrollPos = window.scrollY + 80;
+    sections.forEach(sec => {
+      const link = menuNav.querySelector(a[href="#${sec.id}"]);
+      if(scrollPos >= sec.offsetTop && scrollPos < sec.offsetTop + sec.offsetHeight) {
+        link.classList.add('active');
+      } else { link.classList.remove('active'); }
+    });
+  });
+
+  // Productos dinámicos con etiquetas
+  const products = [
+    {nombre:'Camiseta Negra',imagen:'https://picsum.photos/200/200?random=1',etiqueta:'Nuevo'},
+    {nombre:'Gorra Azul',imagen:'https://picsum.photos/200/200?random=2',etiqueta:'Oferta'},
+    {nombre:'Zapatos Rojos',imagen:'https://picsum.photos/200/200?random=3',etiqueta:'Destacado'},
+    {nombre:'Mochila Verde',imagen:'https://picsum.photos/200/200?random=4',etiqueta:'Nuevo'},
+    {nombre:'Reloj Digital',imagen:'https://picsum.photos/200/200?random=5',etiqueta:'Destacado'},
+    {nombre:'Campera Gris',imagen:'https://picsum.photos/200/200?random=6',etiqueta:'Oferta'}
+  ];
+
+  const productsContainer = document.getElementById('productsContainer');
+
+  function displayProducts(filtered = products){
+    productsContainer.innerHTML = '';
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.classList.add('product-card');
+      card.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p><b>${p.etiqueta}</b></p>
+      `;
+      productsContainer.appendChild(card);
+    });
+  }
+
+  displayProducts();
+
+  // Filtro dinámico
+  const filterBtns = document.getElementById('filterBtns');
+  const etiquetas = [...new Set(products.map(p=>p.etiqueta))];
+  const allBtn = document.createElement('button');
+  allBtn.textContent = 'Todos';
+  allBtn.classList.add('active');
+  allBtn.onclick = () => { setActive(allBtn); displayProducts(); }
+  filterBtns.appendChild(allBtn);
+
+  etiquetas.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.textContent = tag;
+    btn.onclick = () => {
+      setActive(btn);
+      displayProducts(products.filter(p=>p.etiqueta === tag));
+    };
+    filterBtns.appendChild(btn);
+  });
+
+  function setActive(btn){
+    Array.from(filterBtns.children).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

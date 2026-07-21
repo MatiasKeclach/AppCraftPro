@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica de Tiendas Virtuales - Productos</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+  }
+
+  header {
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  nav {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+
+  nav a.active, nav a:hover {
+    background: #4CAF50;
+  }
+
+  #product-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-card img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .product-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+
+  .product-card p {
+    margin: 5px 0;
+  }
+
+  .product-card button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .product-card button:hover {
+    background: #45a049;
+  }
+
+  .highlight {
+    border: 2px solid #ff9800;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fábrica de Tiendas Virtuales</h1>
+  <nav id="category-menu">
+    <!-- Menú de categorías dinámico -->
+  </nav>
+</header>
+
+<section id="product-section">
+  <!-- Productos dinámicos -->
+</section>
+
+<script>
+  // Array de productos
+  const productos = [
+    {id:1, nombre:"Camiseta Negra", precio:2500, categoria:"Ropa", imagen:"https://via.placeholder.com/200?text=Camiseta+Negra", destacado:true},
+    {id:2, nombre:"Zapatos Deportivos", precio:7800, categoria:"Calzado", imagen:"https://via.placeholder.com/200?text=Zapatos+Deportivos", destacado:false},
+    {id:3, nombre:"Mochila Urbana", precio:4200, categoria:"Accesorios", imagen:"https://via.placeholder.com/200?text=Mochila+Urbana", destacado:true},
+    {id:4, nombre:"Gorra Street", precio:1500, categoria:"Accesorios", imagen:"https://via.placeholder.com/200?text=Gorra+Street", destacado:false},
+    {id:5, nombre:"Chaqueta Azul", precio:5500, categoria:"Ropa", imagen:"https://via.placeholder.com/200?text=Chaqueta+Azul", destacado:false}
+  ];
+
+  const productSection = document.getElementById("product-section");
+  const categoryMenu = document.getElementById("category-menu");
+
+  // Crear menú dinámico
+  const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+  categorias.forEach(cat => {
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = cat;
+    if(cat === "Todos") link.classList.add("active");
+    link.onclick = (e) => {
+      e.preventDefault();
+      document.querySelectorAll("nav a").forEach(a => a.classList.remove("active"));
+      link.classList.add("active");
+      mostrarProductos(cat);
+    }
+    categoryMenu.appendChild(link);
+  });
+
+  // Función para mostrar productos filtrados
+  function mostrarProductos(categoria) {
+    productSection.innerHTML = "";
+    const filtered = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
+    filtered.forEach(prod => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      if(prod.destacado) card.classList.add("highlight");
+
+      const img = document.createElement("img");
+      img.src = prod.imagen;
+      img.alt = prod.nombre;
+
+      const title = document.createElement("h3");
+      title.textContent = prod.nombre;
+
+      const price = document.createElement("p");
+      price.textContent = `$${prod.precio}`;
+
+      const stock = document.createElement("p");
+      stock.textContent = `Stock: ${prod.stock || "∞"}`;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Agregar al carrito";
+      btn.onclick = () => alert(`Producto agregado: ${prod.nombre}`);
+
+      card.append(img, title, price, stock, btn);
+      productSection.appendChild(card);
+    });
+  }
+
+  // Mostrar todos al inicio
+  mostrarProductos("Todos");
+
+  // Scroll highlight para el menú (simulación)
+  window.addEventListener("scroll", () => {
+    const top = window.scrollY;
+    document.querySelectorAll(".product-card").forEach((card, i) => {
+      if(card.offsetTop - 100 <= top && card.offsetTop + card.offsetHeight - 100 > top) {
+        const cat = productos[i].categoria;
+        document.querySelectorAll("nav a").forEach(a => a.classList.remove("active"));
+        document.querySelectorAll("nav a").forEach(a => {if(a.textContent===cat) a.classList.add("active")});
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

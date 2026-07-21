@@ -175,3 +175,28 @@ body[data-theme="dark"] .card-body { color:#ccc; }
 .chat-ai-card .badge {
   background: linear-gradient(135deg, #10a37f, #0f766e);
 }
+
+.trading-bot-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.trading-bot-card::before {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: rgba(34,197,94,0.15);
+  border-radius: 50%;
+  top: -60px;
+  right: -60px;
+}
+
+.trading-bot-card .fa-chart-line {
+  color: #16a34a;
+}
+
+.trading-bot-card:hover {
+  transform: translateY(-4px);
+  transition: 0.3s;
+}

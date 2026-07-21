@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Autoconocimiento</title>
+<style>
+    /* Reset y tipografía */
+    * { box-sizing: border-box; margin:0; padding:0; font-family: 'Arial', sans-serif; }
+    body { background-color: #f2f2f2; color: #333; line-height: 1.6; padding: 20px; transition: background-color 0.3s, color 0.3s;}
+    
+    /* Dark Mode */
+    body.dark { background-color: #121212; color: #f2f2f2; }
+    
+    /* Contenedor principal */
+    .container { max-width: 1000px; margin: auto; }
+
+    /* Títulos */
+    h1, h2 { margin-bottom: 10px; }
+    h1 { text-align: center; margin-bottom: 30px; }
+    h2 { margin-top: 20px; cursor: pointer; }
+
+    /* Secciones plegables */
+    .section { background-color: #fff; margin-bottom: 15px; border-radius: 8px; padding: 15px; transition: background-color 0.3s; }
+    .section.dark { background-color: #1e1e1e; }
+    .section-content { display: none; margin-top: 10px; }
+    .section-content.active { display: block; }
+
+    /* Lista de objetivos */
+    ul { list-style: none; padding-left: 0; }
+    li { margin-bottom: 10px; display: flex; align-items: center; }
+    li input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+
+    /* Botón Dark Mode */
+    #darkModeBtn { position: fixed; top: 20px; right: 20px; padding: 10px 15px; border: none; border-radius: 5px; background-color: #ff9900; color: #fff; cursor: pointer; transition: background-color 0.3s; z-index:1000;}
+    #darkModeBtn:hover { background-color: #e68a00; }
+
+    /* Interactividad de hover en secciones */
+    .section:hover { box-shadow: 0px 4px 12px rgba(0,0,0,0.1); }
+
+    /* Responsive */
+    @media(max-width:600px){
+        body { padding: 10px; }
+        #darkModeBtn { top: 10px; right: 10px; padding: 8px 12px; }
+    }
+</style>
+</head>
+<body>
+
+<button id="darkModeBtn">Modo Dark</button>
+
+<div class="container">
+    <h1>Mapa de Autoconocimiento</h1>
+
+    <!-- Sección 1 -->
+    <div class="section">
+        <h2>Fortalezas Cognitivas</h2>
+        <div class="section-content">
+            <ul>
+                <li><input type="checkbox"> Resolución de problemas complejos de manera natural</li>
+                <li><input type="checkbox"> Análisis profundo antes de actuar</li>
+                <li><input type="checkbox"> Autoconocimiento analítico</li>
+                <li><input type="checkbox"> Intuición tecnológica y práctica</li>
+                <li><input type="checkbox"> Frialdad operativa en decisiones</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sección 2 -->
+    <div class="section">
+        <h2>Áreas de Desafío</h2>
+        <div class="section-content">
+            <ul>
+                <li><input type="checkbox"> Dificultad con tareas simples</li>
+                <li><input type="checkbox"> Búsqueda excesiva de perfección</li>
+                <li><input type="checkbox"> Autoexigencia elevada</li>
+                <li><input type="checkbox"> Procesos automáticos complicados</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sección 3 -->
+    <div class="section">
+        <h2>Estrategias para Potenciar Fortalezas</h2>
+        <div class="section-content">
+            <ul>
+                <li><input type="checkbox"> Separar tareas simples de complejas</li>
+                <li><input type="checkbox"> Bloques de tiempo estructurados</li>
+                <li><input type="checkbox"> Checklists o guías rápidas</li>
+                <li><input type="checkbox"> Canalización consciente de la complejidad</li>
+                <li><input type="checkbox"> Feedback externo selectivo</li>
+                <li><input type="checkbox"> Registro de descubrimientos</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sección 4 -->
+    <div class="section">
+        <h2>Aplicación a Proyectos</h2>
+        <div class="section-content">
+            <ul>
+                <li><input type="checkbox"> Usar análisis profundo para sistemas complejos</li>
+                <li><input type="checkbox"> Reservar tareas simples para automatización</li>
+                <li><input type="checkbox"> Aplicar regla del mínimo viable en decisiones rápidas</li>
+                <li><input type="checkbox"> Usar intuición y frialdad para priorizar lo crítico</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Toggle Dark Mode
+    const darkModeBtn = document.getElementById('darkModeBtn');
+    darkModeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        document.querySelectorAll('.section').forEach(sec => sec.classList.toggle('dark'));
+    });
+
+    // Toggle secciones
+    const sections = document.querySelectorAll('.section h2');
+    sections.forEach(title => {
+        title.addEventListener('click', () => {
+            const content = title.nextElementSibling;
+            content.classList.toggle('active');
+        });
+    });
+</script>
+
+</body>
+</html>

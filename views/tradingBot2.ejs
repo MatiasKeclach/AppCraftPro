@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trading Bot</title>
+</head>
+<body>
+
+<h1>🚀 Trading MattBot ETH</h1>
+
+<h2 id="price">Cargando...</h2>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  const socket = io();
+
+  socket.on("eth-price", (data) => {
+    document.getElementById("price").innerText =
+      "ETH: $" + data.price;
+  });
+</script>
+
+</body>
+</html>

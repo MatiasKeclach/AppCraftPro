@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logística - Colecta de Paquetes</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    padding:25px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:10px;
+    padding:20px;
+    text-align:center;
+}
+
+.card h2{
+    font-size:32px;
+    color:#38bdf8;
+}
+
+.formulario{
+    background:#1e293b;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    margin-top:5px;
+}
+
+button{
+    padding:10px 18px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    color:white;
+    margin-top:15px;
+}
+
+.guardar{
+    background:#16a34a;
+}
+
+.exportar{
+    background:#2563eb;
+}
+
+.buscar{
+    width:100%;
+    margin:20px 0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#1e293b;
+}
+
+th{
+    background:#2563eb;
+    padding:10px;
+}
+
+td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #374151;
+}
+
+.editar{
+    background:#eab308;
+    color:black;
+}
+
+.eliminar{
+    background:#dc2626;
+}
+
+.estado{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+@media(max-width:900px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.dashboard{
+grid-template-columns:repeat(2,1fr);
+}
+
+table{
+font-size:12px;
+}
+
+}
+</style>
+
+</head>
+<body>
+
+<h1>📦 Sistema de Colecta de Paquetes</h1>
+
+<div class="dashboard">
+
+<div class="card">
+<h3>Total</h3>
+<h2 id="total">0</h2>
+</div>
+
+<div class="card">
+<h3>Pendientes</h3>
+<h2 id="pendientes">0</h2>
+</div>
+
+<div class="card">
+<h3>Asignados</h3>
+<h2 id="asignados">0</h2>
+</div>
+
+<div class="card">
+<h3>Entregados</h3>
+<h2 id="entregados">0</h2>
+</div>
+
+</div>
+
+<div class="formulario">
+
+<div class="grid">
+
+<div>
+<label>Cliente</label>
+<input id="cliente">
+</div>
+
+<div>
+<label>Código</label>
+<input id="codigo">
+</div>
+
+<div>
+<label>Destinatario</label>
+<input id="destinatario">
+</div>
+
+<div>
+<label>Dirección</label>
+<input id="direccion">
+</div>
+
+<div>
+<label>Localidad</label>
+<input id="localidad">
+</div>
+
+<div>
+<label>Chofer</label>
+
+<select id="chofer">
+
+<option>Sin asignar</option>
+<option>Lili</option>
+<option>Sole</option>
+<option>Ivan</option>
+<option>Tomas</option>
+<option>Pablo</option>
+<option>Juanchi</option>
+
+<option>Nuevo</option>
+
+</select>
+
+</div>
+
+</div>
+
+<button class="guardar" onclick="guardar()">Agregar Paquete</button>
+
+<div class="formulario">
+
+<h3>📷 Importar etiquetas WhatsApp</h3>
+
+<input 
+type="file" 
+id="fotos"
+multiple
+accept="image/*">
+
+<button class="guardar" onclick="procesarFotos()">
+Leer etiquetas
+</button>
+
+</div>
+
+</div>
+
+<input
+class="buscar"
+id="buscar"
+placeholder="Buscar paquete..."
+onkeyup="mostrar()">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Cliente</th>
+<th>Código</th>
+<th>Destinatario</th>
+<th>Dirección</th>
+<th>Localidad</th>
+<th>Chofer</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabla"></tbody>
+
+</table>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+
+let paquetes=JSON.parse(localStorage.getItem("paquetes"))||[];
+
+console.log("Tesseract:", typeof Tesseract);
+function guardar(){
+
+let paquete={
+
+cliente:cliente.value,
+codigo:codigo.value,
+destinatario:destinatario.value,
+direccion:direccion.value,
+localidad:localidad.value,
+chofer:chofer.value,
+estado:chofer.value=="Sin asignar"?"Pendiente":"Asignado"
+
+}
+
+paquetes.push(paquete);
+
+localStorage.setItem("paquetes",JSON.stringify(paquetes));
+
+limpiar();
+
+mostrar();
+
+}
+
+function limpiar(){
+
+cliente.value="";
+codigo.value="";
+destinatario.value="";
+direccion.value="";
+localidad.value="";
+chofer.selectedIndex=0;
+
+}
+
+function mostrar(){
+
+let texto=buscar.value.toLowerCase();
+
+tabla.innerHTML="";
+
+let total=0;
+let pendientes=0;
+let asignados=0;
+let entregados=0;
+
+paquetes.forEach((p,i)=>{
+
+if(
+
+p.cliente.toLowerCase().includes(texto) ||
+p.codigo.toLowerCase().includes(texto) ||
+p.destinatario.toLowerCase().includes(texto) ||
+p.direccion.toLowerCase().includes(texto) ||
+p.localidad.toLowerCase().includes(texto) ||
+p.chofer.toLowerCase().includes(texto) ||
+p.estado.toLowerCase().includes(texto)
+
+){
+
+tabla.innerHTML+=`
+
+<tr>
+
+<td>${p.cliente}</td>
+
+<td>${p.codigo}</td>
+
+<td>${p.destinatario}</td>
+
+<td>${p.direccion}</td>
+
+<td>${p.localidad}</td>
+
+<td>${p.chofer}</td>
+
+<td class="estado">${p.estado}</td>
+
+<td>
+
+<button class="editar" onclick="editar(${i})">Editar</button>
+
+<button class="eliminar" onclick="eliminarPaquete(${i})">Eliminar</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+total++;
+
+if(p.estado=="Pendiente") pendientes++;
+
+if(p.estado=="Asignado") asignados++;
+
+if(p.estado=="Entregado") entregados++;
+
+});
+
+document.getElementById("total").innerHTML=total;
+document.getElementById("pendientes").innerHTML=pendientes;
+document.getElementById("asignados").innerHTML=asignados;
+document.getElementById("entregados").innerHTML=entregados;
+
+}
+
+function eliminarPaquete(i){
+
+if(confirm("¿Eliminar paquete?")){
+
+paquetes.splice(i,1);
+
+localStorage.setItem("paquetes",JSON.stringify(paquetes));
+
+mostrar();
+
+}
+
+}
+
+function editar(i){
+
+let p=paquetes[i];
+
+cliente.value=p.cliente;
+codigo.value=p.codigo;
+destinatario.value=p.destinatario;
+direccion.value=p.direccion;
+localidad.value=p.localidad;
+chofer.value=p.chofer;
+
+paquetes.splice(i,1);
+
+localStorage.setItem("paquetes",JSON.stringify(paquetes));
+
+mostrar();
+
+}
+
+mostrar();
+
+
+
+for(let foto of fotos){
+
+console.log("Procesando:",foto.name);
+
+
+let resultado = await Tesseract.recognize(
+    foto,
+    'spa'
+);
+
+
+console.log(resultado.data.text);
+
+
+}
+
+
+alert("Terminé");
+
+
+async function procesarFotos(){
+
+let fotos=document.getElementById("fotos").files;
+
+
+if(fotos.length==0){
+
+alert("Seleccioná fotos primero");
+return;
+
+}
+
+
+for(let foto of fotos){
+
+
+let resultado = await Tesseract.recognize(
+foto,
+"spa"
+);
+
+
+let texto = resultado.data.text;
+
+
+console.log(texto);
+
+
+
+let paquete={
+
+cliente:"Mercado Libre",
+
+codigo:buscarCodigo(texto),
+
+destinatario:"",
+
+direccion:"",
+
+localidad:"",
+
+chofer:"Sin asignar",
+
+estado:"Pendiente"
+
+};
+
+
+paquetes.push(paquete);
+
+
+}
+
+
+
+localStorage.setItem(
+"paquetes",
+JSON.stringify(paquetes)
+);
+
+
+mostrar();
+
+
+alert("Proceso terminado");
+
+}
+
+
+
+function buscarCodigo(texto){
+
+
+let encontrado = texto.match(
+/ML[0-9A-Z]+/i
+);
+
+
+if(encontrado){
+
+return encontrado[0];
+
+}
+
+
+return "REVISAR";
+
+
+}
+</script>
+
+</body>
+</html>

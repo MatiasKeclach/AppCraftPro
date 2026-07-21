@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Preparación - Ciberinteligencia</title>
+<style>
+  /* ========================
+     RESET Y BASE
+  ======================== */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    background-color: #121212; /* fondo general */
+    color: #f5f5f5;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1, h2, h3, h4 {
+    margin-bottom: 1rem;
+  }
+
+  /* ========================
+     TÍTULO PRINCIPAL
+  ======================== */
+  .titulo-principal {
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+    margin: 2rem 0;
+    text-align: center;
+    color: #fff;
+  }
+
+  /* ========================
+     BOTÓN DESTACADO
+  ======================== */
+  .btn-destacado {
+    display: inline-block;
+    background-color: #ff5722; /* color destacado temático */
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    margin: 1rem 0;
+    transition: background-color 0.3s;
+  }
+  .btn-destacado:hover {
+    background-color: #e64a19;
+  }
+
+  /* ========================
+     SECCIONES
+  ======================== */
+  section {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 1000px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* ========================
+     SECCIÓN ESPECIAL
+  ======================== */
+  .seccion-especial {
+    background: linear-gradient(135deg, #ff8a65, #ffb74d);
+    color: #000;
+  }
+
+  /* ========================
+     MENÚ HAMBURGUESA MÓVIL
+  ======================== */
+  .menu-hamburguesa {
+    display: none; /* no aparece en PC */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(18,18,18,0.95); /* oscuro y transparente móvil */
+    z-index: 9999;
+    flex-direction: column;
+    padding: 1rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .menu-hamburguesa.open {
+    transform: translateX(0);
+  }
+  .menu-hamburguesa ul {
+    list-style: none;
+    margin-top: 3rem;
+  }
+  .menu-hamburguesa li {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+  }
+  .menu-hamburguesa .cerrar-menu {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  /* ========================
+     BOTÓN DARK MODE
+  ======================== */
+  .btn-darkmode {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: #fff;
+    color: #121212;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ========================
+     RESPONSIVE
+  ======================== */
+  @media(max-width: 768px){
+    .menu-hamburguesa-toggle {
+      display: block;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1001;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #fff;
+    }
+    section {
+      background-color: rgba(30,30,30,0.9);
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- BOTÓN DARK MODE -->
+<div class="btn-darkmode" id="darkModeBtn">🌙</div>
+
+<!-- MENÚ HAMBURGUESA MÓVIL -->
+<div class="menu-hamburguesa" id="menuHamburguesa">
+  <div class="cerrar-menu" id="cerrarMenu">✖</div>
+  <ul>
+    <li><a href="#">Inicio</a></li>
+    <li><a href="#">Secciones</a></li>
+    <li><a href="#">Manual</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+</div>
+
+<!-- BOTÓN TOGGLE MENÚ HAMBURGUESA MÓVIL -->
+<div class="menu-hamburguesa-toggle" id="toggleMenu">☰</div>
+
+<!-- TÍTULO PRINCIPAL -->
+<h1 class="titulo-principal">Manual de Preparación, Ciberinteligencia: guía de conocimiento, habilidades y estrategias para desarrollar inteligencia digital y análisis de ciberdelitos</h1>
+
+<!-- BOTÓN DESTACADO -->
+<a href="#" class="btn-destacado">Manual de Estudio</a>
+
+<!-- SECCIONES -->
+<section>
+  <h2>Sección 1</h2>
+  <p>Contenido de la sección 1.</p>
+</section>
+
+<section>
+  <h2>Sección 2</h2>
+  <p>Contenido de la sección 2.</p>
+</section>
+
+<section class="seccion-especial">
+  <h2>Sección Especial</h2>
+  <ol>
+    <li>Ítem destacado 1</li>
+    <li>Ítem destacado 2</li>
+    <li>Ítem destacado 3</li>
+  </ol>
+</section>
+
+<!-- CHAT SIMPLIFICADO -->
+<section>
+  <h2>Chat</h2>
+  <div id="chatBox" style="background:#333;padding:1rem;border-radius:5px;color:#fff;">
+    <p><strong>Bot:</strong> Hola! Estoy listo para ayudarte.</p>
+  </div>
+</section>
+
+<script>
+  // =======================
+  // DARK MODE
+  // =======================
+  const darkModeBtn = document.getElementById('darkModeBtn');
+  darkModeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('darkmode');
+    if(document.body.classList.contains('darkmode')){
+      document.body.style.backgroundColor = '#121212';
+      document.body.style.color = '#f5f5f5';
+      darkModeBtn.textContent = '☀️';
+    } else {
+      document.body.style.backgroundColor = '#f5f5f5';
+      document.body.style.color = '#121212';
+      darkModeBtn.textContent = '🌙';
+    }
+
+    // Asegurar que sección especial no se vea mal en dark mode
+    const seccionEspecial = document.querySelector('.seccion-especial');
+    if(document.body.classList.contains('darkmode')){
+      seccionEspecial.style.background = 'linear-gradient(135deg, #ff8a65, #ffb74d)';
+      seccionEspecial.style.color = '#000';
+    }
+  });
+
+  // =======================
+  // MENÚ HAMBURGUESA
+  // =======================
+  const toggleMenu = document.getElementById('toggleMenu');
+  const menu = document.getElementById('menuHamburguesa');
+  const cerrarMenu = document.getElementById('cerrarMenu');
+
+  toggleMenu.addEventListener('click', () => menu.classList.add('open'));
+  cerrarMenu.addEventListener('click', () => menu.classList.remove('open'));
+
+  // CERRAR AL TOCAR FUERA
+  document.addEventListener('click', function(e){
+    if(menu.classList.contains('open') && !menu.contains(e.target) && e.target !== toggleMenu){
+      menu.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>

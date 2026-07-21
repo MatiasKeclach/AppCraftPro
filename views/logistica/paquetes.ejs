@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clientes - Logística</title>
+<title>Paquetes - Logística</title>
 
 <link rel="stylesheet" href="/css/panel.css">
 
@@ -14,26 +14,18 @@
 <style>
 
 :root{
-
     --primary:#2563eb;
-    --success:#16a34a;
-    --danger:#dc2626;
     --dark:#0f172a;
     --bg:#f1f5f9;
     --card:#ffffff;
     --border:#e2e8f0;
     --text:#334155;
-    --shadow:0 10px 25px rgba(15,23,42,.08);
-
 }
 
 
 *{
-
     box-sizing:border-box;
-
 }
-
 
 
 body{
@@ -45,7 +37,6 @@ body{
     font-family:
     Inter,
     Arial,
-    Helvetica,
     sans-serif;
 
     color:var(--text);
@@ -59,13 +50,11 @@ body{
 .header{
 
     background:
-    linear-gradient(135deg,#0f172a,#2563eb);
+    linear-gradient(135deg,#0f172a,#1d4ed8);
 
     color:white;
 
-    padding:25px;
-
-    box-shadow:var(--shadow);
+    padding:25px 20px;
 
 }
 
@@ -73,8 +62,6 @@ body{
 .header h2{
 
     margin:0;
-
-    font-size:25px;
 
 }
 
@@ -86,8 +73,6 @@ body{
     opacity:.8;
 
 }
-
-
 
 
 
@@ -107,8 +92,7 @@ body{
 
 
 
-
-/* CARDS */
+/* BOX */
 
 .box{
 
@@ -116,13 +100,14 @@ body{
 
     border-radius:18px;
 
-    padding:25px;
+    padding:22px;
 
     margin-bottom:25px;
 
-    box-shadow:var(--shadow);
-
     border:1px solid var(--border);
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.06);
 
 }
 
@@ -137,23 +122,22 @@ body{
 
 
 
+/* FORM */
 
+form{
 
-/* FORMULARIO */
+    display:flex;
 
-.form-grid{
+    flex-direction:column;
 
-    display:grid;
-
-    grid-template-columns:1fr;
-
-    gap:14px;
+    gap:12px;
 
 }
 
 
-
-input{
+input,
+select,
+textarea{
 
     width:100%;
 
@@ -168,21 +152,17 @@ input{
 }
 
 
+textarea{
 
-input:focus{
+    resize:none;
 
-    outline:none;
-
-    border-color:var(--primary);
-
-    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+    height:90px;
 
 }
 
 
 
-
-.btn-primary{
+button{
 
     background:var(--primary);
 
@@ -194,15 +174,13 @@ input:focus{
 
     border-radius:12px;
 
-    font-size:16px;
+    cursor:pointer;
 
     font-weight:bold;
 
-    cursor:pointer;
+    font-size:16px;
 
 }
-
-
 
 
 
@@ -217,35 +195,15 @@ input:focus{
 }
 
 
-
 table{
 
     width:100%;
 
-    min-width:950px;
+    min-width:900px;
 
     border-collapse:collapse;
 
 }
-
-
-
-thead{
-
-    background:#f8fafc;
-
-}
-
-
-
-th{
-
-    color:#475569;
-
-    text-align:left;
-
-}
-
 
 
 th,
@@ -255,11 +213,12 @@ td{
 
     border-bottom:1px solid var(--border);
 
+    text-align:left;
+
 }
 
 
-
-tbody tr:hover{
+th{
 
     background:#f8fafc;
 
@@ -267,85 +226,72 @@ tbody tr:hover{
 
 
 
+.qr{
 
-/* BOTONES ACCIONES */
+    width:70px;
 
-.btn-edit,
-.btn-delete{
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:8px 12px;
-
-    border-radius:8px;
-
-    font-size:14px;
-
-    display:inline-block;
-
-    margin:2px;
+    height:70px;
 
 }
 
 
 
-.btn-edit{
+.codigo{
 
-    background:var(--success);
+    color:#2563eb;
 
-}
-
-
-
-.btn-delete{
-
-    background:var(--danger);
+    font-weight:bold;
 
 }
 
 
 
+.estado{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+}
 
 
 
-/* TABLET */
 
 @media(min-width:768px){
 
+    form{
 
-.form-grid{
+        display:grid;
 
-    grid-template-columns:repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+
+    textarea,
+    button{
+
+        grid-column:span 2;
+
+    }
 
 }
 
 
-.btn-primary{
-
-    grid-column:span 2;
-
-}
-
-
-}
-
-
-
-
-
-/* PC */
 
 @media(min-width:1100px){
 
+    .container{
 
-.container{
+        padding:35px;
 
-    padding:35px;
-
-}
-
+    }
 
 }
 
@@ -357,6 +303,7 @@ tbody tr:hover{
 </head>
 
 
+
 <body>
 
 
@@ -365,21 +312,16 @@ tbody tr:hover{
 
 
 <h2>
-
-👥 Clientes Logística
-
+📦 Paquetes Logística
 </h2>
 
 
 <p>
-
 Usuario: <%= username %>
-
 </p>
 
 
 </div>
-
 
 
 
@@ -395,95 +337,110 @@ Usuario: <%= username %>
 
 
 <h3>
-
-➕ Nuevo cliente
-
+➕ Registrar paquete
 </h3>
 
 
 
 
-<form 
-method="POST"
-action="/panel/logistica/clientes"
->
-
-
-<div class="form-grid">
+<form method="POST" action="/panel/logistica/paquetes">
 
 
 
-<input
+<select name="cliente_id" required>
 
-name="nombre"
 
-placeholder="Nombre del cliente"
-
-required
-
->
+<option value="">
+Seleccionar cliente
+</option>
 
 
 
-
-<input
-
-name="empresa"
-
-placeholder="Empresa"
-
->
+<% clientes.forEach(cliente => { %>
 
 
+<option value="<%= cliente.id %>">
+
+<%= cliente.nombre %>
+
+</option>
 
 
-<input
+<% }) %>
 
-name="telefono"
 
-placeholder="Teléfono"
 
->
+</select>
 
 
 
 
-<input
 
-name="email"
+<select name="tipo">
 
-type="email"
 
-placeholder="Email"
+<option value="flex">
+FLEX
+</option>
 
->
+
+<option value="particular">
+PARTICULAR
+</option>
+
+
+</select>
+
 
 
 
 
 <input
 
-name="direccion"
+type="text"
 
-placeholder="Dirección"
+name="codigo_externo"
 
->
+placeholder="Código externo Mercado Libre / Cliente"
+
+/>
 
 
 
 
-<button 
-class="btn-primary"
-type="submit"
->
 
-💾 Guardar cliente
+<input
+
+type="text"
+
+name="descripcion"
+
+placeholder="Descripción del paquete"
+
+/>
+
+
+
+
+
+<textarea
+
+name="observaciones"
+
+placeholder="Observaciones"
+
+></textarea>
+
+
+
+
+
+<button type="submit">
+
+📦 Crear paquete + QR
 
 </button>
 
-
-
-</div>
 
 
 </form>
@@ -498,19 +455,20 @@ type="submit"
 
 
 
+
+
 <div class="box">
 
 
 <h3>
-
-📋 Clientes registrados
-
+📋 Paquetes registrados
 </h3>
 
 
 
 
 <div class="table-container">
+
 
 
 <table>
@@ -524,17 +482,17 @@ type="submit"
 
 <th>ID</th>
 
-<th>Nombre</th>
+<th>Cliente</th>
 
-<th>Empresa</th>
+<th>Tipo</th>
 
-<th>Teléfono</th>
+<th>Código externo</th>
 
-<th>Email</th>
+<th>Código interno</th>
 
-<th>Dirección</th>
+<th>QR</th>
 
-<th>Acciones</th>
+<th>Estado</th>
 
 </tr>
 
@@ -543,12 +501,31 @@ type="submit"
 
 
 
-
-
 <tbody>
 
 
-<% clientes.forEach(cliente => { %>
+
+<% if(paquetes.length === 0){ %>
+
+
+<tr>
+
+<td colspan="7">
+
+No hay paquetes registrados
+
+</td>
+
+</tr>
+
+
+<% } %>
+
+
+
+
+
+<% paquetes.forEach(paquete => { %>
 
 
 
@@ -558,7 +535,7 @@ type="submit"
 
 <td>
 
-<%= cliente.id %>
+<%= paquete.id %>
 
 </td>
 
@@ -567,7 +544,7 @@ type="submit"
 
 <td>
 
-<%= cliente.nombre %>
+<%= paquete.cliente_nombre %>
 
 </td>
 
@@ -576,7 +553,7 @@ type="submit"
 
 <td>
 
-<%= cliente.empresa || "-" %>
+<%= paquete.tipo.toUpperCase() %>
 
 </td>
 
@@ -585,7 +562,16 @@ type="submit"
 
 <td>
 
-<%= cliente.telefono || "-" %>
+<%= paquete.codigo_externo || "-" %>
+
+</td>
+
+
+
+
+<td class="codigo">
+
+<%= paquete.codigo_interno %>
 
 </td>
 
@@ -594,62 +580,37 @@ type="submit"
 
 <td>
 
-<%= cliente.email || "-" %>
 
-</td>
+<img
 
+class="qr"
 
+src="<%= paquete.qr_codigo %>"
 
-
-<td>
-
-<%= cliente.direccion || "-" %>
-
-</td>
+alt="QR"
 
 
-
-
-
-<td>
-
-
-
-<a
-
-class="btn-edit"
-
-href="/panel/logistica/clientes/editar/<%= cliente.id %>"
 
 >
 
-✏️ Editar
-
-</a>
-
-
-
-
-
-<a
-
-class="btn-delete"
-
-href="/panel/logistica/clientes/eliminar/<%= cliente.id %>"
-
-onclick="return confirm('¿Seguro que desea eliminar este cliente?')"
-
->
-
-🗑️ Borrar
-
-</a>
-
-
 
 
 </td>
 
+
+
+
+<td>
+
+
+<span class="estado">
+
+<%= paquete.estado %>
+
+</span>
+
+
+</td>
 
 
 
@@ -661,31 +622,31 @@ onclick="return confirm('¿Seguro que desea eliminar este cliente?')"
 
 
 
+
 </tbody>
-
-
 
 
 </table>
 
 
-</div>
-
-
 
 </div>
-
-
-
 
 
 
 </div>
 
 
+
+
+
+
+
+</div>
 
 
 
 </body>
+
 
 </html>

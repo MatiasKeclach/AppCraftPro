@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentación Interactiva Tienda Virtual "Las Gladiolas"</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI', sans-serif; line-height:1.6; background:#f4f4f4; color:#333; transition: background 0.3s, color 0.3s; }
+  h1,h2,h3 { color:#0a74da; margin-bottom:0.5em; }
+  p, ul { margin-bottom:1em; }
+  ul { list-style: disc inside; }
+  .container { max-width:1000px; margin:2em auto; padding:2em; background:#fff; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.15); position:relative; }
+  .toggle-dark { position: fixed; top:20px; right:20px; padding:10px 15px; background:#0a74da; color:#fff; border:none; border-radius:5px; cursor:pointer; z-index:100; }
+
+  /* DIAGRAMA */
+  .diagram-container { position:relative; height:500px; margin-top:2em; }
+  .node { position:absolute; padding:15px 20px; border-radius:8px; background:#eaeaea; text-align:center; cursor:pointer; transition: transform 0.2s, background 0.2s; min-width:150px; }
+  .node:hover { transform:scale(1.05); background:#0a74da; color:#fff; }
+  .node::after { content:attr(data-tooltip); position:absolute; bottom:110%; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:5px 10px; border-radius:5px; font-size:0.9em; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+  .node:hover::after { opacity:1; }
+
+  svg { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:-1; }
+
+  /* ANIMACION DE PEDIDOS */
+  .pedido { position:absolute; width:20px; height:20px; border-radius:50%; background:#0a74da; color:#fff; display:flex; justify-content:center; align-items:center; font-size:12px; font-weight:bold; pointer-events:none; z-index:50; transition: all 1s linear; }
+
+  /* CHAT IA */
+  #chat-bubble { position:fixed; bottom:20px; right:20px; width:60px; height:60px; background:#FF5A5F; color:#fff; font-size:28px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:9999; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+  #chat-container { position:fixed; bottom:90px; right:20px; width:320px; max-width:95%; max-height:400px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); display:none; flex-direction:column; overflow:hidden; z-index:9998; }
+  #chat-header { background:#FF5A5F; color:white; padding:10px; display:flex; justify-content:space-between; font-weight:500; }
+  #chat-messages { padding:10px; flex:1; overflow-y:auto; background:#f7f7f7; word-wrap:break-word; }
+  .chat-msg.bot { background:#FF5A5F; color:white; align-self:flex-start; margin-bottom:6px; padding:8px 12px; border-radius:12px; max-width:80%; word-wrap:break-word; }
+  .chat-msg.user { background:#eee; color:#333; align-self:flex-end; margin-bottom:6px; padding:8px 12px; border-radius:12px; max-width:80%; word-wrap:break-word; }
+  #chat-input-area { display:flex; border-top:1px solid #ccc; }
+  #chat-input-area input { flex:1; padding:10px; border:none; outline:none; }
+  #chat-input-area button { padding:10px 15px; background:#FF5A5F; color:white; border:none; cursor:pointer; font-weight:500; }
+
+  /* DARK MODE */
+  body.dark { background:#1e1e1e; color:#ddd; }
+  body.dark .container { background:#2a2a2a; }
+  body.dark .node { background:#333; }
+  body.dark .node:hover { background:#4aa3ff; color:#fff; }
+  body.dark .toggle-dark { background:#4aa3ff; }
+  body.dark #chat-container { background:#2a2a2a; }
+  body.dark #chat-messages { background:#1e1e1e; }
+</style>
+</head>
+<body>
+
+<button class="toggle-dark">Modo Dark</button>
+
+<div class="container">
+  <header>
+    <h1>Tienda Virtual "Las Gladiolas"</h1>
+    <p>Presentación interactiva de arquitectura, flujo y funcionalidades</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Resumen General</h2>
+      <ul>
+        <li>Base de datos con BetterSQLite3</li>
+        <li>Backend Node.js + Express + Socket.io</li>
+        <li>Frontend Next.js + React</li>
+        <li>CMS de administración</li>
+        <li>Chat IA integrado</li>
+        <li>Simulación de flujo de pedidos (mayoristas y minoristas)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Diagrama de Flujo Interactivo</h2>
+      <p>Pasa el mouse sobre cada bloque para ver detalles:</p>
+      <div class="diagram-container">
+        <svg></svg>
+        <div class="node" id="usuarios" style="top:20px; left:50%;" data-tooltip="Clientes mayoristas y minoristas">Usuarios</div>
+        <div class="node" id="productos" style="top:120px; left:10%;" data-tooltip="Catálogo de productos de ropa">Productos</div>
+        <div class="node" id="pedidos" style="top:120px; left:70%;" data-tooltip="Pedidos realizados por clientes">Pedidos</div>
+        <div class="node" id="detalle" style="top:220px; left:50%;" data-tooltip="Detalle de cada pedido">Detalle Pedidos</div>
+        <div class="node" id="categorias" style="top:320px; left:10%;" data-tooltip="Filtrado por categorías">Categorías</div>
+        <div class="node" id="cms" style="top:320px; left:70%;" data-tooltip="Panel de administración de la tienda">CMS Admin</div>
+        <div class="node" id="chatia" style="top:420px; left:50%;" data-tooltip="Chat IA para asistencia">Chat IA</div>
+      </div>
+      <p>Flujo de pedidos animado:</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 M@tt Developer - Presentación Interactiva Tienda Virtual "Las Gladiolas"</p>
+  </footer>
+</div>
+
+<!-- CHAT IA -->
+<div id="chat-bubble">💬</div>
+<div id="chat-container">
+  <div id="chat-header">M@ttBot <span id="close-chat" style="cursor:pointer;">✖</span></div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Escribí tu mensaje...">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+</div>
+
+<script>
+  // DARK MODE
+  const darkBtn = document.querySelector('.toggle-dark');
+  darkBtn.addEventListener('click', ()=>document.body.classList.toggle('dark'));
+
+  // DIAGRAMA CON LÍNEAS
+  const svg = document.querySelector('svg');
+  function connectNodes(id1,id2){
+    const n1=document.getElementById(id1);
+    const n2=document.getElementById(id2);
+    const x1=n1.offsetLeft+n1.offsetWidth/2;
+    const y1=n1.offsetTop+n1.offsetHeight/2;
+    const x2=n2.offsetLeft+n2.offsetWidth/2;
+    const y2=n2.offsetTop+n2.offsetHeight/2;
+    const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1",x1);
+    line.setAttribute("y1",y1);
+    line.setAttribute("x2",x2);
+    line.setAttribute("y2",y2);
+    line.setAttribute("stroke","#0a74da");
+    line.setAttribute("stroke-width","2");
+    svg.appendChild(line);
+  }
+  connectNodes('usuarios','productos');
+  connectNodes('usuarios','pedidos');
+  connectNodes('productos','detalle');
+  connectNodes('pedidos','detalle');
+  connectNodes('detalle','categorias');
+  connectNodes('detalle','cms');
+  connectNodes('detalle','chatia');
+
+  // CHAT IA
+  const chatBubble=document.getElementById('chat-bubble');
+  const chatContainer=document.getElementById('chat-container');
+  const chatMessages=document.getElementById('chat-messages');
+  const chatInput=document.getElementById('chat-input');
+  const closeChat=document.getElementById('close-chat');
+
+  chatBubble.addEventListener('click', ()=>chatContainer.style.display='flex');
+  closeChat.addEventListener('click', ()=>chatContainer.style.display='none');
+
+  function sendMessage(){
+    const msg=chatInput.value.trim();
+    if(!msg) return;
+    const userMsg=document.createElement('div');
+    userMsg.classList.add('chat-msg','user');
+    userMsg.textContent=msg;
+    chatMessages.appendChild(userMsg);
+    chatInput.value='';
+    chatMessages.scrollTop=chatMessages.scrollHeight;
+    setTimeout(()=>{
+      const botMsg=document.createElement('div');
+      botMsg.classList.add('chat-msg','bot');
+      botMsg.textContent='¡Hola! Soy M@ttBot. Puedo ayudarte con la tienda, pedidos y productos.';
+      chatMessages.appendChild(botMsg);
+      chatMessages.scrollTop=chatMessages.scrollHeight;
+    },600);
+  }
+
+  window.addEventListener('load', ()=>{
+    const welcomeMsg=document.createElement('div');
+    welcomeMsg.classList.add('chat-msg','bot');
+    welcomeMsg.textContent='¡Hola! Bienvenido a Las Gladiolas. 💐 ¿Querés que te muestre la tienda?';
+    chatMessages.appendChild(welcomeMsg);
+  });
+
+  // ANIMACION DE PEDIDOS
+  const flujoPedidos=[
+    {from:'usuarios',to:'pedidos',tipo:'mayorista'},
+    {from:'usuarios',to:'pedidos',tipo:'minorista'},
+    {from:'pedidos',to:'detalle',tipo:'mayorista'},
+    {from:'pedidos',to:'detalle',tipo:'minorista'},
+    {from:'detalle',to:'cms',tipo:'mayorista'},
+    {from:'detalle',to:'cms',tipo:'minorista'}
+  ];
+
+  function animarPedido(pedido){
+    const fromNode=document.getElementById(pedido.from);
+    const toNode=document.getElementById(pedido.to);
+    const p = document.createElement('div');
+    p.classList.add('pedido');
+    p.style.background = pedido.tipo==='mayorista' ? '#FF8C00' : '#0a74da';
+    p.textContent = pedido.tipo==='mayorista' ? 'M' : 'm';
+    document.querySelector('.diagram-container').appendChild(p);
+    const startX=fromNode.offsetLeft+fromNode.offsetWidth/2-10;
+    const startY=fromNode.offsetTop+fromNode.offsetHeight/2-10;
+    const endX=toNode.offsetLeft+toNode.offsetWidth/2-10;
+    const endY=toNode.offsetTop+toNode.offsetHeight/2-10;
+    p.style.left=startX+'px';
+    p.style.top=startY+'px';
+    setTimeout(()=>{ p.style.left=endX+'px'; p.style.top=endY+'px'; },50);
+    setTimeout(()=>{ p.remove(); },1500);
+  }
+
+  setInterval(()=>{
+    const pedido = flujoPedidos[Math.floor(Math.random()*flujoPedidos.length)];
+    animarPedido(pedido);
+  },1200);
+
+</script>
+
+</body>
+</html>

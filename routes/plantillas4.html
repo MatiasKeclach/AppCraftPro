@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Logística - Colecta de Paquetes</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    padding:25px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:10px;
+    padding:20px;
+    text-align:center;
+}
+
+.card h2{
+    font-size:32px;
+    color:#38bdf8;
+    margin-top:8px;
+}
+
+.formulario{
+    background:#1e293b;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.campo{
+    display:flex;
+    flex-direction:column;
+}
+
+label{
+    margin-bottom:5px;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:none;
+    border-radius:6px;
+    margin-top:5px;
+}
+
+button{
+    padding:10px 18px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    color:white;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.guardar{
+    background:#16a34a;
+}
+
+.exportar{
+    background:#2563eb;
+}
+
+.escanear{
+    background:#7c3aed;
+}
+
+.eliminar{
+    background:#dc2626;
+}
+
+.editar{
+    background:#eab308;
+    color:black;
+}
+
+.buscar{
+    width:100%;
+    margin:20px 0;
+}
+
+.importador{
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid #475569;
+}
+
+.importador h3{
+    margin-bottom:10px;
+}
+
+.info{
+    color:#cbd5e1;
+    font-size:14px;
+    margin:8px 0;
+}
+
+.progreso{
+    display:none;
+    margin-top:15px;
+}
+
+.barra-contenedor{
+    width:100%;
+    height:20px;
+    background:#334155;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.barra{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    transition:width .3s;
+}
+
+.estado-proceso{
+    margin-top:8px;
+    color:#38bdf8;
+}
+
+.resultado{
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    background:#0f172a;
+    border-radius:8px;
+}
+
+.resultado p{
+    margin:5px 0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#1e293b;
+}
+
+th{
+    background:#2563eb;
+    padding:10px;
+}
+
+td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #374151;
+}
+
+.estado{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.posible-duplicado{
+    color:#facc15;
+    font-weight:bold;
+}
+
+.vacio{
+    color:#94a3b8;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.8);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-contenido{
+    background:#1e293b;
+    padding:25px;
+    border-radius:10px;
+    width:90%;
+    max-width:700px;
+}
+
+.modal-contenido h2{
+    margin-bottom:15px;
+}
+
+#textoOCR{
+    width:100%;
+    height:300px;
+    background:#0f172a;
+    color:white;
+    border:1px solid #475569;
+    border-radius:6px;
+    padding:10px;
+    resize:none;
+}
+
+.cerrar{
+    background:#dc2626;
+}
+
+@media(max-width:900px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    table{
+        font-size:12px;
+        display:block;
+        overflow-x:auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📦 Sistema de Colecta de Paquetes</h1>
+
+<!-- ========================= -->
+
+<!-- DASHBOARD -->
+
+<!-- ========================= -->
+
+<div class="dashboard">
+
+```
+<div class="card">
+    <h3>Total</h3>
+    <h2 id="total">0</h2>
+</div>
+
+<div class="card">
+    <h3>Pendientes</h3>
+    <h2 id="pendientes">0</h2>
+</div>
+
+<div class="card">
+    <h3>Asignados</h3>
+    <h2 id="asignados">0</h2>
+</div>
+
+<div class="card">
+    <h3>Entregados</h3>
+    <h2 id="entregados">0</h2>
+</div>
+```
+
+</div>
+
+<!-- ========================= -->
+
+<!-- FORMULARIO MANUAL -->
+
+<!-- ========================= -->
+
+<div class="formulario">
+
+```
+<h3>📦 Agregar paquete manualmente</h3>
+
+<br>
+
+<div class="grid">
+
+    <div class="campo">
+        <label>Cliente</label>
+        <input id="cliente">
+    </div>
+
+    <div class="campo">
+        <label>Código</label>
+        <input id="codigo">
+    </div>
+
+    <div class="campo">
+        <label>Destinatario</label>
+        <input id="destinatario">
+    </div>
+
+    <div class="campo">
+        <label>Dirección</label>
+        <input id="direccion">
+    </div>
+
+    <div class="campo">
+        <label>Localidad</label>
+        <input id="localidad">
+    </div>
+
+    <div class="campo">
+        <label>Chofer</label>
+
+        <select id="chofer">
+
+            <option>Sin asignar</option>
+
+            <option>Lili</option>
+
+            <option>Sole</option>
+
+            <option>Ivan</option>
+
+            <option>Tomas</option>
+
+            <option>Pablo</option>
+
+            <option>Juanchi</option>
+
+            <option>Nuevo</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<button
+    class="guardar"
+    id="btnGuardar"
+    onclick="guardar()">
+
+    Agregar Paquete
+
+</button>
+
+
+<!-- ========================= -->
+<!-- IMPORTAR FOTOS -->
+<!-- ========================= -->
+
+<div class="importador">
+
+    <h3>📷 Importar etiquetas WhatsApp</h3>
+
+    <p class="info">
+
+        Seleccioná una o varias fotos de etiquetas.
+
+        El sistema intentará leer automáticamente
+
+        el código, destinatario, dirección y localidad.
+
+    </p>
+
+
+    <input
+        type="file"
+        id="fotos"
+        multiple
+        accept="image/*">
+
+
+    <br>
+
+
+    <button
+        class="guardar"
+        id="btnProcesar"
+        onclick="procesarFotos()">
+
+        Leer etiquetas y crear paquetes
+
+    </button>
+
+
+    <button
+        class="escanear"
+        onclick="abrirCamara()">
+
+        📱 Escanear con cámara
+
+    </button>
+
+
+    <!-- PROGRESO -->
+
+    <div
+        class="progreso"
+        id="progreso">
+
+        <div class="barra-contenedor">
+
+            <div
+                class="barra"
+                id="barra">
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="estado-proceso"
+            id="estadoProceso">
+
+            Preparando...
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULTADO -->
+
+    <div
+        class="resultado"
+        id="resultado">
+
+        <p>
+            📸 Fotos procesadas:
+            <strong id="rProcesadas">0</strong>
+        </p>
+
+        <p>
+            ✅ Paquetes creados:
+            <strong id="rCreados">0</strong>
+        </p>
+
+        <p>
+            ⚠️ Posibles duplicados:
+            <strong id="rDuplicados">0</strong>
+        </p>
+
+        <p>
+            ❌ Errores:
+            <strong id="rErrores">0</strong>
+        </p>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- ========================= -->
+
+<!-- BUSCADOR -->
+
+<!-- ========================= -->
+
+<input
+ class="buscar"
+ id="buscar"
+ placeholder="Buscar paquete..."
+ onkeyup="mostrar()">
+
+<!-- ========================= -->
+
+<!-- TABLA -->
+
+<!-- ========================= -->
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Cliente</th>
+
+<th>Código</th>
+
+<th>Destinatario</th>
+
+<th>Dirección</th>
+
+<th>Localidad</th>
+
+<th>Chofer</th>
+
+<th>Estado</th>
+
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabla">
+
+</tbody>
+
+</table>
+
+<!-- ========================= -->
+
+<!-- MODAL OCR -->
+
+<!-- ========================= -->
+
+<div
+    class="modal"
+    id="modalOCR">
+
+```
+<div class="modal-contenido">
+
+    <h2>🔎 Texto detectado por OCR</h2>
+
+    <textarea
+        id="textoOCR"
+        readonly>
+
+    </textarea>
+
+    <button
+        class="cerrar"
+        onclick="cerrarOCR()">
+
+        Cerrar
+
+    </button>
+
+</div>
+```
+
+</div>
+
+<!-- ========================= -->
+
+<!-- TESSERACT -->
+
+<!-- ========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+
+
+// =====================================================
+// DATOS
+// =====================================================
+
+
+let paquetes =
+    JSON.parse(
+        localStorage.getItem("paquetes")
+    ) || [];
+
+
+// =====================================================
+// GUARDAR LOCAL
+// =====================================================
+
+
+function guardarLocal(){
+
+    localStorage.setItem(
+
+        "paquetes",
+
+        JSON.stringify(paquetes)
+
+    );
+
+}
+
+
+// =====================================================
+// ID ÚNICO
+// =====================================================
+
+
+function generarID(){
+
+    return (
+
+        Date.now().toString(36)
+
+        +
+
+        Math.random()
+            .toString(36)
+            .substring(2,8)
+
+    ).toUpperCase();
+
+}
+
+
+// =====================================================
+// ELEMENTOS
+// =====================================================
+
+
+const cliente =
+    document.getElementById("cliente");
+
+const codigo =
+    document.getElementById("codigo");
+
+const destinatario =
+    document.getElementById("destinatario");
+
+const direccion =
+    document.getElementById("direccion");
+
+const localidad =
+    document.getElementById("localidad");
+
+const chofer =
+    document.getElementById("chofer");
+
+const buscar =
+    document.getElementById("buscar");
+
+const tabla =
+    document.getElementById("tabla");
+
+
+// =====================================================
+// GUARDAR PAQUETE MANUAL
+// =====================================================
+
+
+function guardar(){
+
+
+    if(
+
+        cliente.value.trim()==="" &&
+
+        codigo.value.trim()==="" &&
+
+        destinatario.value.trim()==="" &&
+
+        direccion.value.trim()==="" &&
+
+        localidad.value.trim()===""
+
+    ){
+
+        alert(
+            "Completá al menos un dato del paquete"
+        );
+
+        return;
+
+    }
+
+
+    let paquete = {
+
+
+        id:
+            generarID(),
+
+
+        cliente:
+            cliente.value.trim(),
+
+
+        codigo:
+            codigo.value.trim(),
+
+
+        destinatario:
+            destinatario.value.trim(),
+
+
+        direccion:
+            direccion.value.trim(),
+
+
+        localidad:
+            localidad.value.trim(),
+
+
+        chofer:
+            chofer.value,
+
+
+        estado:
+
+            chofer.value ===
+            "Sin asignar"
+
+            ?
+
+            "Pendiente"
+
+            :
+
+            "Asignado",
+
+
+        fecha:
+            new Date()
+                .toLocaleDateString("es-AR"),
+
+
+        hora:
+            new Date()
+                .toLocaleTimeString("es-AR")
+
+    };
+
+
+    paquetes.push(paquete);
+
+
+    guardarLocal();
+
+
+    limpiar();
+
+
+    mostrar();
+
+
+}
+
+
+// =====================================================
+// LIMPIAR
+// =====================================================
+
+
+function limpiar(){
+
+    cliente.value="";
+
+    codigo.value="";
+
+    destinatario.value="";
+
+    direccion.value="";
+
+    localidad.value="";
+
+    chofer.value="Sin asignar";
+
+}
+
+
+// =====================================================
+// MOSTRAR
+// =====================================================
+
+
+function mostrar(){
+
+
+    let texto =
+
+        buscar.value
+            .toLowerCase()
+            .trim();
+
+
+    tabla.innerHTML="";
+
+
+    let total=0;
+
+    let pendientes=0;
+
+    let asignados=0;
+
+    let entregados=0;
+
+
+    paquetes.forEach(
+
+        (p,i)=>{
+
+
+            let contenido = (
+
+                (p.cliente || "") +
+
+                (p.codigo || "") +
+
+                (p.destinatario || "") +
+
+                (p.direccion || "") +
+
+                (p.localidad || "") +
+
+                (p.chofer || "") +
+
+                (p.estado || "")
+
+            ).toLowerCase();
+
+
+            if(
+
+                !contenido.includes(texto)
+
+            ){
+
+                return;
+
+            }
+
+
+            let avisoDuplicado =
+
+                p.posibleDuplicado
+
+                ?
+
+                `<br>
+                <span class="posible-duplicado">
+                ⚠️ Posible duplicado
+                </span>`
+
+                :
+
+                "";
+
+
+            tabla.innerHTML += `
+
+
+                <tr>
+
+
+                    <td>
+                        ${p.cliente || ""}
+                    </td>
+
+
+                    <td>
+                        ${p.codigo || ""}
+                    </td>
+
+
+                    <td>
+                        ${p.destinatario || ""}
+                    </td>
+
+
+                    <td>
+                        ${p.direccion || ""}
+                    </td>
+
+
+                    <td>
+                        ${p.localidad || ""}
+                    </td>
+
+
+                    <td>
+                        ${p.chofer || ""}
+                    </td>
+
+
+                    <td class="estado">
+
+                        ${p.estado || ""}
+
+                        ${avisoDuplicado}
+
+                    </td>
+
+
+                    <td>
+
+
+                        <button
+
+                            class="editar"
+
+                            onclick="
+                            editar(${i})
+                            ">
+
+                            Editar
+
+                        </button>
+
+
+                        <button
+
+                            class="eliminar"
+
+                            onclick="
+                            eliminarPaquete(${i})
+                            ">
+
+                            Eliminar
+
+                        </button>
+
+
+                        <button
+
+                            onclick="
+                            verOCR(${i})
+                            ">
+
+                            OCR
+
+                        </button>
+
+
+                    </td>
+
+
+                </tr>
+
+
+            `;
+
+
+        }
+
+    );
+
+
+    // CONTADORES
+
+    paquetes.forEach(
+
+        p=>{
+
+
+            total++;
+
+
+            if(
+                p.estado ===
+                "Pendiente"
+            ){
+
+                pendientes++;
+
+            }
+
+
+            if(
+                p.estado ===
+                "Asignado"
+            ){
+
+                asignados++;
+
+            }
+
+
+            if(
+                p.estado ===
+                "Entregado"
+            ){
+
+                entregados++;
+
+            }
+
+
+        }
+
+    );
+
+
+    document
+        .getElementById("total")
+        .innerText =
+        total;
+
+
+    document
+        .getElementById("pendientes")
+        .innerText =
+        pendientes;
+
+
+    document
+        .getElementById("asignados")
+        .innerText =
+        asignados;
+
+
+    document
+        .getElementById("entregados")
+        .innerText =
+        entregados;
+
+}
+
+
+// =====================================================
+// ELIMINAR
+// =====================================================
+
+
+function eliminarPaquete(i){
+
+
+    if(
+
+        confirm(
+            "¿Eliminar este paquete?"
+        )
+
+    ){
+
+
+        paquetes.splice(
+
+            i,
+
+            1
+
+        );
+
+
+        guardarLocal();
+
+
+        mostrar();
+
+    }
+
+}
+
+
+// =====================================================
+// EDITAR
+// =====================================================
+
+
+function editar(i){
+
+
+    let p =
+        paquetes[i];
+
+
+    cliente.value =
+        p.cliente || "";
+
+
+    codigo.value =
+        p.codigo || "";
+
+
+    destinatario.value =
+        p.destinatario || "";
+
+
+    direccion.value =
+        p.direccion || "";
+
+
+    localidad.value =
+        p.localidad || "";
+
+
+    chofer.value =
+
+        p.chofer ||
+
+        "Sin asignar";
+
+
+    paquetes.splice(
+
+        i,
+
+        1
+
+    );
+
+
+    guardarLocal();
+
+
+    mostrar();
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+}
+
+
+// =====================================================
+// NORMALIZAR TEXTO
+// =====================================================
+
+
+function normalizarTexto(texto){
+
+
+    return texto
+
+        .replace(/\r/g,"")
+
+        .replace(/[|]/g," ")
+
+        .replace(/\s+/g," ")
+
+        .trim();
+
+}
+
+
+// =====================================================
+// EXTRAER CÓDIGO
+// =====================================================
+
+
+function extraerCodigo(texto){
+
+
+    let lineas =
+
+        texto
+        .split("\n")
+        .map(
+            x=>x.trim()
+        )
+        .filter(
+            x=>x.length>0
+        );
+
+
+    // Primero buscamos códigos
+    // asociados a palabras clave
+
+
+    for(
+
+        let linea of lineas
+
+    ){
+
+
+        if(
+
+            /envio|envío|tracking|codigo|código/i
+
+            .test(linea)
+
+        ){
+
+
+            let numeros =
+
+                linea.match(
+                    /\b\d{6,15}\b/g
+                );
+
+
+            if(
+
+                numeros &&
+                numeros.length
+
+            ){
+
+                return numeros[0];
+
+            }
+
+        }
+
+    }
+
+
+    // Segundo intento:
+    // números largos
+
+
+    let numeros =
+
+        texto.match(
+            /\b\d{8,15}\b/g
+        );
+
+
+    if(
+
+        numeros &&
+        numeros.length
+
+    ){
+
+        numeros.sort(
+
+            (a,b)=>
+                b.length-a.length
+
+        );
+
+
+        return numeros[0];
+
+    }
+
+
+    // Si solo encuentra números
+    // pequeños no los tomamos
+    // como código
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// EXTRAER DESTINATARIO
+// =====================================================
+
+
+function extraerDestinatario(texto){
+
+
+    let lineas =
+
+        texto
+
+        .split("\n")
+
+        .map(
+
+            x=>
+                x
+                .replace(/[|]/g," ")
+                .trim()
+
+        )
+
+        .filter(
+
+            x=>
+                x.length>0
+
+        );
+
+
+    for(
+
+        let i=0;
+
+        i<lineas.length;
+
+        i++
+
+    ){
+
+
+        let linea =
+
+            lineas[i];
+
+
+        if(
+
+            /destinatario|destinatarlo|destinatari|destinatari[o0]/i
+
+            .test(linea)
+
+        ){
+
+
+            let despues =
+
+                linea
+
+                .replace(
+
+                    /destinatario\s*:/i,
+
+                    ""
+
+                )
+
+                .trim();
+
+
+            if(
+
+                despues.length>4
+
+            ){
+
+                return limpiarNombre(
+
+                    despues
+
+                );
+
+            }
+
+
+            for(
+
+                let j=i+1;
+
+                j<Math.min(
+
+                    i+4,
+
+                    lineas.length
+
+                );
+
+                j++
+
+            ){
+
+
+                let siguiente =
+
+                    lineas[j];
+
+
+                if(
+
+                    esLineaDireccion(
+
+                        siguiente
+
+                    )
+
+                ){
+
+                    continue;
+
+                }
+
+
+                if(
+
+                    siguiente.length>4
+
+                ){
+
+                    return limpiarNombre(
+
+                        siguiente
+
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// LIMPIAR NOMBRE
+// =====================================================
+
+
+function limpiarNombre(texto){
+
+
+    return texto
+
+        .replace(
+            /\(.*?\)/g,
+            ""
+        )
+
+        .replace(
+            /^[:\-|]+/,
+            ""
+        )
+
+        .trim();
+
+}
+
+
+// =====================================================
+// DETECTAR DIRECCIÓN
+// =====================================================
+
+
+function esLineaDireccion(linea){
+
+
+    return (
+
+        /\b(calle|av\.?|avenida|pasaje|pje\.?|ruta|diagonal|boulevard|bvd)\b/i
+
+        .test(linea)
+
+        ||
+
+        /\d{2,5}/.test(linea)
+
+    );
+
+}
+
+
+// =====================================================
+// EXTRAER DIRECCIÓN
+// =====================================================
+
+
+function extraerDireccion(texto){
+
+
+    let lineas =
+
+        texto
+
+        .split("\n")
+
+        .map(
+
+            x=>
+                x
+                .replace(/[|]/g," ")
+                .trim()
+
+        )
+
+        .filter(
+
+            x=>
+                x.length>0
+
+        );
+
+
+    for(
+
+        let i=0;
+
+        i<lineas.length;
+
+        i++
+
+    ){
+
+
+        let linea =
+
+            lineas[i];
+
+
+        // Dirección:
+        // Calle Doctor...
+        
+
+        let encontrada =
+
+            linea.match(
+
+                /(?:direccion|dirección|direccíon|direcclon)\s*[:\-]?\s*(.+)/i
+
+            );
+
+
+        if(
+
+            encontrada &&
+
+            encontrada[1].length>3
+
+        ){
+
+            return encontrada[1]
+
+                .trim();
+
+        }
+
+
+        // Si la línea empieza con
+        // calle / avenida / pasaje
+
+
+        if(
+
+            esLineaDireccion(
+
+                linea
+
+            )
+
+            &&
+
+            /\d{2,5}/.test(linea)
+
+        ){
+
+
+            return linea;
+
+        }
+
+
+        // Dirección en la siguiente línea
+
+
+        if(
+
+            /direccion|dirección|direccíon|direcclon/i
+
+            .test(linea)
+
+        ){
+
+
+            if(
+
+                lineas[i+1]
+
+            ){
+
+                return lineas[i+1];
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// EXTRAER LOCALIDAD
+// =====================================================
+
+
+function extraerLocalidad(texto){
+
+
+    let lineas =
+
+        texto
+
+        .split("\n")
+
+        .map(
+
+            x=>
+                x
+                .replace(/[|]/g," ")
+                .trim()
+
+        )
+
+        .filter(
+
+            x=>
+                x.length>0
+
+        );
+
+
+    // Buscamos después de CABA
+
+
+    for(
+
+        let i=0;
+
+        i<lineas.length;
+
+        i++
+
+    ){
+
+
+        if(
+
+            /\bCABA\b/i
+
+            .test(
+
+                lineas[i]
+
+            )
+
+        ){
+
+
+            let mismaLinea =
+
+                lineas[i]
+
+                .replace(
+
+                    /\bCABA\b/i,
+
+                    ""
+
+                )
+
+                .trim();
+
+
+            if(
+
+                mismaLinea.length>2
+
+            ){
+
+                return mismaLinea;
+
+            }
+
+
+            if(
+
+                lineas[i+1]
+
+            ){
+
+                return lineas[i+1];
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// VER SI ES POSIBLE DUPLICADO
+// =====================================================
+
+
+function esPosibleDuplicado(paquete){
+
+
+    if(
+
+        !paquete.codigo &&
+
+        !paquete.destinatario &&
+
+        !paquete.direccion
+
+    ){
+
+        return false;
+
+    }
+
+
+    return paquetes.some(
+
+        p=>{
+
+
+            // Nunca comparar el mismo ID
+
+
+            if(
+
+                p.id ===
+
+                paquete.id
+
+            ){
+
+                return false;
+
+            }
+
+
+            let mismoCodigo =
+
+                paquete.codigo &&
+
+                p.codigo &&
+
+                paquete.codigo ===
+
+                p.codigo;
+
+
+            let mismoDestino =
+
+                paquete.destinatario &&
+
+                p.destinatario &&
+
+                paquete.destinatario
+
+                    .toLowerCase() ===
+
+                p.destinatario
+
+                    .toLowerCase();
+
+
+            let mismaDireccion =
+
+                paquete.direccion &&
+
+                p.direccion &&
+
+                paquete.direccion
+
+                    .toLowerCase() ===
+
+                p.direccion
+
+                    .toLowerCase();
+
+
+            // Solo consideramos posible duplicado
+            // cuando hay coincidencia fuerte
+
+
+            return (
+
+                mismoCodigo &&
+
+                (
+
+                    mismoDestino ||
+
+                    mismaDireccion
+
+                )
+
+            );
+
+        }
+
+    );
+
+}
+
+
+// =====================================================
+// PROCESAR FOTOS
+// =====================================================
+
+
+async function procesarFotos(){
+
+
+    const input =
+
+        document.getElementById(
+
+            "fotos"
+
+        );
+
+
+    const fotos =
+
+        input.files;
+
+
+    if(
+
+        !fotos ||
+
+        fotos.length===0
+
+    ){
+
+        alert(
+
+            "Seleccioná al menos una foto"
+
+        );
+
+        return;
+
+    }
+
+
+    const btn =
+
+        document.getElementById(
+
+            "btnProcesar"
+
+        );
+
+
+    const progreso =
+
+        document.getElementById(
+
+            "progreso"
+
+        );
+
+
+    const barra =
+
+        document.getElementById(
+
+            "barra"
+
+        );
+
+
+    const estadoProceso =
+
+        document.getElementById(
+
+            "estadoProceso"
+
+        );
+
+
+    const resultado =
+
+        document.getElementById(
+
+            "resultado"
+
+        );
+
+
+    btn.disabled=true;
+
+
+    progreso.style.display="block";
+
+
+    resultado.style.display="none";
+
+
+    let procesadas=0;
+
+    let creados=0;
+
+    let duplicados=0;
+
+    let errores=0;
+
+
+    for(
+
+        let i=0;
+
+        i<fotos.length;
+
+        i++
+
+    ){
+
+
+        let foto =
+
+            fotos[i];
+
+
+        estadoProceso.innerText =
+
+            "Procesando foto "
+
+            +
+
+            (i+1)
+
+            +
+
+            " de "
+
+            +
+
+            fotos.length
+
+            +
+
+            ": "
+
+            +
+
+            foto.name;
+
+
+        barra.style.width =
+
+            (
+
+                (i)
+
+                /
+
+                fotos.length
+
+                *
+
+                100
+
+            )
+
+            +
+
+            "%";
+
+
+        console.log(
+
+            "================================"
+
+        );
+
+
+        console.log(
+
+            "PROCESANDO:",
+
+            foto.name
+
+        );
+
+
+        try{
+
+
+            let resultadoOCR =
+
+                await Tesseract.recognize(
+
+                    foto,
+
+                    "spa",
+
+                    {
+
+                        logger:
+
+                            m=>{
+
+                                if(
+
+                                    m.status ===
+
+                                    "recognizing text"
+
+                                ){
+
+                                    let porcentaje =
+
+                                        Math.round(
+
+                                            m.progress *
+
+                                            100
+
+                                        );
+
+
+                                    estadoProceso.innerText =
+
+                                        "Foto "
+
+                                        +
+
+                                        (i+1)
+
+                                        +
+
+                                        "/"
+
+                                        +
+
+                                        fotos.length
+
+                                        +
+
+                                        " - OCR "
+
+                                        +
+
+                                        porcentaje
+
+                                        +
+
+                                        "%";
+
+                                }
+
+                            }
+
+                    }
+
+                );
+
+
+            let texto =
+
+                resultadoOCR
+
+                .data
+
+                .text;
+
+
+            console.log(
+
+                "TEXTO OCR:",
+
+                texto
+
+            );
+
+
+            let paquete = {
+
+
+                id:
+
+                    generarID(),
+
+
+                cliente:
+
+                    "Mercado Libre",
+
+
+                codigo:
+
+                    extraerCodigo(
+
+                        texto
+
+                    ),
+
+
+                destinatario:
+
+                    extraerDestinatario(
+
+                        texto
+
+                    ),
+
+
+                direccion:
+
+                    extraerDireccion(
+
+                        texto
+
+                    ),
+
+
+                localidad:
+
+                    extraerLocalidad(
+
+                        texto
+                    ),
+
+
+                chofer:
+
+                    "Sin asignar",
+
+
+                estado:
+
+                    "Pendiente",
+
+
+                fecha:
+
+                    new Date()
+
+                    .toLocaleDateString(
+
+                        "es-AR"
+
+                    ),
+
+
+                hora:
+
+                    new Date()
+
+                    .toLocaleTimeString(
+
+                        "es-AR"
+
+                    ),
+
+
+                archivo:
+
+                    foto.name,
+
+
+                textoOCR:
+
+                    texto,
+
+
+                posibleDuplicado:
+
+                    false
+
+            };
+
+
+            // Si no encontró absolutamente nada
+            // no creamos basura
+
+
+            if(
+
+                !paquete.codigo &&
+
+                !paquete.destinatario &&
+
+                !paquete.direccion &&
+
+                !paquete.localidad
+
+            ){
+
+                console.warn(
+
+                    "No se pudo extraer información:",
+
+                    foto.name
+
+                );
+
+
+                errores++;
+
+
+                procesadas++;
+
+
+                continue;
+
+            }
+
+
+            // Verificar posible duplicado
+            // PERO NO BLOQUEARLO
+
+
+            if(
+
+                esPosibleDuplicado(
+
+                    paquete
+
+                )
+
+            ){
+
+                paquete.posibleDuplicado=true;
+
+                duplicados++;
+
+            }
+
+
+            paquetes.push(
+
+                paquete
+
+            );
+
+
+            creados++;
+
+
+            console.log(
+
+                "PAQUETE CREADO:",
+
+                paquete
+
+            );
+
+
+        }
+
+        catch(error){
+
+
+            errores++;
+
+
+            console.error(
+
+                "Error procesando:",
+
+                foto.name,
+
+                error
+
+            );
+
+        }
+
+
+        procesadas++;
+
+
+        barra.style.width =
+
+            (
+
+                procesadas
+
+                /
+
+                fotos.length
+
+                *
+
+                100
+
+            )
+
+            +
+
+            "%";
+
+
+    }
+
+
+    // Guardar todo
+
+
+    guardarLocal();
+
+
+    mostrar();
+
+
+    // Resultado
+
+
+    document
+
+        .getElementById(
+
+            "rProcesadas"
+
+        )
+
+        .innerText =
+
+        procesadas;
+
+
+    document
+
+        .getElementById(
+
+            "rCreados"
+
+        )
+
+        .innerText =
+
+        creados;
+
+
+    document
+
+        .getElementById(
+
+            "rDuplicados"
+
+        )
+
+        .innerText =
+
+        duplicados;
+
+
+    document
+
+        .getElementById(
+
+            "rErrores"
+
+        )
+
+        .innerText =
+
+        errores;
+
+
+    resultado.style.display=
+
+        "block";
+
+
+    estadoProceso.innerText =
+
+        "✅ Proceso terminado";
+
+
+    btn.disabled=false;
+
+
+    input.value="";
+
+
+}
+
+
+// =====================================================
+// VER TEXTO OCR
+// =====================================================
+
+
+function verOCR(i){
+
+
+    let p =
+
+        paquetes[i];
+
+
+    document
+
+        .getElementById(
+
+            "textoOCR"
+
+        )
+
+        .value =
+
+        p.textoOCR ||
+
+        "Este paquete fue cargado manualmente o no tiene texto OCR guardado.";
+
+
+    document
+
+        .getElementById(
+
+            "modalOCR"
+
+        )
+
+        .style.display=
+
+        "flex";
+
+}
+
+
+// =====================================================
+// CERRAR OCR
+// =====================================================
+
+
+function cerrarOCR(){
+
+
+    document
+
+        .getElementById(
+
+            "modalOCR"
+
+        )
+
+        .style.display=
+
+        "none";
+
+}
+
+
+// =====================================================
+// CÁMARA
+// =====================================================
+
+
+function abrirCamara(){
+
+
+    alert(
+
+        "La función de cámara la vamos a conectar en el siguiente paso. Primero dejamos estable el OCR de fotos."
+
+    );
+
+}
+
+
+// =====================================================
+// INICIO
+// =====================================================
+
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function(){
+
+        mostrar();
+
+        console.log(
+
+            "Sistema iniciado correctamente"
+
+        );
+
+        console.log(
+
+            "Tesseract:",
+
+            typeof Tesseract
+
+        );
+
+    }
+
+);
+
+
+</script>
+
+</body>
+
+</html>

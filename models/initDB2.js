@@ -89,32 +89,6 @@ CREATE TABLE IF NOT EXISTS logistica_clientes (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- ==============================
--- Colectas de paquetes
--- ==============================
-
-CREATE TABLE IF NOT EXISTS logistica_colectas (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    chofer TEXT,
-
-    cantidad_paquetes INTEGER DEFAULT 0,
-
-    observaciones TEXT,
-
-    estado TEXT DEFAULT 'recibida',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
-
-);
-
 -- Choferes
 CREATE TABLE IF NOT EXISTS logistica_choferes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -148,326 +122,38 @@ CREATE TABLE IF NOT EXISTS logistica_asignaciones (
     FOREIGN KEY (paquete_id) REFERENCES logistica_paquetes(id),
     FOREIGN KEY (chofer_id) REFERENCES logistica_choferes(id)
 );
-
--- Colectas de paquetes
-
-CREATE TABLE IF NOT EXISTS logistica_colectas (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    chofer TEXT,
-
-    cantidad_paquetes INTEGER DEFAULT 0,
-
-    observaciones TEXT,
-
-    estado TEXT DEFAULT 'recibida',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
-
-);
-
 `);
 
 
-
-
 // ------------------ Actualizar tabla users ------------------ //
-
 // ------------------ Actualizar tabla users ------------------ //
-
 const tableName = "users";
-
 const newColumns = {
   nombre: "TEXT",
   apellido: "TEXT",
   email: "TEXT"
 };
 
-const existingColumns = db
-  .prepare(`PRAGMA table_info(${tableName})`)
-  .all()
-  .map(c => c.name);
+// Obtener las columnas actuales de la tabla
+const existingColumnsStmt = db.prepare(`PRAGMA table_info(${tableName})`);
+const existingColumns = existingColumnsStmt.all().map(c => c.name);
 
-
+// Agregar columnas faltantes
 for (const columnName in newColumns) {
-
   if (!existingColumns.includes(columnName)) {
-
     console.log(`🔹 Agregando columna '${columnName}' a la tabla '${tableName}'`);
-
-    db.prepare(
-      `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${newColumns[columnName]}`
-    ).run();
-
+    
+    // Este es el comando correcto
+    const sql = `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${newColumns[columnName]}`;
+    db.prepare(sql).run();
   }
-
 }
 
-console.log("✅ Tabla 'users' actualizada");
+//console.log("✅ Tabla 'users' actualizada con nuevas columnas (si faltaban)");
 
-// ==========================================
-// ACTUALIZACIÓN MÓDULO PAQUETES LOGÍSTICA
-// ==========================================
+//console.log("✅ Tablas inicializadas correctamente con mejoras para usuarios internos y apps");
 
-
-// Paquetes completos
-db.exec(`
-
-CREATE TABLE IF NOT EXISTS logistica_paquetes (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    tipo TEXT DEFAULT 'flex',
-    -- flex | particular
-
-
-    codigo_externo TEXT,
-    -- código original del paquete
-
-
-    codigo_interno TEXT UNIQUE,
-    -- generado por sistema
-
-
-    qr_codigo TEXT,
-    -- código para QR interno
-
-
-    descripcion TEXT,
-
-    foto TEXT,
-
-
-    colectado_por TEXT,
-
-
-    fecha_colecta DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    estado TEXT DEFAULT 'recibido',
-    -- recibido
-    -- asignado
-    -- en_reparto
-    -- entregado
-    -- rechazado
-
-
-    chofer_id INTEGER,
-
-
-    fecha_entrega DATETIME,
-
-
-    observaciones TEXT,
-
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY(cliente_id)
-    REFERENCES logistica_clientes(id),
-
-
-    FOREIGN KEY(chofer_id)
-    REFERENCES logistica_choferes(id)
-
-);
-
-
-
-
-
--- Asignaciones de entrega
-
-CREATE TABLE IF NOT EXISTS logistica_asignaciones (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-
-    paquete_id INTEGER NOT NULL,
-
-
-    chofer_id INTEGER NOT NULL,
-
-
-    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    estado TEXT DEFAULT 'asignado',
-
-
-    observaciones TEXT,
-
-
-    FOREIGN KEY(paquete_id)
-    REFERENCES logistica_paquetes(id),
-
-
-    FOREIGN KEY(chofer_id)
-    REFERENCES logistica_choferes(id)
-
-);
-
-
-
-
-
-
--- Historial de movimientos
-
-CREATE TABLE IF NOT EXISTS logistica_movimientos (
-
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-
-    paquete_id INTEGER NOT NULL,
-
-
-    accion TEXT,
-
-
-    detalle TEXT,
-
-
-    usuario TEXT,
-
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY(paquete_id)
-    REFERENCES logistica_paquetes(id)
-
-);
-
-
-`);
-
-
-
-
-
-// ==========================================
-// AGREGAR COLUMNAS SI FALTAN
-// ==========================================
-
-
-function agregarColumna(tabla,columna,tipo){
-
-
-    const columnas = db
-    .prepare(`PRAGMA table_info(${tabla})`)
-    .all()
-    .map(c=>c.name);
-
-
-
-    if(!columnas.includes(columna)){
-
-
-        console.log(
-            `🔹 Agregando ${columna} a ${tabla}`
-        );
-
-
-        db.prepare(
-            `
-            ALTER TABLE ${tabla}
-            ADD COLUMN ${columna} ${tipo}
-            `
-        ).run();
-
-
-    }
-
-}
-
-
-
-// Paquetes
-
-agregarColumna(
-"logistica_paquetes",
-"tipo",
-"TEXT DEFAULT 'flex'"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"codigo_externo",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"codigo_interno",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"qr_codigo",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"colectado_por",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"fecha_colecta",
-"DATETIME"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"chofer_id",
-"INTEGER"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"fecha_entrega",
-"DATETIME"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"observaciones",
-"TEXT"
-);
-
-
-
-console.log(
-"✅ Módulo paquetes actualizado"
-);
-
-
-console.log(
-"🚚 Logística lista para colectas y entregas"
-);
+// ------------------ Actualizar tabla users ------------------ //
 
 
 // ------------------ Actualizar tabla logistica_clientes ------------------ //
@@ -481,18 +167,15 @@ const nuevasColumnasLogistica = {
   horario: "TEXT",
   observaciones: "TEXT",
   estado: "TEXT DEFAULT 'activo'",
-  updated_at: "DATETIME"
+  updated_at: "DATETIME DEFAULT CURRENT_TIMESTAMP"
 };
-
 
 const columnasLogistica = db
   .prepare(`PRAGMA table_info(${logisticaTable})`)
   .all()
   .map(c => c.name);
 
-
 for (const columna in nuevasColumnasLogistica) {
-
   if (!columnasLogistica.includes(columna)) {
 
     console.log(`🔹 Agregando columna '${columna}' a '${logisticaTable}'`);
@@ -502,9 +185,8 @@ for (const columna in nuevasColumnasLogistica) {
     ).run();
 
   }
-
 }
 
-
 console.log("✅ Tabla 'logistica_clientes' actualizada");
-console.log("✅ Base de datos inicializada correctamente");
+
+console.log("✅ Tablas inicializadas correctamente con mejoras para usuarios internos y apps");

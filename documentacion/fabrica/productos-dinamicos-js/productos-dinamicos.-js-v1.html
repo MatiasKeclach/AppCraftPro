@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fábrica de Tiendas Virtuales - Productos Dinámicos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #product-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-card img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .product-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .product-card p {
+      margin: 5px 0;
+    }
+
+    .product-card button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product-card button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Productos Dinámicos - Fábrica de Tiendas Virtuales</h1>
+
+  <div id="product-section">
+    <!-- Aquí se generarán las tarjetas de productos -->
+  </div>
+
+  <script>
+    // Array de productos
+    const productos = [
+      {
+        id: 1,
+        nombre: "Camiseta Negra",
+        precio: 2500,
+        categoria: "Ropa",
+        imagen: "https://via.placeholder.com/200x200?text=Camiseta+Negra",
+        stock: 10
+      },
+      {
+        id: 2,
+        nombre: "Zapatos Deportivos",
+        precio: 7800,
+        categoria: "Calzado",
+        imagen: "https://via.placeholder.com/200x200?text=Zapatos+Deportivos",
+        stock: 5
+      },
+      {
+        id: 3,
+        nombre: "Mochila Urbana",
+        precio: 4200,
+        categoria: "Accesorios",
+        imagen: "https://via.placeholder.com/200x200?text=Mochila+Urbana",
+        stock: 7
+      },
+      {
+        id: 4,
+        nombre: "Gorra Street",
+        precio: 1500,
+        categoria: "Accesorios",
+        imagen: "https://via.placeholder.com/200x200?text=Gorra+Street",
+        stock: 15
+      }
+    ];
+
+    const productSection = document.getElementById("product-section");
+
+    productos.forEach(prod => {
+      // Crear tarjeta
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      // Imagen
+      const img = document.createElement("img");
+      img.src = prod.imagen;
+      img.alt = prod.nombre;
+
+      // Nombre
+      const title = document.createElement("h3");
+      title.textContent = prod.nombre;
+
+      // Precio
+      const price = document.createElement("p");
+      price.textContent = `$${prod.precio}`;
+ 
+      // Stock
+      const stock = document.createElement("p");
+      stock.textContent = `Stock: ${prod.stock}`;
+ 
+      // Botón
+      const btn = document.createElement("button");
+      btn.textContent = "Agregar al carrito";
+      btn.onclick = () => alert(`Producto agregado: ${prod.nombre}`);
+
+      // Armar tarjeta
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(price);
+      card.appendChild(stock);
+      card.appendChild(btn);
+
+      // Insertar en sección
+      productSection.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>

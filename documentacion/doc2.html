@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentación Tienda Virtual - Versión PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    pre.json, pre.ascii {
+      border-radius: 0.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: monospace;
+    }
+    pre.json { background-color: #1e293b; color: #d1d5db; }
+    pre.ascii { background-color: #111827; color: #34d399; }
+    .toggle-content { display: none; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+<header class="bg-gray-800 p-6 text-center">
+  <h1 class="text-3xl font-bold text-green-400">Documentación Tienda Virtual PRO</h1>
+  <p class="text-gray-300 mt-2">CMS y tienda escalable con automatización y roles diferenciados</p>
+  <button id="menu-toggle" class="mt-4 px-4 py-2 bg-green-400 text-gray-900 font-bold rounded md:hidden">Menú</button>
+</header>
+
+<nav id="menu" class="bg-gray-700 p-4 flex flex-col md:flex-row md:justify-center md:gap-4 hidden md:flex">
+  <a href="#stack" class="text-green-400 hover:text-green-200 py-1">Stack & Tecnologías</a>
+  <a href="#roles" class="text-green-400 hover:text-green-200 py-1">Roles</a>
+  <a href="#crud" class="text-green-400 hover:text-green-200 py-1">CRUD & Productos</a>
+  <a href="#json" class="text-green-400 hover:text-green-200 py-1">Automatización JSON</a>
+  <a href="#ascii" class="text-green-400 hover:text-green-200 py-1">Arquitectura ASCII</a>
+  <a href="#cliente" class="text-green-400 hover:text-green-200 py-1">Explicación Cliente</a>
+</nav>
+
+<main class="p-6 space-y-8">
+
+  <!-- Stack y tecnologías -->
+  <section id="stack" class="border-b border-gray-700 pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">1️⃣ Stack & Tecnologías</h2>
+    <div class="toggle-content md:block space-y-2">
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Backend:</strong> Node.js + Express.js + Socket.io</li>
+        <li><strong>Base de Datos:</strong> SQLite (local) / PostgreSQL (producción) con Supabase</li>
+        <li><strong>Frontend:</strong> React + Next.js + Tailwind CSS</li>
+        <li><strong>CMS:</strong> Propio con roles, gestión de stock, productos y pedidos</li>
+        <li><strong>Automatización:</strong> JSON para carga masiva de productos y fotos</li>
+        <li><strong>Hosting:</strong> Render + Supabase</li>
+        <li><strong>Integraciones:</strong> Email, notificaciones críticas y IA para predicción de stock</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Roles -->
+  <section id="roles" class="border-b border-gray-700 pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">2️⃣ Roles del Sistema</h2>
+    <div class="toggle-content md:block space-y-2">
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Owner / Founder:</strong> Control total de todas las tiendas y supervisión de superadmins.</li>
+        <li><strong>Superadmin:</strong> Cliente principal de la tienda, ciertas acciones críticas requieren autorización del Owner.</li>
+        <li><strong>Admin:</strong> Gestión de productos, stock, pedidos y clientes.</li>
+        <li><strong>Cliente:</strong> Usuario final, compra productos y consulta stock.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CRUD y productos -->
+  <section id="crud" class="border-b border-gray-700 pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">3️⃣ CRUD & Gestión de Productos</h2>
+    <div class="toggle-content md:block space-y-2">
+      <ul class="list-disc list-inside space-y-1">
+        <li>Crear, leer, actualizar y eliminar productos dinámicamente.</li>
+        <li>Stock por producto, talle y color, con código único (SKU).</li>
+        <li>Alertas automáticas de “sin stock”.</li>
+        <li>Carga masiva vía JSON.</li>
+        <li>Galerías de imágenes vinculadas automáticamente.</li>
+        <li>Soporte para curvas de talles y venta mayorista/minorista.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Automatización JSON -->
+  <section id="json" class="border-b border-gray-700 pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">4️⃣ Automatización con JSON</h2>
+    <div class="toggle-content md:block space-y-2">
+      <p>Ejemplo de JSON para cargar productos automáticamente:</p>
+      <pre class="json">
+{
+  "productos": [
+    {
+      "nombre": "Remera Básica",
+      "categoria": "Remeras",
+      "talle": "M",
+      "color": "Rojo",
+      "precio": 1500,
+      "stock": 20,
+      "imagenes": ["remera-roja-1.jpg","remera-roja-2.jpg"]
+    },
+    {
+      "nombre": "Jeans Slim",
+      "categoria": "Pantalones",
+      "talle": "32",
+      "color": "Azul",
+      "precio": 3500,
+      "stock": 15,
+      "imagenes": ["jeans-azul-1.jpg","jeans-azul-2.jpg"]
+    }
+  ]
+}
+      </pre>
+      <p>El sistema interpreta este JSON, genera SKUs automáticos y actualiza el stock.</p>
+    </div>
+  </section>
+
+  <!-- Arquitectura ASCII -->
+  <section id="ascii" class="border-b border-gray-700 pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">5️⃣ Arquitectura del Sistema (ASCII)</h2>
+    <div class="toggle-content md:block">
+      <pre class="ascii">
++------------------+
+|      Owner       |
++------------------+
+         |
++------------------+
+|   Superadmin     |
++------------------+
+         |
++------------------+       +------------------+
+|      Admin       | <-->  |      Cliente     |
++------------------+       +------------------+
+         |
++-----------------------------+
+|           CMS               |
+|  - Gestión productos        |
+|  - Stock automático         |
+|  - Curvas y talles          |
+|  - JSON import/export       |
+|  - Pedidos y clientes       |
++-----------------------------+
+         |
++-----------------------------+
+|    Base de Datos            |
+|  SQLite local / PostgreSQL  |
++-----------------------------+
+         |
++-----------------------------+
+|   Frontend React + Next.js  |
+|  Tailwind CSS               |
++-----------------------------+
+      </pre>
+    </div>
+  </section>
+
+  <!-- Explicación Cliente -->
+  <section id="cliente" class="pb-4">
+    <h2 class="text-2xl font-bold text-green-400 mb-2 cursor-pointer toggle-btn">6️⃣ Explicación para el Cliente</h2>
+    <div class="toggle-content md:block space-y-2">
+      <p>Podés gestionar productos, ver stock y recibir alertas automáticas cuando algo se agota.</p>
+      <p>Podés cargar productos en masa usando JSON y el sistema genera todo automáticamente.</p>
+      <p>Distintos roles permiten que cada usuario tenga permisos adecuados y yo, como Owner, superviso todo.</p>
+      <p>Esto permite escalar la plataforma y replicar nuevas tiendas sin rehacer código.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bg-gray-800 p-6 text-center text-gray-400">
+  <p>© 2026 - Proyecto Tienda Virtual | Creado por Matías Keclach</p>
+</footer>
+
+<script>
+  // Toggle menú móvil
+  $('#menu-toggle').click(function() {
+    $('#menu').slideToggle();
+  });
+
+  // Toggle secciones
+  $('.toggle-btn').click(function() {
+    $(this).next('.toggle-content').slideToggle();
+  });
+</script>
+
+</body>
+</html>
