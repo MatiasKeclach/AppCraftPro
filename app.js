@@ -84,6 +84,13 @@ app.use(
   authRoutes
 );
 
+const logisticaRoutes = require("./routes/logistica");
+
+app.use("/panel/users", userRoutes);
+
+app.use("/auth", authRoutes);
+
+app.use("/panel/logistica", logisticaRoutes);
 
 // ==================================================
 // PANEL PRINCIPAL
@@ -278,7 +285,7 @@ app.get(
 //
 // ==================================================
 
-app.get(
+/*app.get(
   "/panel/logistica",
   isAuthenticated,
   (req, res) => {
@@ -297,7 +304,14 @@ app.get(
     );
 
   }
-);
+);*/
+
+app.get("/panel/logistica", isAuthenticated, (req, res) => {
+  res.render("logistica/dashboard", {
+    username: req.session.user.username,
+    role: req.session.user.role
+  });
+});
 
 
 // ==================================================
