@@ -1,14 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Particular Scanner - AppCraft Pro</title>
 
@@ -22,595 +21,291 @@ rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 >
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <style>
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 body{
-
-background:#f4f6f9;
-
-font-family:
-Arial,
-Helvetica,
-sans-serif;
-
-color:#1e293b;
-
+    background:#f4f6f9;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#1e293b;
 }
 
 .header{
-
-background:#1e293b;
-
-color:white;
-
-padding:22px;
-
-box-shadow:
-0 3px 15px
-rgba(0,0,0,.15);
-
+    background:#1e293b;
+    color:white;
+    padding:22px;
+    box-shadow:0 3px 15px rgba(0,0,0,.15);
 }
 
 .header h1{
-
-font-size:26px;
-
-margin-bottom:7px;
-
+    font-size:26px;
+    margin-bottom:7px;
 }
 
 .header p{
-
-opacity:.85;
-
-font-size:14px;
-
+    opacity:.85;
+    font-size:14px;
 }
 
 .container{
-
-width:100%;
-
-max-width:1000px;
-
-margin:auto;
-
-padding:20px;
-
+    width:100%;
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
 }
 
 .back{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:8px;
-
-margin-bottom:20px;
-
-text-decoration:none;
-
-color:#2563eb;
-
-font-weight:bold;
-
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:20px;
+    text-decoration:none;
+    color:#2563eb;
+    font-weight:bold;
 }
 
 .panel{
-
-background:white;
-
-border-radius:16px;
-
-padding:25px;
-
-box-shadow:
-0 5px 20px
-rgba(0,0,0,.08);
-
-margin-bottom:20px;
-
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    margin-bottom:20px;
 }
 
 .panel h2{
-
-font-size:20px;
-
-margin-bottom:20px;
-
+    font-size:20px;
+    margin-bottom:20px;
 }
 
 label{
-
-display:block;
-
-font-weight:bold;
-
-margin-bottom:8px;
-
+    display:block;
+    font-weight:bold;
+    margin-bottom:8px;
 }
 
-select{
-
-width:100%;
-
-padding:14px;
-
-border:1px solid #d1d5db;
-
-border-radius:10px;
-
-font-size:16px;
-
-background:white;
-
+select,
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:9px;
+    font-size:15px;
+    background:white;
 }
 
-.scanner{
-
-margin-top:20px;
-
-background:#0f172a;
-
-border-radius:16px;
-
-padding:20px;
-
-text-align:center;
-
-color:white;
-
-}
-
-#reader{
-
-width:100%;
-
-max-width:550px;
-
-margin:auto;
-
-border-radius:12px;
-
-overflow:hidden;
-
-}
-
-#reader video{
-
-border-radius:12px;
-
-}
-
-.btn{
-
-border:none;
-
-border-radius:10px;
-
-padding:14px 22px;
-
-font-size:16px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-margin-top:15px;
-
-transition:.2s;
-
-}
-
-.btn:hover{
-
-transform:translateY(-2px);
-
-}
-
-.btn-primary{
-
-background:#2563eb;
-
-color:white;
-
-}
-
-.btn-success{
-
-background:#16a34a;
-
-color:white;
-
-}
-
-.btn-danger{
-
-background:#dc2626;
-
-color:white;
-
-}
-
-.btn-warning{
-
-background:#f59e0b;
-
-color:white;
-
-}
-
-.btn-secondary{
-
-background:#64748b;
-
-color:white;
-
-}
-
-.resultado{
-
-display:none;
-
-}
-
-.estado{
-
-background:#f1f5f9;
-
-padding:15px;
-
-border-radius:10px;
-
-margin-top:15px;
-
-}
-
-.codigo{
-
-font-size:22px;
-
-font-weight:bold;
-
-color:#2563eb;
-
-margin-top:5px;
-
+textarea{
+    min-height:100px;
+    resize:vertical;
 }
 
 .form-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(
-auto-fit,
-minmax(220px,1fr)
-);
-
-gap:15px;
-
-margin-top:20px;
-
+    display:grid;
+    grid-template-columns:repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+    gap:15px;
 }
 
-input,
-textarea{
-
-width:100%;
-
-padding:12px;
-
-border:1px solid #d1d5db;
-
-border-radius:9px;
-
-font-size:15px;
-
+.btn{
+    border:none;
+    border-radius:10px;
+    padding:14px 22px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
 }
 
-input.detectado{
-
-border-color:#16a34a;
-
-background:#f0fdf4;
-
+.btn-primary{
+    background:#2563eb;
+    color:white;
 }
 
-input.faltante{
-
-border-color:#dc2626;
-
-background:#fef2f2;
-
+.btn-success{
+    background:#16a34a;
+    color:white;
 }
 
-textarea{
+.btn-danger{
+    background:#dc2626;
+    color:white;
+}
 
-min-height:120px;
+.btn-warning{
+    background:#d97706;
+    color:white;
+}
 
-resize:vertical;
+.btn-secondary{
+    background:#64748b;
+    color:white;
+}
 
+.btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.scanner{
+    margin-top:20px;
+    background:#0f172a;
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    color:white;
+}
+
+.camera-wrapper{
+    position:relative;
+    width:100%;
+    max-width:600px;
+    margin:auto;
+    overflow:hidden;
+    border-radius:12px;
+    background:#020617;
+}
+
+#video{
+    display:block;
+    width:100%;
+    max-height:500px;
+    object-fit:cover;
+}
+
+.scan-frame{
+    position:absolute;
+    top:10%;
+    left:5%;
+    width:90%;
+    height:80%;
+    border:3px solid #22c55e;
+    border-radius:12px;
+    pointer-events:none;
+    box-shadow:
+    0 0 0 9999px rgba(0,0,0,.25);
+}
+
+.estado{
+    background:#f1f5f9;
+    padding:15px;
+    border-radius:10px;
+    margin-top:15px;
 }
 
 .estado-scanner{
-
-margin-top:15px;
-
-padding:14px;
-
-border-radius:10px;
-
-font-weight:bold;
-
+    margin-top:15px;
+    padding:14px;
+    border-radius:10px;
+    background:#1e293b;
+    color:white;
+    font-weight:bold;
 }
 
-.estado-esperando{
-
-background:#334155;
-
-color:white;
-
+.resultado{
+    display:none;
 }
 
-.estado-ok{
-
-background:#166534;
-
-color:white;
-
-}
-
-.estado-error{
-
-background:#991b1b;
-
-color:white;
-
-}
-
-.estado-warning{
-
-background:#92400e;
-
-color:white;
-
-}
-
-.datos-faltantes{
-
-display:none;
-
-margin-top:20px;
-
-padding:18px;
-
-border-radius:12px;
-
-background:#fff7ed;
-
-border:1px solid #fdba74;
-
-}
-
-.datos-faltantes h3{
-
-color:#c2410c;
-
-margin-bottom:10px;
-
-}
-
-.datos-faltantes ul{
-
-padding-left:20px;
-
-margin-top:10px;
-
-}
-
-.datos-faltantes li{
-
-margin-bottom:5px;
-
-}
-
-.acciones{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:10px;
-
-margin-top:20px;
-
-}
-
-.acciones .btn{
-
-margin-top:0;
-
-}
-
-.ocr-panel{
-
-margin-top:20px;
-
-}
-
-.ocr-panel summary{
-
-cursor:pointer;
-
-font-weight:bold;
-
-padding:12px;
-
-background:#f1f5f9;
-
-border-radius:8px;
-
-}
-
-.ocr-texto{
-
-margin-top:10px;
-
-padding:15px;
-
-background:#0f172a;
-
-color:#e2e8f0;
-
-border-radius:10px;
-
-white-space:pre-wrap;
-
-font-family:monospace;
-
-font-size:13px;
-
-line-height:20px;
-
-max-height:400px;
-
-overflow:auto;
-
+.codigo{
+    font-size:22px;
+    font-weight:bold;
+    color:#2563eb;
 }
 
 .progreso{
-
-display:none;
-
-margin-top:20px;
-
+    display:none;
+    margin-top:20px;
 }
 
-.barra{
-
-width:100%;
-
-height:12px;
-
-background:#e2e8f0;
-
-border-radius:20px;
-
-overflow:hidden;
-
+.progress-bar{
+    width:100%;
+    height:14px;
+    background:#e2e8f0;
+    border-radius:10px;
+    overflow:hidden;
 }
 
-.barra-interna{
-
-width:0%;
-
-height:100%;
-
-background:#2563eb;
-
-transition:width .3s;
-
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:#2563eb;
+    transition:width .3s ease;
 }
 
-.progreso-texto{
-
-margin-top:8px;
-
-font-size:14px;
-
-font-weight:bold;
-
+.progress-text{
+    margin-top:8px;
+    font-size:14px;
+    color:#475569;
 }
 
-.badge{
-
-display:inline-block;
-
-padding:5px 10px;
-
-border-radius:20px;
-
-font-size:12px;
-
-font-weight:bold;
-
-margin-top:8px;
-
+.ocr-box{
+    margin-top:20px;
 }
 
-.badge-ok{
-
-background:#dcfce7;
-
-color:#166534;
-
+.ocr-box textarea{
+    background:#0f172a;
+    color:#e2e8f0;
+    font-family:monospace;
+    min-height:220px;
 }
 
-.badge-warning{
-
-background:#fef3c7;
-
-color:#92400e;
-
+.alerta{
+    display:none;
+    padding:15px;
+    border-radius:10px;
+    margin-top:15px;
+    font-weight:bold;
 }
 
-.badge-error{
-
-background:#fee2e2;
-
-color:#991b1b;
-
+.alerta-ok{
+    background:#dcfce7;
+    color:#166534;
 }
 
-.fecha-escaneo{
+.alerta-error{
+    background:#fee2e2;
+    color:#991b1b;
+}
 
-margin-top:10px;
+.detectado{
+    border:2px solid #16a34a;
+}
 
-font-size:14px;
+.faltante{
+    border:2px solid #f59e0b;
+}
 
-color:#64748b;
-
+.estado-dato{
+    margin-top:5px;
+    font-size:12px;
+    color:#64748b;
 }
 
 @media(max-width:600px){
 
-.container{
+    .container{
+        padding:12px;
+    }
 
-padding:12px;
+    .panel{
+        padding:18px;
+    }
 
-}
+    .header h1{
+        font-size:22px;
+    }
 
-.panel{
-
-padding:18px;
-
-}
-
-.header h1{
-
-font-size:22px;
-
-}
-
-.acciones{
-
-flex-direction:column;
-
-}
-
-.acciones .btn{
-
-width:100%;
-
-}
+    .btn{
+        width:100%;
+    }
 
 }
 
@@ -618,33 +313,26 @@ width:100%;
 
 </head>
 
-
 <body>
-
 
 <header class="header">
 
 <h1>
-
 📷 Particular Scanner
-
 </h1>
 
 <p>
-
-Escaneo y lectura automática de etiquetas de paquetes particulares
-
+Escaneo automático de etiquetas de paquetes particulares
 </p>
 
 </header>
 
-
 <div class="container">
-
 
 <a
 href="/panel/logistica"
 class="back"
+
 >
 
 <i class="fas fa-arrow-left"></i>
@@ -653,33 +341,23 @@ Volver a Logística
 
 </a>
 
-
 <!-- CLIENTE -->
 
 <div class="panel">
 
 <h2>
-
 👤 Cliente interno
-
 </h2>
 
-
 <label>
-
 Seleccionar cliente
-
 </label>
-
 
 <select id="cliente_id">
 
 <option value="">
-
 Seleccionar cliente...
-
 </option>
-
 
 <% clientes.forEach(cliente => { %>
 
@@ -697,46 +375,57 @@ Seleccionar cliente...
 
 <% }) %>
 
-
 </select>
 
 </div>
-
-
 
 <!-- SCANNER -->
 
 <div class="panel">
 
 <h2>
-
 📷 Escanear etiqueta
-
 </h2>
-
 
 <div class="scanner">
 
+<div class="camera-wrapper">
 
-<div id="reader"></div>
+<video
+id="video"
+autoplay
+playsinline
+muted
 
+> </video>
+
+<div class="scan-frame"></div>
+
+</div>
+
+<canvas
+id="canvas"
+style="display:none"
+
+> </canvas>
 
 <button
 class="btn btn-primary"
 id="iniciarScanner"
+
 >
 
 <i class="fas fa-camera"></i>
 
-Iniciar cámara
+Abrir cámara
 
 </button>
-
 
 <button
 class="btn btn-danger"
 id="detenerScanner"
 style="display:none"
+
 >
 
 <i class="fas fa-stop"></i>
@@ -745,59 +434,49 @@ Detener cámara
 
 </button>
 
-
 <div
+class="estado-scanner"
 id="scannerEstado"
-class="estado-scanner estado-esperando"
 >
 
 Scanner detenido
 
 </div>
 
-
 </div>
 
 </div>
 
-
-
-<!-- PROGRESO OCR -->
+<!-- PROGRESO -->
 
 <div
 class="panel progreso"
 id="progreso"
 >
 
-<h3>
-
+<h2>
 🔎 Analizando etiqueta...
+</h2>
 
-</h3>
-
-
-<div class="barra">
+<div class="progress-bar">
 
 <div
-class="barra-interna"
-id="barraInterna"
+class="progress-fill"
+id="progressFill"
 ></div>
 
 </div>
 
-
 <div
-class="progreso-texto"
-id="progresoTexto"
+class="progress-text"
+id="progressText"
 >
 
-Preparando análisis...
+Preparando OCR...
 
 </div>
 
 </div>
-
-
 
 <!-- RESULTADO -->
 
@@ -806,23 +485,13 @@ class="panel resultado"
 id="resultado"
 >
 
-
 <h2>
-
 📦 Resultado del escaneo
-
 </h2>
-
 
 <div class="estado">
 
-
-<div>
-
 Código interno generado:
-
-</div>
-
 
 <div
 class="codigo"
@@ -833,345 +502,262 @@ PKG-000001
 
 </div>
 
+</div>
 
 <div
-class="fecha-escaneo"
-id="fechaEscaneo"
+class="alerta alerta-ok"
+id="alertaOk"
 >
 
-</div>
+✅ Etiqueta reconocida correctamente.
 
 </div>
-
-
 
 <div
-id="estadoDatos"
-style="margin-top:15px"
+class="alerta alerta-error"
+id="alertaError"
 >
 
+⚠️ Algunos datos no pudieron detectarse automáticamente.
+Podés completarlos manualmente o volver a escanear.
+
 </div>
-
-
 
 <div
-class="datos-faltantes"
-id="datosFaltantes"
+class="form-grid"
+style="margin-top:20px"
 >
-
-<h3>
-
-⚠️ Faltan algunos datos
-
-</h3>
-
-
-<p>
-
-El sistema no pudo detectar automáticamente los siguientes campos:
-
-</p>
-
-
-<ul
-id="listaFaltantes"
->
-
-</ul>
-
-
-<p style="margin-top:15px">
-
-Podés completarlos manualmente o volver a escanear la etiqueta.
-
-</p>
-
-</div>
-
-
-
-<div class="form-grid">
-
 
 <div>
 
 <label>
-
 Código de barras
-
 </label>
 
 <input
 type="text"
 id="codigoBarras"
-readonly
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Número de orden
-
 </label>
 
 <input
 type="text"
 id="numeroOrden"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Fecha emisión
-
 </label>
 
 <input
 type="text"
 id="fechaEmision"
+
 >
 
 </div>
 
+<div>
 
+<label>
+Fecha y hora de recepción
+</label>
+
+<input
+type="text"
+id="fechaRecepcion"
+readonly
+
+>
+
+</div>
 
 <div>
 
 <label>
-
 Peso
-
 </label>
 
 <input
 type="text"
 id="peso"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Cantidad de bultos
-
 </label>
 
 <input
 type="text"
 id="bultos"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Número de bulto
-
 </label>
 
 <input
 type="text"
 id="numeroBulto"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Remitente
-
 </label>
 
 <input
 type="text"
 id="remitente"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Destinatario
-
 </label>
 
 <input
 type="text"
 id="destinatario"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Teléfono
-
 </label>
 
 <input
 type="text"
 id="telefono"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Dirección
-
 </label>
 
 <input
 type="text"
 id="direccion"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
-Código Postal
-
+Código postal
 </label>
 
 <input
 type="text"
 id="codigoPostal"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Localidad
-
 </label>
 
 <input
 type="text"
 id="localidad"
+
 >
 
 </div>
 
-
-
 <div>
 
 <label>
-
 Zona / Barrio
-
 </label>
 
 <input
 type="text"
 id="zona"
+
 >
 
 </div>
 
-
 </div>
-
-
 
 <div style="margin-top:20px">
 
-
 <label>
-
 Observaciones
-
 </label>
-
 
 <textarea
 id="observaciones"
 ></textarea>
 
-
 </div>
 
+<!-- OCR -->
 
+<div class="ocr-box">
 
-<div class="ocr-panel">
+<label>
+📝 Texto completo detectado por OCR
+</label>
 
-
-<details>
-
-<summary>
-
-📝 Ver texto completo detectado por OCR
-
-</summary>
-
-
-<div
-class="ocr-texto"
+<textarea
 id="textoOCR"
->
-
-Sin datos.
-
-</div>
-
-
-</details>
-
+readonly
+></textarea>
 
 </div>
-
-
-
-<div class="acciones">
-
 
 <button
 class="btn btn-success"
 id="guardarPaquete"
+
 >
 
 <i class="fas fa-save"></i>
@@ -1180,546 +766,295 @@ Guardar paquete
 
 </button>
 
-
 <button
 class="btn btn-warning"
-id="reescanear"
+id="escanearOtro"
+
 >
 
-<i class="fas fa-camera"></i>
+<i class="fas fa-redo"></i>
 
 Volver a escanear
 
 </button>
 
-
 </div>
 
-
 </div>
-
-
-</div>
-
-
-
-<!-- LIBRERÍAS -->
-
-<script
-src="https://unpkg.com/html5-qrcode"
-></script>
-
-
-<script
-src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"
-></script>
-
-
 
 <script>
 
 
-/* =======================================================
-   VARIABLES
-======================================================= */
+// =====================================================
+// VARIABLES
+// =====================================================
 
-
-let scanner = null;
+let stream = null;
 
 let procesando = false;
 
-let ultimoCodigo = null;
+let scannerActivo = false;
 
-let ultimoTiempo = 0;
+let ultimoCodigo = "";
 
-let canvas = null;
+let ultimoTexto = "";
+
+let capturasEstables = 0;
+
+let intervaloCaptura = null;
 
 
-/* =======================================================
-   ELEMENTOS
-======================================================= */
+// =====================================================
+// ELEMENTOS
+// =====================================================
 
+const video =
+document.getElementById("video");
+
+const canvas =
+document.getElementById("canvas");
 
 const iniciar =
-document.getElementById(
-"iniciarScanner"
-);
-
+document.getElementById("iniciarScanner");
 
 const detener =
-document.getElementById(
-"detenerScanner"
-);
-
+document.getElementById("detenerScanner");
 
 const estado =
-document.getElementById(
-"scannerEstado"
-);
-
+document.getElementById("scannerEstado");
 
 const resultado =
-document.getElementById(
-"resultado"
-);
-
+document.getElementById("resultado");
 
 const progreso =
-document.getElementById(
-"progreso"
-);
+document.getElementById("progreso");
 
+const progressFill =
+document.getElementById("progressFill");
 
-const barraInterna =
-document.getElementById(
-"barraInterna"
-);
-
-
-const progresoTexto =
-document.getElementById(
-"progresoTexto"
-);
-
-
-const codigoBarras =
-document.getElementById(
-"codigoBarras"
-);
-
+const progressText =
+document.getElementById("progressText");
 
 const textoOCR =
-document.getElementById(
-"textoOCR"
-);
+document.getElementById("textoOCR");
 
 
-const datosFaltantes =
-document.getElementById(
-"datosFaltantes"
-);
-
-
-const listaFaltantes =
-document.getElementById(
-"listaFaltantes"
-);
-
-
-
-/* =======================================================
-   SONIDOS
-======================================================= */
-
-
-function sonidoFrecuencia(
-frecuencia,
-duracion
-){
-
-try{
-
-
-const AudioContext =
-window.AudioContext ||
-window.webkitAudioContext;
-
-
-const audio =
-new AudioContext();
-
-
-const oscilador =
-audio.createOscillator();
-
-
-const ganancia =
-audio.createGain();
-
-
-oscilador.connect(
-ganancia
-);
-
-
-ganancia.connect(
-audio.destination
-);
-
-
-oscilador.frequency.value =
-frecuencia;
-
-
-ganancia.gain.setValueAtTime(
-0.15,
-audio.currentTime
-);
-
-
-oscilador.start();
-
-
-oscilador.stop(
-audio.currentTime +
-duracion
-);
-
-
-}catch(error){
-
-console.log(
-"Audio no disponible"
-);
-
-}
-
-}
-
+// =====================================================
+// SONIDOS
+// =====================================================
 
 function sonidoOK(){
 
-sonidoFrecuencia(
-880,
-0.15
-);
+    try{
 
-}
+        const audio =
+        new AudioContext();
 
+        const oscillator =
+        audio.createOscillator();
 
-function sonidoWarning(){
+        const gain =
+        audio.createGain();
 
-sonidoFrecuencia(
-500,
-0.15
-);
+        oscillator.connect(gain);
 
-setTimeout(
-()=>sonidoFrecuencia(
-500,
-0.15
-),
-200
-);
+        gain.connect(
+            audio.destination
+        );
+
+        oscillator.frequency.value =
+        900;
+
+        oscillator.type =
+        "sine";
+
+        gain.gain.setValueAtTime(
+            .3,
+            audio.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .01,
+            audio.currentTime + .4
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audio.currentTime + .4
+        );
+
+    }catch(e){}
 
 }
 
 
 function sonidoError(){
 
-sonidoFrecuencia(
-250,
-0.2
-);
+    try{
 
-setTimeout(
-()=>sonidoFrecuencia(
-180,
-0.25
-),
-250
-);
+        const audio =
+        new AudioContext();
 
-}
+        const oscillator =
+        audio.createOscillator();
 
+        const gain =
+        audio.createGain();
 
+        oscillator.connect(gain);
 
-/* =======================================================
-   ESTADO
-======================================================= */
+        gain.connect(
+            audio.destination
+        );
 
+        oscillator.frequency.value =
+        180;
 
-function cambiarEstado(
-texto,
-tipo
-){
+        oscillator.type =
+        "square";
 
-estado.innerHTML =
-texto;
+        gain.gain.setValueAtTime(
+            .3,
+            audio.currentTime
+        );
 
+        gain.gain.exponentialRampToValueAtTime(
+            .01,
+            audio.currentTime + .5
+        );
 
-estado.className =
-"estado-scanner";
+        oscillator.start();
 
+        oscillator.stop(
+            audio.currentTime + .5
+        );
 
-if(tipo === "ok"){
-
-estado.classList.add(
-"estado-ok"
-);
-
-}
-
-else if(tipo === "error"){
-
-estado.classList.add(
-"estado-error"
-);
-
-}
-
-else if(tipo === "warning"){
-
-estado.classList.add(
-"estado-warning"
-);
-
-}
-
-else{
-
-estado.classList.add(
-"estado-esperando"
-);
-
-}
+    }catch(e){}
 
 }
 
 
+// =====================================================
+// GENERAR CODIGO INTERNO
+// =====================================================
 
-/* =======================================================
-   INICIAR SCANNER
-======================================================= */
+function generarCodigoInterno(){
 
+    const numero =
+    Math.floor(
+        100000 +
+        Math.random() * 900000
+    );
+
+    return "PKG-" + numero;
+
+}
+
+
+// =====================================================
+// FECHA RECEPCION
+// =====================================================
+
+function fechaActual(){
+
+    const ahora =
+    new Date();
+
+    return ahora.toLocaleString(
+        "es-AR"
+    );
+
+}
+
+
+// =====================================================
+// ABRIR CAMARA
+// =====================================================
 
 iniciar.addEventListener(
 "click",
 async function(){
 
+    try{
 
-try{
+        stream =
+        await navigator.mediaDevices
+        .getUserMedia({
 
+            video:{
+                facingMode:{
+                    ideal:"environment"
+                },
 
-if(scanner){
+                width:{
+                    ideal:1280
+                },
 
-return;
+                height:{
+                    ideal:720
+                }
 
-}
+            },
 
+            audio:false
 
-scanner =
-new Html5Qrcode(
-"reader"
-);
+        });
 
 
-const cameras =
-await Html5Qrcode.getCameras();
+        video.srcObject =
+        stream;
 
 
-if(
-!cameras ||
-!cameras.length
-){
+        scannerActivo =
+        true;
 
-alert(
-"No se encontró ninguna cámara."
-);
+        procesando =
+        false;
 
-return;
+        capturasEstables =
+        0;
 
-}
 
+        iniciar.style.display =
+        "none";
 
-let cameraId =
-cameras[0].id;
+        detener.style.display =
+        "inline-block";
 
 
-const trasera =
-cameras.find(
-camera => {
+        estado.innerHTML =
+        "📷 Cámara activa. Apuntá a la etiqueta completa.";
 
-const nombre =
-(
-camera.label ||
-""
-).toLowerCase();
 
+        intervaloCaptura =
+        setInterval(
 
-return (
+            capturarImagen,
 
-nombre.includes("back")
+            3500
 
-||
+        );
 
-nombre.includes("rear")
 
-||
+    }catch(error){
 
-nombre.includes("trasera")
+        console.error(error);
 
-);
+        alert(
+            "No se pudo abrir la cámara: "
+            +
+            error.message
+        );
 
-}
-
-);
-
-
-if(trasera){
-
-cameraId =
-trasera.id;
-
-}
-
-
-await scanner.start(
-
-cameraId,
-
-{
-
-fps:10,
-
-qrbox:{
-
-width:300,
-
-height:200
-
-}
-
-},
-
-
-codigoDetectado,
-
-
-error => {
-
-}
-
-
-);
-
-
-iniciar.style.display =
-"none";
-
-
-detener.style.display =
-"inline-block";
-
-
-cambiarEstado(
-"📷 Cámara activa. Apuntá a la etiqueta completa.",
-""
-);
-
-
-}catch(error){
-
-
-console.error(
-"Error iniciando scanner:",
-error
-);
-
-
-sonidoError();
-
-
-alert(
-"Error iniciando cámara: "
-+
-error.message
-);
-
-
-}
+    }
 
 });
 
 
-
-/* =======================================================
-   CÓDIGO DETECTADO
-======================================================= */
-
-
-async function codigoDetectado(
-codigo
-){
-
-
-if(procesando){
-
-return;
-
-}
-
-
-const ahora =
-Date.now();
-
-
-if(
-codigo === ultimoCodigo
-&&
-ahora - ultimoTiempo < 10000
-){
-
-return;
-
-}
-
-
-ultimoCodigo =
-codigo;
-
-
-ultimoTiempo =
-ahora;
-
-
-procesando =
-true;
-
-
-console.log(
-"📷 Código detectado:",
-codigo
-);
-
-
-sonidoOK();
-
-
-cambiarEstado(
-"✅ Etiqueta detectada. Capturando información...",
-"ok"
-);
-
-
-codigoBarras.value =
-codigo;
-
-
-resultado.style.display =
-"block";
-
-
-await detenerScanner();
-
-
-setTimeout(
-()=>{
-
-capturarEtiqueta();
-
-},
-500
-);
-
-}
-
-
-
-/* =======================================================
-   DETENER SCANNER
-======================================================= */
-
+// =====================================================
+// DETENER CAMARA
+// =====================================================
 
 detener.addEventListener(
 "click",
@@ -1727,1351 +1062,1138 @@ detenerScanner
 );
 
 
-async function detenerScanner(){
+function detenerScanner(){
+
+    scannerActivo =
+    false;
 
 
-if(!scanner){
+    if(intervaloCaptura){
 
-return;
+        clearInterval(
+            intervaloCaptura
+        );
 
-}
+        intervaloCaptura =
+        null;
 
-
-try{
-
-
-await scanner.stop();
-
-
-scanner.clear();
+    }
 
 
-}catch(error){
+    if(stream){
+
+        stream
+        .getTracks()
+        .forEach(
+            track =>
+            track.stop()
+        );
+
+        stream =
+        null;
+
+    }
 
 
-console.error(
-"Error deteniendo scanner:",
-error
-);
+    video.srcObject =
+    null;
 
 
-}
+    iniciar.style.display =
+    "inline-block";
 
 
-scanner =
-null;
+    detener.style.display =
+    "none";
 
 
-iniciar.style.display =
-"inline-block";
-
-
-detener.style.display =
-"none";
-
-}
-
-
-
-/* =======================================================
-   CAPTURAR ETIQUETA
-======================================================= */
-
-
-async function capturarEtiqueta(){
-
-
-try{
-
-
-progreso.style.display =
-"block";
-
-
-resultado.style.display =
-"none";
-
-
-actualizarProgreso(
-10,
-"Preparando imagen..."
-);
-
-
-const video =
-document.querySelector(
-"#reader video"
-);
-
-
-if(!video){
-
-
-console.error(
-"No se encontró video."
-);
-
-
-return;
+    estado.innerHTML =
+    "Scanner detenido";
 
 }
 
 
-canvas =
-document.createElement(
-"canvas"
-);
+// =====================================================
+// CAPTURAR IMAGEN
+// =====================================================
+
+async function capturarImagen(){
+
+    if(
+        !scannerActivo ||
+        procesando
+    ){
+
+        return;
+
+    }
 
 
-canvas.width =
-video.videoWidth;
+    if(
+        video.readyState <
+        2
+    ){
+
+        return;
+
+    }
 
 
-canvas.height =
-video.videoHeight;
+    const width =
+    video.videoWidth;
+
+    const height =
+    video.videoHeight;
 
 
-const contexto =
-canvas.getContext(
-"2d"
-);
+    if(
+        !width ||
+        !height
+    ){
+
+        return;
+
+    }
 
 
-contexto.drawImage(
+    canvas.width =
+    width;
 
-video,
-
-0,
-
-0,
-
-canvas.width,
-
-canvas.height
-
-);
+    canvas.height =
+    height;
 
 
-actualizarProgreso(
-20,
-"Procesando imagen..."
-);
+    const ctx =
+    canvas.getContext(
+        "2d"
+    );
 
 
-const imagen =
-canvas.toDataURL(
-"image/jpeg",
-0.95
-);
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        width,
+        height
+    );
 
 
-await procesarOCR(
-imagen
-);
+    const imagen =
+    canvas.toDataURL(
+        "image/jpeg",
+        .95
+    );
 
 
-}catch(error){
-
-
-console.error(
-"Error capturando etiqueta:",
-error
-);
-
-
-sonidoError();
-
-
-cambiarEstado(
-"❌ No se pudo analizar la etiqueta.",
-"error"
-);
-
-
-alert(
-"No se pudo analizar la etiqueta. Volvé a escanear."
-);
-
-
-procesando =
-false;
-
-}
+    await analizarImagen(
+        imagen
+    );
 
 }
 
 
+// =====================================================
+// OCR
+// =====================================================
 
-/* =======================================================
-   OCR
-======================================================= */
-
-
-async function procesarOCR(
-imagen
+async function analizarImagen(
+    imagen
 ){
 
-
-actualizarProgreso(
-30,
-"Ejecutando OCR..."
-);
+    procesando =
+    true;
 
 
-const resultadoOCR =
-await Tesseract.recognize(
+    estado.innerHTML =
+    "🔎 Analizando etiqueta...";
 
-imagen,
 
-"spa",
+    progreso.style.display =
+    "block";
 
-{
 
-logger:
-info => {
+    progressFill.style.width =
+    "10%";
 
-if(
-info.status ===
-"recognizing text"
+
+    progressText.innerText =
+    "Preparando reconocimiento de texto...";
+
+
+    try{
+
+
+        const resultadoOCR =
+        await Tesseract.recognize(
+
+            imagen,
+
+            "spa",
+
+            {
+
+                logger:
+                function(info){
+
+                    if(
+                        info.status ===
+                        "recognizing text"
+                    ){
+
+                        const porcentaje =
+                        Math.round(
+                            info.progress *
+                            100
+                        );
+
+
+                        progressFill.style.width =
+                        porcentaje + "%";
+
+
+                        progressText.innerText =
+                        "Leyendo etiqueta... "
+                        +
+                        porcentaje
+                        +
+                        "%";
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+        const texto =
+        resultadoOCR.data.text
+        .trim();
+
+
+        console.log(
+            "OCR COMPLETO:",
+            texto
+        );
+
+
+        if(
+            !texto ||
+            texto.length <
+            20
+        ){
+
+            throw new Error(
+                "No se detectó suficiente texto"
+            );
+
+        }
+
+
+        textoOCR.value =
+        texto;
+
+
+        progressFill.style.width =
+        "100%";
+
+
+        progressText.innerText =
+        "✅ OCR terminado";
+
+
+        detenerScanner();
+
+
+        sonidoOK();
+
+
+        procesarDatos(
+            texto
+        );
+
+
+    }catch(error){
+
+
+        console.error(
+            "Error OCR:",
+            error
+        );
+
+
+        sonidoError();
+
+
+        estado.innerHTML =
+        "❌ No se pudo leer claramente la etiqueta. Intentando nuevamente...";
+
+
+        procesando =
+        false;
+
+    }
+
+}
+
+
+// =====================================================
+// PROCESAR DATOS
+// =====================================================
+
+function procesarDatos(
+    texto
 ){
 
-const porcentaje =
-Math.round(
-info.progress * 100
-);
+    const textoLimpio =
+    texto
+    .replace(
+        /\r/g,
+        ""
+    );
 
 
-actualizarProgreso(
+    const lineas =
+    textoLimpio
+    .split("\n")
+    .map(
+        linea =>
+        linea.trim()
+    )
+    .filter(
+        linea =>
+        linea.length > 0
+    );
 
-30 +
-Math.round(
-porcentaje * 0.6
-),
 
-"Reconociendo texto... "
-+
-porcentaje
-+
-"%"
+    const datos = {
 
-);
+        codigoBarras:
+        detectarCodigo(
+            textoLimpio
+        ),
+
+        numeroOrden:
+        detectarOrden(
+            textoLimpio
+        ),
+
+        fechaEmision:
+        detectarFecha(
+            textoLimpio
+        ),
+
+        peso:
+        detectarPeso(
+            textoLimpio
+        ),
+
+        bultos:
+        detectarBultos(
+            textoLimpio
+        ),
+
+        numeroBulto:
+        detectarNumeroBulto(
+            textoLimpio
+        ),
+
+        remitente:
+        detectarCampo(
+            textoLimpio,
+            [
+                "Remitente"
+            ]
+        ),
+
+        destinatario:
+        detectarDestinatario(
+            textoLimpio
+        ),
+
+        telefono:
+        detectarTelefono(
+            textoLimpio
+        ),
+
+        direccion:
+        detectarDireccion(
+            textoLimpio
+        ),
+
+        codigoPostal:
+        detectarCodigoPostal(
+            textoLimpio
+        ),
+
+        localidad:
+        detectarLocalidad(
+            textoLimpio
+        )
+
+    };
+
+
+    document.getElementById(
+        "codigoInterno"
+    ).innerText =
+    generarCodigoInterno();
+
+
+    document.getElementById(
+        "codigoBarras"
+    ).value =
+    datos.codigoBarras || "";
+
+
+    document.getElementById(
+        "numeroOrden"
+    ).value =
+    datos.numeroOrden || "";
+
+
+    document.getElementById(
+        "fechaEmision"
+    ).value =
+    datos.fechaEmision || "";
+
+
+    document.getElementById(
+        "fechaRecepcion"
+    ).value =
+    fechaActual();
+
+
+    document.getElementById(
+        "peso"
+    ).value =
+    datos.peso || "";
+
+
+    document.getElementById(
+        "bultos"
+    ).value =
+    datos.bultos || "";
+
+
+    document.getElementById(
+        "numeroBulto"
+    ).value =
+    datos.numeroBulto || "";
+
+
+    document.getElementById(
+        "remitente"
+    ).value =
+    datos.remitente || "";
+
+
+    document.getElementById(
+        "destinatario"
+    ).value =
+    datos.destinatario || "";
+
+
+    document.getElementById(
+        "telefono"
+    ).value =
+    datos.telefono || "";
+
+
+    document.getElementById(
+        "direccion"
+    ).value =
+    datos.direccion || "";
+
+
+    document.getElementById(
+        "codigoPostal"
+    ).value =
+    datos.codigoPostal || "";
+
+
+    document.getElementById(
+        "localidad"
+    ).value =
+    datos.localidad || "";
+
+
+    document.getElementById(
+        "zona"
+    ).value =
+    detectarZona(
+        datos.localidad,
+        datos.direccion
+    );
+
+
+    resultado.style.display =
+    "block";
+
+
+    const cantidadDetectada =
+    Object.values(
+        datos
+    )
+    .filter(
+        valor =>
+        valor &&
+        valor.trim()
+    )
+    .length;
+
+
+    if(
+        cantidadDetectada >= 5
+    ){
+
+        document.getElementById(
+            "alertaOk"
+        ).style.display =
+        "block";
+
+        document.getElementById(
+            "alertaError"
+        ).style.display =
+        "none";
+
+    }else{
+
+        document.getElementById(
+            "alertaOk"
+        ).style.display =
+        "none";
+
+        document.getElementById(
+            "alertaError"
+        ).style.display =
+        "block";
+
+    }
+
+
+    procesando =
+    false;
 
 }
 
-}
 
-}
+// =====================================================
+// DETECTAR CODIGO
+// =====================================================
 
-);
-
-
-const texto =
-resultadoOCR.data.text;
-
-
-console.log(
-"===== OCR ====="
-);
-
-
-console.log(
-texto
-);
-
-
-textoOCR.textContent =
-texto;
-
-
-actualizarProgreso(
-95,
-"Analizando campos..."
-);
-
-
-const datos =
-extraerDatos(
-texto
-);
-
-
-mostrarDatos(
-datos,
-texto
-);
-
-
-actualizarProgreso(
-100,
-"Análisis terminado."
-);
-
-
-setTimeout(
-()=>{
-
-progreso.style.display =
-"none";
-
-},
-1000
-);
-
-
-procesando =
-false;
-
-}
-
-
-
-/* =======================================================
-   EXTRAER DATOS
-======================================================= */
-
-
-function extraerDatos(
-texto
+function detectarCodigo(
+    texto
 ){
 
-
-const lineas =
-texto
-.split("\n")
-.map(
-linea =>
-linea.trim()
-)
-.filter(
-linea =>
-linea.length > 0
-);
+    const encontrados =
+    texto.match(
+        /\b\d{6,12}\b/g
+    );
 
 
-const resultado = {
+    if(
+        !encontrados
+    ){
 
-fechaEmision:"",
-peso:"",
-bultos:"",
-numeroBulto:"",
-numeroOrden:"",
-remitente:"",
-destinatario:"",
-telefono:"",
-direccion:"",
-codigoPostal:"",
-localidad:"",
-zona:"",
-codigoBarras:""
+        return "";
 
-};
+    }
 
 
-
-/* FECHA */
-
-
-const fecha =
-texto.match(
-/(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/
-);
-
-
-if(fecha){
-
-resultado.fechaEmision =
-fecha[1];
+    return encontrados
+    .sort(
+        (
+            a,
+            b
+        ) =>
+        b.length -
+        a.length
+    )[0];
 
 }
 
 
-
-/* PESO */
-
-
-const peso =
-texto.match(
-
-/PESO\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*(?:KG|KGS)?/i
-
-);
-
-
-if(peso){
-
-resultado.peso =
-peso[1];
-
-}
-
-
-
-/* BULTOS */
-
-
-const bultos =
-texto.match(
-
-/BULTOS?\s*[:\-]?\s*(\d+)/i
-
-);
-
-
-if(bultos){
-
-resultado.bultos =
-bultos[1];
-
-}
-
-
-
-/* NÚMERO DE ORDEN */
-
-
-const orden =
-texto.match(
-
-/N(?:ro|º|°|o)?\.?\s*ORD(?:EN)?\.?\s*[:\-]?\s*(\d+)/i
-
-);
-
-
-if(orden){
-
-resultado.numeroOrden =
-orden[1];
-
-}
-
-
-
-/* REMITENTE */
-
-
-const remitente =
-texto.match(
-
-/REMITENTE\s*[:\-]?\s*(.+)/i
-
-);
-
-
-if(remitente){
-
-resultado.remitente =
-limpiarLinea(
-remitente[1]
-);
-
-}
-
-
-
-/* DESTINATARIO + TELÉFONO */
-
-
-const destinatario =
-texto.match(
-
-/DESTINATARIO\s*[:\-]?\s*(.+)/i
-
-);
-
-
-if(destinatario){
-
-
-let valor =
-limpiarLinea(
-destinatario[1]
-);
-
-
-const telefono =
-valor.match(
-/\(?(\d{8,15})\)?/
-);
-
-
-if(telefono){
-
-resultado.telefono =
-telefono[1];
-
-
-valor =
-valor.replace(
-telefono[0],
-""
-);
-
-}
-
-
-resultado.destinatario =
-valor
-.replace(
-/[\(\)]/g,
-""
-)
-.trim();
-
-}
-
-
-
-/* TELÉFONO EXPLÍCITO */
-
-
-if(
-!resultado.telefono
+// =====================================================
+// DETECTAR FECHA
+// =====================================================
+
+function detectarFecha(
+    texto
 ){
 
-
-const telefono =
-texto.match(
-
-/TEL(?:ÉFONO|EFONO)?\s*[:\-]?\s*(\d{8,15})/i
-
-);
+    const fecha =
+    texto.match(
+        /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/
+    );
 
 
-if(telefono){
-
-resultado.telefono =
-telefono[1];
-
-}
+    return fecha
+    ?
+    fecha[0]
+    :
+    "";
 
 }
 
 
+// =====================================================
+// DETECTAR ORDEN
+// =====================================================
 
-/* DIRECCIÓN */
-
-
-const direccion =
-texto.match(
-
-/(?:DIRECCI[ÓO]N)\s*[:\-]?\s*(.+)/i
-
-);
-
-
-if(direccion){
-
-resultado.direccion =
-limpiarLinea(
-direccion[1]
-);
-
-}
-
-
-
-/* CÓDIGO POSTAL */
-
-
-const cp =
-texto.match(
-
-/(?:CP|C\.P\.|C[ÓO]DIGO POSTAL)\s*[:\-]?\s*([A-Z]?\s*\d{4,8})/i
-
-);
-
-
-if(cp){
-
-resultado.codigoPostal =
-cp[1].trim();
-
-}
-
-
-
-/* CÓDIGO DE BARRAS */
-
-
-const posiblesCodigos =
-texto.match(
-/\b\d{6,15}\b/g
-);
-
-
-if(posiblesCodigos){
-
-const candidatos =
-posiblesCodigos
-.filter(
-numero =>
-numero !== resultado.telefono
-&&
-numero !== resultado.numeroOrden
-&&
-numero !== resultado.codigoPostal
-);
-
-
-if(candidatos.length){
-
-resultado.codigoBarras =
-candidatos[
-candidatos.length - 1
-];
-
-}
-
-}
-
-
-
-/* DIRECCIÓN SIN ETIQUETA */
-
-
-if(
-!resultado.direccion
+function detectarOrden(
+    texto
 ){
 
-
-const indiceDest =
-lineas.findIndex(
-linea =>
-/DESTINATARIO/i.test(
-linea
-)
-);
+    const match =
+    texto.match(
+        /(?:Nro\.?\s*Ord|Nro\s*de\s*Orden|N[uú]mero\s*de\s*orden)\s*[:\-]?\s*(\d{4,10})/i
+    );
 
 
-if(indiceDest >= 0){
+    if(match){
+
+        return match[1];
+
+    }
 
 
-for(
-let i =
-indiceDest + 1;
+    return "";
 
-i <
-Math.min(
-indiceDest + 5,
-lineas.length
-);
+}
 
-i++
+
+// =====================================================
+// DETECTAR PESO
+// =====================================================
+
+function detectarPeso(
+    texto
 ){
 
+    const match =
+    texto.match(
+        /PESO[\s\S]{0,80}?(\d+(?:[.,]\d+)?)\s*(?:kg|kgs|kilos)?/i
+    );
 
-const linea =
-lineas[i];
+
+    return match
+    ?
+    match[1]
+    :
+    "";
+
+}
 
 
-if(
+// =====================================================
+// DETECTAR BULTOS
+// =====================================================
 
-/\d{2,5}/.test(
-linea
-)
-
-&&
-
-!/(CP|CABA|BUENOS AIRES)/i.test(
-linea
-)
-
+function detectarBultos(
+    texto
 ){
 
+    const match =
+    texto.match(
+        /BULTOS[\s\S]{0,80}?(\d{1,2})/i
+    );
 
-resultado.direccion =
-linea;
 
-break;
+    return match
+    ?
+    match[1]
+    :
+    "";
 
 }
 
-}
 
-}
+// =====================================================
+// DETECTAR NUMERO DE BULTO
+// =====================================================
 
-}
-
-
-
-/* LOCALIDAD */
-
-
-const posiblesLocalidades = [
-
-"CABA",
-
-"CAPITAL FEDERAL",
-
-"RECOLETA",
-
-"PALERMO",
-
-"BELGRANO",
-
-"ALMAGRO",
-
-"BOEDO",
-
-"CABALLITO",
-
-"FLORES",
-
-"FLORESTA",
-
-"VILLA CRESPO",
-
-"VILLA DEVOTO",
-
-"VILLA DEL PARQUE",
-
-"VILLA URQUIZA",
-
-"VILLA PUEYRREDON",
-
-"VILLA LURO",
-
-"LINIERS",
-
-"MATADEROS",
-
-"NUÑEZ",
-
-"COGHLAN",
-
-"SAAVEDRA",
-
-"COLEGIALES",
-
-"CHACARITA",
-
-"PARQUE PATRICIOS",
-
-"CONSTITUCION",
-
-"MONTSERRAT",
-
-"MICROCENTRO",
-
-"RETIRO",
-
-"ONCE",
-
-"BALVANERA",
-
-"BOCA",
-
-"BARRACAS",
-
-"PARQUE CHACABUCO",
-
-"PARQUE AVELLANEDA",
-
-"VILLA SOLDATI",
-
-"VILLA LUGANO",
-
-"VILLA RIACHUELO"
-
-];
-
-
-for(
-const localidad
-of posiblesLocalidades
+function detectarNumeroBulto(
+    texto
 ){
 
-
-const regex =
-new RegExp(
-"\\b" +
-localidad +
-"\\b",
-"i"
-);
+    const match =
+    texto.match(
+        /(?:BULTO|BULTOS)\s*(?:N[°ºo]\.?\s*)?(\d{1,2})\s*(?:DE|\/)\s*(\d{1,2})/i
+    );
 
 
-if(
-regex.test(
-texto
-)
+    if(match){
+
+        return (
+            match[1]
+            +
+            " de "
+            +
+            match[2]
+        );
+
+    }
+
+
+    const otro =
+    texto.match(
+        /\b(\d{1,2})\s+de\s+(\d{1,2})\b/i
+    );
+
+
+    return otro
+    ?
+    otro[1] +
+    " de " +
+    otro[2]
+    :
+    "";
+
+}
+
+
+// =====================================================
+// DETECTAR CAMPO ETIQUETADO
+// =====================================================
+
+function detectarCampo(
+    texto,
+    nombres
 ){
 
+    for(
+        const nombre
+        of nombres
+    ){
 
-resultado.localidad =
-localidad;
+        const regex =
+        new RegExp(
+            nombre +
+            "\\s*:?\\s*(.+)",
+            "i"
+        );
 
-break;
+
+        const match =
+        texto.match(
+            regex
+        );
+
+
+        if(match){
+
+            return match[1]
+            .trim();
+
+        }
+
+    }
+
+
+    return "";
 
 }
 
-}
 
+// =====================================================
+// DESTINATARIO
+// =====================================================
 
-
-/* ZONA */
-
-
-if(
-resultado.localidad
+function detectarDestinatario(
+    texto
 ){
 
-resultado.zona =
-resultado.localidad;
+    const match =
+    texto.match(
+        /Destinatario\s*:?\s*(.+)/i
+    );
+
+
+    if(
+        !match
+    ){
+
+        return "";
+
+    }
+
+
+    return match[1]
+    .replace(
+        /\(\s*\d{7,15}\s*\)/g,
+        ""
+    )
+    .trim();
 
 }
 
 
-return resultado;
+// =====================================================
+// TELEFONO
+// =====================================================
 
-}
-
-
-
-/* =======================================================
-   LIMPIAR TEXTO
-======================================================= */
-
-
-function limpiarLinea(
-texto
+function detectarTelefono(
+    texto
 ){
 
-return texto
+    const match =
+    texto.match(
+        /\(?\s*(\d{10,15})\s*\)?/
+    );
 
-.replace(
-/^[\s:;\-]+/,
-""
-)
 
-.replace(
-/\s+/g,
-" "
-)
-
-.trim();
+    return match
+    ?
+    match[1]
+    :
+    "";
 
 }
 
 
+// =====================================================
+// DIRECCION
+// =====================================================
 
-/* =======================================================
-   MOSTRAR DATOS
-======================================================= */
-
-
-function mostrarDatos(
-datos,
-texto
+function detectarDireccion(
+    texto
 ){
 
-
-const campos = {
-
-codigoBarras:
-datos.codigoBarras || codigoBarras.value,
-
-numeroOrden:
-datos.numeroOrden,
-
-fechaEmision:
-datos.fechaEmision,
-
-peso:
-datos.peso,
-
-bultos:
-datos.bultos,
-
-numeroBulto:
-datos.numeroBulto,
-
-remitente:
-datos.remitente,
-
-destinatario:
-datos.destinatario,
-
-telefono:
-datos.telefono,
-
-direccion:
-datos.direccion,
-
-codigoPostal:
-datos.codigoPostal,
-
-localidad:
-datos.localidad,
-
-zona:
-datos.zona
-
-};
+    const lineas =
+    texto
+    .split("\n")
+    .map(
+        l =>
+        l.trim()
+    );
 
 
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
 
-for(
-const campo
-in campos
+        if(
+            /Destinatario/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            const siguiente =
+            lineas[i+1];
+
+
+            if(
+                siguiente &&
+                /\d/.test(
+                    siguiente
+                )
+            ){
+
+                return siguiente;
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// CODIGO POSTAL
+// =====================================================
+
+function detectarCodigoPostal(
+    texto
 ){
 
+    const match =
+    texto.match(
+        /(?:CP|C\.P\.|Código Postal)\s*:?\s*([A-Z]?\s*\d{4,8})/i
+    );
 
-const elemento =
-document.getElementById(
-campo
-);
+
+    return match
+    ?
+    match[1]
+    .trim()
+    :
+    "";
+
+}
 
 
-if(
-elemento
+// =====================================================
+// LOCALIDAD
+// =====================================================
+
+function detectarLocalidad(
+    texto
 ){
 
-
-elemento.value =
-campos[campo] || "";
-
-
-elemento.classList.remove(
-"detectado",
-"faltante"
-);
+    const match =
+    texto.match(
+        /(?:Localidad|Ciudad)\s*:?\s*([^\n]+)/i
+    );
 
 
-if(
-campos[campo]
+    if(match){
+
+        return match[1]
+        .trim();
+
+    }
+
+
+    const cp =
+    texto.match(
+        /CP\s*:?\s*([^\n]+)/i
+    );
+
+
+    if(cp){
+
+        const valor =
+        cp[1]
+        .trim();
+
+
+        const partes =
+        valor.split(
+            /\s+/
+        );
+
+
+        if(
+            partes.length > 1
+        ){
+
+            return partes[0];
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+// =====================================================
+// ZONAS / BARRIOS
+// =====================================================
+
+function detectarZona(
+    localidad,
+    direccion
 ){
 
-elemento.classList.add(
-"detectado"
-);
+    const texto = (
 
-}else{
+        (
+            localidad ||
+            ""
+        )
+        +
+        " "
+        +
+        (
+            direccion ||
+            ""
+        )
 
-elemento.classList.add(
-"faltante"
-);
-
-}
-
-}
-
-}
-
-
-
-/* CÓDIGO INTERNO */
+    ).toLowerCase();
 
 
-const numero =
-Math.floor(
-100000 +
-Math.random() *
-900000
-);
+    const zonas = [
+
+        "palermo",
+        "recoleta",
+        "belgrano",
+        "nuñez",
+        "núñez",
+        "colegiales",
+        "chacarita",
+        "villa crespo",
+        "caballito",
+        "almagro",
+        "boedo",
+        "barracas",
+        "la boca",
+        "san telmo",
+        "monserrat",
+        "balvanera",
+        "constitución",
+        "san cristóbal",
+        "flores",
+        "floresta",
+        "villa devoto",
+        "villa del parque",
+        "villa urquiza",
+        "villa pueyrredón",
+        "saavedra",
+        "coghlan",
+        "villa lugano",
+        "villa soldati",
+        "mataderos",
+        "liniers",
+        "versalles",
+        "villa real",
+        "villa luro",
+        "parque patricios",
+        "parque chacabuco",
+        "puerto madero",
+        "retiro",
+        "san nicolás",
+        "barrio norte",
+        "microcentro"
+    ];
 
 
-document.getElementById(
-"codigoInterno"
-).textContent =
+    for(
+        const zona
+        of zonas
+    ){
 
-"PKG-" +
-numero;
+        if(
+            texto.includes(
+                zona
+            )
+        ){
 
+            return zona;
 
+        }
 
-/* FECHA DE ESCANEO */
-
-
-const ahora =
-new Date();
-
-
-document.getElementById(
-"fechaEscaneo"
-).textContent =
-
-"🕐 Escaneado: " +
-
-ahora.toLocaleString(
-"es-AR"
-);
+    }
 
 
-
-/* DATOS FALTANTES */
-
-
-const nombres = {
-
-numeroOrden:
-"Número de orden",
-
-fechaEmision:
-"Fecha de emisión",
-
-peso:
-"Peso",
-
-bultos:
-"Cantidad de bultos",
-
-numeroBulto:
-"Número de bulto",
-
-remitente:
-"Remitente",
-
-destinatario:
-"Destinatario",
-
-telefono:
-"Teléfono",
-
-direccion:
-"Dirección",
-
-codigoPostal:
-"Código postal",
-
-localidad:
-"Localidad",
-
-zona:
-"Zona / Barrio"
-
-};
-
-
-const faltantes = [];
-
-
-for(
-const campo
-in nombres
-){
-
-
-if(
-!campos[campo]
-){
-
-faltantes.push(
-nombres[campo]
-);
-
-}
+    return "";
 
 }
 
 
-
-listaFaltantes.innerHTML =
-"";
-
-
-if(
-faltantes.length
-){
-
-
-datosFaltantes.style.display =
-"block";
-
-
-faltantes.forEach(
-dato => {
-
-
-const li =
-document.createElement(
-"li"
-);
-
-
-li.textContent =
-dato;
-
-
-listaFaltantes.appendChild(
-li
-);
-
-});
-
-
-document.getElementById(
-"estadoDatos"
-).innerHTML =
-
-'<span class="badge badge-warning">' +
-
-'⚠️ Faltan ' +
-
-faltantes.length +
-
-' datos. Podés completarlos manualmente.'
-
-+
-
-'</span>';
-
-
-sonidoWarning();
-
-
-}else{
-
-
-datosFaltantes.style.display =
-"none";
-
-
-document.getElementById(
-"estadoDatos"
-).innerHTML =
-
-'<span class="badge badge-ok">' +
-
-'✅ Todos los datos principales fueron detectados.'
-
-+
-
-'</span>';
-
-
-sonidoOK();
-
-}
-
-
-resultado.style.display =
-"block";
-
-}
-
-
-
-/* =======================================================
-   PROGRESO
-======================================================= */
-
-
-function actualizarProgreso(
-porcentaje,
-texto
-){
-
-
-barraInterna.style.width =
-porcentaje +
-"%";
-
-
-progresoTexto.textContent =
-texto;
-
-}
-
-
-
-/* =======================================================
-   VOLVER A ESCANEAR
-======================================================= */
-
+// =====================================================
+// ESCANEAR OTRO
+// =====================================================
 
 document
 .getElementById(
-"reescanear"
+    "escanearOtro"
 )
 .addEventListener(
-"click",
-async function(){
+    "click",
+    function(){
 
+        resultado.style.display =
+        "none";
 
-resultado.style.display =
-"none";
+        progreso.style.display =
+        "none";
 
+        textoOCR.value =
+        "";
 
-progreso.style.display =
-"none";
+        ultimoCodigo =
+        "";
 
+        ultimoTexto =
+        "";
 
-codigoBarras.value =
-"";
+        capturasEstables =
+        0;
 
+        procesando =
+        false;
 
-ultimoCodigo =
-null;
+        document
+        .querySelectorAll(
+            "#resultado input"
+        )
+        .forEach(
+            input =>
+            input.value =
+            ""
+        );
 
-
-procesando =
-false;
-
-
-cambiarEstado(
-"📷 Preparado para escanear otra etiqueta.",
-""
+    }
 );
 
 
-await iniciar.click();
-
-});
-
-
-
-/* =======================================================
-   GUARDAR
-======================================================= */
-
+// =====================================================
+// GUARDAR
+// =====================================================
 
 document
 .getElementById(
-"guardarPaquete"
+    "guardarPaquete"
 )
 .addEventListener(
-"click",
-function(){
+    "click",
+    function(){
+
+        const cliente =
+        document
+        .getElementById(
+            "cliente_id"
+        )
+        .value;
 
 
-const cliente =
-document
-.getElementById(
-"cliente_id"
-)
-.value;
+        const codigo =
+        document
+        .getElementById(
+            "codigoBarras"
+        )
+        .value
+        .trim();
 
 
-if(
-!cliente
-){
+        if(
+            !cliente
+        ){
 
-alert(
-"Seleccioná un cliente interno."
+            alert(
+                "Seleccioná un cliente interno."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !codigo
+        ){
+
+            alert(
+                "No se detectó el código de barras. Podés ingresarlo manualmente."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Los datos fueron preparados correctamente. La conexión con el guardado en la base de datos la hacemos en el siguiente paso."
+        );
+
+    }
 );
-
-return;
-
-}
-
-
-if(
-!codigoBarras.value
-){
-
-alert(
-"El código de barras es obligatorio."
-);
-
-return;
-
-}
-
-
-const datos = {
-
-cliente_id:
-cliente,
-
-codigo_interno:
-document.getElementById(
-"codigoInterno"
-).textContent,
-
-codigo_barras:
-codigoBarras.value,
-
-numero_orden:
-document.getElementById(
-"numeroOrden"
-).value,
-
-fecha_emision:
-document.getElementById(
-"fechaEmision"
-).value,
-
-peso:
-document.getElementById(
-"peso"
-).value,
-
-bultos:
-document.getElementById(
-"bultos"
-).value,
-
-numero_bulto:
-document.getElementById(
-"numeroBulto"
-).value,
-
-remitente:
-document.getElementById(
-"remitente"
-).value,
-
-destinatario:
-document.getElementById(
-"destinatario"
-).value,
-
-telefono:
-document.getElementById(
-"telefono"
-).value,
-
-direccion:
-document.getElementById(
-"direccion"
-).value,
-
-codigo_postal:
-document.getElementById(
-"codigoPostal"
-).value,
-
-localidad:
-document.getElementById(
-"localidad"
-).value,
-
-zona:
-document.getElementById(
-"zona"
-).value,
-
-observaciones:
-document.getElementById(
-"observaciones"
-).value
-
-};
-
-
-console.log(
-"📦 DATOS LISTOS PARA GUARDAR:",
-datos
-);
-
-
-alert(
-
-"📦 Paquete preparado correctamente.\n\n" +
-
-"Por ahora los datos se muestran en consola.\n\n" +
-
-"El siguiente paso es conectar este botón con la base de datos."
-
-);
-
-
-});
 
 
 </script>
-
 
 </body>
 
