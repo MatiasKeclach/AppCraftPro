@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -6,8 +7,9 @@
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
 >
 
 <title>Particular Scanner - AppCraft Pro</title>
@@ -43,10 +45,6 @@ body{
 
 }
 
-/* ==============================
-HEADER
-============================== */
-
 .header{
 
     background:#1e293b;
@@ -77,10 +75,6 @@ HEADER
 
 }
 
-/* ==============================
-CONTENEDOR
-============================== */
-
 .container{
 
     width:100%;
@@ -92,10 +86,6 @@ CONTENEDOR
     padding:20px;
 
 }
-
-/* ==============================
-VOLVER
-============================== */
 
 .back{
 
@@ -114,10 +104,6 @@ VOLVER
     font-weight:bold;
 
 }
-
-/* ==============================
-PANEL
-============================== */
 
 .panel{
 
@@ -143,10 +129,6 @@ PANEL
 
 }
 
-/* ==============================
-LABEL
-============================== */
-
 label{
 
     display:block;
@@ -156,10 +138,6 @@ label{
     margin-bottom:8px;
 
 }
-
-/* ==============================
-SELECT
-============================== */
 
 select{
 
@@ -177,10 +155,6 @@ select{
 
 }
 
-/* ==============================
-SCANNER
-============================== */
-
 .scanner{
 
     margin-top:20px;
@@ -197,27 +171,53 @@ SCANNER
 
 }
 
-/* ==============================
-CAMARA
-============================== */
-
-#reader{
+#video{
 
     width:100%;
 
-    max-width:600px;
+    max-width:700px;
 
     margin:auto;
 
+    display:block;
+
     border-radius:12px;
 
-    overflow:hidden;
+    background:#000;
 
 }
 
-/* ==============================
-BOTONES
-============================== */
+.camera-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:700px;
+
+    margin:auto;
+
+}
+
+.scan-frame{
+
+    position:absolute;
+
+    top:10%;
+
+    left:5%;
+
+    width:90%;
+
+    height:80%;
+
+    border:3px solid #22c55e;
+
+    border-radius:12px;
+
+    pointer-events:none;
+
+}
 
 .btn{
 
@@ -277,10 +277,6 @@ BOTONES
 
 }
 
-/* ==============================
-ESTADO
-============================== */
-
 .estado{
 
     background:#f1f5f9;
@@ -295,10 +291,6 @@ ESTADO
 
 }
 
-/* ==============================
-CODIGO INTERNO
-============================== */
-
 .codigo{
 
     font-size:22px;
@@ -311,19 +303,11 @@ CODIGO INTERNO
 
 }
 
-/* ==============================
-RESULTADO
-============================== */
-
 .resultado{
 
     display:none;
 
 }
-
-/* ==============================
-PROCESANDO
-============================== */
 
 .procesando{
 
@@ -344,10 +328,6 @@ PROCESANDO
     font-weight:bold;
 
 }
-
-/* ==============================
-BARRA PROGRESO
-============================== */
 
 .progress-container{
 
@@ -377,10 +357,6 @@ BARRA PROGRESO
 
 }
 
-/* ==============================
-GRID
-============================== */
-
 .form-grid{
 
     display:grid;
@@ -394,10 +370,6 @@ GRID
     gap:15px;
 
 }
-
-/* ==============================
-INPUT
-============================== */
 
 input,
 textarea{
@@ -436,31 +408,21 @@ textarea{
 
 }
 
-/* ==============================
-OCR TEXTO
-============================== */
-
 .ocr-text{
 
     margin-top:20px;
-
-    display:none;
 
 }
 
 .ocr-text textarea{
 
-    min-height:180px;
+    min-height:220px;
 
     font-family:monospace;
 
     font-size:13px;
 
 }
-
-/* ==============================
-ALERTA DUPLICADO
-============================== */
 
 .duplicado{
 
@@ -480,9 +442,27 @@ ALERTA DUPLICADO
 
 }
 
-/* ==============================
-MOBILE
-============================== */
+.captura-info{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#1e293b;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    line-height:22px;
+
+}
+
+#canvas{
+
+    display:none;
+
+}
 
 @media(max-width:600px){
 
@@ -516,597 +496,569 @@ MOBILE
 
 </head>
 
-
 <body>
-
 
 <header class="header">
 
-    <h1>
+```
+<h1>
 
-        📷 Particular Scanner
+    📷 Particular Scanner
 
-    </h1>
+</h1>
 
-    <p>
+<p>
 
-        Escaneo y lectura de etiquetas de paquetes particulares
+    Escaneo y lectura de etiquetas de paquetes particulares
 
-    </p>
+</p>
+```
 
 </header>
 
-
 <div class="container">
 
-
 <a
-    href="/panel/logistica"
-    class="back"
+href="/panel/logistica"
+class="back"
+
 >
 
-    <i class="fas fa-arrow-left"></i>
+```
+<i class="fas fa-arrow-left"></i>
 
-    Volver a Logística
+Volver a Logística
+```
 
 </a>
 
-
-<!-- ==============================
-CLIENTE
-============================== -->
-
 <div class="panel">
 
-    <h2>
+```
+<h2>
 
-        👤 Cliente interno
+    👤 Cliente interno
 
-    </h2>
+</h2>
 
+<label>
 
-    <label>
+    Seleccionar cliente
 
-        Seleccionar cliente
+</label>
 
-    </label>
+<select id="cliente_id">
 
+    <option value="">
 
-    <select id="cliente_id">
+        Seleccionar cliente...
 
-        <option value="">
+    </option>
 
-            Seleccionar cliente...
+    <% clientes.forEach(cliente => { %>
+
+        <option
+            value="<%= cliente.id %>"
+        >
+
+            <%= cliente.nombre %>
+
+            <% if(cliente.empresa){ %>
+
+                - <%= cliente.empresa %>
+
+            <% } %>
 
         </option>
 
+    <% }) %>
 
-        <% clientes.forEach(cliente => { %>
-
-
-            <option
-                value="<%= cliente.id %>"
-            >
-
-                <%= cliente.nombre %>
-
-
-                <% if(cliente.empresa){ %>
-
-                    - <%= cliente.empresa %>
-
-                <% } %>
-
-            </option>
-
-
-        <% }) %>
-
-    </select>
+</select>
+```
 
 </div>
 
-
-<!-- ==============================
-CAMARA
-============================== -->
-
 <div class="panel">
 
-    <h2>
+```
+<h2>
 
-        📷 Escanear etiqueta
+    📷 Capturar etiqueta completa
 
-    </h2>
+</h2>
 
-
-    <div class="scanner">
-
-
-        <div id="reader"></div>
+<div class="scanner">
 
 
-        <button
-            class="btn btn-primary"
-            id="iniciarScanner"
-        >
+    <div class="camera-wrapper">
 
-            <i class="fas fa-camera"></i>
+        <video
+            id="video"
+            autoplay
+            playsinline
+        ></video>
 
-            Iniciar cámara
-
-        </button>
-
-
-        <button
-            class="btn btn-danger"
-            id="detenerScanner"
-            style="display:none"
-        >
-
-            <i class="fas fa-stop"></i>
-
-            Detener cámara
-
-        </button>
-
-
-        <p
-            id="scannerEstado"
-            style="
-                margin-top:15px;
-                opacity:.8;
-            "
-        >
-
-            Scanner detenido
-
-        </p>
-
+        <div class="scan-frame"></div>
 
     </div>
 
 
+    <canvas id="canvas"></canvas>
+
+
+    <div class="captura-info">
+
+        📌 Apuntá la cámara a la etiqueta completa.
+
+        <br>
+
+        Intentá que entren el código de barras,
+
+        dirección,
+
+        destinatario,
+
+        teléfono
+
+        y todos los textos.
+
+    </div>
+
+
+    <button
+        class="btn btn-primary"
+        id="iniciarCamara"
+    >
+
+        <i class="fas fa-camera"></i>
+
+        Iniciar cámara
+
+    </button>
+
+
+    <button
+        class="btn btn-success"
+        id="capturarEtiqueta"
+        style="display:none"
+    >
+
+        <i class="fas fa-camera-retro"></i>
+
+        Capturar etiqueta
+
+    </button>
+
+
+    <button
+        class="btn btn-danger"
+        id="detenerCamara"
+        style="display:none"
+    >
+
+        <i class="fas fa-stop"></i>
+
+        Detener cámara
+
+    </button>
+
+
+    <p
+        id="scannerEstado"
+        style="
+            margin-top:15px;
+            opacity:.85;
+        "
+    >
+
+        Cámara detenida
+
+    </p>
+
+
 </div>
+```
 
-
-<!-- ==============================
-PROCESANDO OCR
-============================== -->
+</div>
 
 <div
     class="procesando"
     id="procesando"
 >
 
-    <div>
-
-        🔎 Analizando etiqueta...
-
-    </div>
+```
+🔎 Analizando toda la etiqueta con OCR...
 
 
-    <div class="progress-container">
-
-        <div
-            class="progress-bar"
-            id="progressBar"
-        ></div>
-
-    </div>
-
+<div class="progress-container">
 
     <div
-        id="progressTexto"
-        style="margin-top:10px"
-    >
-
-        Preparando OCR...
-
-    </div>
+        class="progress-bar"
+        id="progressBar"
+    ></div>
 
 </div>
 
 
-<!-- ==============================
-RESULTADO
-============================== -->
+<div
+    id="progressTexto"
+    style="margin-top:10px"
+>
+
+    Preparando análisis...
+
+</div>
+```
+
+</div>
 
 <div
     class="panel resultado"
     id="resultado"
 >
 
+```
+<h2>
 
-    <h2>
+    📦 Resultado del escaneo
 
-        📦 Paquete detectado
-
-    </h2>
-
-
-    <!-- CODIGO INTERNO -->
-
-    <div class="estado">
-
-        Código interno generado:
+</h2>
 
 
-        <div
-            class="codigo"
-            id="codigoInterno"
+<div class="estado">
+
+    Código interno generado:
+
+    <div
+        class="codigo"
+        id="codigoInterno"
+    >
+
+        Generando...
+
+    </div>
+
+</div>
+
+
+<div
+    class="duplicado"
+    id="duplicado"
+>
+
+    ⚠️ Este código de barras ya fue escaneado anteriormente.
+
+    No se generará un paquete duplicado.
+
+</div>
+
+
+<div
+    class="form-grid"
+    style="margin-top:20px"
+>
+
+
+    <div>
+
+        <label>
+
+            Código de barras
+
+        </label>
+
+        <input
+            type="text"
+            id="codigoBarras"
         >
 
-            Generando...
-
-        </div>
-
     </div>
 
 
-    <!-- DUPLICADO -->
-
-    <div
-        class="duplicado"
-        id="duplicado"
-    >
-
-        ⚠️ Atención: este código de paquete ya podría estar registrado.
-
-    </div>
-
-
-    <!-- CAMPOS -->
-
-    <div
-        class="form-grid"
-        style="margin-top:20px"
-    >
-
-
-        <!-- CODIGO BARRAS -->
-
-        <div>
-
-            <label>
-
-                Código de barras
-
-            </label>
-
-            <input
-                type="text"
-                id="codigoBarras"
-            >
-
-        </div>
-
-
-        <!-- NUMERO ORDEN -->
-
-        <div>
-
-            <label>
-
-                Número de orden
-
-            </label>
-
-            <input
-                type="text"
-                id="numeroOrden"
-            >
-
-        </div>
-
-
-        <!-- FECHA -->
-
-        <div>
-
-            <label>
-
-                Fecha emisión
-
-            </label>
-
-            <input
-                type="text"
-                id="fechaEmision"
-            >
-
-        </div>
-
-
-        <!-- PESO -->
-
-        <div>
-
-            <label>
-
-                Peso
-
-            </label>
-
-            <input
-                type="text"
-                id="peso"
-            >
-
-        </div>
-
-
-        <!-- BULTOS -->
-
-        <div>
-
-            <label>
-
-                Cantidad de bultos
-
-            </label>
-
-            <input
-                type="text"
-                id="bultos"
-            >
-
-        </div>
-
-
-        <!-- NUMERO BULTO -->
-
-        <div>
-
-            <label>
-
-                Número de bulto
-
-            </label>
-
-            <input
-                type="text"
-                id="numeroBulto"
-            >
-
-        </div>
-
-
-        <!-- REMITENTE -->
-
-        <div>
-
-            <label>
-
-                Remitente
-
-            </label>
-
-            <input
-                type="text"
-                id="remitente"
-            >
-
-        </div>
-
-
-        <!-- DESTINATARIO -->
-
-        <div>
-
-            <label>
-
-                Destinatario
-
-            </label>
-
-            <input
-                type="text"
-                id="destinatario"
-            >
-
-        </div>
-
-
-        <!-- TELEFONO -->
-
-        <div>
-
-            <label>
-
-                Teléfono
-
-            </label>
-
-            <input
-                type="text"
-                id="telefono"
-            >
-
-        </div>
-
-
-        <!-- DIRECCION -->
-
-        <div>
-
-            <label>
-
-                Dirección
-
-            </label>
-
-            <input
-                type="text"
-                id="direccion"
-            >
-
-        </div>
-
-
-        <!-- LOCALIDAD -->
-
-        <div>
-
-            <label>
-
-                Localidad
-
-            </label>
-
-            <input
-                type="text"
-                id="localidad"
-            >
-
-        </div>
-
-
-        <!-- ZONA -->
-
-        <div>
-
-            <label>
-
-                Zona / Barrio
-
-            </label>
-
-            <input
-                type="text"
-                id="zona"
-            >
-
-        </div>
-
-
-    </div>
-
-
-    <!-- OBSERVACIONES -->
-
-    <div style="margin-top:20px">
+    <div>
 
         <label>
 
-            Observaciones
+            Número de orden
 
         </label>
 
-
-        <textarea
-            id="observaciones"
-        ></textarea>
+        <input
+            type="text"
+            id="numeroOrden"
+        >
 
     </div>
 
 
-    <!-- TEXTO OCR -->
-
-    <div
-        class="ocr-text"
-        id="ocrContainer"
-    >
+    <div>
 
         <label>
 
-            Texto detectado por OCR
+            Fecha emisión
 
         </label>
 
-
-        <textarea
-            id="ocrTexto"
-            readonly
-        ></textarea>
+        <input
+            type="text"
+            id="fechaEmision"
+        >
 
     </div>
 
 
-    <!-- BOTONES -->
+    <div>
 
-    <button
-        class="btn btn-success"
-        id="guardarPaquete"
-    >
+        <label>
 
-        <i class="fas fa-save"></i>
+            Peso
 
-        Guardar paquete
+        </label>
 
-    </button>
+        <input
+            type="text"
+            id="peso"
+        >
+
+    </div>
 
 
-    <button
-        class="btn btn-secondary"
-        id="nuevoEscaneo"
-    >
+    <div>
 
-        <i class="fas fa-camera"></i>
+        <label>
 
-        Escanear otro paquete
+            Cantidad de bultos
 
-    </button>
+        </label>
+
+        <input
+            type="text"
+            id="bultos"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Número de bulto
+
+        </label>
+
+        <input
+            type="text"
+            id="numeroBulto"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Remitente
+
+        </label>
+
+        <input
+            type="text"
+            id="remitente"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Destinatario
+
+        </label>
+
+        <input
+            type="text"
+            id="destinatario"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Teléfono
+
+        </label>
+
+        <input
+            type="text"
+            id="telefono"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Dirección
+
+        </label>
+
+        <input
+            type="text"
+            id="direccion"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Localidad
+
+        </label>
+
+        <input
+            type="text"
+            id="localidad"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Zona / Barrio
+
+        </label>
+
+        <input
+            type="text"
+            id="zona"
+        >
+
+    </div>
 
 
 </div>
 
 
+<div style="margin-top:20px">
+
+    <label>
+
+        Observaciones
+
+    </label>
+
+    <textarea
+        id="observaciones"
+    ></textarea>
+
 </div>
 
 
-<!-- ==============================
-LIBRERIAS
-============================== -->
+<div class="ocr-text">
+
+    <label>
+
+        📝 Texto completo detectado por OCR
+
+    </label>
+
+    <textarea
+        id="ocrTexto"
+    ></textarea>
+
+</div>
 
 
-<script
-    src="https://unpkg.com/html5-qrcode"
-></script>
+<button
+    class="btn btn-success"
+    id="guardarPaquete"
+>
 
+    <i class="fas fa-save"></i>
+
+    Guardar paquete
+
+</button>
+
+
+<button
+    class="btn btn-secondary"
+    id="nuevoEscaneo"
+>
+
+    <i class="fas fa-camera"></i>
+
+    Escanear otro paquete
+
+</button>
+```
+
+</div>
+
+</div>
 
 <script
     src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"
 ></script>
 
-
 <script>
 
 
-/* =================================
-VARIABLES
-================================= */
-
-let scanner = null;
+let stream = null;
 
 let procesando = false;
 
+let codigosEscaneados = [];
 
-/* =================================
-ELEMENTOS
-================================= */
 
-const iniciar =
+const video =
 document.getElementById(
-    "iniciarScanner"
+    "video"
 );
 
 
-const detener =
+const canvas =
 document.getElementById(
-    "detenerScanner"
+    "canvas"
+);
+
+
+const iniciarCamara =
+document.getElementById(
+    "iniciarCamara"
+);
+
+
+const capturarEtiqueta =
+document.getElementById(
+    "capturarEtiqueta"
+);
+
+
+const detenerCamara =
+document.getElementById(
+    "detenerCamara"
 );
 
 
 const estado =
 document.getElementById(
     "scannerEstado"
-);
-
-
-const resultado =
-document.getElementById(
-    "resultado"
 );
 
 
@@ -1128,9 +1080,21 @@ document.getElementById(
 );
 
 
+const resultado =
+document.getElementById(
+    "resultado"
+);
+
+
 const codigoBarras =
 document.getElementById(
     "codigoBarras"
+);
+
+
+const duplicado =
+document.getElementById(
+    "duplicado"
 );
 
 
@@ -1140,282 +1104,150 @@ document.getElementById(
 );
 
 
-const ocrContainer =
-document.getElementById(
-    "ocrContainer"
-);
-
-
-/* =================================
+/* ==============================
 INICIAR CAMARA
-================================= */
+============================== */
 
-iniciar.addEventListener(
+iniciarCamara.addEventListener(
     "click",
-    iniciarScanner
+    iniciarCamaraFuncion
 );
 
 
-async function iniciarScanner(){
-
-
-    if(scanner){
-
-        return;
-
-    }
+async function iniciarCamaraFuncion(){
 
 
     try{
 
 
-        scanner =
-        new Html5Qrcode(
-            "reader"
-        );
+        stream =
+        await navigator.mediaDevices
+        .getUserMedia({
 
+            video:{
 
-        const cameras =
-        await Html5Qrcode
-        .getCameras();
-
-
-        if(
-            !cameras ||
-            !cameras.length
-        ){
-
-            alert(
-                "No se encontró ninguna cámara."
-            );
-
-            return;
-
-        }
-
-
-        let cameraId =
-        cameras[0].id;
-
-
-        /* BUSCAR CAMARA TRASERA */
-
-        const trasera =
-        cameras.find(
-            camera => {
-
-                const nombre =
-                (
-                    camera.label ||
-                    ""
-                )
-                .toLowerCase();
-
-
-                return (
-
-                    nombre.includes("back")
-
-                    ||
-
-                    nombre.includes("rear")
-
-                    ||
-
-                    nombre.includes("trasera")
-
-                );
-
-            }
-        );
-
-
-        if(trasera){
-
-            cameraId =
-            trasera.id;
-
-        }
-
-
-        await scanner.start(
-
-            cameraId,
-
-            {
-
-                fps:10,
-
-                qrbox:{
-
-                    width:300,
-
-                    height:200
-
+                facingMode:{
+                    ideal:"environment"
                 },
 
-                aspectRatio:1.7777778
+                width:{
+                    ideal:1920
+                },
+
+                height:{
+                    ideal:1080
+                }
 
             },
 
+            audio:false
 
-            async codigo => {
-
-
-                console.log(
-                    "Código detectado:",
-                    codigo
-                );
+        });
 
 
-                /*
-
-                IMPORTANTE:
-
-                El código detectado
-                por el lector QR/barra
-                se guarda.
-
-                */
-
-                codigoBarras.value =
-                codigo;
+        video.srcObject =
+        stream;
 
 
-                /* MOSTRAR RESULTADO */
-
-                resultado.style.display =
-                "block";
-
-
-                estado.innerHTML =
-                "✅ Código detectado";
-
-
-                /* DETENER */
-
-                await detenerScanner();
-
-
-                /*
-
-                AHORA INTENTAMOS
-                ANALIZAR LA ETIQUETA
-
-                */
-
-                iniciarOCR();
-
-
-            },
-
-
-            error => {
-
-                /*
-
-                Los errores de lectura
-                son normales mientras
-                busca el código.
-
-                */
-
-            }
-
-        );
-
-
-        iniciar.style.display =
+        iniciarCamara.style.display =
         "none";
 
 
-        detener.style.display =
+        capturarEtiqueta.style.display =
+        "inline-block";
+
+
+        detenerCamara.style.display =
         "inline-block";
 
 
         estado.innerHTML =
-        "📷 Cámara activa. Enfocá el código de la etiqueta.";
+        "📷 Cámara activa. Enfocá toda la etiqueta.";
 
 
     }catch(error){
 
 
-        console.error(
-            "Error iniciando cámara:",
-            error
-        );
+        console.error(error);
 
 
         alert(
-            "Error iniciando cámara: "
+
+            "No se pudo acceder a la cámara.\n\n"
+
             +
+
             error.message
+
         );
-
-
-        scanner =
-        null;
 
     }
 
 }
 
 
-/* =================================
-DETENER
-================================= */
+/* ==============================
+DETENER CAMARA
+============================== */
 
-detener.addEventListener(
+detenerCamara.addEventListener(
     "click",
-    detenerScanner
+    detenerCamaraFuncion
 );
 
 
-async function detenerScanner(){
+function detenerCamaraFuncion(){
 
 
-    if(scanner){
+    if(stream){
 
-        try{
-
-            await scanner.stop();
-
-            scanner.clear();
-
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-        }
+        stream
+        .getTracks()
+        .forEach(
+            track =>
+            track.stop()
+        );
 
     }
 
 
-    scanner =
+    stream =
     null;
 
 
-    iniciar.style.display =
+    video.srcObject =
+    null;
+
+
+    iniciarCamara.style.display =
     "inline-block";
 
 
-    detener.style.display =
+    capturarEtiqueta.style.display =
+    "none";
+
+
+    detenerCamara.style.display =
     "none";
 
 
     estado.innerHTML =
-    "Scanner detenido";
+    "Cámara detenida";
 
 }
 
 
-/* =================================
-OCR
-================================= */
+/* ==============================
+CAPTURAR ETIQUETA
+============================== */
 
-async function iniciarOCR(){
+capturarEtiqueta.addEventListener(
+    "click",
+    capturarEtiquetaFuncion
+);
+
+
+async function capturarEtiquetaFuncion(){
 
 
     if(procesando){
@@ -1423,6 +1255,91 @@ async function iniciarOCR(){
         return;
 
     }
+
+
+    if(!stream){
+
+        alert(
+            "Primero iniciá la cámara."
+        );
+
+        return;
+
+    }
+
+
+    const width =
+    video.videoWidth;
+
+
+    const height =
+    video.videoHeight;
+
+
+    if(!width || !height){
+
+        alert(
+            "La cámara todavía no está lista."
+        );
+
+        return;
+
+    }
+
+
+    canvas.width =
+    width;
+
+
+    canvas.height =
+    height;
+
+
+    const ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+
+    ctx.drawImage(
+
+        video,
+
+        0,
+
+        0,
+
+        width,
+
+        height
+
+    );
+
+
+    const imagen =
+    canvas.toDataURL(
+        "image/jpeg",
+        0.95
+    );
+
+
+    detenerCamaraFuncion();
+
+
+    await procesarOCR(
+        imagen
+    );
+
+}
+
+
+/* ==============================
+OCR
+============================== */
+
+async function procesarOCR(
+    imagen
+){
 
 
     procesando =
@@ -1433,54 +1350,85 @@ async function iniciarOCR(){
     "block";
 
 
+    resultado.style.display =
+    "none";
+
+
     progressBar.style.width =
     "5%";
 
 
     progressTexto.innerText =
-    "Preparando cámara para OCR...";
+    "Preparando OCR...";
 
 
     try{
 
 
-        /*
+        const worker =
+        await Tesseract.createWorker(
+            "spa",
+            1,
+            {
 
-        POR AHORA:
+                logger:
+                mensaje => {
 
-        El OCR necesita una imagen
-        completa de la etiqueta.
+                    if(
+                        mensaje.status ===
+                        "recognizing text"
+                    ){
 
-        html5-qrcode nos entrega
-        el código leído, pero no
-        la imagen completa.
-
-        Por eso mostramos una
-        instrucción al usuario.
-
-        */
+                        const porcentaje =
+                        Math.round(
+                            mensaje.progress *
+                            100
+                        );
 
 
-        progressBar.style.width =
-        "20%";
+                        progressBar.style.width =
+                        porcentaje
+                        +
+                        "%";
+
+
+                        progressTexto.innerText =
+
+                        "Leyendo texto: "
+
+                        +
+
+                        porcentaje
+
+                        +
+
+                        "%";
+
+                    }
+
+                }
+
+            }
+        );
 
 
         progressTexto.innerText =
-        "Código detectado correctamente.";
+        "Analizando etiqueta completa...";
 
 
-        await esperar(500);
+        const resultadoOCR =
+        await worker.recognize(
+            imagen
+        );
 
 
-        progressBar.style.width =
-        "40%";
+        const texto =
+        resultadoOCR.data.text
+        ||
+        "";
 
 
-        progressTexto.innerText =
-        "Preparando lectura de texto...";
-
-
-        await esperar(500);
+        await worker.terminate();
 
 
         progressBar.style.width =
@@ -1488,44 +1436,35 @@ async function iniciarOCR(){
 
 
         progressTexto.innerText =
-        "Código leído. OCR completo pendiente de captura de etiqueta.";
+        "✅ OCR terminado";
 
 
-        /*
-        
-        GENERAR CODIGO INTERNO
-        TEMPORAL PARA PRUEBA
+        console.log(
+            "TEXTO OCR:",
+            texto
+        );
 
-        */
+
+        ocrTexto.value =
+        texto;
+
+
+        analizarTexto(
+            texto
+        );
+
 
         generarCodigoInterno();
 
 
-        /*
-        
-        MOSTRAR TEXTO
-        ACTUALMENTE DETECTADO
-
-        */
-
-        ocrContainer.style.display =
+        resultado.style.display =
         "block";
 
 
-        ocrTexto.value =
-        "Código detectado por scanner:\n\n"
-        +
-        codigoBarras.value
-        +
-        "\n\n"
-        +
-        "Para leer automáticamente dirección, destinatario, teléfono, peso, bultos, localidad y zona, necesitamos capturar una fotografía completa de la etiqueta y pasarla por OCR.";
-
-        
         estado.innerHTML =
-        "✅ Código de barras leído. Revisá los datos y continuá con el procesamiento.";
+        "✅ Etiqueta analizada correctamente. Revisá los datos detectados.";
 
-        
+
     }catch(error){
 
 
@@ -1536,9 +1475,14 @@ async function iniciarOCR(){
 
 
         alert(
-            "Error procesando etiqueta."
-        );
 
+            "Error realizando OCR:\n\n"
+
+            +
+
+            error.message
+
+        );
 
     }finally{
 
@@ -1552,9 +1496,9 @@ async function iniciarOCR(){
 }
 
 
-/* =================================
+/* ==============================
 GENERAR CODIGO INTERNO
-================================= */
+============================== */
 
 function generarCodigoInterno(){
 
@@ -1570,33 +1514,771 @@ function generarCodigoInterno(){
         "codigoInterno"
     )
     .innerText =
+
     "PKG-"
+
     +
+
     numero;
 
 }
 
 
-/* =================================
-ESPERAR
-================================= */
+/* ==============================
+ANALIZAR OCR
+============================== */
 
-function esperar(ms){
+function analizarTexto(
+    texto
+){
 
-    return new Promise(
-        resolve =>
-        setTimeout(
-            resolve,
-            ms
-        )
+
+    const lineas =
+
+    texto
+    .split("\n")
+    .map(
+        linea =>
+        linea.trim()
+    )
+    .filter(
+        linea =>
+        linea.length > 0
     );
+
+
+    console.log(
+        "LINEAS OCR:",
+        lineas
+    );
+
+
+    /* ==============================
+    TELEFONO
+    ============================== */
+
+    const telefonoEncontrado =
+
+    texto.match(
+
+        /(?:\+54\s?)?(?:9\s?)?(?:11\s?)?[\d\s\-]{7,15}/
+
+    );
+
+
+    if(
+        telefonoEncontrado
+    ){
+
+        document
+        .getElementById(
+            "telefono"
+        )
+        .value =
+
+        telefonoEncontrado[0]
+        .trim();
+
+    }
+
+
+    /* ==============================
+    CODIGO BARRAS
+    ============================== */
+
+    const numeros =
+
+    texto.match(
+        /\b\d{5,20}\b/g
+    );
+
+
+    if(
+        numeros &&
+        numeros.length
+    ){
+
+        const candidato =
+
+        numeros
+        .sort(
+            (a,b) =>
+            b.length -
+            a.length
+        )[0];
+
+
+        codigoBarras.value =
+        candidato;
+
+
+        comprobarDuplicado(
+            candidato
+        );
+
+    }
+
+
+    /* ==============================
+    FECHA
+    ============================== */
+
+    const fecha =
+
+    texto.match(
+
+        /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/
+
+    );
+
+
+    if(fecha){
+
+        document
+        .getElementById(
+            "fechaEmision"
+        )
+        .value =
+
+        fecha[0];
+
+    }
+
+
+    /* ==============================
+    PESO
+    ============================== */
+
+    const peso =
+
+    texto.match(
+
+        /(\d+(?:[.,]\d+)?)\s*(kg|kgs|kilos)\b/i
+
+    );
+
+
+    if(peso){
+
+        document
+        .getElementById(
+            "peso"
+        )
+        .value =
+
+        peso[0];
+
+    }
+
+
+    /* ==============================
+    BULTOS
+    ============================== */
+
+    const bultos =
+
+    texto.match(
+
+        /(?:bultos?|cantidad)\s*[:\-]?\s*(\d+)/i
+
+    );
+
+
+    if(bultos){
+
+        document
+        .getElementById(
+            "bultos"
+        )
+        .value =
+
+        bultos[1];
+
+    }
+
+
+    /* ==============================
+    NUMERO DE BULTO
+    ============================== */
+
+    const numeroBulto =
+
+    texto.match(
+
+        /(?:bulto)\s*(\d+)\s*(?:de|\/)\s*(\d+)/i
+
+    );
+
+
+    if(numeroBulto){
+
+        document
+        .getElementById(
+            "numeroBulto"
+        )
+        .value =
+
+        numeroBulto[1]
+        +
+        " de "
+        +
+        numeroBulto[2];
+
+    }
+
+
+    /* ==============================
+    REMITENTE
+    ============================== */
+
+    const remitente =
+
+    buscarCampo(
+
+        texto,
+
+        [
+            "remitente",
+            "sender",
+            "from"
+        ]
+
+    );
+
+
+    if(remitente){
+
+        document
+        .getElementById(
+            "remitente"
+        )
+        .value =
+
+        remitente;
+
+    }
+
+
+    /* ==============================
+    DESTINATARIO
+    ============================== */
+
+    const destinatario =
+
+    buscarCampo(
+
+        texto,
+
+        [
+            "destinatario",
+            "consignatario",
+            "recipient",
+            "to"
+        ]
+
+    );
+
+
+    if(destinatario){
+
+        document
+        .getElementById(
+            "destinatario"
+        )
+        .value =
+
+        destinatario;
+
+    }
+
+
+    /* ==============================
+    DIRECCION
+    ============================== */
+
+    const direccion =
+
+    buscarDireccion(
+        lineas
+    );
+
+
+    if(direccion){
+
+        document
+        .getElementById(
+            "direccion"
+        )
+        .value =
+
+        direccion;
+
+    }
+
+
+    /* ==============================
+    LOCALIDAD
+    ============================== */
+
+    const localidad =
+
+    buscarLocalidad(
+        lineas
+    );
+
+
+    if(localidad){
+
+        document
+        .getElementById(
+            "localidad"
+        )
+        .value =
+
+        localidad;
+
+    }
+
+
+    /* ==============================
+    ZONA
+    ============================== */
+
+    const zona =
+
+    buscarZona(
+        lineas,
+        localidad
+    );
+
+
+    if(zona){
+
+        document
+        .getElementById(
+            "zona"
+        )
+        .value =
+
+        zona;
+
+    }
+
 
 }
 
 
-/* =================================
+/* ==============================
+BUSCAR CAMPO
+============================== */
+
+function buscarCampo(
+    texto,
+    etiquetas
+){
+
+
+    const lineas =
+
+    texto
+    .split("\n")
+    .map(
+        x =>
+        x.trim()
+    )
+    .filter(Boolean);
+
+
+    for(
+        let i = 0;
+        i < lineas.length;
+        i++
+    ){
+
+
+        const linea =
+        lineas[i]
+        .toLowerCase();
+
+
+        for(
+            const etiqueta
+            of etiquetas
+        ){
+
+
+            if(
+                linea.includes(
+                    etiqueta
+                )
+            ){
+
+
+                let valor =
+
+                lineas[i]
+                .replace(
+                    new RegExp(
+                        etiqueta,
+                        "i"
+                    ),
+                    ""
+                )
+                .replace(
+                    /^[:\-\s]+/,
+                    ""
+                )
+                .trim();
+
+
+                if(
+                    valor.length > 2
+                ){
+
+                    return valor;
+
+                }
+
+
+                if(
+                    lineas[i+1]
+                ){
+
+                    return lineas[i+1];
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* ==============================
+BUSCAR DIRECCION
+============================== */
+
+function buscarDireccion(
+    lineas
+){
+
+
+    const palabrasDireccion = [
+
+        "calle",
+
+        "avenida",
+
+        "av.",
+
+        "av ",
+
+        "pasaje",
+
+        "pje.",
+
+        "boulevard",
+
+        "ruta",
+
+        "diagonal"
+
+    ];
+
+
+    for(
+        const linea
+        of lineas
+    ){
+
+
+        const minuscula =
+        linea.toLowerCase();
+
+
+        if(
+
+            palabrasDireccion.some(
+                palabra =>
+                minuscula.includes(
+                    palabra
+                )
+            )
+
+        ){
+
+            return linea;
+
+        }
+
+
+        if(
+            /\d{3,5}/.test(
+                linea
+            )
+            &&
+            /[a-záéíóúñ]/i.test(
+                linea
+            )
+        ){
+
+            return linea;
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* ==============================
+BUSCAR LOCALIDAD
+============================== */
+
+function buscarLocalidad(
+    lineas
+){
+
+
+    for(
+        const linea
+        of lineas
+    ){
+
+
+        const texto =
+        linea.trim();
+
+
+        if(
+            /^caba$/i.test(
+                texto
+            )
+        ){
+
+            return "CABA";
+
+        }
+
+
+        if(
+            /capital federal/i.test(
+                texto
+            )
+        ){
+
+            return "CABA";
+
+        }
+
+
+        if(
+            /buenos aires/i.test(
+                texto
+            )
+        ){
+
+            return texto;
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* ==============================
+BUSCAR ZONA
+============================== */
+
+function buscarZona(
+    lineas,
+    localidad
+){
+
+
+    const ignorar = [
+
+        "caba",
+
+        "capital federal",
+
+        "buenos aires",
+
+        "argentina",
+
+        "destinatario",
+
+        "remitente",
+
+        "teléfono",
+
+        "telefono",
+
+        "dirección",
+
+        "direccion",
+
+        "peso",
+
+        "bultos",
+
+        "orden",
+
+        "fecha"
+
+    ];
+
+
+    for(
+        const linea
+        of lineas
+    ){
+
+
+        const texto =
+        linea.trim();
+
+
+        if(
+            texto.length < 3
+        ){
+
+            continue;
+
+        }
+
+
+        if(
+            ignorar.some(
+                palabra =>
+                texto
+                .toLowerCase()
+                .includes(
+                    palabra
+                )
+            )
+        ){
+
+            continue;
+
+        }
+
+
+        if(
+            localidad
+            &&
+            texto.toLowerCase()
+            ===
+            localidad.toLowerCase()
+        ){
+
+            continue;
+
+        }
+
+
+        /*
+        
+        Si la línea parece
+        un nombre geográfico,
+        la proponemos como zona.
+
+        No usamos una lista cerrada.
+
+        */
+
+        if(
+
+            /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+            .test(
+                texto
+            )
+
+        ){
+
+            return texto;
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* ==============================
+DUPLICADOS
+============================== */
+
+function comprobarDuplicado(
+    codigo
+){
+
+
+    if(
+        !codigo
+    ){
+
+        return;
+
+    }
+
+
+    const indice =
+
+    codigosEscaneados
+    .indexOf(
+        codigo
+    );
+
+
+    if(
+        indice !== -1
+    ){
+
+        duplicado.style.display =
+        "block";
+
+
+        estado.innerHTML =
+
+        "⚠️ Código repetido. Este paquete ya fue escaneado en esta sesión.";
+
+        return;
+
+    }
+
+
+    codigosEscaneados.push(
+        codigo
+    );
+
+
+    duplicado.style.display =
+    "none";
+
+
+}
+
+
+/* ==============================
 NUEVO ESCANEO
-================================= */
+============================== */
 
 document
 .getElementById(
@@ -1623,8 +2305,33 @@ document
         "";
 
 
-        ocrContainer.style.display =
-        "none";
+        document
+        .querySelectorAll(
+            "#resultado input"
+        )
+        .forEach(
+            input => {
+
+                if(
+                    input.id !==
+                    "codigoBarras"
+                ){
+
+                    input.value =
+                    "";
+
+                }
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "observaciones"
+        )
+        .value =
+        "";
 
 
         document
@@ -1635,16 +2342,15 @@ document
         "Generando...";
 
 
-        iniciarScanner();
-
+        iniciarCamaraFuncion();
 
     }
 );
 
 
-/* =================================
+/* ==============================
 GUARDAR
-================================= */
+============================== */
 
 document
 .getElementById(
@@ -1656,6 +2362,7 @@ document
 
 
         const cliente =
+
         document
         .getElementById(
             "cliente_id"
@@ -1663,7 +2370,9 @@ document
         .value;
 
 
-        if(!cliente){
+        if(
+            !cliente
+        ){
 
             alert(
                 "Seleccioná un cliente interno."
@@ -1679,7 +2388,7 @@ document
         ){
 
             alert(
-                "Primero escaneá el código."
+                "No se detectó ningún código."
             );
 
             return;
@@ -1688,7 +2397,6 @@ document
 
 
         const datos = {
-
 
             codigoInterno:
 
@@ -1701,11 +2409,7 @@ document
 
             codigoBarras:
 
-            document
-            .getElementById(
-                "codigoBarras"
-            )
-            .value,
+            codigoBarras.value,
 
 
             numeroOrden:
@@ -1815,19 +2519,18 @@ document
             )
             .value
 
-
         };
 
 
         console.log(
-            "DATOS DEL PAQUETE:",
+            "PAQUETE COMPLETO:",
             datos
         );
 
 
         alert(
 
-            "✅ Paquete preparado.\n\n"
+            "📦 Datos capturados correctamente.\n\n"
 
             +
 
@@ -1847,11 +2550,43 @@ document
 
             +
 
+            "\nDestinatario: "
+
+            +
+
+            datos.destinatario
+
+            +
+
+            "\nDirección: "
+
+            +
+
+            datos.direccion
+
+            +
+
+            "\nLocalidad: "
+
+            +
+
+            datos.localidad
+
+            +
+
+            "\nZona: "
+
+            +
+
+            datos.zona
+
+            +
+
             "\n\n"
 
             +
 
-            "Todavía no se guarda en la base de datos."
+            "Revisá la consola del navegador para ver todos los datos."
 
         );
 
@@ -1861,7 +2596,6 @@ document
 
 
 </script>
-
 
 </body>
 

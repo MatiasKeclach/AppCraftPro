@@ -19,8 +19,10 @@
     "express-session": "^1.19.0",
     "lightweight-charts": "^5.2.0",
     "qrcode": "^1.5.4",
+    "sharp": "^0.35.3",
     "socket.io": "^4.8.3",
     "technicalindicators": "^3.1.0",
+    "tesseract.js": "^7.0.0",
     "ws": "^8.21.0"
   }
 }

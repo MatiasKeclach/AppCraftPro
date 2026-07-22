@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Particular Scanner - AppCraft Pro</title>
+
+<link
+    rel="stylesheet"
+    href="/css/panel.css"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#f4f6f9;
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+    color:#1e293b;
+
+}
+
+/* ==============================
+HEADER
+============================== */
+
+.header{
+
+    background:#1e293b;
+
+    color:white;
+
+    padding:22px;
+
+    box-shadow:
+    0 3px 15px
+    rgba(0,0,0,.15);
+
+}
+
+.header h1{
+
+    font-size:26px;
+
+    margin-bottom:7px;
+
+}
+
+.header p{
+
+    opacity:.85;
+
+    font-size:14px;
+
+}
+
+/* ==============================
+CONTENEDOR
+============================== */
+
+.container{
+
+    width:100%;
+
+    max-width:1100px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+/* ==============================
+VOLVER
+============================== */
+
+.back{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:20px;
+
+    text-decoration:none;
+
+    color:#2563eb;
+
+    font-weight:bold;
+
+}
+
+/* ==============================
+PANEL
+============================== */
+
+.panel{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    box-shadow:
+    0 5px 20px
+    rgba(0,0,0,.08);
+
+    margin-bottom:20px;
+
+}
+
+.panel h2{
+
+    font-size:20px;
+
+    margin-bottom:20px;
+
+}
+
+/* ==============================
+LABEL
+============================== */
+
+label{
+
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+
+}
+
+/* ==============================
+SELECT
+============================== */
+
+select{
+
+    width:100%;
+
+    padding:14px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    background:white;
+
+}
+
+/* ==============================
+SCANNER
+============================== */
+
+.scanner{
+
+    margin-top:20px;
+
+    background:#0f172a;
+
+    border-radius:16px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:white;
+
+}
+
+/* ==============================
+CAMARA
+============================== */
+
+#reader{
+
+    width:100%;
+
+    max-width:600px;
+
+    margin:auto;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+}
+
+/* ==============================
+BOTONES
+============================== */
+
+.btn{
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:14px 22px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:15px;
+
+    transition:.2s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.btn-success{
+
+    background:#16a34a;
+
+    color:white;
+
+}
+
+.btn-danger{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+.btn-secondary{
+
+    background:#64748b;
+
+    color:white;
+
+}
+
+/* ==============================
+ESTADO
+============================== */
+
+.estado{
+
+    background:#f1f5f9;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    margin-top:15px;
+
+    line-height:24px;
+
+}
+
+/* ==============================
+CODIGO INTERNO
+============================== */
+
+.codigo{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:#2563eb;
+
+    margin-top:5px;
+
+}
+
+/* ==============================
+RESULTADO
+============================== */
+
+.resultado{
+
+    display:none;
+
+}
+
+/* ==============================
+PROCESANDO
+============================== */
+
+.procesando{
+
+    display:none;
+
+    margin-top:20px;
+
+    padding:20px;
+
+    background:#eff6ff;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    color:#1d4ed8;
+
+    font-weight:bold;
+
+}
+
+/* ==============================
+BARRA PROGRESO
+============================== */
+
+.progress-container{
+
+    width:100%;
+
+    height:12px;
+
+    background:#e2e8f0;
+
+    border-radius:20px;
+
+    margin-top:15px;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    width:0%;
+
+    height:100%;
+
+    background:#2563eb;
+
+    transition:width .3s;
+
+}
+
+/* ==============================
+GRID
+============================== */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+
+    gap:15px;
+
+}
+
+/* ==============================
+INPUT
+============================== */
+
+input,
+textarea{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:9px;
+
+    font-size:15px;
+
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:
+    0 0 0 3px
+    rgba(37,99,235,.12);
+
+}
+
+textarea{
+
+    min-height:90px;
+
+    resize:vertical;
+
+}
+
+/* ==============================
+OCR TEXTO
+============================== */
+
+.ocr-text{
+
+    margin-top:20px;
+
+    display:none;
+
+}
+
+.ocr-text textarea{
+
+    min-height:180px;
+
+    font-family:monospace;
+
+    font-size:13px;
+
+}
+
+/* ==============================
+ALERTA DUPLICADO
+============================== */
+
+.duplicado{
+
+    display:none;
+
+    margin-top:15px;
+
+    padding:15px;
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+}
+
+/* ==============================
+MOBILE
+============================== */
+
+@media(max-width:600px){
+
+    .container{
+
+        padding:12px;
+
+    }
+
+    .panel{
+
+        padding:18px;
+
+    }
+
+    .header h1{
+
+        font-size:22px;
+
+    }
+
+    .btn{
+
+        width:100%;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <h1>
+
+        📷 Particular Scanner
+
+    </h1>
+
+    <p>
+
+        Escaneo y lectura de etiquetas de paquetes particulares
+
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+<a
+    href="/panel/logistica"
+    class="back"
+>
+
+    <i class="fas fa-arrow-left"></i>
+
+    Volver a Logística
+
+</a>
+
+
+<!-- ==============================
+CLIENTE
+============================== -->
+
+<div class="panel">
+
+    <h2>
+
+        👤 Cliente interno
+
+    </h2>
+
+
+    <label>
+
+        Seleccionar cliente
+
+    </label>
+
+
+    <select id="cliente_id">
+
+        <option value="">
+
+            Seleccionar cliente...
+
+        </option>
+
+
+        <% clientes.forEach(cliente => { %>
+
+
+            <option
+                value="<%= cliente.id %>"
+            >
+
+                <%= cliente.nombre %>
+
+
+                <% if(cliente.empresa){ %>
+
+                    - <%= cliente.empresa %>
+
+                <% } %>
+
+            </option>
+
+
+        <% }) %>
+
+    </select>
+
+</div>
+
+
+<!-- ==============================
+CAMARA
+============================== -->
+
+<div class="panel">
+
+    <h2>
+
+        📷 Escanear etiqueta
+
+    </h2>
+
+
+    <div class="scanner">
+
+
+        <div id="reader"></div>
+
+
+        <button
+            class="btn btn-primary"
+            id="iniciarScanner"
+        >
+
+            <i class="fas fa-camera"></i>
+
+            Iniciar cámara
+
+        </button>
+
+
+        <button
+            class="btn btn-danger"
+            id="detenerScanner"
+            style="display:none"
+        >
+
+            <i class="fas fa-stop"></i>
+
+            Detener cámara
+
+        </button>
+
+
+        <p
+            id="scannerEstado"
+            style="
+                margin-top:15px;
+                opacity:.8;
+            "
+        >
+
+            Scanner detenido
+
+        </p>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- ==============================
+PROCESANDO OCR
+============================== -->
+
+<div
+    class="procesando"
+    id="procesando"
+>
+
+    <div>
+
+        🔎 Analizando etiqueta...
+
+    </div>
+
+
+    <div class="progress-container">
+
+        <div
+            class="progress-bar"
+            id="progressBar"
+        ></div>
+
+    </div>
+
+
+    <div
+        id="progressTexto"
+        style="margin-top:10px"
+    >
+
+        Preparando OCR...
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+RESULTADO
+============================== -->
+
+<div
+    class="panel resultado"
+    id="resultado"
+>
+
+
+    <h2>
+
+        📦 Paquete detectado
+
+    </h2>
+
+
+    <!-- CODIGO INTERNO -->
+
+    <div class="estado">
+
+        Código interno generado:
+
+
+        <div
+            class="codigo"
+            id="codigoInterno"
+        >
+
+            Generando...
+
+        </div>
+
+    </div>
+
+
+    <!-- DUPLICADO -->
+
+    <div
+        class="duplicado"
+        id="duplicado"
+    >
+
+        ⚠️ Atención: este código de paquete ya podría estar registrado.
+
+    </div>
+
+
+    <!-- CAMPOS -->
+
+    <div
+        class="form-grid"
+        style="margin-top:20px"
+    >
+
+
+        <!-- CODIGO BARRAS -->
+
+        <div>
+
+            <label>
+
+                Código de barras
+
+            </label>
+
+            <input
+                type="text"
+                id="codigoBarras"
+            >
+
+        </div>
+
+
+        <!-- NUMERO ORDEN -->
+
+        <div>
+
+            <label>
+
+                Número de orden
+
+            </label>
+
+            <input
+                type="text"
+                id="numeroOrden"
+            >
+
+        </div>
+
+
+        <!-- FECHA -->
+
+        <div>
+
+            <label>
+
+                Fecha emisión
+
+            </label>
+
+            <input
+                type="text"
+                id="fechaEmision"
+            >
+
+        </div>
+
+
+        <!-- PESO -->
+
+        <div>
+
+            <label>
+
+                Peso
+
+            </label>
+
+            <input
+                type="text"
+                id="peso"
+            >
+
+        </div>
+
+
+        <!-- BULTOS -->
+
+        <div>
+
+            <label>
+
+                Cantidad de bultos
+
+            </label>
+
+            <input
+                type="text"
+                id="bultos"
+            >
+
+        </div>
+
+
+        <!-- NUMERO BULTO -->
+
+        <div>
+
+            <label>
+
+                Número de bulto
+
+            </label>
+
+            <input
+                type="text"
+                id="numeroBulto"
+            >
+
+        </div>
+
+
+        <!-- REMITENTE -->
+
+        <div>
+
+            <label>
+
+                Remitente
+
+            </label>
+
+            <input
+                type="text"
+                id="remitente"
+            >
+
+        </div>
+
+
+        <!-- DESTINATARIO -->
+
+        <div>
+
+            <label>
+
+                Destinatario
+
+            </label>
+
+            <input
+                type="text"
+                id="destinatario"
+            >
+
+        </div>
+
+
+        <!-- TELEFONO -->
+
+        <div>
+
+            <label>
+
+                Teléfono
+
+            </label>
+
+            <input
+                type="text"
+                id="telefono"
+            >
+
+        </div>
+
+
+        <!-- DIRECCION -->
+
+        <div>
+
+            <label>
+
+                Dirección
+
+            </label>
+
+            <input
+                type="text"
+                id="direccion"
+            >
+
+        </div>
+
+
+        <!-- LOCALIDAD -->
+
+        <div>
+
+            <label>
+
+                Localidad
+
+            </label>
+
+            <input
+                type="text"
+                id="localidad"
+            >
+
+        </div>
+
+
+        <!-- ZONA -->
+
+        <div>
+
+            <label>
+
+                Zona / Barrio
+
+            </label>
+
+            <input
+                type="text"
+                id="zona"
+            >
+
+        </div>
+
+
+    </div>
+
+
+    <!-- OBSERVACIONES -->
+
+    <div style="margin-top:20px">
+
+        <label>
+
+            Observaciones
+
+        </label>
+
+
+        <textarea
+            id="observaciones"
+        ></textarea>
+
+    </div>
+
+
+    <!-- TEXTO OCR -->
+
+    <div
+        class="ocr-text"
+        id="ocrContainer"
+    >
+
+        <label>
+
+            Texto detectado por OCR
+
+        </label>
+
+
+        <textarea
+            id="ocrTexto"
+            readonly
+        ></textarea>
+
+    </div>
+
+
+    <!-- BOTONES -->
+
+    <button
+        class="btn btn-success"
+        id="guardarPaquete"
+    >
+
+        <i class="fas fa-save"></i>
+
+        Guardar paquete
+
+    </button>
+
+
+    <button
+        class="btn btn-secondary"
+        id="nuevoEscaneo"
+    >
+
+        <i class="fas fa-camera"></i>
+
+        Escanear otro paquete
+
+    </button>
+
+
+</div>
+
+
+</div>
+
+
+<!-- ==============================
+LIBRERIAS
+============================== -->
+
+
+<script
+    src="https://unpkg.com/html5-qrcode"
+></script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"
+></script>
+
+
+<script>
+
+
+/* =================================
+VARIABLES
+================================= */
+
+let scanner = null;
+
+let procesando = false;
+
+
+/* =================================
+ELEMENTOS
+================================= */
+
+const iniciar =
+document.getElementById(
+    "iniciarScanner"
+);
+
+
+const detener =
+document.getElementById(
+    "detenerScanner"
+);
+
+
+const estado =
+document.getElementById(
+    "scannerEstado"
+);
+
+
+const resultado =
+document.getElementById(
+    "resultado"
+);
+
+
+const procesandoBox =
+document.getElementById(
+    "procesando"
+);
+
+
+const progressBar =
+document.getElementById(
+    "progressBar"
+);
+
+
+const progressTexto =
+document.getElementById(
+    "progressTexto"
+);
+
+
+const codigoBarras =
+document.getElementById(
+    "codigoBarras"
+);
+
+
+const ocrTexto =
+document.getElementById(
+    "ocrTexto"
+);
+
+
+const ocrContainer =
+document.getElementById(
+    "ocrContainer"
+);
+
+
+/* =================================
+INICIAR CAMARA
+================================= */
+
+iniciar.addEventListener(
+    "click",
+    iniciarScanner
+);
+
+
+async function iniciarScanner(){
+
+
+    if(scanner){
+
+        return;
+
+    }
+
+
+    try{
+
+
+        scanner =
+        new Html5Qrcode(
+            "reader"
+        );
+
+
+        const cameras =
+        await Html5Qrcode
+        .getCameras();
+
+
+        if(
+            !cameras ||
+            !cameras.length
+        ){
+
+            alert(
+                "No se encontró ninguna cámara."
+            );
+
+            return;
+
+        }
+
+
+        let cameraId =
+        cameras[0].id;
+
+
+        /* BUSCAR CAMARA TRASERA */
+
+        const trasera =
+        cameras.find(
+            camera => {
+
+                const nombre =
+                (
+                    camera.label ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                return (
+
+                    nombre.includes("back")
+
+                    ||
+
+                    nombre.includes("rear")
+
+                    ||
+
+                    nombre.includes("trasera")
+
+                );
+
+            }
+        );
+
+
+        if(trasera){
+
+            cameraId =
+            trasera.id;
+
+        }
+
+
+        await scanner.start(
+
+            cameraId,
+
+            {
+
+                fps:10,
+
+                qrbox:{
+
+                    width:300,
+
+                    height:200
+
+                },
+
+                aspectRatio:1.7777778
+
+            },
+
+
+            async codigo => {
+
+
+                console.log(
+                    "Código detectado:",
+                    codigo
+                );
+
+
+                /*
+
+                IMPORTANTE:
+
+                El código detectado
+                por el lector QR/barra
+                se guarda.
+
+                */
+
+                codigoBarras.value =
+                codigo;
+
+
+                /* MOSTRAR RESULTADO */
+
+                resultado.style.display =
+                "block";
+
+
+                estado.innerHTML =
+                "✅ Código detectado";
+
+
+                /* DETENER */
+
+                await detenerScanner();
+
+
+                /*
+
+                AHORA INTENTAMOS
+                ANALIZAR LA ETIQUETA
+
+                */
+
+                iniciarOCR();
+
+
+            },
+
+
+            error => {
+
+                /*
+
+                Los errores de lectura
+                son normales mientras
+                busca el código.
+
+                */
+
+            }
+
+        );
+
+
+        iniciar.style.display =
+        "none";
+
+
+        detener.style.display =
+        "inline-block";
+
+
+        estado.innerHTML =
+        "📷 Cámara activa. Enfocá el código de la etiqueta.";
+
+
+    }catch(error){
+
+
+        console.error(
+            "Error iniciando cámara:",
+            error
+        );
+
+
+        alert(
+            "Error iniciando cámara: "
+            +
+            error.message
+        );
+
+
+        scanner =
+        null;
+
+    }
+
+}
+
+
+/* =================================
+DETENER
+================================= */
+
+detener.addEventListener(
+    "click",
+    detenerScanner
+);
+
+
+async function detenerScanner(){
+
+
+    if(scanner){
+
+        try{
+
+            await scanner.stop();
+
+            scanner.clear();
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+
+    scanner =
+    null;
+
+
+    iniciar.style.display =
+    "inline-block";
+
+
+    detener.style.display =
+    "none";
+
+
+    estado.innerHTML =
+    "Scanner detenido";
+
+}
+
+
+/* =================================
+OCR
+================================= */
+
+async function iniciarOCR(){
+
+
+    if(procesando){
+
+        return;
+
+    }
+
+
+    procesando =
+    true;
+
+
+    procesandoBox.style.display =
+    "block";
+
+
+    progressBar.style.width =
+    "5%";
+
+
+    progressTexto.innerText =
+    "Preparando cámara para OCR...";
+
+
+    try{
+
+
+        /*
+
+        POR AHORA:
+
+        El OCR necesita una imagen
+        completa de la etiqueta.
+
+        html5-qrcode nos entrega
+        el código leído, pero no
+        la imagen completa.
+
+        Por eso mostramos una
+        instrucción al usuario.
+
+        */
+
+
+        progressBar.style.width =
+        "20%";
+
+
+        progressTexto.innerText =
+        "Código detectado correctamente.";
+
+
+        await esperar(500);
+
+
+        progressBar.style.width =
+        "40%";
+
+
+        progressTexto.innerText =
+        "Preparando lectura de texto...";
+
+
+        await esperar(500);
+
+
+        progressBar.style.width =
+        "100%";
+
+
+        progressTexto.innerText =
+        "Código leído. OCR completo pendiente de captura de etiqueta.";
+
+
+        /*
+        
+        GENERAR CODIGO INTERNO
+        TEMPORAL PARA PRUEBA
+
+        */
+
+        generarCodigoInterno();
+
+
+        /*
+        
+        MOSTRAR TEXTO
+        ACTUALMENTE DETECTADO
+
+        */
+
+        ocrContainer.style.display =
+        "block";
+
+
+        ocrTexto.value =
+        "Código detectado por scanner:\n\n"
+        +
+        codigoBarras.value
+        +
+        "\n\n"
+        +
+        "Para leer automáticamente dirección, destinatario, teléfono, peso, bultos, localidad y zona, necesitamos capturar una fotografía completa de la etiqueta y pasarla por OCR.";
+
+        
+        estado.innerHTML =
+        "✅ Código de barras leído. Revisá los datos y continuá con el procesamiento.";
+
+        
+    }catch(error){
+
+
+        console.error(
+            "Error OCR:",
+            error
+        );
+
+
+        alert(
+            "Error procesando etiqueta."
+        );
+
+
+    }finally{
+
+
+        procesando =
+        false;
+
+
+    }
+
+}
+
+
+/* =================================
+GENERAR CODIGO INTERNO
+================================= */
+
+function generarCodigoInterno(){
+
+
+    const numero =
+    Date.now()
+    .toString()
+    .slice(-6);
+
+
+    document
+    .getElementById(
+        "codigoInterno"
+    )
+    .innerText =
+    "PKG-"
+    +
+    numero;
+
+}
+
+
+/* =================================
+ESPERAR
+================================= */
+
+function esperar(ms){
+
+    return new Promise(
+        resolve =>
+        setTimeout(
+            resolve,
+            ms
+        )
+    );
+
+}
+
+
+/* =================================
+NUEVO ESCANEO
+================================= */
+
+document
+.getElementById(
+    "nuevoEscaneo"
+)
+.addEventListener(
+    "click",
+    function(){
+
+
+        resultado.style.display =
+        "none";
+
+
+        procesandoBox.style.display =
+        "none";
+
+
+        codigoBarras.value =
+        "";
+
+
+        ocrTexto.value =
+        "";
+
+
+        ocrContainer.style.display =
+        "none";
+
+
+        document
+        .getElementById(
+            "codigoInterno"
+        )
+        .innerText =
+        "Generando...";
+
+
+        iniciarScanner();
+
+
+    }
+);
+
+
+/* =================================
+GUARDAR
+================================= */
+
+document
+.getElementById(
+    "guardarPaquete"
+)
+.addEventListener(
+    "click",
+    function(){
+
+
+        const cliente =
+        document
+        .getElementById(
+            "cliente_id"
+        )
+        .value;
+
+
+        if(!cliente){
+
+            alert(
+                "Seleccioná un cliente interno."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !codigoBarras.value
+        ){
+
+            alert(
+                "Primero escaneá el código."
+            );
+
+            return;
+
+        }
+
+
+        const datos = {
+
+
+            codigoInterno:
+
+            document
+            .getElementById(
+                "codigoInterno"
+            )
+            .innerText,
+
+
+            codigoBarras:
+
+            document
+            .getElementById(
+                "codigoBarras"
+            )
+            .value,
+
+
+            numeroOrden:
+
+            document
+            .getElementById(
+                "numeroOrden"
+            )
+            .value,
+
+
+            fechaEmision:
+
+            document
+            .getElementById(
+                "fechaEmision"
+            )
+            .value,
+
+
+            peso:
+
+            document
+            .getElementById(
+                "peso"
+            )
+            .value,
+
+
+            bultos:
+
+            document
+            .getElementById(
+                "bultos"
+            )
+            .value,
+
+
+            numeroBulto:
+
+            document
+            .getElementById(
+                "numeroBulto"
+            )
+            .value,
+
+
+            remitente:
+
+            document
+            .getElementById(
+                "remitente"
+            )
+            .value,
+
+
+            destinatario:
+
+            document
+            .getElementById(
+                "destinatario"
+            )
+            .value,
+
+
+            telefono:
+
+            document
+            .getElementById(
+                "telefono"
+            )
+            .value,
+
+
+            direccion:
+
+            document
+            .getElementById(
+                "direccion"
+            )
+            .value,
+
+
+            localidad:
+
+            document
+            .getElementById(
+                "localidad"
+            )
+            .value,
+
+
+            zona:
+
+            document
+            .getElementById(
+                "zona"
+            )
+            .value,
+
+
+            observaciones:
+
+            document
+            .getElementById(
+                "observaciones"
+            )
+            .value
+
+
+        };
+
+
+        console.log(
+            "DATOS DEL PAQUETE:",
+            datos
+        );
+
+
+        alert(
+
+            "✅ Paquete preparado.\n\n"
+
+            +
+
+            "Código interno: "
+
+            +
+
+            datos.codigoInterno
+
+            +
+
+            "\nCódigo de barras: "
+
+            +
+
+            datos.codigoBarras
+
+            +
+
+            "\n\n"
+
+            +
+
+            "Todavía no se guarda en la base de datos."
+
+        );
+
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>
