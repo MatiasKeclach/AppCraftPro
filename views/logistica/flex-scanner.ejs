@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>Flex Scanner - AppCraft Pro</title>
+
+<link
+rel="stylesheet"
+href="/css/panel.css"
+>
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+background:#f4f6f9;
+
+font-family:
+Arial,
+Helvetica,
+sans-serif;
+
+color:#1e293b;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+background:#1e293b;
+
+color:white;
+
+padding:22px;
+
+box-shadow:
+0 3px 15px
+rgba(0,0,0,.15);
+
+}
+
+.header h1{
+
+font-size:26px;
+
+margin-bottom:7px;
+
+}
+
+.header p{
+
+opacity:.85;
+
+font-size:14px;
+
+}
+
+
+/* CONTENEDOR */
+
+.container{
+
+width:100%;
+
+max-width:1000px;
+
+margin:auto;
+
+padding:20px;
+
+}
+
+
+/* BOTON VOLVER */
+
+.back{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+margin-bottom:20px;
+
+text-decoration:none;
+
+color:#2563eb;
+
+font-weight:bold;
+
+}
+
+
+/* PANEL */
+
+.panel{
+
+background:white;
+
+border-radius:16px;
+
+padding:25px;
+
+box-shadow:
+0 5px 20px
+rgba(0,0,0,.08);
+
+margin-bottom:20px;
+
+}
+
+
+/* TITULOS */
+
+.panel h2{
+
+font-size:20px;
+
+margin-bottom:20px;
+
+}
+
+
+/* LABEL */
+
+label{
+
+display:block;
+
+font-weight:bold;
+
+margin-bottom:8px;
+
+}
+
+
+/* SELECT */
+
+select{
+
+width:100%;
+
+padding:14px;
+
+border:1px solid #d1d5db;
+
+border-radius:10px;
+
+font-size:16px;
+
+background:white;
+
+}
+
+
+/* SCANNER */
+
+.scanner{
+
+margin-top:20px;
+
+background:#0f172a;
+
+border-radius:16px;
+
+padding:20px;
+
+text-align:center;
+
+color:white;
+
+}
+
+
+/* CAMARA */
+
+#reader{
+
+width:100%;
+
+max-width:500px;
+
+margin:auto;
+
+border-radius:12px;
+
+overflow:hidden;
+
+}
+
+
+/* BOTON */
+
+.btn{
+
+border:none;
+
+border-radius:10px;
+
+padding:14px 22px;
+
+font-size:16px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+margin-top:15px;
+
+}
+
+
+.btn-primary{
+
+background:#2563eb;
+
+color:white;
+
+}
+
+
+.btn-success{
+
+background:#16a34a;
+
+color:white;
+
+}
+
+
+.btn-danger{
+
+background:#dc2626;
+
+color:white;
+
+}
+
+
+/* RESULTADO */
+
+.resultado{
+
+margin-top:20px;
+
+display:none;
+
+}
+
+
+/* GRID */
+
+.form-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(220px,1fr)
+);
+
+gap:15px;
+
+}
+
+
+/* INPUT */
+
+input,
+textarea{
+
+width:100%;
+
+padding:12px;
+
+border:1px solid #d1d5db;
+
+border-radius:9px;
+
+font-size:15px;
+
+}
+
+
+textarea{
+
+min-height:90px;
+
+resize:vertical;
+
+}
+
+
+/* ESTADO */
+
+.estado{
+
+background:#f1f5f9;
+
+padding:15px;
+
+border-radius:10px;
+
+margin-top:15px;
+
+}
+
+
+/* CODIGO */
+
+.codigo{
+
+font-size:22px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.container{
+
+padding:12px;
+
+}
+
+.panel{
+
+padding:18px;
+
+}
+
+.header h1{
+
+font-size:22px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+<h1>
+
+📷 Flex Scanner
+
+</h1>
+
+<p>
+
+Registro de paquetes particulares
+
+</p>
+
+</header>
+
+<div class="container">
+
+<a
+href="/panel/logistica"
+class="back"
+
+>
+
+<i class="fas fa-arrow-left"></i>
+
+Volver a Logística
+
+</a>
+
+<!-- CLIENTE -->
+
+<div class="panel">
+
+<h2>
+
+👤 Cliente interno
+
+</h2>
+
+<label>
+
+Seleccionar cliente
+
+</label>
+
+<select id="cliente_id">
+
+<option value="">
+
+Seleccionar cliente...
+
+</option>
+
+<% clientes.forEach(cliente => { %>
+
+<option value="<%= cliente.id %>">
+
+<%= cliente.nombre %>
+
+<% if(cliente.empresa){ %>
+
+* <%= cliente.empresa %>
+
+<% } %>
+
+</option>
+
+<% }) %>
+
+</select>
+
+</div>
+
+<!-- SCANNER -->
+
+<div class="panel">
+
+<h2>
+
+📷 Escanear paquete
+
+</h2>
+
+<div class="scanner">
+
+<div id="reader"></div>
+
+<button
+class="btn btn-primary"
+id="iniciarScanner"
+
+>
+
+<i class="fas fa-camera"></i>
+
+Iniciar cámara
+
+</button>
+
+<button
+class="btn btn-danger"
+id="detenerScanner"
+style="display:none"
+
+>
+
+<i class="fas fa-stop"></i>
+
+Detener cámara
+
+</button>
+
+<p
+id="scannerEstado"
+style="
+margin-top:15px;
+opacity:.8;
+"
+>
+
+Scanner detenido
+
+</p>
+
+</div>
+
+</div>
+
+<!-- RESULTADO -->
+
+<div
+class="panel resultado"
+id="resultado"
+>
+
+<h2>
+
+📦 Paquete detectado
+
+</h2>
+
+<div class="estado">
+
+Código interno generado:
+
+<div
+class="codigo"
+id="codigoInterno"
+>
+
+PKG-000001
+
+</div>
+
+</div>
+
+<div
+class="form-grid"
+style="margin-top:20px"
+>
+
+<div>
+
+<label>
+
+Código de barras
+
+</label>
+
+<input
+type="text"
+id="codigoBarras"
+readonly
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Número de orden
+
+</label>
+
+<input
+type="text"
+id="numeroOrden"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Fecha emisión
+
+</label>
+
+<input
+type="text"
+id="fechaEmision"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Peso
+
+</label>
+
+<input
+type="text"
+id="peso"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Bultos
+
+</label>
+
+<input
+type="text"
+id="bultos"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Número de bulto
+
+</label>
+
+<input
+type="text"
+id="numeroBulto"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Remitente
+
+</label>
+
+<input
+type="text"
+id="remitente"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Destinatario
+
+</label>
+
+<input
+type="text"
+id="destinatario"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Teléfono
+
+</label>
+
+<input
+type="text"
+id="telefono"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Dirección
+
+</label>
+
+<input
+type="text"
+id="direccion"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Localidad
+
+</label>
+
+<input
+type="text"
+id="localidad"
+
+>
+
+</div>
+
+<div>
+
+<label>
+
+Zona / Barrio
+
+</label>
+
+<input
+type="text"
+id="zona"
+
+>
+
+</div>
+
+</div>
+
+<div style="margin-top:20px">
+
+<label>
+
+Observaciones
+
+</label>
+
+<textarea
+id="observaciones"
+></textarea>
+
+</div>
+
+<button
+class="btn btn-success"
+id="guardarPaquete"
+
+>
+
+<i class="fas fa-save"></i>
+
+Guardar paquete
+
+</button>
+
+</div>
+
+</div>
+
+<!-- LIBRERIA SCANNER -->
+
+<script
+src="https://unpkg.com/html5-qrcode"
+type="text/javascript"
+></script>
+
+<script>
+
+let scanner = null;
+
+
+/* ELEMENTOS */
+
+const iniciar =
+document.getElementById(
+"iniciarScanner"
+);
+
+const detener =
+document.getElementById(
+"detenerScanner"
+);
+
+const estado =
+document.getElementById(
+"scannerEstado"
+);
+
+const resultado =
+document.getElementById(
+"resultado"
+);
+
+const codigoBarras =
+document.getElementById(
+"codigoBarras"
+);
+
+
+
+/* INICIAR */
+
+iniciar.addEventListener(
+"click",
+async function(){
+
+try{
+
+
+scanner =
+new Html5Qrcode(
+"reader"
+);
+
+
+const cameras =
+await Html5Qrcode
+.getCameras();
+
+
+if(
+!cameras ||
+!cameras.length
+){
+
+alert(
+"No se encontró ninguna cámara."
+);
+
+return;
+
+}
+
+
+let cameraId =
+cameras[0].id;
+
+
+/*
+
+Intentamos usar
+la cámara trasera
+
+*/
+
+const trasera =
+cameras.find(
+camera =>
+camera.label
+.toLowerCase()
+.includes("back")
+||
+camera.label
+.toLowerCase()
+.includes("rear")
+||
+camera.label
+.toLowerCase()
+.includes("trasera")
+);
+
+
+if(trasera){
+
+cameraId =
+trasera.id;
+
+}
+
+
+await scanner.start(
+
+cameraId,
+
+{
+
+fps:10,
+
+qrbox:{
+width:280,
+height:180
+}
+
+},
+
+codigo => {
+
+
+console.log(
+"Código detectado:",
+codigo
+);
+
+
+codigoBarras.value =
+codigo;
+
+
+resultado.style.display =
+"block";
+
+
+estado.innerHTML =
+"✅ Código detectado";
+
+
+detenerScanner();
+
+
+},
+
+error => {
+
+
+}
+
+);
+
+
+iniciar.style.display =
+"none";
+
+
+detener.style.display =
+"inline-block";
+
+
+estado.innerHTML =
+"📷 Cámara activa";
+
+
+}catch(error){
+
+
+console.error(error);
+
+
+alert(
+"Error iniciando cámara: "
++
+error.message
+);
+
+
+}
+
+});
+
+
+
+/* DETENER */
+
+detener.addEventListener(
+"click",
+detenerScanner
+);
+
+
+async function
+detenerScanner(){
+
+
+if(scanner){
+
+try{
+
+await scanner.stop();
+
+scanner.clear();
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+scanner =
+null;
+
+
+iniciar.style.display =
+"inline-block";
+
+
+detener.style.display =
+"none";
+
+
+estado.innerHTML =
+"Scanner detenido";
+
+}
+
+
+
+/* GUARDAR */
+
+document
+.getElementById(
+"guardarPaquete"
+)
+.addEventListener(
+"click",
+function(){
+
+
+const cliente =
+document
+.getElementById(
+"cliente_id"
+)
+.value;
+
+
+if(!cliente){
+
+alert(
+"Seleccioná un cliente interno."
+);
+
+return;
+
+}
+
+
+if(
+!codigoBarras.value
+){
+
+alert(
+"Primero escaneá el código."
+);
+
+return;
+
+}
+
+
+alert(
+
+"Paquete listo para guardar."
+
+);
+
+
+});
+
+</script>
+
+</body>
+
+</html>

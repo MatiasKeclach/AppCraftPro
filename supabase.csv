@@ -1,0 +1,56 @@
+-- ------------------ Tabla de usuarios ------------------ 
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL,           -- superadmin | admin | colaborador
+    status TEXT DEFAULT 'active', -- active | inactive
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP,
+    last_login_ip TEXT,
+    nombre TEXT,
+    apellido TEXT,
+    email TEXT
+);
+
+-- ------------------ Tabla de aplicaciones internas ------------------
+CREATE TABLE IF NOT EXISTS apps (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    owner_id INTEGER REFERENCES users(id),
+    theme TEXT,
+    style TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ------------------ Tabla de logs de login ------------------
+CREATE TABLE IF NOT EXISTS login_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address TEXT,
+    success INTEGER DEFAULT 1       -- 1 = éxito, 0 = fallo
+);
+
+-- ------------------ Tabla de templates ------------------
+CREATE TABLE IF NOT EXISTS templates (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    folder TEXT NOT NULL, -- nombre de la carpeta dentro de /templates/
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ------------------ Tabla de proyectos ------------------
+CREATE TABLE IF NOT EXISTS projects (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,                     -- Tipo: web, app, crm, etc.
+    data TEXT NOT NULL,                     -- Estado completo del proyecto (JSON como TEXT)
+    status TEXT DEFAULT 'draft',            -- Estado del proyecto: 'draft' o 'published'
+    thumbnail TEXT,                         -- Ruta a una miniatura para vista previa
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, name)                   -- Evita duplicados de nombre por usuario
+);

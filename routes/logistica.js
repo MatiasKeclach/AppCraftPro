@@ -28,7 +28,44 @@ router.get("/", isAuthenticated, (req, res) => {
 
 
 
+// ==============================
+// FLEX SCANNER
+// ==============================
 
+router.get("/flex-scanner", isAuthenticated, (req, res) => {
+
+    try {
+
+        const clientes = db.prepare(`
+            SELECT *
+            FROM logistica_clientes
+            WHERE estado = 'activo'
+            ORDER BY nombre ASC
+        `).all();
+
+        res.render("logistica/flex-scanner", {
+
+            username: req.session.user.username,
+
+            role: req.session.user.role,
+
+            clientes
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando Flex Scanner:",
+            error
+        );
+
+        res.status(500)
+        .send("Error cargando Flex Scanner");
+
+    }
+
+});
 
 // ==============================
 // LISTADO DE CLIENTES
@@ -554,7 +591,7 @@ router.post("/colectas", isAuthenticated,(req,res)=>{
 
 });
 
-module.exports = router;
+//module.exports = router;
 
 // ==============================
 // CHOFERES
