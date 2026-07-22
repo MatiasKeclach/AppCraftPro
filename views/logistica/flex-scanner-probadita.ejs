@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -32,252 +31,483 @@
 }
 
 body{
+
     background:#f4f6f9;
-    font-family:Arial,Helvetica,sans-serif;
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
     color:#1e293b;
+
 }
 
+/* ==============================
+HEADER
+============================== */
+
 .header{
+
     background:#1e293b;
+
     color:white;
+
     padding:22px;
-    box-shadow:0 3px 15px rgba(0,0,0,.15);
+
+    box-shadow:
+    0 3px 15px
+    rgba(0,0,0,.15);
+
 }
 
 .header h1{
+
     font-size:26px;
+
     margin-bottom:7px;
+
 }
 
 .header p{
+
     opacity:.85;
+
     font-size:14px;
+
 }
+
+/* ==============================
+CONTENEDOR
+============================== */
 
 .container{
+
     width:100%;
+
     max-width:1100px;
+
     margin:auto;
+
     padding:20px;
+
 }
+
+/* ==============================
+VOLVER
+============================== */
 
 .back{
+
     display:inline-flex;
+
     align-items:center;
+
     gap:8px;
+
     margin-bottom:20px;
+
     text-decoration:none;
+
     color:#2563eb;
+
     font-weight:bold;
+
 }
 
+/* ==============================
+PANEL
+============================== */
+
 .panel{
+
     background:white;
+
     border-radius:16px;
+
     padding:25px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+    box-shadow:
+    0 5px 20px
+    rgba(0,0,0,.08);
+
     margin-bottom:20px;
+
 }
 
 .panel h2{
+
     font-size:20px;
+
     margin-bottom:20px;
+
 }
+
+/* ==============================
+LABEL
+============================== */
 
 label{
+
     display:block;
+
     font-weight:bold;
+
     margin-bottom:8px;
+
 }
+
+/* ==============================
+SELECT
+============================== */
 
 select{
+
     width:100%;
+
     padding:14px;
+
     border:1px solid #d1d5db;
+
     border-radius:10px;
+
     font-size:16px;
+
     background:white;
+
 }
+
+/* ==============================
+SCANNER
+============================== */
 
 .scanner{
+
     margin-top:20px;
+
     background:#0f172a;
+
     border-radius:16px;
+
     padding:20px;
+
     text-align:center;
+
     color:white;
+
 }
+
+/* ==============================
+CAMARA
+============================== */
 
 #reader{
+
     width:100%;
+
     max-width:600px;
+
     margin:auto;
+
     border-radius:12px;
+
     overflow:hidden;
+
 }
 
+/* ==============================
+BOTONES
+============================== */
+
 .btn{
+
     border:none;
+
     border-radius:10px;
+
     padding:14px 22px;
+
     font-size:16px;
+
     font-weight:bold;
+
     cursor:pointer;
+
     margin-top:15px;
+
     transition:.2s;
+
 }
 
 .btn:hover{
+
     transform:translateY(-2px);
+
 }
 
 .btn-primary{
+
     background:#2563eb;
+
     color:white;
+
 }
 
 .btn-success{
+
     background:#16a34a;
+
     color:white;
+
 }
 
 .btn-danger{
+
     background:#dc2626;
+
     color:white;
+
 }
 
 .btn-secondary{
+
     background:#64748b;
+
     color:white;
+
 }
+
+/* ==============================
+ESTADO
+============================== */
 
 .estado{
+
     background:#f1f5f9;
+
     padding:15px;
+
     border-radius:10px;
+
     margin-top:15px;
+
     line-height:24px;
+
 }
+
+/* ==============================
+CODIGO INTERNO
+============================== */
 
 .codigo{
+
     font-size:22px;
+
     font-weight:bold;
+
     color:#2563eb;
+
     margin-top:5px;
+
 }
+
+/* ==============================
+RESULTADO
+============================== */
 
 .resultado{
+
     display:none;
+
 }
+
+/* ==============================
+PROCESANDO
+============================== */
 
 .procesando{
+
     display:none;
+
     margin-top:20px;
+
     padding:20px;
+
     background:#eff6ff;
+
     border-radius:12px;
+
     text-align:center;
+
     color:#1d4ed8;
+
     font-weight:bold;
+
 }
 
+/* ==============================
+BARRA PROGRESO
+============================== */
+
 .progress-container{
+
     width:100%;
+
     height:12px;
+
     background:#e2e8f0;
+
     border-radius:20px;
+
     margin-top:15px;
+
     overflow:hidden;
+
 }
 
 .progress-bar{
+
     width:0%;
+
     height:100%;
+
     background:#2563eb;
+
     transition:width .3s;
+
 }
 
+/* ==============================
+GRID
+============================== */
+
 .form-grid{
+
     display:grid;
-    grid-template-columns:repeat(
+
+    grid-template-columns:
+    repeat(
         auto-fit,
         minmax(220px,1fr)
     );
+
     gap:15px;
+
 }
+
+/* ==============================
+INPUT
+============================== */
 
 input,
 textarea{
+
     width:100%;
+
     padding:12px;
+
     border:1px solid #d1d5db;
+
     border-radius:9px;
+
     font-size:15px;
+
 }
 
 input:focus,
 textarea:focus,
 select:focus{
+
     outline:none;
+
     border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+
+    box-shadow:
+    0 0 0 3px
+    rgba(37,99,235,.12);
+
 }
 
 textarea{
+
     min-height:90px;
+
     resize:vertical;
+
 }
 
+/* ==============================
+OCR TEXTO
+============================== */
+
 .ocr-text{
+
     margin-top:20px;
+
     display:none;
+
 }
 
 .ocr-text textarea{
-    min-height:220px;
+
+    min-height:180px;
+
     font-family:monospace;
+
     font-size:13px;
+
 }
+
+/* ==============================
+ALERTA DUPLICADO
+============================== */
 
 .duplicado{
+
     display:none;
+
     margin-top:15px;
+
     padding:15px;
+
     background:#fee2e2;
+
     color:#991b1b;
+
     border-radius:10px;
+
     font-weight:bold;
+
 }
 
-.foto-preview{
-    display:none;
-    margin-top:20px;
-    text-align:center;
-}
-
-.foto-preview img{
-    max-width:100%;
-    max-height:500px;
-    border-radius:12px;
-    box-shadow:0 3px 15px rgba(0,0,0,.15);
-}
+/* ==============================
+MOBILE
+============================== */
 
 @media(max-width:600px){
 
     .container{
+
         padding:12px;
+
     }
 
     .panel{
+
         padding:18px;
+
     }
 
     .header h1{
+
         font-size:22px;
+
     }
 
     .btn{
+
         width:100%;
+
     }
 
 }
@@ -292,11 +522,16 @@ textarea{
 
 <header class="header">
 
-    <h1>📷 Particular Scanner</h1>
+    <h1>
+
+        📷 Particular Scanner
+
+    </h1>
 
     <p>
-        Escaneo y lectura automática de etiquetas
-        de paquetes particulares
+
+        Escaneo y lectura de etiquetas de paquetes particulares
+
     </p>
 
 </header>
@@ -317,29 +552,44 @@ textarea{
 </a>
 
 
-<!-- =====================================================
+<!-- ==============================
 CLIENTE
-===================================================== -->
+============================== -->
 
 <div class="panel">
 
-    <h2>👤 Cliente interno</h2>
+    <h2>
+
+        👤 Cliente interno
+
+    </h2>
+
 
     <label>
+
         Seleccionar cliente
+
     </label>
+
 
     <select id="cliente_id">
 
         <option value="">
+
             Seleccionar cliente...
+
         </option>
+
 
         <% clientes.forEach(cliente => { %>
 
-            <option value="<%= cliente.id %>">
+
+            <option
+                value="<%= cliente.id %>"
+            >
 
                 <%= cliente.nombre %>
+
 
                 <% if(cliente.empresa){ %>
 
@@ -349,6 +599,7 @@ CLIENTE
 
             </option>
 
+
         <% }) %>
 
     </select>
@@ -356,17 +607,24 @@ CLIENTE
 </div>
 
 
-<!-- =====================================================
+<!-- ==============================
 CAMARA
-===================================================== -->
+============================== -->
 
 <div class="panel">
 
-    <h2>📷 Escanear etiqueta completa</h2>
+    <h2>
+
+        📷 Escanear etiqueta
+
+    </h2>
+
 
     <div class="scanner">
 
+
         <div id="reader"></div>
+
 
         <button
             class="btn btn-primary"
@@ -378,6 +636,7 @@ CAMARA
             Iniciar cámara
 
         </button>
+
 
         <button
             class="btn btn-danger"
@@ -391,23 +650,29 @@ CAMARA
 
         </button>
 
+
         <p
             id="scannerEstado"
-            style="margin-top:15px;opacity:.8"
+            style="
+                margin-top:15px;
+                opacity:.8;
+            "
         >
 
             Scanner detenido
 
         </p>
 
+
     </div>
+
 
 </div>
 
 
-<!-- =====================================================
-PROCESANDO
-===================================================== -->
+<!-- ==============================
+PROCESANDO OCR
+============================== -->
 
 <div
     class="procesando"
@@ -415,8 +680,11 @@ PROCESANDO
 >
 
     <div>
+
         🔎 Analizando etiqueta...
+
     </div>
+
 
     <div class="progress-container">
 
@@ -426,6 +694,7 @@ PROCESANDO
         ></div>
 
     </div>
+
 
     <div
         id="progressTexto"
@@ -439,17 +708,20 @@ PROCESANDO
 </div>
 
 
-<!-- =====================================================
+<!-- ==============================
 RESULTADO
-===================================================== -->
+============================== -->
 
 <div
     class="panel resultado"
     id="resultado"
 >
 
+
     <h2>
+
         📦 Paquete detectado
+
     </h2>
 
 
@@ -458,6 +730,7 @@ RESULTADO
     <div class="estado">
 
         Código interno generado:
+
 
         <div
             class="codigo"
@@ -478,8 +751,7 @@ RESULTADO
         id="duplicado"
     >
 
-        ⚠️ Atención: este código de paquete
-        ya podría estar registrado.
+        ⚠️ Atención: este código de paquete ya podría estar registrado.
 
     </div>
 
@@ -492,10 +764,14 @@ RESULTADO
     >
 
 
+        <!-- CODIGO BARRAS -->
+
         <div>
 
             <label>
+
                 Código de barras
+
             </label>
 
             <input
@@ -506,10 +782,14 @@ RESULTADO
         </div>
 
 
+        <!-- NUMERO ORDEN -->
+
         <div>
 
             <label>
+
                 Número de orden
+
             </label>
 
             <input
@@ -520,10 +800,14 @@ RESULTADO
         </div>
 
 
+        <!-- FECHA -->
+
         <div>
 
             <label>
+
                 Fecha emisión
+
             </label>
 
             <input
@@ -534,10 +818,14 @@ RESULTADO
         </div>
 
 
+        <!-- PESO -->
+
         <div>
 
             <label>
+
                 Peso
+
             </label>
 
             <input
@@ -548,10 +836,14 @@ RESULTADO
         </div>
 
 
+        <!-- BULTOS -->
+
         <div>
 
             <label>
+
                 Cantidad de bultos
+
             </label>
 
             <input
@@ -562,10 +854,14 @@ RESULTADO
         </div>
 
 
+        <!-- NUMERO BULTO -->
+
         <div>
 
             <label>
+
                 Número de bulto
+
             </label>
 
             <input
@@ -576,10 +872,14 @@ RESULTADO
         </div>
 
 
+        <!-- REMITENTE -->
+
         <div>
 
             <label>
+
                 Remitente
+
             </label>
 
             <input
@@ -590,10 +890,14 @@ RESULTADO
         </div>
 
 
+        <!-- DESTINATARIO -->
+
         <div>
 
             <label>
+
                 Destinatario
+
             </label>
 
             <input
@@ -604,10 +908,14 @@ RESULTADO
         </div>
 
 
+        <!-- TELEFONO -->
+
         <div>
 
             <label>
+
                 Teléfono
+
             </label>
 
             <input
@@ -618,10 +926,14 @@ RESULTADO
         </div>
 
 
+        <!-- DIRECCION -->
+
         <div>
 
             <label>
+
                 Dirección
+
             </label>
 
             <input
@@ -632,10 +944,14 @@ RESULTADO
         </div>
 
 
+        <!-- LOCALIDAD -->
+
         <div>
 
             <label>
-                Localidad / Barrio
+
+                Localidad
+
             </label>
 
             <input
@@ -646,10 +962,14 @@ RESULTADO
         </div>
 
 
+        <!-- ZONA -->
+
         <div>
 
             <label>
+
                 Zona / Barrio
+
             </label>
 
             <input
@@ -659,24 +979,6 @@ RESULTADO
 
         </div>
 
-    </div>
-
-
-    <!-- FOTO CAPTURADA -->
-
-    <div
-        class="foto-preview"
-        id="fotoPreview"
-    >
-
-        <label>
-            Imagen analizada
-        </label>
-
-        <img
-            id="imagenEtiqueta"
-            alt="Etiqueta capturada"
-        >
 
     </div>
 
@@ -686,8 +988,11 @@ RESULTADO
     <div style="margin-top:20px">
 
         <label>
+
             Observaciones
+
         </label>
+
 
         <textarea
             id="observaciones"
@@ -696,7 +1001,7 @@ RESULTADO
     </div>
 
 
-    <!-- OCR -->
+    <!-- TEXTO OCR -->
 
     <div
         class="ocr-text"
@@ -704,8 +1009,11 @@ RESULTADO
     >
 
         <label>
-            Texto completo detectado por OCR
+
+            Texto detectado por OCR
+
         </label>
+
 
         <textarea
             id="ocrTexto"
@@ -747,32 +1055,36 @@ RESULTADO
 </div>
 
 
-<!-- =====================================================
+<!-- ==============================
 LIBRERIAS
-===================================================== -->
-
+============================== -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
-
 <script>
 
 /* =========================================================
-VARIABLES
+   PARTICULAR SCANNER
+   OCR + CODIGO DE BARRAS + EXTRACCION DE DATOS
+========================================================= */
+
+
+/* =========================================================
+   VARIABLES
 ========================================================= */
 
 let scanner = null;
 
 let procesando = false;
 
-let ultimoTextoOCR = "";
+let imagenCapturada = null;
 
-let codigoBarrasDetectado = "";
+let ultimoTextoOCR = "";
 
 
 /* =========================================================
-ELEMENTOS
+   ELEMENTOS
 ========================================================= */
 
 const iniciar =
@@ -808,15 +1120,9 @@ document.getElementById("ocrContainer");
 const codigoInterno =
 document.getElementById("codigoInterno");
 
-const imagenEtiqueta =
-document.getElementById("imagenEtiqueta");
-
-const fotoPreview =
-document.getElementById("fotoPreview");
-
 
 /* =========================================================
-INICIAR SCANNER
+   INICIAR CAMARA
 ========================================================= */
 
 iniciar.addEventListener(
@@ -858,33 +1164,35 @@ async function iniciarScanner(){
         }
 
 
+        /*
+        BUSCAR CAMARA TRASERA
+        */
+
         let cameraId =
         cameras[0].id;
 
 
         const trasera =
-        cameras.find(
-            camera => {
+        cameras.find(camera => {
 
-                const nombre =
-                (
-                    camera.label ||
-                    ""
-                ).toLowerCase();
+            const nombre =
+            (
+                camera.label ||
+                ""
+            ).toLowerCase();
 
 
-                return (
+            return (
 
-                    nombre.includes("back") ||
+                nombre.includes("back") ||
 
-                    nombre.includes("rear") ||
+                nombre.includes("rear") ||
 
-                    nombre.includes("trasera")
+                nombre.includes("trasera")
 
-                );
+            );
 
-            }
-        );
+        });
 
 
         if(trasera){
@@ -894,6 +1202,10 @@ async function iniciarScanner(){
 
         }
 
+
+        /*
+        INICIAR CAMARA
+        */
 
         await scanner.start(
 
@@ -915,6 +1227,17 @@ async function iniciarScanner(){
 
             async codigo => {
 
+                console.log(
+                    "CODIGO DETECTADO:",
+                    codigo
+                );
+
+
+                /*
+                EVITAR QUE SE DISPARÉ
+                VARIAS VECES
+                */
+
                 if(procesando){
 
                     return;
@@ -922,50 +1245,69 @@ async function iniciarScanner(){
                 }
 
 
-                procesando =
-                true;
+                procesando = true;
 
 
-                console.log(
-                    "Código detectado:",
-                    codigo
-                );
-
-
-                codigoBarrasDetectado =
-                codigo;
-
+                /*
+                GUARDAR CODIGO
+                */
 
                 codigoBarras.value =
                 codigo;
 
 
+                /*
+                MOSTRAR RESULTADO
+                */
+
                 resultado.style.display =
                 "block";
 
 
-                generarCodigoInterno();
-
-
                 estado.innerHTML =
-                "✅ Código detectado. Ahora capturá la etiqueta completa.";
+                "✅ Código detectado. Ahora tomá una foto completa de la etiqueta.";
 
+
+                /*
+                DETENER SCANNER
+                */
 
                 await detenerScanner();
 
 
-                procesando =
-                false;
+                /*
+                GENERAR CODIGO INTERNO
+                */
+
+                generarCodigoInterno();
 
 
-                mostrarCapturaEtiqueta();
+                /*
+                IMPORTANTE:
+
+                El lector de código no entrega
+                la imagen completa.
+
+                Por eso ahora mostramos un
+                botón/input para que el usuario
+                seleccione la foto de la etiqueta.
+
+                */
+
+                mostrarSelectorFoto();
+
+
+                procesando = false;
 
             },
 
 
             error => {
 
-                // Error normal mientras busca el código.
+                /*
+                ERRORES NORMALES
+                MIENTRAS BUSCA EL CODIGO
+                */
 
             }
 
@@ -981,14 +1323,15 @@ async function iniciarScanner(){
 
 
         estado.innerHTML =
-        "📷 Cámara activa. Enfocá el código de barras.";
+        "📷 Cámara activa. Enfocá el código de barras de la etiqueta.";
+
 
     }
-
 
     catch(error){
 
         console.error(
+            "ERROR INICIANDO CAMARA:",
             error
         );
 
@@ -1009,7 +1352,7 @@ async function iniciarScanner(){
 
 
 /* =========================================================
-DETENER
+   DETENER SCANNER
 ========================================================= */
 
 detener.addEventListener(
@@ -1033,6 +1376,7 @@ async function detenerScanner(){
         catch(error){
 
             console.error(
+                "Error deteniendo scanner:",
                 error
             );
 
@@ -1060,20 +1404,24 @@ async function detenerScanner(){
 
 
 /* =========================================================
-CAPTURA DE ETIQUETA
+   SELECTOR DE FOTO
 ========================================================= */
 
-function mostrarCapturaEtiqueta(){
+function mostrarSelectorFoto(){
 
-    let contenedor =
+    let selector =
     document.getElementById(
-        "capturaEtiqueta"
+        "fotoOCRScanner"
     );
 
 
-    if(contenedor){
+    /*
+    SI YA EXISTE
+    */
 
-        contenedor.style.display =
+    if(selector){
+
+        selector.style.display =
         "block";
 
         return;
@@ -1081,47 +1429,49 @@ function mostrarCapturaEtiqueta(){
     }
 
 
-    contenedor =
+    /*
+    CREAR CONTENEDOR
+    */
+
+    selector =
     document.createElement(
         "div"
     );
 
 
-    contenedor.id =
-    "capturaEtiqueta";
+    selector.id =
+    "fotoOCRScanner";
 
 
-    contenedor.style.marginTop =
+    selector.style.marginTop =
     "20px";
 
 
-    contenedor.innerHTML = `
+    selector.innerHTML = `
 
         <div style="
             background:#eff6ff;
             padding:20px;
             border-radius:12px;
-            color:#1e293b;
         ">
 
-            <h3>
-                📸 Capturá la etiqueta completa
-            </h3>
+            <strong>
+                📷 Foto completa de la etiqueta
+            </strong>
 
             <p style="
                 margin-top:8px;
                 margin-bottom:15px;
             ">
-
-                La etiqueta debe verse completa,
-                incluyendo los datos del destinatario,
-                dirección, peso y código de barras.
-
+                Sacá o seleccioná una foto donde
+                se vea completa la etiqueta.
+                El sistema intentará leer todos
+                los datos automáticamente.
             </p>
 
             <input
                 type="file"
-                id="fotoEtiqueta"
+                id="fotoEtiquetaOCR"
                 accept="image/*"
                 capture="environment"
                 style="
@@ -1138,13 +1488,17 @@ function mostrarCapturaEtiqueta(){
 
 
     resultado.appendChild(
-        contenedor
+        selector
     );
 
 
+    /*
+    EVENTO FOTO
+    */
+
     document
     .getElementById(
-        "fotoEtiqueta"
+        "fotoEtiquetaOCR"
     )
     .addEventListener(
         "change",
@@ -1155,7 +1509,7 @@ function mostrarCapturaEtiqueta(){
 
 
 /* =========================================================
-PROCESAR FOTO OCR
+   PROCESAR FOTO OCR
 ========================================================= */
 
 async function procesarFotoOCR(event){
@@ -1171,8 +1525,7 @@ async function procesarFotoOCR(event){
     }
 
 
-    procesando =
-    true;
+    procesando = true;
 
 
     procesandoBox.style.display =
@@ -1184,28 +1537,10 @@ async function procesarFotoOCR(event){
 
 
     progressTexto.innerText =
-    "Preparando imagen...";
+    "Cargando imagen...";
 
 
     try{
-
-
-        /*
-        MOSTRAR FOTO
-        */
-
-        const url =
-        URL.createObjectURL(
-            archivo
-        );
-
-
-        imagenEtiqueta.src =
-        url;
-
-
-        fotoPreview.style.display =
-        "block";
 
 
         /*
@@ -1217,7 +1552,7 @@ async function procesarFotoOCR(event){
 
 
         progressTexto.innerText =
-        "Leyendo todos los datos de la etiqueta...";
+        "Analizando etiqueta con OCR...";
 
 
         const resultadoOCR =
@@ -1231,6 +1566,12 @@ async function procesarFotoOCR(event){
 
                 logger:
                 mensaje => {
+
+                    console.log(
+                        "Tesseract:",
+                        mensaje
+                    );
+
 
                     if(
                         mensaje.status ===
@@ -1250,7 +1591,7 @@ async function procesarFotoOCR(event){
 
 
                         progressTexto.innerText =
-                        "Leyendo etiqueta: "
+                        "Leyendo texto: "
                         +
                         porcentaje
                         +
@@ -1278,13 +1619,27 @@ async function procesarFotoOCR(event){
 
 
         console.log(
-            "OCR COMPLETO:",
+            "=============================="
+        );
+
+
+        console.log(
+            "TEXTO OCR COMPLETO:"
+        );
+
+
+        console.log(
             texto
         );
 
 
+        console.log(
+            "=============================="
+        );
+
+
         /*
-        MOSTRAR OCR
+        MOSTRAR TEXTO
         */
 
         ocrContainer.style.display =
@@ -1296,7 +1651,7 @@ async function procesarFotoOCR(event){
 
 
         /*
-        EXTRAER TODOS LOS DATOS
+        EXTRAER DATOS
         */
 
         extraerDatosEtiqueta(
@@ -1309,20 +1664,19 @@ async function procesarFotoOCR(event){
 
 
         progressTexto.innerText =
-        "✅ Lectura terminada.";
+        "✅ Etiqueta analizada correctamente.";
 
 
         estado.innerHTML =
-        "✅ Etiqueta analizada. Revisá los datos antes de guardar.";
+        "✅ OCR completado. Revisá los datos detectados antes de guardar.";
 
 
     }
 
-
     catch(error){
 
         console.error(
-            "Error OCR:",
+            "ERROR OCR:",
             error
         );
 
@@ -1345,22 +1699,38 @@ async function procesarFotoOCR(event){
 
 
 /* =========================================================
-EXTRAER DATOS
+   EXTRAER TODOS LOS DATOS
 ========================================================= */
 
 function extraerDatosEtiqueta(texto){
 
-    const limpio =
-    normalizarTexto(
-        texto
+    /*
+    NORMALIZAMOS
+    */
+
+    const textoOriginal =
+    texto || "";
+
+
+    const lineas =
+    textoOriginal
+    .replace(/\r/g,"")
+    .split("\n")
+    .map(
+        linea =>
+        linea.trim()
+    )
+    .filter(
+        linea =>
+        linea.length > 0
     );
 
 
     /*
     CODIGO DE BARRAS
 
-    SI YA FUE LEIDO POR EL SCANNER
-    NO SE REEMPLAZA.
+    Si el scanner ya leyó el código,
+    NO LO REEMPLAZAMOS CON OCR.
     */
 
     if(
@@ -1369,7 +1739,7 @@ function extraerDatosEtiqueta(texto){
 
         const codigo =
         extraerCodigoBarras(
-            limpio
+            textoOriginal
         );
 
 
@@ -1384,14 +1754,16 @@ function extraerDatosEtiqueta(texto){
 
 
     /*
-    NUMERO ORDEN
+    NUMERO DE ORDEN
     */
 
-    setValue(
-        "numeroOrden",
-        extraerNumeroOrden(
-            limpio
-        )
+    document
+    .getElementById(
+        "numeroOrden"
+    )
+    .value =
+    extraerNumeroOrden(
+        textoOriginal
     );
 
 
@@ -1399,11 +1771,13 @@ function extraerDatosEtiqueta(texto){
     FECHA
     */
 
-    setValue(
-        "fechaEmision",
-        extraerFecha(
-            limpio
-        )
+    document
+    .getElementById(
+        "fechaEmision"
+    )
+    .value =
+    extraerFecha(
+        textoOriginal
     );
 
 
@@ -1411,11 +1785,13 @@ function extraerDatosEtiqueta(texto){
     PESO
     */
 
-    setValue(
-        "peso",
-        extraerPeso(
-            limpio
-        )
+    document
+    .getElementById(
+        "peso"
+    )
+    .value =
+    extraerPeso(
+        textoOriginal
     );
 
 
@@ -1423,11 +1799,13 @@ function extraerDatosEtiqueta(texto){
     BULTOS
     */
 
-    setValue(
-        "bultos",
-        extraerBultos(
-            limpio
-        )
+    document
+    .getElementById(
+        "bultos"
+    )
+    .value =
+    extraerBultos(
+        textoOriginal
     );
 
 
@@ -1435,11 +1813,13 @@ function extraerDatosEtiqueta(texto){
     NUMERO BULTO
     */
 
-    setValue(
-        "numeroBulto",
-        extraerNumeroBulto(
-            limpio
-        )
+    document
+    .getElementById(
+        "numeroBulto"
+    )
+    .value =
+    extraerNumeroBulto(
+        textoOriginal
     );
 
 
@@ -1447,15 +1827,16 @@ function extraerDatosEtiqueta(texto){
     REMITENTE
     */
 
-    setValue(
-        "remitente",
-        extraerCampoPorEtiqueta(
-            limpio,
-            [
-                "Remitente",
-                "Remitente:"
-            ]
-        )
+    document
+    .getElementById(
+        "remitente"
+    )
+    .value =
+    extraerCampoPorEtiqueta(
+        textoOriginal,
+        [
+            "Remitente"
+        ]
     );
 
 
@@ -1463,11 +1844,13 @@ function extraerDatosEtiqueta(texto){
     DESTINATARIO
     */
 
-    setValue(
-        "destinatario",
-        extraerDestinatario(
-            limpio
-        )
+    document
+    .getElementById(
+        "destinatario"
+    )
+    .value =
+    extraerDestinatario(
+        textoOriginal
     );
 
 
@@ -1475,11 +1858,13 @@ function extraerDatosEtiqueta(texto){
     TELEFONO
     */
 
-    setValue(
-        "telefono",
-        extraerTelefono(
-            limpio
-        )
+    document
+    .getElementById(
+        "telefono"
+    )
+    .value =
+    extraerTelefono(
+        textoOriginal
     );
 
 
@@ -1487,110 +1872,162 @@ function extraerDatosEtiqueta(texto){
     DIRECCION
     */
 
-    setValue(
-        "direccion",
-        extraerDireccion(
-            limpio
-        )
+    document
+    .getElementById(
+        "direccion"
+    )
+    .value =
+    extraerDireccion(
+        textoOriginal
     );
 
 
     /*
-    LOCALIDAD
+    LOCALIDAD / BARRIO
 
-    NO HAY LISTA CERRADA.
+    NO USAMOS LISTA CERRADA.
 
-    SE DETECTA DESDE LA ETIQUETA.
+    INTENTA DETECTAR EL BARRIO
+    QUE REALMENTE APARECE EN LA
+    ETIQUETA.
+
+    SI NO LO ENCUENTRA:
+
+    CABA
     */
 
-    const localidad =
+    document
+    .getElementById(
+        "localidad"
+    )
+    .value =
     extraerLocalidad(
-        limpio
+        textoOriginal
     );
 
 
-    setValue(
-        "localidad",
-        localidad
-    );
+    /*
+    ZONA
 
+    USAMOS EL MISMO VALOR
+    DETECTADO COMO LOCALIDAD.
 
-    setValue(
-        "zona",
-        localidad
+    ESTO PERMITE BUSCAR POR
+    BARRIO / ZONA.
+
+    */
+
+    document
+    .getElementById(
+        "zona"
+    )
+    .value =
+    extraerLocalidad(
+        textoOriginal
     );
 
 
     /*
     OBSERVACIONES
+
+    GUARDAMOS INFORMACION
+    ADICIONAL DETECTADA.
+
     */
 
-    setValue(
-        "observaciones",
-        extraerObservaciones(
-            limpio
-        )
+    document
+    .getElementById(
+        "observaciones"
+    )
+    .value =
+    extraerObservaciones(
+        textoOriginal
     );
 
 
     console.log(
-        "DATOS EXTRAIDOS:",
-        obtenerDatosFormulario()
+        "DATOS EXTRAIDOS:"
     );
 
+
+    console.log({
+
+        codigoBarras:
+        codigoBarras.value,
+
+        numeroOrden:
+        document.getElementById(
+            "numeroOrden"
+        ).value,
+
+        fecha:
+        document.getElementById(
+            "fechaEmision"
+        ).value,
+
+        peso:
+        document.getElementById(
+            "peso"
+        ).value,
+
+        bultos:
+        document.getElementById(
+            "bultos"
+        ).value,
+
+        numeroBulto:
+        document.getElementById(
+            "numeroBulto"
+        ).value,
+
+        remitente:
+        document.getElementById(
+            "remitente"
+        ).value,
+
+        destinatario:
+        document.getElementById(
+            "destinatario"
+        ).value,
+
+        telefono:
+        document.getElementById(
+            "telefono"
+        ).value,
+
+        direccion:
+        document.getElementById(
+            "direccion"
+        ).value,
+
+        localidad:
+        document.getElementById(
+            "localidad"
+        ).value,
+
+        zona:
+        document.getElementById(
+            "zona"
+        ).value
+
+    });
+
 }
 
 
 /* =========================================================
-NORMALIZAR TEXTO
-========================================================= */
-
-function normalizarTexto(texto){
-
-    return (
-        texto || ""
-    )
-
-    .replace(
-        /\r/g,
-        ""
-    )
-
-    .replace(
-        /[ \t]+/g,
-        " "
-    )
-
-    .split("\n")
-
-    .map(
-        linea =>
-        linea.trim()
-    )
-
-    .filter(
-        linea =>
-        linea.length > 0
-    )
-
-    .join("\n");
-
-}
-
-
-/* =========================================================
-CODIGO DE BARRAS
+   EXTRAER CODIGO DE BARRAS DESDE OCR
 ========================================================= */
 
 function extraerCodigoBarras(texto){
 
     const patrones = [
 
-        /(?:c[oó]digo\s*de\s*barras|barcode)\s*:?\s*([0-9]{6,30})/i,
+        /(?:c[oó]digo\s*de\s*barras|barcode)[:\s]*([0-9]{8,20})/i,
 
-        /(?:pack\s*id)\s*:?\s*([A-Z0-9\-]{6,30})/i,
+        /(?:pack\s*id)[:\s]*([0-9]{8,20})/i,
 
-        /(?:env[ií]o)\s*:?\s*([A-Z0-9\-]{6,30})/i
+        /(?:env[ií]o)[:\s]*([0-9]{8,20})/i
 
     ];
 
@@ -1621,28 +2058,51 @@ function extraerCodigoBarras(texto){
 
 
 /* =========================================================
-NUMERO ORDEN
+   NUMERO DE ORDEN
 ========================================================= */
 
 function extraerNumeroOrden(texto){
 
-    const encontrado =
-    texto.match(
+    const patrones = [
 
-        /(?:nro\.?\s*orden|n[uú]mero\s*de\s*orden|orden)\s*:?\s*([A-Z0-9\-]+)/i
+        /nro\.?\s*orden[:\s]*([0-9]+)/i,
 
-    );
+        /número\s*de\s*orden[:\s]*([0-9]+)/i,
+
+        /numero\s*de\s*orden[:\s]*([0-9]+)/i,
+
+        /orden[:\s]*([0-9]+)/i
+
+    ];
 
 
-    return encontrado
-        ? encontrado[1]
-        : "";
+    for(
+        const patron
+        of patrones
+    ){
+
+        const encontrado =
+        texto.match(
+            patron
+        );
+
+
+        if(encontrado){
+
+            return encontrado[1];
+
+        }
+
+    }
+
+
+    return "";
 
 }
 
 
 /* =========================================================
-FECHA
+   FECHA
 ========================================================= */
 
 function extraerFecha(texto){
@@ -1650,20 +2110,25 @@ function extraerFecha(texto){
     const encontrado =
     texto.match(
 
-        /(?:fecha|fech[aá])\s*:?\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i
+        /(?:fecha|fech[aá])[:\s]*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i
 
     );
 
 
-    return encontrado
-        ? encontrado[1]
-        : "";
+    if(encontrado){
+
+        return encontrado[1];
+
+    }
+
+
+    return "";
 
 }
 
 
 /* =========================================================
-PESO
+   PESO
 ========================================================= */
 
 function extraerPeso(texto){
@@ -1671,20 +2136,25 @@ function extraerPeso(texto){
     const encontrado =
     texto.match(
 
-        /(?:peso)\s*:?\s*([0-9]+(?:[.,][0-9]+)?\s*(?:kg|kgs|kilos)?)/i
+        /(?:peso)[:\s]*([0-9]+(?:[.,][0-9]+)?\s*(?:kg|kgs|kilos)?)/i
 
     );
 
 
-    return encontrado
-        ? encontrado[1].trim()
-        : "";
+    if(encontrado){
+
+        return encontrado[1].trim();
+
+    }
+
+
+    return "";
 
 }
 
 
 /* =========================================================
-BULTOS
+   BULTOS
 ========================================================= */
 
 function extraerBultos(texto){
@@ -1692,29 +2162,34 @@ function extraerBultos(texto){
     const encontrado =
     texto.match(
 
-        /(?:bultos?|piezas?)\s*:?\s*([0-9]+)/i
+        /(?:bultos?|piezas?|paquetes?)[:\s]*([0-9]+)/i
 
     );
 
 
-    return encontrado
-        ? encontrado[1]
-        : "";
+    if(encontrado){
+
+        return encontrado[1];
+
+    }
+
+
+    return "";
 
 }
 
 
 /* =========================================================
-NUMERO BULTO
+   NUMERO DE BULTO
 ========================================================= */
 
 function extraerNumeroBulto(texto){
 
     const patrones = [
 
-        /(?:nro\.?\s*bulto|n[uú]mero\s*de\s*bulto)\s*:?\s*([0-9]+)/i,
+        /(?:nro\.?\s*bulto|número\s*de\s*bulto|numero\s*de\s*bulto)[:\s]*([0-9]+)/i,
 
-        /bulto\s*:?\s*([0-9]+)\s*(?:de|\/)\s*([0-9]+)/i
+        /bulto[:\s]*([0-9]+)\s*(?:de|\/)\s*[0-9]+/i
 
     ];
 
@@ -1745,7 +2220,7 @@ function extraerNumeroBulto(texto){
 
 
 /* =========================================================
-CAMPO POR ETIQUETA
+   CAMPO GENERICO
 ========================================================= */
 
 function extraerCampoPorEtiqueta(
@@ -1754,7 +2229,9 @@ function extraerCampoPorEtiqueta(
 ){
 
     const lineas =
-    texto.split("\n");
+    texto
+    .replace(/\r/g,"")
+    .split("\n");
 
 
     for(
@@ -1775,7 +2252,7 @@ function extraerCampoPorEtiqueta(
             const regex =
             new RegExp(
 
-                "^"
+                "^\\s*"
                 +
                 etiqueta
                 +
@@ -1794,9 +2271,14 @@ function extraerCampoPorEtiqueta(
 
             if(encontrado){
 
+                /*
+                SI EL VALOR ESTA
+                EN LA MISMA LINEA
+                */
+
                 if(
                     encontrado[1] &&
-                    encontrado[1].trim()
+                    encontrado[1].trim().length > 1
                 ){
 
                     return limpiarValor(
@@ -1806,13 +2288,29 @@ function extraerCampoPorEtiqueta(
                 }
 
 
-                if(
-                    lineas[i+1]
+                /*
+                SI ESTA EN LA LINEA SIGUIENTE
+                */
+
+                for(
+                    let j=i+1;
+                    j<lineas.length;
+                    j++
                 ){
 
-                    return limpiarValor(
-                        lineas[i+1]
-                    );
+                    const siguiente =
+                    lineas[j].trim();
+
+
+                    if(
+                        siguiente.length > 2
+                    ){
+
+                        return limpiarValor(
+                            siguiente
+                        );
+
+                    }
 
                 }
 
@@ -1829,40 +2327,42 @@ function extraerCampoPorEtiqueta(
 
 
 /* =========================================================
-DESTINATARIO
+   DESTINATARIO
 ========================================================= */
 
 function extraerDestinatario(texto){
 
+    const valor =
+    extraerCampoPorEtiqueta(
+
+        texto,
+
+        [
+            "Destinatario",
+            "Destinatário"
+        ]
+
+    );
+
+
     return limpiarNombre(
-
-        extraerCampoPorEtiqueta(
-
-            texto,
-
-            [
-                "Destinatario",
-                "Destinatário"
-            ]
-
-        )
-
+        valor
     );
 
 }
 
 
 /* =========================================================
-TELEFONO
+   TELEFONO
 ========================================================= */
 
 function extraerTelefono(texto){
 
     const patrones = [
 
-        /(?:tel[eé]fono|telefono|tel\.?|celular|cel\.?)\s*:?\s*([0-9+\-\s]{8,25})/i,
+        /(?:tel[eé]fono|telefono|tel\.?)[:\s]*([0-9+\-\s]{8,20})/i,
 
-        /\b(?:011|15|54)?\s*\d{4}[\s\-]?\d{4}\b/
+        /(?:celular|cel\.?)[:\s]*([0-9+\-\s]{8,20})/i
 
     ];
 
@@ -1880,10 +2380,7 @@ function extraerTelefono(texto){
 
         if(encontrado){
 
-            return (
-                encontrado[1] ||
-                encontrado[0]
-            )
+            return encontrado[1]
             .replace(
                 /\s+/g,
                 " "
@@ -1895,19 +2392,47 @@ function extraerTelefono(texto){
     }
 
 
+    /*
+    SI OCR NO DETECTO LA PALABRA
+    TELEFONO, BUSCAMOS NUMERO LARGO
+    */
+
+    const numeros =
+    texto.match(
+        /\b(?:54)?11\d{8}\b/g
+    );
+
+
+    if(numeros){
+
+        return numeros[0];
+
+    }
+
+
     return "";
 
 }
 
 
 /* =========================================================
-DIRECCION
+   DIRECCION
 ========================================================= */
 
 function extraerDireccion(texto){
 
     const lineas =
-    texto.split("\n");
+    texto
+    .replace(/\r/g,"")
+    .split("\n")
+    .map(
+        l =>
+        l.trim()
+    )
+    .filter(
+        l =>
+        l.length > 0
+    );
 
 
     for(
@@ -1917,34 +2442,40 @@ function extraerDireccion(texto){
     ){
 
         const linea =
-        lineas[i].trim();
+        lineas[i];
 
 
-        const directa =
+        /*
+        DIRECCION EN MISMA LINEA
+        */
+
+        const mismaLinea =
         linea.match(
 
-            /^(?:direcci[oó]n|direccion)\s*:?\s*(.+)$/i
+            /^[-•]?\s*(?:direcci[oó]n|direccion)\s*:?\s*(.+)$/i
 
         );
 
 
         if(
-            directa &&
-            directa[1]
+            mismaLinea &&
+            mismaLinea[1]
         ){
 
             return limpiarValor(
-                directa[1]
+                mismaLinea[1]
             );
 
         }
 
 
+        /*
+        DIRECCION EN LINEA SIGUIENTE
+        */
+
         if(
             /^(?:direcci[oó]n|direccion)\s*:?\s*$/i
-            .test(
-                linea
-            )
+            .test(linea)
         ){
 
             if(
@@ -1963,13 +2494,20 @@ function extraerDireccion(texto){
 
 
     /*
-    BUSQUEDA INTELIGENTE
+    DETECCION INTELIGENTE
 
-    Buscamos una línea que:
+    Si no dice "Dirección",
+    buscamos una línea que parezca
+    una dirección.
 
-    - tenga números
-    - tenga texto
-    - no sea un campo conocido
+    Ejemplo:
+
+    Gaspar Melchor de Jovellanos 1135
+
+    Avenida Sir Alexander Fleming 1443
+
+    Calle Luna 1909
+
     */
 
     for(
@@ -1983,9 +2521,7 @@ function extraerDireccion(texto){
             )
         ){
 
-            return limpiarValor(
-                linea
-            );
+            return linea;
 
         }
 
@@ -1998,7 +2534,7 @@ function extraerDireccion(texto){
 
 
 /* =========================================================
-PARECE DIRECCION
+   DETECTAR DIRECCION
 ========================================================= */
 
 function pareceDireccion(linea){
@@ -2013,9 +2549,9 @@ function pareceDireccion(linea){
     }
 
 
-    const texto =
-    linea.toLowerCase();
-
+    /*
+    EVITAR CAMPOS QUE NO SON DIRECCION
+    */
 
     const prohibidas = [
 
@@ -2027,29 +2563,39 @@ function pareceDireccion(linea){
 
         "teléfono",
 
-        "fecha",
+        "observaciones",
 
         "peso",
 
-        "bulto",
+        "bultos",
 
-        "orden",
+        "fecha",
 
-        "caba",
+        "pack id",
 
-        "cp",
+        "envio",
 
-        "código",
+        "envío",
 
-        "codigo"
+        "nro orden",
+
+        "nro. orden",
+
+        "c.p.",
+
+        "cp:"
 
     ];
+
+
+    const minuscula =
+    linea.toLowerCase();
 
 
     if(
         prohibidas.some(
             palabra =>
-            texto.includes(
+            minuscula.includes(
                 palabra
             )
         )
@@ -2061,57 +2607,89 @@ function pareceDireccion(linea){
 
 
     /*
-    UNA DIRECCION NORMALMENTE
-    TIENE NUMERO DE ALTURA
+    DEBE CONTENER NUMERO
+
+    Y PARECER UNA DIRECCION
     */
 
-    if(
-        !/\d{2,5}/.test(
-            linea
+    const tieneNumero =
+    /\d{2,5}/.test(
+        linea
+    );
+
+
+    const palabrasDireccion = [
+
+        "calle",
+
+        "avenida",
+
+        "av.",
+
+        "av ",
+
+        "pasaje",
+
+        "pje.",
+
+        "ruta",
+
+        "boulevard",
+
+        "boul.",
+
+        "jovellanos",
+
+        "luna"
+
+    ];
+
+
+    const pareceNombreCalle =
+    palabrasDireccion.some(
+        palabra =>
+        minuscula.includes(
+            palabra
         )
-    ){
-
-        return false;
-
-    }
+    );
 
 
-    /*
-    EVITAMOS TELEFONOS
-    */
-
-    if(
-        /\b\d{8,15}\b/.test(
-            linea.replace(
-                /\D/g,
-                ""
-            )
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    return true;
+    return (
+        tieneNumero &&
+        pareceNombreCalle
+    );
 
 }
 
 
 /* =========================================================
-LOCALIDAD / BARRIO
+   LOCALIDAD / BARRIO
 ========================================================= */
 
 function extraerLocalidad(texto){
 
     const lineas =
-    texto.split("\n");
+    texto
+    .replace(/\r/g,"")
+    .split("\n")
+    .map(
+        l =>
+        l.trim()
+    )
+    .filter(
+        l =>
+        l.length > 0
+    );
 
 
     /*
-    1.
-    SI DICE LOCALIDAD
+    PRIMERO:
+
+    BUSCAR LINEAS CON:
+
+    Localidad:
+    Barrio:
+    Ciudad:
     */
 
     for(
@@ -2143,13 +2721,115 @@ function extraerLocalidad(texto){
 
 
     /*
-    2.
-    BUSCAR PATRONES DE CABA
+    SEGUNDO:
 
-    Ejemplo:
+    BUSCAR LOCALIDAD EN LINEAS
+    CERCANAS A CP / CABA
+    */
+
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
+
+        const linea =
+        lineas[i];
+
+
+        if(
+            /caba/i.test(
+                linea
+            )
+        ){
+
+            /*
+            EJEMPLO:
+
+            CP: 1437
+            CABA
+            Barracas
+
+            */
+
+            for(
+                let j=i+1;
+                j<Math.min(
+                    i+4,
+                    lineas.length
+                );
+                j++
+            ){
+
+                const posible =
+                lineas[j];
+
+
+                if(
+                    esPosibleLocalidad(
+                        posible
+                    )
+                ){
+
+                    return limpiarLocalidad(
+                        posible
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /*
+    TERCERO:
+
+    BUSCAR LOCALIDAD EN UNA LINEA
+    QUE CONTENGA CABA
+
+    EJEMPLO:
+
+    CABA - Barracas - 1269
+
+    */
+
+    for(
+        const linea
+        of lineas
+    ){
+
+        const encontrado =
+        linea.match(
+
+            /CABA\s*[-–]\s*([A-Za-zÁÉÍÓÚáéíóúÑñ .]+)/i
+
+        );
+
+
+        if(
+            encontrado &&
+            encontrado[1]
+        ){
+
+            return limpiarLocalidad(
+                encontrado[1]
+            );
+
+        }
+
+    }
+
+
+    /*
+    CUARTO:
+
+    BUSCAR PATRON:
 
     CABA
-    Barracas
+    BARRACAS
 
     */
 
@@ -2184,106 +2864,7 @@ function extraerLocalidad(texto){
 
 
     /*
-    3.
-    CABA - BARRACAS
-    */
-
-    for(
-        const linea
-        of lineas
-    ){
-
-        const encontrado =
-        linea.match(
-
-            /\bCABA\b\s*[-–|]\s*([A-Za-zÁÉÍÓÚáéíóúÑñ .]+)/i
-
-        );
-
-
-        if(
-            encontrado &&
-            encontrado[1]
-        ){
-
-            return limpiarLocalidad(
-                encontrado[1]
-            );
-
-        }
-
-    }
-
-
-    /*
-    4.
-    SI LA DIRECCION VIENE
-    SEGUIDA DE LOCALIDAD
-
-    Ejemplo:
-
-    Gaspar Benjamín 35
-    Barracas
-    CABA
-
-    */
-
-    const direccion =
-    extraerDireccion(
-        texto
-    );
-
-
-    if(direccion){
-
-        const indice =
-        lineas.findIndex(
-            linea =>
-            linea.toLowerCase()
-            ===
-            direccion.toLowerCase()
-        );
-
-
-        if(
-            indice >= 0
-        ){
-
-            for(
-                let i=indice+1;
-                i<Math.min(
-                    indice+4,
-                    lineas.length
-                );
-                i++
-            ){
-
-                if(
-                    esPosibleLocalidad(
-                        lineas[i]
-                    )
-                ){
-
-                    return limpiarLocalidad(
-                        lineas[i]
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    /*
-    5.
-    SI NO SE PUEDE IDENTIFICAR
-    EL BARRIO:
-
-    TODOS SON CABA.
-
+    SI NO ENCUENTRA BARRIO
     */
 
     return "CABA";
@@ -2292,7 +2873,7 @@ function extraerLocalidad(texto){
 
 
 /* =========================================================
-VALIDAR POSIBLE LOCALIDAD
+   VALIDAR POSIBLE LOCALIDAD
 ========================================================= */
 
 function esPosibleLocalidad(linea){
@@ -2310,6 +2891,10 @@ function esPosibleLocalidad(linea){
     const texto =
     linea.toLowerCase();
 
+
+    /*
+    NO DEBE SER ESTOS CAMPOS
+    */
 
     const excluir = [
 
@@ -2329,17 +2914,23 @@ function esPosibleLocalidad(linea){
 
         "peso",
 
-        "bulto",
+        "bultos",
+
+        "observaciones",
 
         "caba",
 
         "cp",
 
-        "orden",
+        "c.p.",
 
-        "código",
+        "pack id",
 
-        "codigo"
+        "envio",
+
+        "envío",
+
+        "orden"
 
     ];
 
@@ -2358,6 +2949,10 @@ function esPosibleLocalidad(linea){
     }
 
 
+    /*
+    NO DEBE SER SOLO NUMEROS
+    */
+
     if(
         /^\d+$/.test(
             linea
@@ -2369,16 +2964,9 @@ function esPosibleLocalidad(linea){
     }
 
 
-    if(
-        /\d{2,5}/.test(
-            linea
-        )
-    ){
-
-        return false;
-
-    }
-
+    /*
+    DEBE TENER LETRAS
+    */
 
     return /[A-Za-zÁÉÍÓÚáéíóúÑñ]/.test(
         linea
@@ -2388,14 +2976,12 @@ function esPosibleLocalidad(linea){
 
 
 /* =========================================================
-LIMPIAR LOCALIDAD
+   LIMPIAR LOCALIDAD
 ========================================================= */
 
 function limpiarLocalidad(valor){
 
-    return (
-        valor || ""
-    )
+    return valor
 
     .replace(
         /\d{4,}/g,
@@ -2418,12 +3004,13 @@ function limpiarLocalidad(valor){
 
 
 /* =========================================================
-OBSERVACIONES
+   OBSERVACIONES
 ========================================================= */
 
 function extraerObservaciones(texto){
 
-    return extraerCampoPorEtiqueta(
+    const valor =
+    extraerCampoPorEtiqueta(
 
         texto,
 
@@ -2435,11 +3022,14 @@ function extraerObservaciones(texto){
 
     );
 
+
+    return valor || "";
+
 }
 
 
 /* =========================================================
-LIMPIAR VALOR
+   LIMPIAR VALOR
 ========================================================= */
 
 function limpiarValor(valor){
@@ -2464,7 +3054,7 @@ function limpiarValor(valor){
 
 
 /* =========================================================
-LIMPIAR NOMBRE
+   LIMPIAR NOMBRE
 ========================================================= */
 
 function limpiarNombre(valor){
@@ -2489,37 +3079,12 @@ function limpiarNombre(valor){
 
 
 /* =========================================================
-SET VALUE
-========================================================= */
-
-function setValue(
-    id,
-    valor
-){
-
-    const elemento =
-    document.getElementById(
-        id
-    );
-
-
-    if(elemento){
-
-        elemento.value =
-        valor || "";
-
-    }
-
-}
-
-
-/* =========================================================
-GENERAR CODIGO INTERNO
+   GENERAR CODIGO INTERNO
 ========================================================= */
 
 function generarCodigoInterno(){
 
-    const numero =
+    const ahora =
     Date.now()
     .toString()
     .slice(-6);
@@ -2527,111 +3092,17 @@ function generarCodigoInterno(){
 
     codigoInterno.innerText =
     "PKG-" +
-    numero;
+    ahora;
 
 }
 
 
 /* =========================================================
-OBTENER DATOS
-========================================================= */
-
-function obtenerDatosFormulario(){
-
-    return {
-
-        cliente_id:
-        document.getElementById(
-            "cliente_id"
-        ).value,
-
-        codigoInterno:
-        codigoInterno.innerText,
-
-        codigoBarras:
-        document.getElementById(
-            "codigoBarras"
-        ).value.trim(),
-
-        numeroOrden:
-        document.getElementById(
-            "numeroOrden"
-        ).value.trim(),
-
-        fechaEmision:
-        document.getElementById(
-            "fechaEmision"
-        ).value.trim(),
-
-        peso:
-        document.getElementById(
-            "peso"
-        ).value.trim(),
-
-        bultos:
-        document.getElementById(
-            "bultos"
-        ).value.trim(),
-
-        numeroBulto:
-        document.getElementById(
-            "numeroBulto"
-        ).value.trim(),
-
-        remitente:
-        document.getElementById(
-            "remitente"
-        ).value.trim(),
-
-        destinatario:
-        document.getElementById(
-            "destinatario"
-        ).value.trim(),
-
-        telefono:
-        document.getElementById(
-            "telefono"
-        ).value.trim(),
-
-        direccion:
-        document.getElementById(
-            "direccion"
-        ).value.trim(),
-
-        localidad:
-        document.getElementById(
-            "localidad"
-        ).value.trim(),
-
-        zona:
-        document.getElementById(
-            "zona"
-        ).value.trim(),
-
-        observaciones:
-        document.getElementById(
-            "observaciones"
-        ).value.trim(),
-
-        textoOCR:
-        ultimoTextoOCR,
-
-        fechaRegistro:
-        new Date().toISOString()
-
-    };
-
-}
-
-
-/* =========================================================
-NUEVO ESCANEO
+   NUEVO ESCANEO
 ========================================================= */
 
 document
-.getElementById(
-    "nuevoEscaneo"
-)
+.getElementById("nuevoEscaneo")
 .addEventListener(
     "click",
     function(){
@@ -2648,10 +3119,6 @@ document
         "";
 
 
-        codigoBarrasDetectado =
-        "";
-
-
         ocrTexto.value =
         "";
 
@@ -2660,30 +3127,16 @@ document
         "none";
 
 
-        fotoPreview.style.display =
-        "none";
+        document
+        .getElementById(
+            "fotoOCRScanner"
+        )
+        ?.remove();
 
 
-        imagenEtiqueta.src =
-        "";
-
-
-        ultimoTextoOCR =
-        "";
-
-
-        const captura =
-        document.getElementById(
-            "capturaEtiqueta"
-        );
-
-
-        if(captura){
-
-            captura.remove();
-
-        }
-
+        /*
+        LIMPIAR TODOS LOS CAMPOS
+        */
 
         const campos = [
 
@@ -2717,17 +3170,37 @@ document
         campos.forEach(
             id => {
 
-                setValue(
-                    id,
-                    ""
+                const elemento =
+                document.getElementById(
+                    id
                 );
+
+
+                if(elemento){
+
+                    elemento.value =
+                    "";
+
+                }
 
             }
         );
 
 
+        codigoInterno.innerText =
+        "Generando...";
+
+
+        /*
+        GENERAR NUEVO CODIGO
+        */
+
         generarCodigoInterno();
 
+
+        /*
+        VOLVER A INICIAR
+        */
 
         iniciarScanner();
 
@@ -2736,16 +3209,15 @@ document
 
 
 /* =========================================================
-GUARDAR PAQUETE
+   GUARDAR PAQUETE
 ========================================================= */
 
 document
-.getElementById(
-    "guardarPaquete"
-)
+.getElementById("guardarPaquete")
 .addEventListener(
     "click",
     async function(){
+
 
         const cliente =
         document
@@ -2779,8 +3251,90 @@ document
         }
 
 
-        const datos =
-        obtenerDatosFormulario();
+        /*
+        RECOPILAR TODOS LOS DATOS
+        */
+
+        const datos = {
+
+            cliente_id:
+            cliente,
+
+            codigoInterno:
+            codigoInterno.innerText,
+
+            codigoBarras:
+            document.getElementById(
+                "codigoBarras"
+            ).value.trim(),
+
+            numeroOrden:
+            document.getElementById(
+                "numeroOrden"
+            ).value.trim(),
+
+            fechaEmision:
+            document.getElementById(
+                "fechaEmision"
+            ).value.trim(),
+
+            peso:
+            document.getElementById(
+                "peso"
+            ).value.trim(),
+
+            bultos:
+            document.getElementById(
+                "bultos"
+            ).value.trim(),
+
+            numeroBulto:
+            document.getElementById(
+                "numeroBulto"
+            ).value.trim(),
+
+            remitente:
+            document.getElementById(
+                "remitente"
+            ).value.trim(),
+
+            destinatario:
+            document.getElementById(
+                "destinatario"
+            ).value.trim(),
+
+            telefono:
+            document.getElementById(
+                "telefono"
+            ).value.trim(),
+
+            direccion:
+            document.getElementById(
+                "direccion"
+            ).value.trim(),
+
+            localidad:
+            document.getElementById(
+                "localidad"
+            ).value.trim(),
+
+            zona:
+            document.getElementById(
+                "zona"
+            ).value.trim(),
+
+            observaciones:
+            document.getElementById(
+                "observaciones"
+            ).value.trim(),
+
+            textoOCR:
+            ultimoTextoOCR,
+
+            fechaRegistro:
+            new Date().toISOString()
+
+        };
 
 
         console.log(
@@ -2790,20 +3344,20 @@ document
 
 
         /*
-        POR AHORA MOSTRAMOS
-        LOS DATOS.
+        POR AHORA MOSTRAR DATOS
 
         DESPUES CONECTAMOS
-        ESTE PUNTO CON NODE.JS.
+        AL ENDPOINT NODE.JS
         */
 
         alert(
 
-            "✅ Paquete preparado.\n\n"
+            "✅ Paquete preparado correctamente.\n\n"
 
             +
 
             "Código interno: "
+
             +
 
             datos.codigoInterno
@@ -2811,6 +3365,7 @@ document
             +
 
             "\nCódigo de barras: "
+
             +
 
             datos.codigoBarras
@@ -2818,6 +3373,7 @@ document
             +
 
             "\nDestinatario: "
+
             +
 
             datos.destinatario
@@ -2825,6 +3381,7 @@ document
             +
 
             "\nDirección: "
+
             +
 
             datos.direccion
@@ -2832,6 +3389,7 @@ document
             +
 
             "\nLocalidad: "
+
             +
 
             datos.localidad
@@ -2840,10 +3398,9 @@ document
 
 
         /*
-        FUTURO ENDPOINT:
+        ACA DESPUES PODEMOS HACER:
 
-        const respuesta =
-        await fetch(
+        fetch(
             "/api/logistica/particulares",
             {
                 method:"POST",
@@ -2854,7 +3411,7 @@ document
                 body:
                 JSON.stringify(datos)
             }
-        );
+        )
 
         */
 
@@ -2867,4 +3424,3 @@ document
 </body>
 
 </html>
-
