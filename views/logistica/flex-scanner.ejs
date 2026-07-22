@@ -15,356 +15,478 @@ content="width=device-width, initial-scale=1.0"
 <title>Flex Scanner - AppCraft Pro</title>
 
 <link
-rel="stylesheet"
-href="/css/panel.css"
+    rel="stylesheet"
+    href="/css/panel.css"
 >
 
 <link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 >
 
 <style>
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 body{
 
-background:#f4f6f9;
+    background:#f4f6f9;
 
-font-family:
-Arial,
-Helvetica,
-sans-serif;
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-color:#1e293b;
+    color:#1e293b;
 
 }
 
-
-/* HEADER */
-
 .header{
 
-background:#1e293b;
+    background:#1e293b;
 
-color:white;
+    color:white;
 
-padding:22px;
+    padding:22px;
 
-box-shadow:
-0 3px 15px
-rgba(0,0,0,.15);
+    box-shadow:
+    0 3px 15px
+    rgba(0,0,0,.15);
 
 }
 
 .header h1{
 
-font-size:26px;
+    font-size:26px;
 
-margin-bottom:7px;
+    margin-bottom:7px;
 
 }
 
 .header p{
 
-opacity:.85;
+    opacity:.85;
 
-font-size:14px;
+    font-size:14px;
 
 }
-
-
-/* CONTENEDOR */
 
 .container{
 
-width:100%;
+    width:100%;
 
-max-width:1000px;
+    max-width:1000px;
 
-margin:auto;
+    margin:auto;
 
-padding:20px;
+    padding:20px;
 
 }
-
-
-/* BOTON VOLVER */
 
 .back{
 
-display:inline-flex;
+    display:inline-flex;
 
-align-items:center;
+    align-items:center;
 
-gap:8px;
+    gap:8px;
 
-margin-bottom:20px;
+    margin-bottom:20px;
 
-text-decoration:none;
+    text-decoration:none;
 
-color:#2563eb;
+    color:#2563eb;
 
-font-weight:bold;
+    font-weight:bold;
 
 }
-
-
-/* PANEL */
 
 .panel{
 
-background:white;
+    background:white;
 
-border-radius:16px;
+    border-radius:16px;
 
-padding:25px;
+    padding:25px;
 
-box-shadow:
-0 5px 20px
-rgba(0,0,0,.08);
+    box-shadow:
+    0 5px 20px
+    rgba(0,0,0,.08);
 
-margin-bottom:20px;
+    margin-bottom:20px;
 
 }
-
-
-/* TITULOS */
 
 .panel h2{
 
-font-size:20px;
+    font-size:20px;
 
-margin-bottom:20px;
+    margin-bottom:20px;
 
 }
-
-
-/* LABEL */
 
 label{
 
-display:block;
+    display:block;
 
-font-weight:bold;
+    font-weight:bold;
 
-margin-bottom:8px;
+    margin-bottom:8px;
 
 }
-
-
-/* SELECT */
 
 select{
 
-width:100%;
+    width:100%;
 
-padding:14px;
+    padding:14px;
 
-border:1px solid #d1d5db;
+    border:1px solid #d1d5db;
 
-border-radius:10px;
+    border-radius:10px;
 
-font-size:16px;
+    font-size:16px;
 
-background:white;
+    background:white;
 
 }
-
-
-/* SCANNER */
 
 .scanner{
 
-margin-top:20px;
+    margin-top:20px;
 
-background:#0f172a;
+    background:#0f172a;
 
-border-radius:16px;
+    border-radius:16px;
 
-padding:20px;
+    padding:20px;
 
-text-align:center;
+    text-align:center;
 
-color:white;
-
-}
-
-
-/* CAMARA */
-
-#reader{
-
-width:100%;
-
-max-width:500px;
-
-margin:auto;
-
-border-radius:12px;
-
-overflow:hidden;
+    color:white;
 
 }
 
+.camera-box{
 
-/* BOTON */
+    width:100%;
+
+    max-width:500px;
+
+    margin:auto;
+
+}
+
+#video{
+
+    width:100%;
+
+    display:block;
+
+    border-radius:12px;
+
+    background:#000;
+
+}
+
+#canvas{
+
+    display:none;
+
+}
 
 .btn{
 
-border:none;
+    border:none;
 
-border-radius:10px;
+    border-radius:10px;
 
-padding:14px 22px;
+    padding:14px 22px;
 
-font-size:16px;
+    font-size:16px;
 
-font-weight:bold;
+    font-weight:bold;
 
-cursor:pointer;
+    cursor:pointer;
 
-margin-top:15px;
+    margin-top:15px;
 
 }
-
 
 .btn-primary{
 
-background:#2563eb;
+    background:#2563eb;
 
-color:white;
+    color:white;
 
 }
-
 
 .btn-success{
 
-background:#16a34a;
+    background:#16a34a;
 
-color:white;
+    color:white;
 
 }
-
 
 .btn-danger{
 
-background:#dc2626;
+    background:#dc2626;
 
-color:white;
+    color:white;
 
 }
 
+.btn-secondary{
 
-/* RESULTADO */
+    background:#64748b;
+
+    color:white;
+
+}
+
+.btn-warning{
+
+    background:#f59e0b;
+
+    color:white;
+
+}
 
 .resultado{
 
-margin-top:20px;
-
-display:none;
+    display:none;
 
 }
-
-
-/* GRID */
 
 .form-grid{
 
-display:grid;
+    display:grid;
 
-grid-template-columns:
-repeat(
-auto-fit,
-minmax(220px,1fr)
-);
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
 
-gap:15px;
+    gap:15px;
 
 }
-
-
-/* INPUT */
 
 input,
 textarea{
 
-width:100%;
+    width:100%;
 
-padding:12px;
+    padding:12px;
 
-border:1px solid #d1d5db;
+    border:1px solid #d1d5db;
 
-border-radius:9px;
+    border-radius:9px;
 
-font-size:15px;
+    font-size:15px;
 
 }
-
 
 textarea{
 
-min-height:90px;
+    min-height:90px;
 
-resize:vertical;
+    resize:vertical;
 
 }
-
-
-/* ESTADO */
 
 .estado{
 
-background:#f1f5f9;
+    background:#f1f5f9;
 
-padding:15px;
+    padding:15px;
 
-border-radius:10px;
+    border-radius:10px;
 
-margin-top:15px;
+    margin-top:15px;
 
 }
-
-
-/* CODIGO */
 
 .codigo{
 
-font-size:22px;
+    font-size:22px;
 
-font-weight:bold;
+    font-weight:bold;
 
-color:#2563eb;
+    color:#2563eb;
+
+    margin-top:5px;
 
 }
 
+.progreso{
 
-/* MOBILE */
+    display:none;
+
+    margin-top:20px;
+
+    background:#1e293b;
+
+    border-radius:10px;
+
+    padding:15px;
+
+}
+
+.progress-bar{
+
+    width:100%;
+
+    height:12px;
+
+    background:#334155;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-top:10px;
+
+}
+
+.progress-fill{
+
+    width:0%;
+
+    height:100%;
+
+    background:#22c55e;
+
+    transition:.3s;
+
+}
+
+.ocr-text{
+
+    display:none;
+
+    margin-top:20px;
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:10px;
+
+    padding:15px;
+
+}
+
+.ocr-text h3{
+
+    margin-bottom:10px;
+
+}
+
+.ocr-text pre{
+
+    white-space:pre-wrap;
+
+    word-break:break-word;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    color:#334155;
+
+}
+
+.info{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#eff6ff;
+
+    color:#1d4ed8;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+}
+
+.success{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#f0fdf4;
+
+    color:#166534;
+
+    border-radius:10px;
+
+    display:none;
+
+}
+
+.error{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#fef2f2;
+
+    color:#991b1b;
+
+    border-radius:10px;
+
+    display:none;
+
+}
+
+.mobile-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+}
 
 @media(max-width:600px){
 
-.container{
+    .container{
 
-padding:12px;
+        padding:12px;
 
-}
+    }
 
-.panel{
+    .panel{
 
-padding:18px;
+        padding:18px;
 
-}
+    }
 
-.header h1{
+    .header h1{
 
-font-size:22px;
+        font-size:22px;
 
-}
+    }
+
+    .btn{
+
+        width:100%;
+
+    }
 
 }
 
@@ -376,17 +498,13 @@ font-size:22px;
 
 <header class="header">
 
-<h1>
-
-📷 Flex Scanner
-
-</h1>
+```
+<h1>📷 Particular Scanner</h1>
 
 <p>
-
-Registro de paquetes particulares
-
+    Registro de paquetes particulares mediante código de barras y OCR
 </p>
+```
 
 </header>
 
@@ -398,9 +516,11 @@ class="back"
 
 >
 
+```
 <i class="fas fa-arrow-left"></i>
 
 Volver a Logística
+```
 
 </a>
 
@@ -408,43 +528,41 @@ Volver a Logística
 
 <div class="panel">
 
-<h2>
-
-👤 Cliente interno
-
-</h2>
+```
+<h2>👤 Cliente interno</h2>
 
 <label>
 
-Seleccionar cliente
+    Seleccionar cliente
 
 </label>
 
 <select id="cliente_id">
 
-<option value="">
+    <option value="">
 
-Seleccionar cliente...
+        Seleccionar cliente...
 
-</option>
+    </option>
 
-<% clientes.forEach(cliente => { %>
+    <% clientes.forEach(cliente => { %>
 
-<option value="<%= cliente.id %>">
+        <option value="<%= cliente.id %>">
 
-<%= cliente.nombre %>
+            <%= cliente.nombre %>
 
-<% if(cliente.empresa){ %>
+            <% if(cliente.empresa){ %>
 
-* <%= cliente.empresa %>
+                * <%= cliente.empresa %>
 
-<% } %>
+            <% } %>
 
-</option>
+        </option>
 
-<% }) %>
+    <% }) %>
 
 </select>
+```
 
 </div>
 
@@ -452,605 +570,1876 @@ Seleccionar cliente...
 
 <div class="panel">
 
-<h2>
-
-📷 Escanear paquete
-
-</h2>
+```
+<h2>📷 Escanear etiqueta particular</h2>
 
 <div class="scanner">
 
-<div id="reader"></div>
 
-<button
-class="btn btn-primary"
-id="iniciarScanner"
+    <div class="camera-box">
 
->
+        <video
+            id="video"
+            autoplay
+            playsinline
+        ></video>
 
-<i class="fas fa-camera"></i>
+        <canvas id="canvas"></canvas>
 
-Iniciar cámara
+    </div>
 
-</button>
 
-<button
-class="btn btn-danger"
-id="detenerScanner"
-style="display:none"
+    <div class="mobile-buttons">
 
->
+        <button
+            class="btn btn-primary"
+            id="iniciarScanner"
+        >
 
-<i class="fas fa-stop"></i>
+            <i class="fas fa-camera"></i>
 
-Detener cámara
+            Iniciar cámara
 
-</button>
+        </button>
 
-<p
-id="scannerEstado"
-style="
-margin-top:15px;
-opacity:.8;
-"
->
 
-Scanner detenido
+        <button
+            class="btn btn-success"
+            id="capturarFoto"
+            style="display:none"
+        >
 
-</p>
+            <i class="fas fa-camera-retro"></i>
+
+            Capturar etiqueta
+
+        </button>
+
+
+        <button
+            class="btn btn-danger"
+            id="detenerScanner"
+            style="display:none"
+        >
+
+            <i class="fas fa-stop"></i>
+
+            Detener cámara
+
+        </button>
+
+    </div>
+
+
+    <p
+        id="scannerEstado"
+        style="
+            margin-top:15px;
+            opacity:.8;
+        "
+    >
+
+        Scanner detenido
+
+    </p>
+
+
+    <div
+        class="progreso"
+        id="progreso"
+    >
+
+        <div id="progresoTexto">
+
+            Preparando lectura...
+
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div
+                class="progress-fill"
+                id="progressFill"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="info"
+        id="infoScanner"
+    >
+
+        📱 Apuntá la cámara hacia la etiqueta completa.
+        Procurá que el texto esté enfocado y que entre toda la etiqueta.
+
+    </div>
+
+
+    <div
+        class="success"
+        id="mensajeExito"
+    >
+
+        ✅ Etiqueta procesada correctamente.
+
+    </div>
+
+
+    <div
+        class="error"
+        id="mensajeError"
+    >
+
+        ❌ No se pudo procesar correctamente la etiqueta.
+
+    </div>
+
 
 </div>
+```
 
 </div>
 
 <!-- RESULTADO -->
 
 <div
-class="panel resultado"
-id="resultado"
+    class="panel resultado"
+    id="resultado"
 >
 
+```
 <h2>
 
-📦 Paquete detectado
+    📦 Paquete detectado
 
 </h2>
 
+
+<!-- CODIGO INTERNO -->
+
 <div class="estado">
 
-Código interno generado:
+    Código interno generado:
+
+    <div
+        class="codigo"
+        id="codigoInterno"
+    >
+
+        PKG-000001
+
+    </div>
+
+</div>
+
+
+
+<!-- DATOS -->
 
 <div
-class="codigo"
-id="codigoInterno"
+    class="form-grid"
+    style="margin-top:20px"
 >
 
-PKG-000001
+
+    <div>
+
+        <label>
+
+            Código de barras
+
+        </label>
+
+        <input
+            type="text"
+            id="codigoBarras"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Número de orden
+
+        </label>
+
+        <input
+            type="text"
+            id="numeroOrden"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Fecha emisión
+
+        </label>
+
+        <input
+            type="text"
+            id="fechaEmision"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Peso
+
+        </label>
+
+        <input
+            type="text"
+            id="peso"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Bultos
+
+        </label>
+
+        <input
+            type="text"
+            id="bultos"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Número de bulto
+
+        </label>
+
+        <input
+            type="text"
+            id="numeroBulto"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Remitente
+
+        </label>
+
+        <input
+            type="text"
+            id="remitente"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Destinatario
+
+        </label>
+
+        <input
+            type="text"
+            id="destinatario"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Teléfono
+
+        </label>
+
+        <input
+            type="text"
+            id="telefono"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Dirección
+
+        </label>
+
+        <input
+            type="text"
+            id="direccion"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Localidad
+
+        </label>
+
+        <input
+            type="text"
+            id="localidad"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label>
+
+            Zona / Barrio
+
+        </label>
+
+        <input
+            type="text"
+            id="zona"
+        >
+
+    </div>
+
 
 </div>
 
-</div>
 
-<div
-class="form-grid"
-style="margin-top:20px"
->
-
-<div>
-
-<label>
-
-Código de barras
-
-</label>
-
-<input
-type="text"
-id="codigoBarras"
-readonly
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Número de orden
-
-</label>
-
-<input
-type="text"
-id="numeroOrden"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Fecha emisión
-
-</label>
-
-<input
-type="text"
-id="fechaEmision"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Peso
-
-</label>
-
-<input
-type="text"
-id="peso"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Bultos
-
-</label>
-
-<input
-type="text"
-id="bultos"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Número de bulto
-
-</label>
-
-<input
-type="text"
-id="numeroBulto"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Remitente
-
-</label>
-
-<input
-type="text"
-id="remitente"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Destinatario
-
-</label>
-
-<input
-type="text"
-id="destinatario"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Teléfono
-
-</label>
-
-<input
-type="text"
-id="telefono"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Dirección
-
-</label>
-
-<input
-type="text"
-id="direccion"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Localidad
-
-</label>
-
-<input
-type="text"
-id="localidad"
-
->
-
-</div>
-
-<div>
-
-<label>
-
-Zona / Barrio
-
-</label>
-
-<input
-type="text"
-id="zona"
-
->
-
-</div>
-
-</div>
 
 <div style="margin-top:20px">
 
-<label>
+    <label>
 
-Observaciones
+        Observaciones
 
-</label>
+    </label>
 
-<textarea
-id="observaciones"
-></textarea>
+    <textarea
+        id="observaciones"
+    ></textarea>
 
 </div>
 
-<button
-class="btn btn-success"
-id="guardarPaquete"
 
+
+<!-- TEXTO OCR -->
+
+<div
+    class="ocr-text"
+    id="ocrContainer"
 >
 
-<i class="fas fa-save"></i>
+    <h3>
 
-Guardar paquete
+        🔍 Texto detectado por OCR
 
-</button>
+    </h3>
+
+    <pre id="ocrTexto"></pre>
+
+</div>
+
+
+
+<div class="mobile-buttons">
+
+    <button
+        class="btn btn-warning"
+        id="procesarNuevamente"
+    >
+
+        <i class="fas fa-redo"></i>
+
+        Procesar otra vez
+
+    </button>
+
+
+    <button
+        class="btn btn-success"
+        id="guardarPaquete"
+    >
+
+        <i class="fas fa-save"></i>
+
+        Guardar paquete
+
+    </button>
+
+</div>
+```
 
 </div>
 
 </div>
 
-<!-- LIBRERIA SCANNER -->
+<!-- TESSERACT OCR -->
 
 <script
-src="https://unpkg.com/html5-qrcode"
-type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"
 ></script>
 
 <script>
 
-let scanner = null;
+
+let stream = null;
+
+let codigoInternoActual = null;
+
+let ultimoTextoOCR = "";
 
 
-/* ELEMENTOS */
+
+/* ==============================
+
+   ELEMENTOS
+
+============================== */
+
+
+const video =
+    document.getElementById(
+        "video"
+    );
+
+
+const canvas =
+    document.getElementById(
+        "canvas"
+    );
+
 
 const iniciar =
-document.getElementById(
-"iniciarScanner"
-);
+    document.getElementById(
+        "iniciarScanner"
+    );
+
+
+const capturar =
+    document.getElementById(
+        "capturarFoto"
+    );
+
 
 const detener =
-document.getElementById(
-"detenerScanner"
-);
+    document.getElementById(
+        "detenerScanner"
+    );
+
 
 const estado =
-document.getElementById(
-"scannerEstado"
-);
+    document.getElementById(
+        "scannerEstado"
+    );
+
 
 const resultado =
-document.getElementById(
-"resultado"
-);
-
-const codigoBarras =
-document.getElementById(
-"codigoBarras"
-);
+    document.getElementById(
+        "resultado"
+    );
 
 
+const progreso =
+    document.getElementById(
+        "progreso"
+    );
 
-/* INICIAR */
+
+const progresoTexto =
+    document.getElementById(
+        "progresoTexto"
+    );
+
+
+const progressFill =
+    document.getElementById(
+        "progressFill"
+    );
+
+
+const mensajeExito =
+    document.getElementById(
+        "mensajeExito"
+    );
+
+
+const mensajeError =
+    document.getElementById(
+        "mensajeError"
+    );
+
+
+
+/* ==============================
+
+   GENERAR CODIGO INTERNO
+
+============================== */
+
+
+function generarCodigoInterno(){
+
+    const numero =
+        Date.now()
+        .toString()
+        .slice(-6);
+
+    return "PKG-" + numero;
+
+}
+
+
+
+/* ==============================
+
+   INICIAR CAMARA
+
+============================== */
+
 
 iniciar.addEventListener(
-"click",
-async function(){
 
-try{
+    "click",
 
+    async function(){
 
-scanner =
-new Html5Qrcode(
-"reader"
-);
+        try{
 
+            stream =
+                await navigator.mediaDevices
+                .getUserMedia({
 
-const cameras =
-await Html5Qrcode
-.getCameras();
+                    video:{
 
+                        facingMode:{
+                            ideal:"environment"
+                        },
 
-if(
-!cameras ||
-!cameras.length
-){
+                        width:{
+                            ideal:1920
+                        },
 
-alert(
-"No se encontró ninguna cámara."
-);
+                        height:{
+                            ideal:1080
+                        }
 
-return;
+                    },
 
-}
+                    audio:false
 
-
-let cameraId =
-cameras[0].id;
+                });
 
 
-/*
-
-Intentamos usar
-la cámara trasera
-
-*/
-
-const trasera =
-cameras.find(
-camera =>
-camera.label
-.toLowerCase()
-.includes("back")
-||
-camera.label
-.toLowerCase()
-.includes("rear")
-||
-camera.label
-.toLowerCase()
-.includes("trasera")
-);
+            video.srcObject =
+                stream;
 
 
-if(trasera){
-
-cameraId =
-trasera.id;
-
-}
+            iniciar.style.display =
+                "none";
 
 
-await scanner.start(
-
-cameraId,
-
-{
-
-fps:10,
-
-qrbox:{
-width:280,
-height:180
-}
-
-},
-
-codigo => {
+            capturar.style.display =
+                "inline-block";
 
 
-console.log(
-"Código detectado:",
-codigo
-);
+            detener.style.display =
+                "inline-block";
 
 
-codigoBarras.value =
-codigo;
+            estado.innerHTML =
+                "📷 Cámara activa. Enfocá la etiqueta completa.";
 
 
-resultado.style.display =
-"block";
+        }catch(error){
+
+            console.error(
+                "Error cámara:",
+                error
+            );
 
 
-estado.innerHTML =
-"✅ Código detectado";
+            alert(
+                "No se pudo acceder a la cámara. Verificá los permisos del navegador."
+            );
 
+        }
 
-detenerScanner();
-
-
-},
-
-error => {
-
-
-}
+    }
 
 );
 
 
-iniciar.style.display =
-"none";
 
+/* ==============================
 
-detener.style.display =
-"inline-block";
+   DETENER CAMARA
 
+============================== */
 
-estado.innerHTML =
-"📷 Cámara activa";
-
-
-}catch(error){
-
-
-console.error(error);
-
-
-alert(
-"Error iniciando cámara: "
-+
-error.message
-);
-
-
-}
-
-});
-
-
-
-/* DETENER */
 
 detener.addEventListener(
-"click",
-detenerScanner
+
+    "click",
+
+    detenerCamara
+
 );
 
 
-async function
-detenerScanner(){
+
+function detenerCamara(){
+
+    if(stream){
+
+        stream
+        .getTracks()
+        .forEach(
+            track =>
+            track.stop()
+        );
+
+    }
 
 
-if(scanner){
+    stream = null;
 
-try{
 
-await scanner.stop();
+    video.srcObject = null;
 
-scanner.clear();
 
-}catch(error){
+    iniciar.style.display =
+        "inline-block";
 
-console.error(error);
+
+    capturar.style.display =
+        "none";
+
+
+    detener.style.display =
+        "none";
+
+
+    estado.innerHTML =
+        "Scanner detenido";
 
 }
 
-}
 
 
-scanner =
-null;
+/* ==============================
+
+   CAPTURAR FOTO
+
+============================== */
 
 
-iniciar.style.display =
-"inline-block";
+capturar.addEventListener(
+
+    "click",
+
+    async function(){
 
 
-detener.style.display =
-"none";
+        if(!stream){
+
+            alert(
+                "Primero iniciá la cámara."
+            );
+
+            return;
+
+        }
 
 
-estado.innerHTML =
-"Scanner detenido";
-
-}
+        const width =
+            video.videoWidth;
 
 
-
-/* GUARDAR */
-
-document
-.getElementById(
-"guardarPaquete"
-)
-.addEventListener(
-"click",
-function(){
+        const height =
+            video.videoHeight;
 
 
-const cliente =
-document
-.getElementById(
-"cliente_id"
-)
-.value;
+        canvas.width =
+            width;
 
 
-if(!cliente){
+        canvas.height =
+            height;
 
-alert(
-"Seleccioná un cliente interno."
+
+        const ctx =
+            canvas.getContext(
+                "2d"
+            );
+
+
+        ctx.drawImage(
+
+            video,
+
+            0,
+
+            0,
+
+            width,
+
+            height
+
+        );
+
+
+        estado.innerHTML =
+            "📸 Imagen capturada. Analizando etiqueta...";
+
+
+        await procesarImagen();
+
+
+    }
+
 );
 
-return;
+
+
+/* ==============================
+
+   PROCESAR IMAGEN OCR
+
+============================== */
+
+
+async function procesarImagen(){
+
+
+    progreso.style.display =
+        "block";
+
+
+    mensajeExito.style.display =
+        "none";
+
+
+    mensajeError.style.display =
+        "none";
+
+
+    resultado.style.display =
+        "block";
+
+
+    progressFill.style.width =
+        "5%";
+
+
+    progresoTexto.innerHTML =
+        "🔍 Preparando OCR...";
+
+
+    codigoInternoActual =
+        generarCodigoInterno();
+
+
+    document
+    .getElementById(
+        "codigoInterno"
+    )
+    .textContent =
+        codigoInternoActual;
+
+
+
+    try{
+
+
+        progresoTexto.innerHTML =
+            "🔍 Leyendo texto de la etiqueta...";
+
+
+        const result =
+            await Tesseract.recognize(
+
+                canvas,
+
+                "spa+eng",
+
+                {
+
+                    logger:
+                    function(info){
+
+                        if(
+                            info.status ===
+                            "recognizing text"
+                        ){
+
+                            const porcentaje =
+                                Math.round(
+                                    info.progress *
+                                    100
+                                );
+
+
+                            progressFill.style.width =
+                                porcentaje + "%";
+
+
+                            progresoTexto.innerHTML =
+
+                                "🔍 OCR leyendo etiqueta: "
+                                +
+                                porcentaje
+                                +
+                                "%";
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+
+        ultimoTextoOCR =
+            result.data.text;
+
+
+        console.log(
+            "========== OCR =========="
+        );
+
+
+        console.log(
+            ultimoTextoOCR
+        );
+
+
+        console.log(
+            "=========================="
+        );
+
+
+        progressFill.style.width =
+            "100%";
+
+
+        progresoTexto.innerHTML =
+            "✅ Lectura completada";
+
+
+        document
+        .getElementById(
+            "ocrTexto"
+        )
+        .textContent =
+            ultimoTextoOCR;
+
+
+        document
+        .getElementById(
+            "ocrContainer"
+        )
+        .style.display =
+            "block";
+
+
+
+        /* EXTRAER DATOS */
+
+        extraerDatos(
+            ultimoTextoOCR
+        );
+
+
+        mensajeExito.style.display =
+            "block";
+
+
+        estado.innerHTML =
+            "✅ Etiqueta analizada";
+
+
+    }catch(error){
+
+
+        console.error(
+            "Error OCR:",
+            error
+        );
+
+
+        mensajeError.style.display =
+            "block";
+
+
+        progresoTexto.innerHTML =
+            "❌ Error procesando etiqueta";
+
+
+        estado.innerHTML =
+            "❌ No se pudo leer la etiqueta";
+
+
+    }
 
 }
 
 
-if(
-!codigoBarras.value
+
+/* ==============================
+
+   EXTRAER DATOS
+
+============================== */
+
+
+function extraerDatos(texto){
+
+
+    const lineas =
+
+        texto
+
+        .split("\n")
+
+        .map(
+            linea =>
+            linea
+            .trim()
+        )
+
+        .filter(
+            linea =>
+            linea.length > 0
+        );
+
+
+
+    const textoNormalizado =
+
+        texto
+
+        .replace(
+            /\r/g,
+            ""
+        )
+
+        .toUpperCase();
+
+
+
+    /* ==========================
+
+       CODIGO DE BARRAS
+
+    ========================== */
+
+
+    const codigos =
+
+        texto
+
+        .match(
+            /\b\d{6,20}\b/g
+        );
+
+
+    if(codigos){
+
+        const posibles =
+
+            codigos
+
+            .filter(
+                codigo =>
+                codigo !==
+                codigoInternoActual
+            );
+
+
+        if(posibles.length){
+
+            document
+            .getElementById(
+                "codigoBarras"
+            )
+            .value =
+                posibles[
+                    posibles.length - 1
+                ];
+
+        }
+
+    }
+
+
+
+    /* ==========================
+
+       NUMERO ORDEN
+
+    ========================== */
+
+
+    let orden =
+        buscarDespuesDeEtiqueta(
+
+            lineas,
+
+            [
+
+                "NUMERO DE ORDEN",
+
+                "NÚMERO DE ORDEN",
+
+                "ORDER",
+
+                "ORDER ID",
+
+                "ORDEN"
+
+            ]
+
+        );
+
+
+    if(orden){
+
+        document
+        .getElementById(
+            "numeroOrden"
+        )
+        .value =
+            orden;
+
+    }
+
+
+
+    /* ==========================
+
+       FECHA
+
+    ========================== */
+
+
+    const fecha =
+
+        texto.match(
+
+            /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/
+
+        );
+
+
+    if(fecha){
+
+        document
+        .getElementById(
+            "fechaEmision"
+        )
+        .value =
+            fecha[0];
+
+    }
+
+
+
+    /* ==========================
+
+       PESO
+
+    ========================== */
+
+
+    const peso =
+
+        texto.match(
+
+            /\b\d+(?:[.,]\d+)?\s*(?:KG|KGS|G|GR|GRAMOS)\b/i
+
+        );
+
+
+    if(peso){
+
+        document
+        .getElementById(
+            "peso"
+        )
+        .value =
+            peso[0];
+
+    }
+
+
+
+    /* ==========================
+
+       BULTOS
+
+    ========================== */
+
+
+    const bultos =
+
+        textoNormalizado.match(
+
+            /(?:BULTOS?|TOTAL\s+BULTOS?)\s*[:\-]?\s*(\d+)/
+
+        );
+
+
+    if(bultos){
+
+        document
+        .getElementById(
+            "bultos"
+        )
+        .value =
+            bultos[1];
+
+    }
+
+
+
+    /* ==========================
+
+       NUMERO DE BULTO
+
+    ========================== */
+
+
+    const numeroBulto =
+
+        textoNormalizado.match(
+
+            /BULTO\s*(\d+)(?:\s*(?:DE|\/)\s*(\d+))?/
+
+        );
+
+
+    if(numeroBulto){
+
+        if(numeroBulto[2]){
+
+            document
+            .getElementById(
+                "numeroBulto"
+            )
+            .value =
+
+                numeroBulto[1]
+                +
+                " de "
+                +
+                numeroBulto[2];
+
+        }else{
+
+            document
+            .getElementById(
+                "numeroBulto"
+            )
+            .value =
+                numeroBulto[1];
+
+        }
+
+    }
+
+
+
+    /* ==========================
+
+       REMITENTE
+
+    ========================== */
+
+
+    const remitente =
+
+        buscarDespuesDeEtiqueta(
+
+            lineas,
+
+            [
+
+                "REMITENTE",
+
+                "SHIPPER",
+
+                "FROM"
+
+            ]
+
+        );
+
+
+    if(remitente){
+
+        document
+        .getElementById(
+            "remitente"
+        )
+        .value =
+            remitente;
+
+    }
+
+
+
+    /* ==========================
+
+       DESTINATARIO
+
+    ========================== */
+
+
+    const destinatario =
+
+        buscarDespuesDeEtiqueta(
+
+            lineas,
+
+            [
+
+                "DESTINATARIO",
+
+                "RECIPIENT",
+
+                "TO"
+
+            ]
+
+        );
+
+
+    if(destinatario){
+
+        document
+        .getElementById(
+            "destinatario"
+        )
+        .value =
+            destinatario;
+
+    }
+
+
+
+    /* ==========================
+
+       TELEFONO
+
+    ========================== */
+
+
+    const telefono =
+
+        texto.match(
+
+            /(?:\+?54\s*)?(?:\(?\d{2,4}\)?[\s\-]*)?\d{4}[\s\-]?\d{4}/
+
+        );
+
+
+    if(telefono){
+
+        document
+        .getElementById(
+            "telefono"
+        )
+        .value =
+            telefono[0];
+
+    }
+
+
+
+    /* ==========================
+
+       LOCALIDAD / BARRIO
+
+    ========================== */
+
+
+    const zonasCABA = [
+
+        "RECOLETA",
+
+        "PALERMO",
+
+        "BELGRANO",
+
+        "BARRACAS",
+
+        "BOEDO",
+
+        "CABALLITO",
+
+        "FLORES",
+
+        "FLORESTA",
+
+        "VILLA CRESPO",
+
+        "VILLA DEVOTO",
+
+        "VILLA DEL PARQUE",
+
+        "VILLA URQUIZA",
+
+        "VILLA LURO",
+
+        "VILLA PUEYRREDON",
+
+        "COLEGIALES",
+
+        "ALMAGRO",
+
+        "BALVANERA",
+
+        "SAN TELMO",
+
+        "MONSERRAT",
+
+        "SAN NICOLAS",
+
+        "RETIRO",
+
+        "NUÑEZ",
+
+        "SAAVEDRA",
+
+        "MATADEROS",
+
+        "LINIERS",
+
+        "PARQUE PATRICIOS",
+
+        "CONSTITUCION",
+
+        "LA BOCA",
+
+        "PUERTO MADERO",
+
+        "CHACARITA",
+
+        "PATERNAL",
+
+        "AGRONOMIA",
+
+        "VILLA ORTUZAR",
+
+        "PARQUE CHAS",
+
+        "VERSALLES",
+
+        "VILLA REAL",
+
+        "MONTE CASTRO",
+
+        "VELEZ SARSFIELD",
+
+        "PARQUE AVELLANEDA",
+
+        "NUEVA POMPEYA",
+
+        "VILLA SOLDATI",
+
+        "VILLA LUGANO",
+
+        "VILLA RIACHUELO"
+
+    ];
+
+
+
+    let zonaEncontrada = null;
+
+
+    for(
+        const zona
+        of zonasCABA
+    ){
+
+        if(
+            textoNormalizado
+            .includes(zona)
+        ){
+
+            zonaEncontrada =
+                zona;
+
+            break;
+
+        }
+
+    }
+
+
+
+    if(zonaEncontrada){
+
+        document
+        .getElementById(
+            "zona"
+        )
+        .value =
+            zonaEncontrada;
+
+    }
+
+
+
+    /* ==========================
+
+       DIRECCION
+
+    ========================== */
+
+
+    const direccion =
+
+        buscarDireccion(
+            lineas
+        );
+
+
+    if(direccion){
+
+        document
+        .getElementById(
+            "direccion"
+        )
+        .value =
+            direccion;
+
+    }
+
+
+
+    /* ==========================
+
+       LOCALIDAD
+
+    ========================== */
+
+
+    const localidad =
+
+        buscarLocalidad(
+
+            textoNormalizado,
+
+            zonaEncontrada
+
+        );
+
+
+    if(localidad){
+
+        document
+        .getElementById(
+            "localidad"
+        )
+        .value =
+            localidad;
+
+    }
+
+
+
+    /* ==========================
+
+       OBSERVACIONES
+
+    ========================== */
+
+
+    document
+    .getElementById(
+        "observaciones"
+    )
+    .value =
+
+        "OCR detectado automáticamente. Revisar datos antes de guardar.";
+
+
+}
+
+
+
+/* ==============================
+
+   BUSCAR TEXTO DESPUES DE ETIQUETA
+
+============================== */
+
+
+function buscarDespuesDeEtiqueta(
+
+    lineas,
+
+    etiquetas
+
 ){
 
-alert(
-"Primero escaneá el código."
-);
 
-return;
+    for(
+        let i = 0;
+        i < lineas.length;
+        i++
+    ){
+
+
+        const linea =
+
+            lineas[i]
+            .toUpperCase();
+
+
+
+        for(
+            const etiqueta
+            of etiquetas
+        ){
+
+
+            if(
+                linea
+                .startsWith(
+                    etiqueta
+                )
+            ){
+
+
+                const resto =
+
+                    lineas[i]
+
+                    .substring(
+                        etiqueta.length
+                    )
+
+                    .replace(
+                        /^[:\-\s]+/,
+                        ""
+                    )
+
+                    .trim();
+
+
+
+                if(resto){
+
+                    return resto;
+
+                }
+
+
+
+                if(
+                    lineas[i + 1]
+                ){
+
+                    return lineas[i + 1];
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return "";
 
 }
 
 
-alert(
 
-"Paquete listo para guardar."
+/* ==============================
+
+   BUSCAR DIRECCION
+
+============================== */
+
+
+function buscarDireccion(
+
+    lineas
+
+){
+
+
+    const patrones = [
+
+        /\b(AV\.?|AVENIDA|CALLE|PASAJE|PJE\.?)\b/i,
+
+        /\b[A-ZÁÉÍÓÚÑa-záéíóúñ\s]+\s+\d{2,5}\b/
+
+    ];
+
+
+
+    for(
+        const linea
+        of lineas
+    ){
+
+
+        const limpia =
+            linea.trim();
+
+
+
+        if(
+            patrones[0]
+            .test(limpia)
+        ){
+
+            return limpia;
+
+        }
+
+
+
+        if(
+            patrones[1]
+            .test(limpia)
+        ){
+
+            return limpia;
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+
+/* ==============================
+
+   BUSCAR LOCALIDAD
+
+============================== */
+
+
+function buscarLocalidad(
+
+    texto,
+
+    zona
+
+){
+
+
+    if(zona){
+
+        return "CABA";
+
+    }
+
+
+
+    if(
+        texto.includes(
+            "CABA"
+        )
+    ){
+
+        return "CABA";
+
+    }
+
+
+
+    if(
+        texto.includes(
+            "CAPITAL FEDERAL"
+        )
+    ){
+
+        return "CABA";
+
+    }
+
+
+
+    return "";
+
+}
+
+
+
+/* ==============================
+
+   PROCESAR NUEVAMENTE
+
+============================== */
+
+
+document
+.getElementById(
+    "procesarNuevamente"
+)
+.addEventListener(
+
+    "click",
+
+    function(){
+
+        if(!stream){
+
+            alert(
+                "Iniciá la cámara nuevamente para capturar otra etiqueta."
+            );
+
+            return;
+
+        }
+
+
+        resultado.style.display =
+            "none";
+
+
+        document
+        .getElementById(
+            "ocrContainer"
+        )
+        .style.display =
+            "none";
+
+
+        estado.innerHTML =
+            "📷 Listo para capturar otra etiqueta.";
+
+    }
 
 );
 
 
-});
+
+/* ==============================
+
+   GUARDAR
+
+============================== */
+
+
+document
+.getElementById(
+    "guardarPaquete"
+)
+.addEventListener(
+
+    "click",
+
+    function(){
+
+
+        const cliente =
+
+            document
+            .getElementById(
+                "cliente_id"
+            )
+            .value;
+
+
+
+        if(!cliente){
+
+            alert(
+                "Seleccioná un cliente interno."
+            );
+
+            return;
+
+        }
+
+
+
+        if(
+            !document
+            .getElementById(
+                "codigoBarras"
+            )
+            .value
+        ){
+
+            alert(
+                "No se detectó un código de barras."
+            );
+
+            return;
+
+        }
+
+
+
+        alert(
+
+            "✅ Prueba de captura correcta.\n\n"
+            +
+            "Código interno: "
+            +
+            codigoInternoActual
+            +
+            "\n\n"
+            +
+            "El siguiente paso será conectar este formulario con la base de datos."
+
+        );
+
+    }
+
+);
+
 
 </script>
 

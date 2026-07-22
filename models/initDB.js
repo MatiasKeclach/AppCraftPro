@@ -508,3 +508,42 @@ for (const columna in nuevasColumnasLogistica) {
 
 console.log("✅ Tabla 'logistica_clientes' actualizada");
 console.log("✅ Base de datos inicializada correctamente");
+
+// ==========================================
+// ACTUALIZACIÓN DATOS COMPLETOS PARTICULARES
+// ==========================================
+
+const columnasParticulares = {
+
+    numero_orden: "TEXT",
+    fecha_emision: "TEXT",
+    peso: "TEXT",
+    bultos: "TEXT",
+    numero_bulto: "TEXT",
+
+    remitente: "TEXT",
+    destinatario: "TEXT",
+
+    telefono: "TEXT",
+    direccion: "TEXT",
+
+    localidad: "TEXT",
+    zona: "TEXT"
+
+};
+
+
+for (const columna in columnasParticulares) {
+
+    agregarColumna(
+        "logistica_paquetes",
+        columna,
+        columnasParticulares[columna]
+    );
+
+}
+
+
+console.log(
+    "✅ Campos de paquetes particulares actualizados"
+);

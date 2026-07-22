@@ -68,6 +68,263 @@ router.get("/flex-scanner", isAuthenticated, (req, res) => {
 });
 
 // ==============================
+// GUARDAR PAQUETE PARTICULAR
+// ==============================
+
+router.post("/flex-scanner/guardar", isAuthenticated, (req, res) => {
+
+    try {
+
+        const {
+
+            cliente_id,
+            codigo_externo,
+            numero_orden,
+            fecha_emision,
+            peso,
+            bultos,
+            numero_bulto,
+            remitente,
+            destinatario,
+            telefono,
+            direccion,
+            localidad,
+            zona,
+            observaciones
+
+        } = req.body;
+
+
+        // ==============================
+        // VALIDAR CLIENTE
+        // ==============================
+
+        if (!cliente_id) {
+
+            return res.status(400).json({
+
+                ok: false,
+
+                mensaje: "Debe seleccionar un cliente interno."
+
+            });
+
+        }
+
+
+        // ==============================
+        // GENERAR CÓDIGO INTERNO
+        // ==============================
+
+        const ultimo = db.prepare(`
+
+            SELECT id
+
+            FROM logistica_paquetes
+
+            ORDER BY id DESC
+
+            LIMIT 1
+
+        `).get();
+
+
+        let numero = 1;
+
+
+        if (ultimo) {
+
+            numero = ultimo.id + 1;
+
+        }
+
+
+        const codigoInterno =
+
+            "PKG-" +
+
+            String(numero).padStart(6, "0");
+
+
+        // ==============================
+        // GUARDAR PAQUETE
+        // ==============================
+
+        const resultado = db.prepare(`
+
+            INSERT INTO logistica_paquetes
+
+            (
+
+                cliente_id,
+
+                tipo,
+
+                codigo_externo,
+
+                codigo_interno,
+
+                numero_orden,
+
+                fecha_emision,
+
+                peso,
+
+                bultos,
+
+                numero_bulto,
+
+                remitente,
+
+                destinatario,
+
+                telefono,
+
+                direccion,
+
+                localidad,
+
+                zona,
+
+                observaciones,
+
+                colectado_por,
+
+                estado
+
+            )
+
+            VALUES
+
+            (
+
+                ?,
+
+                'particular',
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                ?,
+
+                'recibido'
+
+            )
+
+        `).run(
+
+            cliente_id,
+
+            codigo_externo,
+
+            codigoInterno,
+
+            numero_orden,
+
+            fecha_emision,
+
+            peso,
+
+            bultos,
+
+            numero_bulto,
+
+            remitente,
+
+            destinatario,
+
+            telefono,
+
+            direccion,
+
+            localidad,
+
+            zona,
+
+            observaciones,
+
+            req.session.user.username
+
+        );
+
+
+        console.log(
+
+            "📦 Paquete particular guardado:",
+
+            codigoInterno
+
+        );
+
+
+        // ==============================
+        // RESPUESTA
+        // ==============================
+
+        res.json({
+
+            ok: true,
+
+            mensaje: "Paquete guardado correctamente.",
+
+            id: resultado.lastInsertRowid,
+
+            codigo_interno: codigoInterno
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+
+            "❌ Error guardando paquete particular:",
+
+            error
+
+        );
+
+
+        res.status(500).json({
+
+            ok: false,
+
+            mensaje: "Error guardando paquete.",
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+// ==============================
 // LISTADO DE CLIENTES
 // ==============================
 
