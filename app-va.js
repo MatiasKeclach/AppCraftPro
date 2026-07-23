@@ -2,61 +2,129 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const isAuthenticated = require("./middleware/authMiddleware");
+const http = require("http");
 
-// ------------------ Base de datos ------------------ //
+const {
+    Server
+} = require("socket.io");
 
-const db = require("./models/db");
+const isAuthenticated =
+    require("./middleware/authMiddleware");
+
+
+// ==================================================
+// BASE DE DATOS
+// ==================================================
+
+const db =
+    require("./models/db");
+
 require("./models/initDB");
 
 
-// ------------------ Aplicación ------------------ //
+// ==================================================
+// APLICACIÓN
+// ==================================================
 
-const app = express();
+const app =
+    express();
 
-const PORT = process.env.PORT || 3000;
+const PORT =
+    process.env.PORT || 3000;
 
 
-// ------------------ Motor de vistas ------------------ //
-
-app.set("view engine", "ejs");
+// ==================================================
+// MOTOR DE VISTAS EJS
+// ==================================================
 
 app.set(
-  "views",
-  path.join(__dirname, "views")
+    "view engine",
+    "ejs"
+);
+
+app.set(
+    "views",
+    path.join(
+        __dirname,
+        "views"
+    )
 );
 
 
-// ------------------ Middlewares ------------------ //
+// ==================================================
+// MIDDLEWARES
+// ==================================================
 
+// JSON
 app.use(
-  express.urlencoded({
-    extended: true
-  })
-);
-
-app.use(
-  express.json()
-);
-
-
-// ------------------ Sesiones ------------------ //
-
-app.use(
-  session({
-    secret: "appcraft_secret_key",
-    resave: false,
-    saveUninitialized: true
-  })
+    express.json({
+        limit: "10mb"
+    })
 );
 
 
-// ------------------ Archivos públicos ------------------ //
+// FORMULARIOS
+app.use(
+    express.urlencoded({
+        extended: true,
+        limit: "10mb"
+    })
+);
+
+
+// ==================================================
+// SESIONES
+// ==================================================
 
 app.use(
-  express.static(
-    path.join(__dirname, "public")
-  )
+    session({
+
+        secret:
+            process.env.SESSION_SECRET ||
+            "appcraft_secret_key",
+
+        resave:
+            false,
+
+        saveUninitialized:
+            false,
+
+        cookie: {
+
+            secure:
+                process.env.NODE_ENV ===
+                "production",
+
+            httpOnly:
+                true,
+
+            sameSite:
+                "lax",
+
+            maxAge:
+                1000 *
+                60 *
+                60 *
+                24 *
+                7
+
+        }
+
+    })
+);
+
+
+// ==================================================
+// ARCHIVOS PÚBLICOS
+// ==================================================
+
+app.use(
+    express.static(
+        path.join(
+            __dirname,
+            "public"
+        )
+    )
 );
 
 
@@ -65,172 +133,289 @@ app.use(
 // ==================================================
 
 
-// ------------------ Rutas de usuarios ------------------ //
+// --------------------------------------------------
+// USUARIOS
+// --------------------------------------------------
 
-const userRoutes = require("./routes/users");
+const userRoutes =
+    require("./routes/users");
 
 app.use(
-  "/panel/users",
-  userRoutes
+    "/panel/users",
+    userRoutes
 );
 
 
-// ------------------ Rutas de autenticación ------------------ //
+// --------------------------------------------------
+// AUTENTICACIÓN
+// --------------------------------------------------
 
-const authRoutes = require("./routes/auth");
+const authRoutes =
+    require("./routes/auth");
 
 app.use(
-  "/auth",
-  authRoutes
+    "/auth",
+    authRoutes
 );
 
-const logisticaRoutes = require("./routes/logistica");
 
-app.use("/panel/users", userRoutes);
+// --------------------------------------------------
+// LOGÍSTICA
+// --------------------------------------------------
 
-app.use("/auth", authRoutes);
+const logisticaRoutes =
+    require("./routes/logistica");
 
-app.use("/panel/logistica", logisticaRoutes);
+app.use(
+    "/panel/logistica",
+    logisticaRoutes
+);
+
+
+// --------------------------------------------------
+// MERCADO LIBRE
+// --------------------------------------------------
+
+const mercadoLibreRoutes =
+    require("./routes/mercadolibre");
+
+app.use(
+    "/panel/logistica/mercadolibre",
+    mercadoLibreRoutes
+);
+
+
+// ==================================================
+// LOGIN
+// ==================================================
+
+// Ruta principal
+// https://appcraftpro.onrender.com/
+
+app.get(
+    "/",
+    (req, res) => {
+
+        res.render(
+            "login"
+        );
+
+    }
+);
+
+
+// Ruta alternativa
+// https://appcraftpro.onrender.com/login
+
+app.get(
+    "/login",
+    (req, res) => {
+
+        res.render(
+            "login"
+        );
+
+    }
+);
+
 
 // ==================================================
 // PANEL PRINCIPAL
 // ==================================================
 
 app.get(
-  "/panel",
-  isAuthenticated,
-  (req, res) => {
+    "/panel",
+    isAuthenticated,
+    (req, res) => {
 
-    const fs = require("fs");
+        const fs =
+            require("fs");
 
-    try {
+        try {
 
-      // Obtener aplicaciones
-      const apps = db
-        .prepare("SELECT * FROM apps")
-        .all();
+            // ------------------------------------------
+            // OBTENER APLICACIONES
+            // ------------------------------------------
 
-
-      // Obtener usuarios
-      const usuarios = db
-        .prepare("SELECT * FROM users")
-        .all();
-
-
-      // Contar usuarios por rol
-      const totalPorRol = {
-
-        superadmin: usuarios.filter(
-          u => u.role === "superadmin"
-        ).length,
-
-        admin: usuarios.filter(
-          u => u.role === "admin"
-        ).length,
-
-        usuario: usuarios.filter(
-          u => u.role === "usuario"
-        ).length
-
-      };
+            const apps =
+                db
+                    .prepare(
+                        "SELECT * FROM apps"
+                    )
+                    .all();
 
 
-      // Obtener plantillas
-      let plantillas = [];
+            // ------------------------------------------
+            // OBTENER USUARIOS
+            // ------------------------------------------
 
-      if (
-        fs.existsSync("./templates")
-      ) {
+            const usuarios =
+                db
+                    .prepare(
+                        "SELECT * FROM users"
+                    )
+                    .all();
 
-        plantillas = fs
-          .readdirSync("./templates")
-          .filter(file => {
 
-            try {
+            // ------------------------------------------
+            // CONTAR USUARIOS POR ROL
+            // ------------------------------------------
 
-              return fs
-                .lstatSync(
-                  `./templates/${file}`
+            const totalPorRol = {
+
+                superadmin:
+                    usuarios.filter(
+                        u =>
+                            u.role ===
+                            "superadmin"
+                    ).length,
+
+                admin:
+                    usuarios.filter(
+                        u =>
+                            u.role ===
+                            "admin"
+                    ).length,
+
+                usuario:
+                    usuarios.filter(
+                        u =>
+                            u.role ===
+                            "usuario"
+                    ).length
+
+            };
+
+
+            // ------------------------------------------
+            // OBTENER PLANTILLAS
+            // ------------------------------------------
+
+            let plantillas =
+                [];
+
+
+            const templatesPath =
+                path.join(
+                    __dirname,
+                    "templates"
+                );
+
+
+            if (
+                fs.existsSync(
+                    templatesPath
                 )
-                .isDirectory();
+            ) {
 
-            } catch (error) {
+                plantillas =
+                    fs
+                        .readdirSync(
+                            templatesPath
+                        )
+                        .filter(
+                            file => {
 
-              return false;
+                                try {
+
+                                    return fs
+                                        .lstatSync(
+                                            path.join(
+                                                templatesPath,
+                                                file
+                                            )
+                                        )
+                                        .isDirectory();
+
+                                } catch (
+                                    error
+                                ) {
+
+                                    return false;
+
+                                }
+
+                            }
+                        );
 
             }
 
-          });
 
-      }
+            // ------------------------------------------
+            // RENDER PANEL
+            // ------------------------------------------
+
+            return res.render(
+                "panel",
+                {
+
+                    username:
+                        req.session.user.username,
+
+                    role:
+                        req.session.user.role,
+
+                    apps,
+
+                    usuarios,
+
+                    plantillas,
+
+                    totalPorRol
+
+                }
+            );
 
 
-      // Renderizar panel
-      res.render(
-        "panel",
-        {
+        } catch (
+            error
+        ) {
 
-          username:
-            req.session.user.username,
+            console.error(
+                "❌ Error cargando panel:",
+                error
+            );
 
-          role:
-            req.session.user.role,
 
-          apps,
+            // ------------------------------------------
+            // PANEL DE EMERGENCIA
+            // ------------------------------------------
 
-          usuarios,
+            return res.render(
+                "panel",
+                {
 
-          plantillas,
+                    username:
+                        req.session.user.username,
 
-          totalPorRol
+                    role:
+                        req.session.user.role,
+
+                    apps: [],
+
+                    usuarios: [],
+
+                    plantillas: [],
+
+                    totalPorRol: {
+
+                        superadmin:
+                            0,
+
+                        admin:
+                            0,
+
+                        usuario:
+                            0
+
+                    }
+
+                }
+            );
 
         }
-      );
-
-
-    } catch (err) {
-
-      console.error(
-        "❌ Error cargando panel:",
-        err
-      );
-
-
-      // Renderizar panel vacío
-      // si ocurre algún error
-
-      res.render(
-        "panel",
-        {
-
-          username:
-            req.session.user.username,
-
-          role:
-            req.session.user.role,
-
-          apps: [],
-
-          usuarios: [],
-
-          plantillas: [],
-
-          totalPorRol: {
-
-            superadmin: 0,
-
-            admin: 0,
-
-            usuario: 0
-
-          }
-
-        }
-      );
 
     }
-
-  }
 );
 
 
@@ -239,92 +424,301 @@ app.get(
 // ==================================================
 
 app.get(
-  "/panel/framework",
-  isAuthenticated,
-  (req, res) => {
+    "/panel/framework",
+    isAuthenticated,
+    (req, res) => {
 
-    res.render(
-      "framework",
-      {
+        return res.render(
+            "framework",
+            {
 
-        user:
-          req.session.user,
+                user:
+                    req.session.user,
 
-        username:
-          req.session.user.username,
+                username:
+                    req.session.user.username,
 
-        role:
-          req.session.user.role
+                role:
+                    req.session.user.role
 
-      }
-    );
+            }
+        );
 
-  }
+    }
 );
 
 
 // ==================================================
-// LOGÍSTICA
+// RUTA DIRECTA DE LOGÍSTICA
 // ==================================================
 //
-// Esta ruta será utilizada por la tarjeta
-// "Logística" del panel.
-//
-// Más adelante vamos a crear el módulo:
-//
+// Esta ruta NO interfiere con routes/logistica.js
+// porque el router también está montado en:
 // /panel/logistica
 //
-// y dentro:
+// La dejamos solamente como acceso directo
+// al dashboard principal de logística.
 //
-// Fleet Scanner
-// Gestión de paquetes
-// Clientes
-// Choferes
-// Colectas
-// Consultas
-//
-// ==================================================
-
-/*app.get(
-  "/panel/logistica",
-  isAuthenticated,
-  (req, res) => {
-
-    res.render(
-      "logistica/dashboard",
-      {
-
-        username:
-          req.session.user.username,
-
-        role:
-          req.session.user.role
-
-      }
-    );
-
-  }
-);*/
-
-app.get("/panel/logistica", isAuthenticated, (req, res) => {
-  res.render("logistica/dashboard", {
-    username: req.session.user.username,
-    role: req.session.user.role
-  });
-});
-
-
-// ==================================================
-// LOGIN
-// ==================================================
 
 app.get(
-  "/",
-  (req, res) => {
+    "/panel/logistica",
+    isAuthenticated,
+    (req, res) => {
 
-    res.render("login");
+        return res.render(
+            "logistica/dashboard",
+            {
 
-  }
+                username:
+                    req.session.user.username,
+
+                role:
+                    req.session.user.role
+
+            }
+        );
+
+    }
+);
+
+
+// ==================================================
+// MANEJO DE RUTAS NO ENCONTRADAS
+// ==================================================
+
+app.use(
+    (req, res) => {
+
+        console.error(
+            "❌ Ruta no encontrada:",
+            req.method,
+            req.originalUrl
+        );
+
+
+        // ------------------------------------------
+        // API
+        // ------------------------------------------
+
+        if (
+            req.path.startsWith(
+                "/api/"
+            )
+        ) {
+
+            return res
+                .status(404)
+                .json({
+
+                    ok:
+                        false,
+
+                    mensaje:
+                        "Ruta API no encontrada."
+
+                });
+
+        }
+
+
+        // ------------------------------------------
+        // HTML
+        // ------------------------------------------
+
+        return res
+            .status(404)
+            .send(
+                `
+                <!DOCTYPE html>
+
+                <html lang="es">
+
+                <head>
+
+                    <meta charset="UTF-8">
+
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0"
+                    >
+
+                    <title>
+                        Página no encontrada
+                    </title>
+
+                    <style>
+
+                        body {
+
+                            margin: 0;
+
+                            min-height: 100vh;
+
+                            display: flex;
+
+                            align-items: center;
+
+                            justify-content: center;
+
+                            font-family: Arial, sans-serif;
+
+                            background: #0f172a;
+
+                            color: white;
+
+                        }
+
+                        .box {
+
+                            text-align: center;
+
+                            padding: 40px;
+
+                        }
+
+                        h1 {
+
+                            font-size: 70px;
+
+                            margin: 0;
+
+                        }
+
+                        p {
+
+                            color: #94a3b8;
+
+                        }
+
+                        a {
+
+                            display: inline-block;
+
+                            margin-top: 20px;
+
+                            padding: 12px 24px;
+
+                            background: #2563eb;
+
+                            color: white;
+
+                            text-decoration: none;
+
+                            border-radius: 10px;
+
+                        }
+
+                    </style>
+
+                </head>
+
+                <body>
+
+                    <div class="box">
+
+                        <h1>
+                            404
+                        </h1>
+
+                        <h2>
+                            Página no encontrada
+                        </h2>
+
+                        <p>
+                            La dirección que intentaste abrir no existe.
+                        </p>
+
+                        <a href="/">
+                            Volver al inicio
+                        </a>
+
+                    </div>
+
+                </body>
+
+                </html>
+                `
+            );
+
+    }
+);
+
+
+// ==================================================
+// MANEJO GLOBAL DE ERRORES
+// ==================================================
+
+app.use(
+    (
+        error,
+        req,
+        res,
+        next
+    ) => {
+
+        console.error(
+            "❌ ERROR GLOBAL:",
+            error
+        );
+
+
+        if (
+            res.headersSent
+        ) {
+
+            return next(
+                error
+            );
+
+        }
+
+
+        // ------------------------------------------
+        // ERROR API
+        // ------------------------------------------
+
+        if (
+            req.path.startsWith(
+                "/api/"
+            )
+        ) {
+
+            return res
+                .status(500)
+                .json({
+
+                    ok:
+                        false,
+
+                    mensaje:
+                        "Error interno del servidor."
+
+                });
+
+        }
+
+
+        // ------------------------------------------
+        // ERROR HTML
+        // ------------------------------------------
+
+        return res
+            .status(500)
+            .send(
+                `
+                <h1>Error interno del servidor</h1>
+
+                <p>
+                    Ocurrió un error inesperado.
+                </p>
+
+                <a href="/">
+                    Volver al inicio
+                </a>
+                `
+            );
+
+    }
 );
 
 
@@ -332,15 +726,10 @@ app.get(
 // SERVIDOR HTTP
 // ==================================================
 
-const http = require("http");
-
-const {
-  Server
-} = require("socket.io");
-
-
 const server =
-  http.createServer(app);
+    http.createServer(
+        app
+    );
 
 
 // ==================================================
@@ -348,43 +737,53 @@ const server =
 // ==================================================
 
 const io =
-  new Server(
-    server,
-    {
+    new Server(
+        server,
+        {
 
-      cors: {
+            cors: {
 
-        origin: "*"
+                origin:
+                    "*",
 
-      }
+                methods: [
+                    "GET",
+                    "POST"
+                ]
 
-    }
-  );
+            }
 
+        }
+    );
+
+
+// ==================================================
+// CONEXIONES SOCKET.IO
+// ==================================================
 
 io.on(
-  "connection",
-  (socket) => {
-
-    console.log(
-      "⚡ Cliente conectado:",
-      socket.id
-    );
-
-
-    socket.on(
-      "disconnect",
-      () => {
+    "connection",
+    (socket) => {
 
         console.log(
-          "❌ Cliente desconectado:",
-          socket.id
+            "⚡ Cliente conectado:",
+            socket.id
         );
 
-      }
-    );
 
-  }
+        socket.on(
+            "disconnect",
+            () => {
+
+                console.log(
+                    "❌ Cliente desconectado:",
+                    socket.id
+                );
+
+            }
+        );
+
+    }
 );
 
 
@@ -394,19 +793,6 @@ io.on(
 //
 // TEMPORALMENTE DESACTIVADO.
 //
-// No se carga:
-// services/binanceService.js
-//
-// No se ejecuta:
-// startBinanceStream(io)
-//
-// Esto evita que Render falle por:
-//
-// Cannot find module '../bot/engine'
-//
-// Más adelante podemos volver a activar
-// Trading sin afectar Logística.
-//
 // ==================================================
 
 
@@ -415,13 +801,33 @@ io.on(
 // ==================================================
 
 server.listen(
-  PORT,
-  () => {
+    PORT,
+    () => {
 
-    console.log(
-      `🚀 Servidor corriendo en el puerto ${PORT}`
-    );
+        console.log(
+            `🚀 AppCraftPro corriendo en puerto ${PORT}`
+        );
 
-  }
+        console.log(
+            `🔐 Login: /`
+        );
+
+        console.log(
+            `🔐 Login alternativo: /login`
+        );
+
+        console.log(
+            `📊 Panel: /panel`
+        );
+
+        console.log(
+            `📦 Logística: /panel/logistica`
+        );
+
+        console.log(
+            `🛒 Mercado Libre: /panel/logistica/mercadolibre`
+        );
+
+    }
 );
 
