@@ -150,11 +150,6 @@ select{
     color:white;
 }
 
-.btn-warning{
-    background:#f59e0b;
-    color:white;
-}
-
 .estado{
     background:#f1f5f9;
     padding:15px;
@@ -266,47 +261,51 @@ textarea{
     box-shadow:0 3px 15px rgba(0,0,0,.15);
 }
 
-.captura-etiqueta{
+.captura-box{
     margin-top:20px;
     padding:20px;
     background:#eff6ff;
     border-radius:12px;
+    color:#1e293b;
 }
 
-.codigo-detectado{
-    margin-top:15px;
-    padding:15px;
-    background:#dcfce7;
-    color:#166534;
-    border-radius:10px;
-    font-weight:bold;
-    display:none;
+.captura-box h3{
+    margin-bottom:10px;
 }
 
-.sin-codigo{
+.captura-box p{
+    margin-bottom:15px;
+    line-height:22px;
+}
+
+.info-scanner{
     margin-top:15px;
-    padding:15px;
-    background:#fef3c7;
-    color:#92400e;
+    padding:12px;
+    background:rgba(255,255,255,.08);
     border-radius:10px;
-    font-weight:bold;
-    display:none;
+    font-size:14px;
+    line-height:22px;
 }
 
 .debug-box{
+    display:none;
     margin-top:20px;
     padding:15px;
     background:#111827;
-    color:#d1d5db;
+    color:#d1fae5;
     border-radius:10px;
-    display:none;
+}
+
+.debug-box h3{
+    color:white;
+    margin-bottom:10px;
 }
 
 .debug-box pre{
     white-space:pre-wrap;
     word-break:break-word;
+    font-family:monospace;
     font-size:12px;
-    text-align:left;
     max-height:400px;
     overflow:auto;
 }
@@ -366,7 +365,9 @@ textarea{
 </a>
 
 
-<!-- CLIENTE -->
+<!-- =====================================================
+CLIENTE
+===================================================== -->
 
 <div class="panel">
 
@@ -403,25 +404,17 @@ textarea{
 </div>
 
 
-<!-- ESCANEO -->
+<!-- =====================================================
+CAMARA
+===================================================== -->
 
 <div class="panel">
 
-    <h2>📷 Escanear etiqueta completa</h2>
-
-    <p style="margin-bottom:15px;color:#64748b">
-
-        El sistema intentará detectar automáticamente
-        el código de barras y luego leerá todos los datos
-        visibles de la etiqueta mediante OCR.
-
-    </p>
-
+    <h2>📷 Escanear etiqueta</h2>
 
     <div class="scanner">
 
         <div id="reader"></div>
-
 
         <button
             class="btn btn-primary"
@@ -457,80 +450,44 @@ textarea{
 
         </p>
 
-    </div>
 
+        <div class="info-scanner">
 
-    <!-- CAPTURA -->
+            📌 Primero intentaremos detectar un
+            código de barras o QR.
 
-    <div
-        class="captura-etiqueta"
-        id="capturaEtiqueta"
-    >
+            <br>
 
-        <h3>
-            📸 Capturar etiqueta completa
-        </h3>
+            📸 Después podrás cargar una foto
+            de la etiqueta completa para que
+            el OCR lea todos los datos.
 
-        <p style="margin-top:8px;margin-bottom:15px">
+            <br>
 
-            Sacá una foto donde se vea la etiqueta completa.
-            Puede tener código de barras o no.
+            ℹ️ Si la etiqueta no tiene código,
+            también podrás procesarla mediante
+            OCR.
 
-        </p>
-
-
-        <input
-            type="file"
-            id="fotoEtiqueta"
-            accept="image/*"
-            capture="environment"
-            style="
-                width:100%;
-                padding:10px;
-                background:white;
-                border-radius:8px;
-            "
-        >
-
-    </div>
-
-
-    <!-- RESULTADO CODIGO -->
-
-    <div
-        class="codigo-detectado"
-        id="codigoDetectado"
-    >
-
-        ✅ Código de barras detectado:
-
-        <span id="codigoDetectadoTexto"></span>
-
-    </div>
-
-
-    <div
-        class="sin-codigo"
-        id="sinCodigo"
-    >
-
-        ℹ️ No se detectó código de barras.
-        La etiqueta continúa igualmente al procesamiento OCR.
+        </div>
 
     </div>
 
 </div>
 
 
-<!-- PROCESANDO -->
+<!-- =====================================================
+PROCESANDO
+===================================================== -->
 
 <div
     class="procesando"
     id="procesando"
 >
 
-    <div>
+    <div id="procesandoTitulo">
+
         🔎 Analizando etiqueta...
+
     </div>
 
 
@@ -556,7 +513,9 @@ textarea{
 </div>
 
 
-<!-- RESULTADO -->
+<!-- =====================================================
+RESULTADO
+===================================================== -->
 
 <div
     class="panel resultado"
@@ -610,7 +569,7 @@ textarea{
         <div>
 
             <label>
-                Código de barras
+                Código de barras / QR
             </label>
 
             <input
@@ -777,7 +736,50 @@ textarea{
     </div>
 
 
-    <!-- FOTO -->
+    <!-- =================================================
+    CAPTURA ETIQUETA
+    ================================================= -->
+
+    <div
+        id="capturaEtiqueta"
+        class="captura-box"
+        style="display:none"
+    >
+
+        <h3>
+            📸 Capturar etiqueta completa
+        </h3>
+
+        <p>
+
+            Tomá una foto donde se vea la etiqueta
+            completa.
+
+            <br>
+
+            El código de barras es opcional.
+
+            <br>
+
+            El sistema intentará leer todos los datos
+            mediante OCR.
+
+        </p>
+
+
+        <input
+            type="file"
+            id="fotoEtiqueta"
+            accept="image/*"
+            capture="environment"
+        >
+
+    </div>
+
+
+    <!-- =================================================
+    FOTO
+    ================================================= -->
 
     <div
         class="foto-preview"
@@ -796,7 +798,9 @@ textarea{
     </div>
 
 
-    <!-- OBSERVACIONES -->
+    <!-- =================================================
+    OBSERVACIONES
+    ================================================= -->
 
     <div style="margin-top:20px">
 
@@ -811,7 +815,9 @@ textarea{
     </div>
 
 
-    <!-- OCR -->
+    <!-- =================================================
+    OCR
+    ================================================= -->
 
     <div
         class="ocr-text"
@@ -830,23 +836,27 @@ textarea{
     </div>
 
 
-    <!-- DEBUG -->
+    <!-- =================================================
+    DEBUG
+    ================================================= -->
 
     <div
         class="debug-box"
         id="debugBox"
     >
 
-        <strong>
-            🔧 Resultado OCR para depuración
-        </strong>
+        <h3>
+            🔧 Información técnica de lectura
+        </h3>
 
         <pre id="debugTexto"></pre>
 
     </div>
 
 
-    <!-- BOTONES -->
+    <!-- =================================================
+    BOTONES
+    ================================================= -->
 
     <button
         class="btn btn-success"
@@ -878,7 +888,9 @@ textarea{
 </div>
 
 
-<!-- LIBRERIAS -->
+<!-- =====================================================
+LIBRERIAS
+===================================================== -->
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -887,57 +899,126 @@ textarea{
 
 <script>
 
-let scanner = null;
-let procesando = false;<script>
+/* =========================================================
+VARIABLES
+========================================================= */
 
 let scanner = null;
+
 let procesando = false;
+
 let ultimoTextoOCR = "";
+
 let codigoBarrasDetectado = "";
-
-const iniciar =
-document.getElementById("iniciarScanner");
-
-const detener =
-document.getElementById("detenerScanner");
-
-const estado =
-document.getElementById("scannerEstado");
-
-const resultado =
-document.getElementById("resultado");
-
-const procesandoBox =
-document.getElementById("procesando");
-
-const progressBar =
-document.getElementById("progressBar");
-
-const progressTexto =
-document.getElementById("progressTexto");
-
-const codigoBarras =
-document.getElementById("codigoBarras");
-
-const ocrTexto =
-document.getElementById("ocrTexto");
-
-const ocrContainer =
-document.getElementById("ocrContainer");
-
-const codigoInterno =
-document.getElementById("codigoInterno");
-
-const imagenEtiqueta =
-document.getElementById("imagenEtiqueta");
-
-const fotoPreview =
-document.getElementById("fotoPreview");
 
 
 
 /* =========================================================
-SONIDOS
+ELEMENTOS
+========================================================= */
+
+const iniciar =
+document.getElementById(
+    "iniciarScanner"
+);
+
+const detener =
+document.getElementById(
+    "detenerScanner"
+);
+
+const estado =
+document.getElementById(
+    "scannerEstado"
+);
+
+const resultado =
+document.getElementById(
+    "resultado"
+);
+
+const procesandoBox =
+document.getElementById(
+    "procesando"
+);
+
+const progressBar =
+document.getElementById(
+    "progressBar"
+);
+
+const progressTexto =
+document.getElementById(
+    "progressTexto"
+);
+
+const codigoBarras =
+document.getElementById(
+    "codigoBarras"
+);
+
+const ocrTexto =
+document.getElementById(
+    "ocrTexto"
+);
+
+const ocrContainer =
+document.getElementById(
+    "ocrContainer"
+);
+
+const codigoInterno =
+document.getElementById(
+    "codigoInterno"
+);
+
+const imagenEtiqueta =
+document.getElementById(
+    "imagenEtiqueta"
+);
+
+const fotoPreview =
+document.getElementById(
+    "fotoPreview"
+);
+
+const debugBox =
+document.getElementById(
+    "debugBox"
+);
+
+const debugTexto =
+document.getElementById(
+    "debugTexto"
+);
+
+
+
+/* =========================================================
+DEBUG
+========================================================= */
+
+function debug(mensaje){
+
+    console.log(
+        mensaje
+    );
+
+
+    debugBox.style.display =
+    "block";
+
+
+    debugTexto.textContent +=
+    "\n" +
+    mensaje;
+
+}
+
+
+
+/* =========================================================
+SONIDO EXITO
 ========================================================= */
 
 function sonidoExito(){
@@ -950,38 +1031,55 @@ function sonidoExito(){
             window.webkitAudioContext
         )();
 
+
         const osc =
         ctx.createOscillator();
+
 
         const gain =
         ctx.createGain();
 
-        osc.connect(gain);
 
-        gain.connect(ctx.destination);
+        osc.connect(
+            gain
+        );
 
-        osc.frequency.value = 900;
+
+        gain.connect(
+            ctx.destination
+        );
+
+
+        osc.frequency.value =
+        900;
+
 
         gain.gain.setValueAtTime(
             0.2,
             ctx.currentTime
         );
 
+
         gain.gain.exponentialRampToValueAtTime(
             0.01,
             ctx.currentTime + 0.3
         );
 
+
         osc.start();
+
 
         osc.stop(
             ctx.currentTime + 0.3
         );
 
-    }catch(error){
+
+    }
+
+    catch(error){
 
         console.log(
-            "No se pudo reproducir sonido",
+            "Error sonido:",
             error
         );
 
@@ -990,6 +1088,10 @@ function sonidoExito(){
 }
 
 
+
+/* =========================================================
+SONIDO PROCESADO
+========================================================= */
 
 function sonidoProcesado(){
 
@@ -1001,47 +1103,64 @@ function sonidoProcesado(){
             window.webkitAudioContext
         )();
 
+
         const osc =
         ctx.createOscillator();
+
 
         const gain =
         ctx.createGain();
 
-        osc.connect(gain);
 
-        gain.connect(ctx.destination);
+        osc.connect(
+            gain
+        );
 
-        osc.frequency.value = 600;
+
+        gain.connect(
+            ctx.destination
+        );
+
+
+        osc.frequency.value =
+        600;
+
 
         gain.gain.setValueAtTime(
             0.2,
             ctx.currentTime
         );
 
+
         osc.start();
+
 
         osc.frequency.exponentialRampToValueAtTime(
             1000,
             ctx.currentTime + 0.15
         );
 
+
         gain.gain.exponentialRampToValueAtTime(
             0.01,
             ctx.currentTime + 0.4
         );
 
+
         osc.stop(
             ctx.currentTime + 0.4
         );
 
-    }catch(error){}
+    }
+
+    catch(error){}
 
 }
 
 
 
 /* =========================================================
-INICIAR
+INICIAR SCANNER
 ========================================================= */
 
 iniciar.addEventListener(
@@ -1059,13 +1178,26 @@ async function iniciarScanner(){
 
     }
 
+
     try{
 
+        debugTexto.textContent =
+        "";
+
+
+        debugBox.style.display =
+        "none";
+
+
         scanner =
-        new Html5Qrcode("reader");
+        new Html5Qrcode(
+            "reader"
+        );
+
 
         const cameras =
         await Html5Qrcode.getCameras();
+
 
         if(
             !cameras ||
@@ -1076,11 +1208,15 @@ async function iniciarScanner(){
                 "No se encontró ninguna cámara."
             );
 
-            scanner = null;
+
+            scanner =
+            null;
+
 
             return;
 
         }
+
 
         let cameraId =
         cameras[0].id;
@@ -1096,13 +1232,24 @@ async function iniciarScanner(){
                     ""
                 ).toLowerCase();
 
+
                 return (
 
-                    nombre.includes("back") ||
+                    nombre.includes(
+                        "back"
+                    )
 
-                    nombre.includes("rear") ||
+                    ||
 
-                    nombre.includes("trasera")
+                    nombre.includes(
+                        "rear"
+                    )
+
+                    ||
+
+                    nombre.includes(
+                        "trasera"
+                    )
 
                 );
 
@@ -1131,7 +1278,8 @@ async function iniciarScanner(){
                     height:220
                 },
 
-                aspectRatio:1.7777778
+                aspectRatio:
+                1.7777778
 
             },
 
@@ -1149,20 +1297,10 @@ async function iniciarScanner(){
                 true;
 
 
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "CÓDIGO DETECTADO"
-                );
-
-                console.log(
+                debug(
+                    "CÓDIGO DETECTADO: "
+                    +
                     codigo
-                );
-
-                console.log(
-                    "================================="
                 );
 
 
@@ -1185,11 +1323,17 @@ async function iniciarScanner(){
 
 
                 estado.innerHTML =
-                "✅ Código detectado. Capturando etiqueta completa...";
+                "✅ Código detectado. Ahora capturá la etiqueta completa.";
 
 
-                await capturarImagenDesdeScanner();
+                await detenerScanner();
 
+
+                mostrarCapturaEtiqueta();
+
+
+                procesando =
+                false;
 
             },
 
@@ -1197,8 +1341,8 @@ async function iniciarScanner(){
             error => {
 
                 /*
-                Los errores de búsqueda son normales.
-                No mostramos alert.
+                Los errores mientras busca
+                códigos son normales.
                 */
 
             }
@@ -1215,7 +1359,7 @@ async function iniciarScanner(){
 
 
         estado.innerHTML =
-        "📷 Cámara activa. Mostrá la etiqueta completa y enfocá el código.";
+        "📷 Cámara activa. Enfocá el código de barras o QR.";
 
 
     }
@@ -1229,7 +1373,8 @@ async function iniciarScanner(){
 
 
         alert(
-            "Error iniciando cámara:\n" +
+            "Error iniciando cámara:\n"
+            +
             error.message
         );
 
@@ -1244,7 +1389,7 @@ async function iniciarScanner(){
 
 
 /* =========================================================
-DETENER
+DETENER SCANNER
 ========================================================= */
 
 detener.addEventListener(
@@ -1267,7 +1412,7 @@ async function detenerScanner(){
         catch(error){
 
             console.error(
-                "Error deteniendo scanner:",
+                "Error deteniendo:",
                 error
             );
 
@@ -1305,184 +1450,59 @@ async function detenerScanner(){
 
 
 /* =========================================================
-CAPTURAR IMAGEN DEL SCANNER
-========================================================= */
-
-async function capturarImagenDesdeScanner(){
-
-    procesandoBox.style.display =
-    "block";
-
-
-    progressBar.style.width =
-    "5%";
-
-
-    progressTexto.innerText =
-    "Preparando captura de etiqueta...";
-
-
-    try{
-
-        /*
-        Detenemos scanner
-        */
-
-        await detenerScanner();
-
-
-        /*
-        IMPORTANTE:
-
-        Como Html5Qrcode no nos entrega
-        directamente el frame capturado,
-        mostramos una captura de archivo/cámara.
-
-        En PC permite elegir imagen.
-
-        En celular abre cámara.
-        */
-
-
-        mostrarCapturaEtiqueta();
-
-
-        estado.innerHTML =
-        "📸 Ahora capturá la etiqueta COMPLETA.";
-
-
-        progressBar.style.width =
-        "10%";
-
-
-        progressTexto.innerText =
-        "Esperando imagen completa de la etiqueta...";
-
-
-        procesando =
-        false;
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Error capturando etiqueta:",
-            error
-        );
-
-
-        procesando =
-        false;
-
-    }
-
-}
-
-
-
-/* =========================================================
 MOSTRAR CAPTURA
 ========================================================= */
 
 function mostrarCapturaEtiqueta(){
 
-    let contenedor =
+    const contenedor =
     document.getElementById(
         "capturaEtiqueta"
     );
 
 
-    if(contenedor){
-
-        contenedor.style.display =
-        "block";
+    if(!contenedor){
 
         return;
 
     }
 
 
-    contenedor =
-    document.createElement(
-        "div"
-    );
+    contenedor.style.display =
+    "block";
 
 
-    contenedor.id =
-    "capturaEtiqueta";
-
-
-    contenedor.style.marginTop =
-    "20px";
-
-
-    contenedor.innerHTML = `
-
-        <div style="
-            background:#eff6ff;
-            padding:20px;
-            border-radius:12px;
-            color:#1e293b;
-        ">
-
-            <h3>
-                📸 Capturá la etiqueta completa
-            </h3>
-
-            <p style="
-                margin-top:8px;
-                margin-bottom:15px;
-            ">
-
-                IMPORTANTE: la foto debe incluir
-                toda la etiqueta.
-
-                No importa si tiene o no
-                código de barras.
-
-            </p>
-
-            <input
-                type="file"
-                id="fotoEtiqueta"
-                accept="image/*"
-                capture="environment"
-                style="
-                    width:100%;
-                    padding:10px;
-                    background:white;
-                    border-radius:8px;
-                "
-            >
-
-        </div>
-
-    `;
-
-
-    resultado.appendChild(
-        contenedor
-    );
-
-
-    document
-    .getElementById(
+    const input =
+    document.getElementById(
         "fotoEtiqueta"
-    )
-    .addEventListener(
-        "change",
-        procesarFotoOCR
     );
+
+
+    if(input){
+
+        input.value =
+        "";
+
+    }
 
 }
 
 
 
 /* =========================================================
-PROCESAR FOTO
+FOTO OCR
 ========================================================= */
+
+document
+.getElementById(
+    "fotoEtiqueta"
+)
+.addEventListener(
+    "change",
+    procesarFotoOCR
+);
+
+
 
 async function procesarFotoOCR(event){
 
@@ -1520,34 +1540,46 @@ async function procesarFotoOCR(event){
     "Cargando imagen...";
 
 
+    debugTexto.textContent =
+    "";
+
+
+    debugBox.style.display =
+    "block";
+
+
     try{
 
-        console.log(
-            "================================="
+        debug(
+            "INICIANDO PROCESAMIENTO OCR"
         );
 
-        console.log(
-            "INICIANDO PROCESAMIENTO"
-        );
 
-        console.log(
-            "Archivo:",
+        debug(
+            "Archivo: "
+            +
             archivo.name
         );
 
-        console.log(
-            "Tamaño:",
+
+        debug(
+            "Tamaño: "
+            +
             archivo.size
+            +
+            " bytes"
         );
 
-        console.log(
-            "Tipo:",
+
+        debug(
+            "Tipo: "
+            +
             archivo.type
         );
 
 
         /*
-        MOSTRAR IMAGEN
+        MOSTRAR FOTO
         */
 
         const url =
@@ -1565,21 +1597,21 @@ async function procesarFotoOCR(event){
 
 
         progressBar.style.width =
-        "15%";
+        "10%";
 
 
         progressTexto.innerText =
         "Imagen cargada. Iniciando OCR...";
 
 
+        debug(
+            "Iniciando Tesseract..."
+        );
+
+
         /*
         OCR
         */
-
-        console.log(
-            "INICIANDO TESSERACT..."
-        );
-
 
         const resultadoOCR =
         await Tesseract.recognize(
@@ -1611,21 +1643,24 @@ async function procesarFotoOCR(event){
                         );
 
 
-                        const progresoReal =
-                        15 +
+                        const progreso =
+                        10
+                        +
                         (
-                            porcentaje *
-                            0.75
+                            porcentaje
+                            *
+                            0.80
                         );
 
 
                         progressBar.style.width =
-                        progresoReal +
+                        progreso
+                        +
                         "%";
 
 
                         progressTexto.innerText =
-                        "Leyendo texto: "
+                        "Leyendo etiqueta: "
                         +
                         porcentaje
                         +
@@ -1640,53 +1675,41 @@ async function procesarFotoOCR(event){
         );
 
 
-        console.log(
-            "RESULTADO TESSERACT:",
-            resultadoOCR
+        debug(
+            "Tesseract terminó."
         );
 
 
         /*
-        EXTRAER TEXTO
+        TEXTO OCR
         */
 
         const texto =
         resultadoOCR &&
-        resultadoOCR.data
+        resultadoOCR.data &&
+        resultadoOCR.data.text
         ?
         resultadoOCR.data.text
         :
         "";
 
 
-        console.log(
-            "================================="
-        );
-
-        console.log(
-            "OCR COMPLETO:"
-        );
-
-        console.log(
-            texto
-        );
-
-        console.log(
-            "LONGITUD OCR:",
-            texto.length
-        );
-
-        console.log(
-            "================================="
-        );
-
-
         ultimoTextoOCR =
         texto;
 
 
+        debug(
+            "OCR COMPLETO:\n"
+            +
+            (
+                texto ||
+                "[NO SE DETECTÓ TEXTO]"
+            )
+        );
+
+
         /*
-        MOSTRAR OCR
+        MOSTRAR TEXTO OCR
         */
 
         ocrContainer.style.display =
@@ -1707,7 +1730,7 @@ async function procesarFotoOCR(event){
         ){
 
             estado.innerHTML =
-            "⚠️ La imagen fue procesada pero OCR no detectó texto. Revisá la foto.";
+            "⚠️ La imagen fue procesada pero no se detectó texto.";
 
 
             progressBar.style.width =
@@ -1727,11 +1750,11 @@ async function procesarFotoOCR(event){
 
 
         /*
-        EXTRAER DATOS
+        EXTRAER CAMPOS
         */
 
-        console.log(
-            "EXTRAYENDO DATOS..."
+        debug(
+            "Iniciando extracción de campos..."
         );
 
 
@@ -1755,30 +1778,30 @@ async function procesarFotoOCR(event){
         sonidoProcesado();
 
 
-        console.log(
-            "DATOS FINALES:",
-            obtenerDatosFormulario()
+        debug(
+            "DATOS FINALES:\n"
+            +
+            JSON.stringify(
+                obtenerDatosFormulario(),
+                null,
+                2
+            )
         );
-
 
     }
 
     catch(error){
 
         console.error(
-            "================================="
-        );
-
-        console.error(
-            "ERROR PROCESANDO OCR"
-        );
-
-        console.error(
+            "ERROR OCR:",
             error
         );
 
-        console.error(
-            "================================="
+
+        debug(
+            "ERROR OCR:\n"
+            +
+            error.message
         );
 
 
@@ -1787,7 +1810,8 @@ async function procesarFotoOCR(event){
 
 
         alert(
-            "Error procesando la etiqueta.\n\n" +
+            "Error procesando la etiqueta:\n\n"
+            +
             error.message
         );
 
@@ -1810,9 +1834,8 @@ EXTRAER DATOS
 
 function extraerDatosEtiqueta(texto){
 
-    console.log(
-        "TEXTO RECIBIDO POR EXTRACTOR:",
-        texto
+    debug(
+        "Ejecutando extractor..."
     );
 
 
@@ -1822,17 +1845,15 @@ function extraerDatosEtiqueta(texto){
     );
 
 
-    console.log(
-        "TEXTO NORMALIZADO:",
+    debug(
+        "Texto normalizado:\n"
+        +
         limpio
     );
 
 
     /*
-    CÓDIGO DE BARRAS
-
-    Si ya tenemos uno,
-    NO LO REEMPLAZAMOS.
+    CODIGO
     */
 
     if(
@@ -1856,7 +1877,7 @@ function extraerDatosEtiqueta(texto){
 
 
     /*
-    CAMPOS
+    NUMERO ORDEN
     */
 
     setValue(
@@ -1867,6 +1888,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    FECHA
+    */
+
     setValue(
         "fechaEmision",
         extraerFecha(
@@ -1874,6 +1899,10 @@ function extraerDatosEtiqueta(texto){
         )
     );
 
+
+    /*
+    PESO
+    */
 
     setValue(
         "peso",
@@ -1883,6 +1912,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    BULTOS
+    */
+
     setValue(
         "bultos",
         extraerBultos(
@@ -1891,6 +1924,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    NUMERO BULTO
+    */
+
     setValue(
         "numeroBulto",
         extraerNumeroBulto(
@@ -1898,6 +1935,10 @@ function extraerDatosEtiqueta(texto){
         )
     );
 
+
+    /*
+    REMITENTE
+    */
 
     setValue(
         "remitente",
@@ -1911,6 +1952,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    DESTINATARIO
+    */
+
     setValue(
         "destinatario",
         extraerDestinatario(
@@ -1918,6 +1963,10 @@ function extraerDatosEtiqueta(texto){
         )
     );
 
+
+    /*
+    TELEFONO
+    */
 
     setValue(
         "telefono",
@@ -1927,6 +1976,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    DIRECCION
+    */
+
     setValue(
         "direccion",
         extraerDireccion(
@@ -1934,6 +1987,10 @@ function extraerDatosEtiqueta(texto){
         )
     );
 
+
+    /*
+    LOCALIDAD
+    */
 
     const localidad =
     extraerLocalidad(
@@ -1953,6 +2010,10 @@ function extraerDatosEtiqueta(texto){
     );
 
 
+    /*
+    OBSERVACIONES
+    */
+
     setValue(
         "observaciones",
         extraerObservaciones(
@@ -1961,20 +2022,8 @@ function extraerDatosEtiqueta(texto){
     );
 
 
-    console.log(
-        "================================="
-    );
-
-    console.log(
-        "RESULTADO DE EXTRACCION"
-    );
-
-    console.log(
-        obtenerDatosFormulario()
-    );
-
-    console.log(
-        "================================="
+    debug(
+        "Extracción terminada."
     );
 
 }
@@ -1982,13 +2031,14 @@ function extraerDatosEtiqueta(texto){
 
 
 /* =========================================================
-NORMALIZAR
+NORMALIZAR TEXTO
 ========================================================= */
 
 function normalizarTexto(texto){
 
     return (
-        texto || ""
+        texto ||
+        ""
     )
 
     .replace(
@@ -2052,8 +2102,11 @@ function extraerCodigoBarras(texto){
         if(encontrado){
 
             return (
+
                 encontrado[1] ||
+
                 ""
+
             ).trim();
 
         }
@@ -2302,9 +2355,13 @@ function extraerDestinatario(texto){
             texto,
 
             [
+
                 "Destinatario",
+
                 "Destinatário",
+
                 "Destino"
+
             ]
 
         )
@@ -2377,6 +2434,10 @@ function extraerDireccion(texto){
     texto.split("\n");
 
 
+    /*
+    BUSCAR DIRECCION EXPLICITA
+    */
+
     for(
         let i = 0;
         i < lineas.length;
@@ -2430,6 +2491,10 @@ function extraerDireccion(texto){
 
     }
 
+
+    /*
+    BUSQUEDA INTELIGENTE
+    */
 
     for(
         const linea
@@ -2505,7 +2570,13 @@ function pareceDireccion(linea){
 
         "localidad",
 
-        "barrio"
+        "barrio",
+
+        "referencia",
+
+        "observacion",
+
+        "observación"
 
     ];
 
@@ -2551,6 +2622,10 @@ function extraerLocalidad(texto){
     texto.split("\n");
 
 
+    /*
+    LOCALIDAD DIRECTA
+    */
+
     for(
         let i = 0;
         i < lineas.length;
@@ -2578,6 +2653,10 @@ function extraerLocalidad(texto){
 
     }
 
+
+    /*
+    CABA + BARRIO
+    */
 
     for(
         let i = 0;
@@ -2609,6 +2688,10 @@ function extraerLocalidad(texto){
     }
 
 
+    /*
+    CABA - BARRIO
+    */
+
     for(
         const linea
         of lineas
@@ -2635,6 +2718,10 @@ function extraerLocalidad(texto){
 
     }
 
+
+    /*
+    BUSCAR DESPUES DE DIRECCION
+    */
 
     const direccion =
     extraerDireccion(
@@ -2698,7 +2785,7 @@ function extraerLocalidad(texto){
 
 
 /* =========================================================
-POSIBLE LOCALIDAD
+VALIDAR LOCALIDAD
 ========================================================= */
 
 function esPosibleLocalidad(linea){
@@ -2803,7 +2890,10 @@ LIMPIAR LOCALIDAD
 function limpiarLocalidad(valor){
 
     return (
-        valor || ""
+
+        valor ||
+        ""
+
     )
 
     .replace(
@@ -2860,7 +2950,10 @@ LIMPIAR VALOR
 function limpiarValor(valor){
 
     return (
-        valor || ""
+
+        valor ||
+        ""
+
     )
 
     .replace(
@@ -2886,7 +2979,10 @@ LIMPIAR NOMBRE
 function limpiarNombre(valor){
 
     return (
-        valor || ""
+
+        valor ||
+        ""
+
     )
 
     .replace(
@@ -2923,7 +3019,8 @@ function setValue(
     if(elemento){
 
         elemento.value =
-        valor || "";
+        valor ||
+        "";
 
     }
 
@@ -2944,7 +3041,8 @@ function generarCodigoInterno(){
 
 
     codigoInterno.innerText =
-    "PKG-" +
+    "PKG-"
+    +
     numero;
 
 }
@@ -2960,83 +3058,159 @@ function obtenerDatosFormulario(){
     return {
 
         cliente_id:
-        document.getElementById(
+
+        document
+        .getElementById(
             "cliente_id"
-        ).value,
+        )
+        .value,
+
 
         codigoInterno:
-        codigoInterno.innerText,
+
+        codigoInterno
+        .innerText,
+
 
         codigoBarras:
-        document.getElementById(
+
+        document
+        .getElementById(
             "codigoBarras"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         numeroOrden:
-        document.getElementById(
+
+        document
+        .getElementById(
             "numeroOrden"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         fechaEmision:
-        document.getElementById(
+
+        document
+        .getElementById(
             "fechaEmision"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         peso:
-        document.getElementById(
+
+        document
+        .getElementById(
             "peso"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         bultos:
-        document.getElementById(
+
+        document
+        .getElementById(
             "bultos"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         numeroBulto:
-        document.getElementById(
+
+        document
+        .getElementById(
             "numeroBulto"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         remitente:
-        document.getElementById(
+
+        document
+        .getElementById(
             "remitente"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         destinatario:
-        document.getElementById(
+
+        document
+        .getElementById(
             "destinatario"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         telefono:
-        document.getElementById(
+
+        document
+        .getElementById(
             "telefono"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         direccion:
-        document.getElementById(
+
+        document
+        .getElementById(
             "direccion"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         localidad:
-        document.getElementById(
+
+        document
+        .getElementById(
             "localidad"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         zona:
-        document.getElementById(
+
+        document
+        .getElementById(
             "zona"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         observaciones:
-        document.getElementById(
+
+        document
+        .getElementById(
             "observaciones"
-        ).value.trim(),
+        )
+        .value
+        .trim(),
+
 
         textoOCR:
+
         ultimoTextoOCR,
 
+
         fechaRegistro:
-        new Date().toISOString()
+
+        new Date()
+        .toISOString()
 
     };
 
@@ -3092,17 +3266,12 @@ document
         "";
 
 
-        const captura =
-        document.getElementById(
-            "capturaEtiqueta"
-        );
+        debugTexto.textContent =
+        "";
 
 
-        if(captura){
-
-            captura.remove();
-
-        }
+        debugBox.style.display =
+        "none";
 
 
         const campos = [
@@ -3146,2337 +3315,6 @@ document
         );
 
 
-        generarCodigoInterno();
-
-
-        estado.innerHTML =
-        "📷 Preparado para nuevo escaneo.";
-
-    }
-);
-
-
-
-/* =========================================================
-GUARDAR PAQUETE
-========================================================= */
-
-document
-.getElementById(
-    "guardarPaquete"
-)
-.addEventListener(
-    "click",
-    async function(){
-
-        const cliente =
-        document
-        .getElementById(
-            "cliente_id"
-        )
-        .value;
-
-
-        if(!cliente){
-
-            alert(
-                "Seleccioná un cliente interno."
-            );
-
-            return;
-
-        }
-
-
-        const datos =
-        obtenerDatosFormulario();
-
-
-        console.log(
-            "PAQUETE COMPLETO:",
-            datos
-        );
-
-
-        /*
-        IMPORTANTE:
-
-        YA NO EXIGIMOS CODIGO DE BARRAS.
-
-        Puede ser una etiqueta con:
-        - código de barras
-        - QR
-        - solo texto
-        - etiqueta impresa
-        - etiqueta manuscrita
-
-        El sistema permite guardar
-        todos los casos.
-        */
-
-
-        alert(
-
-            "✅ Paquete preparado.\n\n"
-
-            +
-
-            "Código interno: "
-
-            +
-
-            datos.codigoInterno
-
-            +
-
-            "\nCódigo de barras: "
-
-            +
-
-            (
-                datos.codigoBarras ||
-                "No detectado"
-            )
-
-            +
-
-            "\nDestinatario: "
-
-            +
-
-            (
-                datos.destinatario ||
-                "No detectado"
-            )
-
-            +
-
-            "\nDirección: "
-
-            +
-
-            (
-                datos.direccion ||
-                "No detectada"
-            )
-
-            +
-
-            "\nLocalidad: "
-
-            +
-
-            (
-                datos.localidad ||
-                "No detectada"
-            )
-
-        );
-
-    }
-);
-
-</script>
-let ultimoTextoOCR = "";
-let codigoBarrasDetectado = "";
-
-const iniciar =
-document.getElementById("iniciarScanner");
-
-const detener =
-document.getElementById("detenerScanner");
-
-const estado =
-document.getElementById("scannerEstado");
-
-const resultado =
-document.getElementById("resultado");
-
-const procesandoBox =
-document.getElementById("procesando");
-
-const progressBar =
-document.getElementById("progressBar");
-
-const progressTexto =
-document.getElementById("progressTexto");
-
-const codigoBarras =
-document.getElementById("codigoBarras");
-
-const ocrTexto =
-document.getElementById("ocrTexto");
-
-const ocrContainer =
-document.getElementById("ocrContainer");
-
-const codigoInterno =
-document.getElementById("codigoInterno");
-
-const imagenEtiqueta =
-document.getElementById("imagenEtiqueta");
-
-const fotoPreview =
-document.getElementById("fotoPreview");
-
-
-
-/* =========================================================
-SONIDOS
-========================================================= */
-
-function sonidoExito(){
-
-    try{
-
-        const ctx =
-        new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
-
-        const osc =
-        ctx.createOscillator();
-
-        const gain =
-        ctx.createGain();
-
-        osc.connect(gain);
-
-        gain.connect(ctx.destination);
-
-        osc.frequency.value = 900;
-
-        gain.gain.setValueAtTime(
-            0.2,
-            ctx.currentTime
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.01,
-            ctx.currentTime + 0.3
-        );
-
-        osc.start();
-
-        osc.stop(
-            ctx.currentTime + 0.3
-        );
-
-    }catch(error){
-
-        console.log(
-            "No se pudo reproducir sonido",
-            error
-        );
-
-    }
-
-}
-
-
-
-function sonidoProcesado(){
-
-    try{
-
-        const ctx =
-        new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
-
-        const osc =
-        ctx.createOscillator();
-
-        const gain =
-        ctx.createGain();
-
-        osc.connect(gain);
-
-        gain.connect(ctx.destination);
-
-        osc.frequency.value = 600;
-
-        gain.gain.setValueAtTime(
-            0.2,
-            ctx.currentTime
-        );
-
-        osc.start();
-
-        osc.frequency.exponentialRampToValueAtTime(
-            1000,
-            ctx.currentTime + 0.15
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.01,
-            ctx.currentTime + 0.4
-        );
-
-        osc.stop(
-            ctx.currentTime + 0.4
-        );
-
-    }catch(error){}
-
-}
-
-
-
-/* =========================================================
-INICIAR
-========================================================= */
-
-iniciar.addEventListener(
-    "click",
-    iniciarScanner
-);
-
-
-
-async function iniciarScanner(){
-
-    if(scanner){
-
-        return;
-
-    }
-
-    try{
-
-        scanner =
-        new Html5Qrcode("reader");
-
-        const cameras =
-        await Html5Qrcode.getCameras();
-
-        if(
-            !cameras ||
-            cameras.length === 0
-        ){
-
-            alert(
-                "No se encontró ninguna cámara."
-            );
-
-            scanner = null;
-
-            return;
-
-        }
-
-        let cameraId =
-        cameras[0].id;
-
-
-        const trasera =
-        cameras.find(
-            camera => {
-
-                const nombre =
-                (
-                    camera.label ||
-                    ""
-                ).toLowerCase();
-
-                return (
-
-                    nombre.includes("back") ||
-
-                    nombre.includes("rear") ||
-
-                    nombre.includes("trasera")
-
-                );
-
-            }
-        );
-
-
-        if(trasera){
-
-            cameraId =
-            trasera.id;
-
-        }
-
-
-        await scanner.start(
-
-            cameraId,
-
-            {
-
-                fps:10,
-
-                qrbox:{
-                    width:320,
-                    height:220
-                },
-
-                aspectRatio:1.7777778
-
-            },
-
-
-            async codigo => {
-
-                if(procesando){
-
-                    return;
-
-                }
-
-
-                procesando =
-                true;
-
-
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "CÓDIGO DETECTADO"
-                );
-
-                console.log(
-                    codigo
-                );
-
-                console.log(
-                    "================================="
-                );
-
-
-                codigoBarrasDetectado =
-                codigo;
-
-
-                codigoBarras.value =
-                codigo;
-
-
-                sonidoExito();
-
-
-                resultado.style.display =
-                "block";
-
-
-                generarCodigoInterno();
-
-
-                estado.innerHTML =
-                "✅ Código detectado. Capturando etiqueta completa...";
-
-
-                await capturarImagenDesdeScanner();
-
-
-            },
-
-
-            error => {
-
-                /*
-                Los errores de búsqueda son normales.
-                No mostramos alert.
-                */
-
-            }
-
-        );
-
-
-        iniciar.style.display =
-        "none";
-
-
-        detener.style.display =
-        "inline-block";
-
-
-        estado.innerHTML =
-        "📷 Cámara activa. Mostrá la etiqueta completa y enfocá el código.";
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "ERROR INICIANDO SCANNER:",
-            error
-        );
-
-
-        alert(
-            "Error iniciando cámara:\n" +
-            error.message
-        );
-
-
-        scanner =
-        null;
-
-    }
-
-}
-
-
-
-/* =========================================================
-DETENER
-========================================================= */
-
-detener.addEventListener(
-    "click",
-    detenerScanner
-);
-
-
-
-async function detenerScanner(){
-
-    if(scanner){
-
-        try{
-
-            await scanner.stop();
-
-        }
-
-        catch(error){
-
-            console.error(
-                "Error deteniendo scanner:",
-                error
-            );
-
-        }
-
-
-        try{
-
-            scanner.clear();
-
-        }
-
-        catch(error){}
-
-    }
-
-
-    scanner =
-    null;
-
-
-    iniciar.style.display =
-    "inline-block";
-
-
-    detener.style.display =
-    "none";
-
-
-    estado.innerHTML =
-    "Scanner detenido";
-
-}
-
-
-
-/* =========================================================
-CAPTURAR IMAGEN DEL SCANNER
-========================================================= */
-
-async function capturarImagenDesdeScanner(){
-
-    procesandoBox.style.display =
-    "block";
-
-
-    progressBar.style.width =
-    "5%";
-
-
-    progressTexto.innerText =
-    "Preparando captura de etiqueta...";
-
-
-    try{
-
-        /*
-        Detenemos scanner
-        */
-
-        await detenerScanner();
-
-
-        /*
-        IMPORTANTE:
-
-        Como Html5Qrcode no nos entrega
-        directamente el frame capturado,
-        mostramos una captura de archivo/cámara.
-
-        En PC permite elegir imagen.
-
-        En celular abre cámara.
-        */
-
-
-        mostrarCapturaEtiqueta();
-
-
-        estado.innerHTML =
-        "📸 Ahora capturá la etiqueta COMPLETA.";
-
-
-        progressBar.style.width =
-        "10%";
-
-
-        progressTexto.innerText =
-        "Esperando imagen completa de la etiqueta...";
-
-
-        procesando =
-        false;
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Error capturando etiqueta:",
-            error
-        );
-
-
-        procesando =
-        false;
-
-    }
-
-}
-
-
-
-/* =========================================================
-MOSTRAR CAPTURA
-========================================================= */
-
-function mostrarCapturaEtiqueta(){
-
-    let contenedor =
-    document.getElementById(
-        "capturaEtiqueta"
-    );
-
-
-    if(contenedor){
-
-        contenedor.style.display =
-        "block";
-
-        return;
-
-    }
-
-
-    contenedor =
-    document.createElement(
-        "div"
-    );
-
-
-    contenedor.id =
-    "capturaEtiqueta";
-
-
-    contenedor.style.marginTop =
-    "20px";
-
-
-    contenedor.innerHTML = `
-
-        <div style="
-            background:#eff6ff;
-            padding:20px;
-            border-radius:12px;
-            color:#1e293b;
-        ">
-
-            <h3>
-                📸 Capturá la etiqueta completa
-            </h3>
-
-            <p style="
-                margin-top:8px;
-                margin-bottom:15px;
-            ">
-
-                IMPORTANTE: la foto debe incluir
-                toda la etiqueta.
-
-                No importa si tiene o no
-                código de barras.
-
-            </p>
-
-            <input
-                type="file"
-                id="fotoEtiqueta"
-                accept="image/*"
-                capture="environment"
-                style="
-                    width:100%;
-                    padding:10px;
-                    background:white;
-                    border-radius:8px;
-                "
-            >
-
-        </div>
-
-    `;
-
-
-    resultado.appendChild(
-        contenedor
-    );
-
-
-    document
-    .getElementById(
-        "fotoEtiqueta"
-    )
-    .addEventListener(
-        "change",
-        procesarFotoOCR
-    );
-
-}
-
-
-
-/* =========================================================
-PROCESAR FOTO
-========================================================= */
-
-async function procesarFotoOCR(event){
-
-    const archivo =
-    event.target.files[0];
-
-
-    if(!archivo){
-
-        return;
-
-    }
-
-
-    if(procesando){
-
-        return;
-
-    }
-
-
-    procesando =
-    true;
-
-
-    procesandoBox.style.display =
-    "block";
-
-
-    progressBar.style.width =
-    "5%";
-
-
-    progressTexto.innerText =
-    "Cargando imagen...";
-
-
-    try{
-
-        console.log(
-            "================================="
-        );
-
-        console.log(
-            "INICIANDO PROCESAMIENTO"
-        );
-
-        console.log(
-            "Archivo:",
-            archivo.name
-        );
-
-        console.log(
-            "Tamaño:",
-            archivo.size
-        );
-
-        console.log(
-            "Tipo:",
-            archivo.type
-        );
-
-
-        /*
-        MOSTRAR IMAGEN
-        */
-
-        const url =
-        URL.createObjectURL(
-            archivo
-        );
-
-
-        imagenEtiqueta.src =
-        url;
-
-
-        fotoPreview.style.display =
-        "block";
-
-
-        progressBar.style.width =
-        "15%";
-
-
-        progressTexto.innerText =
-        "Imagen cargada. Iniciando OCR...";
-
-
-        /*
-        OCR
-        */
-
-        console.log(
-            "INICIANDO TESSERACT..."
-        );
-
-
-        const resultadoOCR =
-        await Tesseract.recognize(
-
-            archivo,
-
-            "spa",
-
-            {
-
-                logger:
-                mensaje => {
-
-                    console.log(
-                        "TESSERACT:",
-                        mensaje
-                    );
-
-
-                    if(
-                        mensaje.status ===
-                        "recognizing text"
-                    ){
-
-                        const porcentaje =
-                        Math.round(
-                            mensaje.progress *
-                            100
-                        );
-
-
-                        const progresoReal =
-                        15 +
-                        (
-                            porcentaje *
-                            0.75
-                        );
-
-
-                        progressBar.style.width =
-                        progresoReal +
-                        "%";
-
-
-                        progressTexto.innerText =
-                        "Leyendo texto: "
-                        +
-                        porcentaje
-                        +
-                        "%";
-
-                    }
-
-                }
-
-            }
-
-        );
-
-
-        console.log(
-            "RESULTADO TESSERACT:",
-            resultadoOCR
-        );
-
-
-        /*
-        EXTRAER TEXTO
-        */
-
-        const texto =
-        resultadoOCR &&
-        resultadoOCR.data
-        ?
-        resultadoOCR.data.text
-        :
-        "";
-
-
-        console.log(
-            "================================="
-        );
-
-        console.log(
-            "OCR COMPLETO:"
-        );
-
-        console.log(
-            texto
-        );
-
-        console.log(
-            "LONGITUD OCR:",
-            texto.length
-        );
-
-        console.log(
-            "================================="
-        );
-
-
-        ultimoTextoOCR =
-        texto;
-
-
-        /*
-        MOSTRAR OCR
-        */
-
-        ocrContainer.style.display =
-        "block";
-
-
-        ocrTexto.value =
-        texto ||
-        "⚠️ Tesseract no detectó texto.";
-
-
-        /*
-        SI NO HAY TEXTO
-        */
-
-        if(
-            !texto.trim()
-        ){
-
-            estado.innerHTML =
-            "⚠️ La imagen fue procesada pero OCR no detectó texto. Revisá la foto.";
-
-
-            progressBar.style.width =
-            "100%";
-
-
-            progressTexto.innerText =
-            "⚠️ No se detectó texto.";
-
-
-            sonidoProcesado();
-
-
-            return;
-
-        }
-
-
-        /*
-        EXTRAER DATOS
-        */
-
-        console.log(
-            "EXTRAYENDO DATOS..."
-        );
-
-
-        extraerDatosEtiqueta(
-            texto
-        );
-
-
-        progressBar.style.width =
-        "100%";
-
-
-        progressTexto.innerText =
-        "✅ Lectura terminada.";
-
-
-        estado.innerHTML =
-        "✅ Etiqueta analizada. Revisá los datos antes de guardar.";
-
-
-        sonidoProcesado();
-
-
-        console.log(
-            "DATOS FINALES:",
-            obtenerDatosFormulario()
-        );
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "================================="
-        );
-
-        console.error(
-            "ERROR PROCESANDO OCR"
-        );
-
-        console.error(
-            error
-        );
-
-        console.error(
-            "================================="
-        );
-
-
-        estado.innerHTML =
-        "❌ Error procesando la etiqueta.";
-
-
-        alert(
-            "Error procesando la etiqueta.\n\n" +
-            error.message
-        );
-
-    }
-
-    finally{
-
-        procesando =
-        false;
-
-    }
-
-}
-
-
-
-/* =========================================================
-EXTRAER DATOS
-========================================================= */
-
-function extraerDatosEtiqueta(texto){
-
-    console.log(
-        "TEXTO RECIBIDO POR EXTRACTOR:",
-        texto
-    );
-
-
-    const limpio =
-    normalizarTexto(
-        texto
-    );
-
-
-    console.log(
-        "TEXTO NORMALIZADO:",
-        limpio
-    );
-
-
-    /*
-    CÓDIGO DE BARRAS
-
-    Si ya tenemos uno,
-    NO LO REEMPLAZAMOS.
-    */
-
-    if(
-        !codigoBarras.value.trim()
-    ){
-
-        const codigo =
-        extraerCodigoBarras(
-            limpio
-        );
-
-
-        if(codigo){
-
-            codigoBarras.value =
-            codigo;
-
-        }
-
-    }
-
-
-    /*
-    CAMPOS
-    */
-
-    setValue(
-        "numeroOrden",
-        extraerNumeroOrden(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "fechaEmision",
-        extraerFecha(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "peso",
-        extraerPeso(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "bultos",
-        extraerBultos(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "numeroBulto",
-        extraerNumeroBulto(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "remitente",
-        extraerCampoPorEtiqueta(
-            limpio,
-            [
-                "Remitente",
-                "Remitente:"
-            ]
-        )
-    );
-
-
-    setValue(
-        "destinatario",
-        extraerDestinatario(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "telefono",
-        extraerTelefono(
-            limpio
-        )
-    );
-
-
-    setValue(
-        "direccion",
-        extraerDireccion(
-            limpio
-        )
-    );
-
-
-    const localidad =
-    extraerLocalidad(
-        limpio
-    );
-
-
-    setValue(
-        "localidad",
-        localidad
-    );
-
-
-    setValue(
-        "zona",
-        localidad
-    );
-
-
-    setValue(
-        "observaciones",
-        extraerObservaciones(
-            limpio
-        )
-    );
-
-
-    console.log(
-        "================================="
-    );
-
-    console.log(
-        "RESULTADO DE EXTRACCION"
-    );
-
-    console.log(
-        obtenerDatosFormulario()
-    );
-
-    console.log(
-        "================================="
-    );
-
-}
-
-
-
-/* =========================================================
-NORMALIZAR
-========================================================= */
-
-function normalizarTexto(texto){
-
-    return (
-        texto || ""
-    )
-
-    .replace(
-        /\r/g,
-        ""
-    )
-
-    .replace(
-        /[ \t]+/g,
-        " "
-    )
-
-    .split("\n")
-
-    .map(
-        linea =>
-        linea.trim()
-    )
-
-    .filter(
-        linea =>
-        linea.length > 0
-    )
-
-    .join("\n");
-
-}
-
-
-
-/* =========================================================
-CODIGO DE BARRAS
-========================================================= */
-
-function extraerCodigoBarras(texto){
-
-    const patrones = [
-
-        /(?:c[oó]digo\s*de\s*barras|barcode)\s*:?\s*([0-9]{6,30})/i,
-
-        /(?:pack\s*id)\s*:?\s*([A-Z0-9\-]{6,30})/i,
-
-        /(?:env[ií]o)\s*:?\s*([A-Z0-9\-]{6,30})/i,
-
-        /\b([0-9]{8,30})\b/
-
-    ];
-
-
-    for(
-        const patron
-        of patrones
-    ){
-
-        const encontrado =
-        texto.match(
-            patron
-        );
-
-
-        if(encontrado){
-
-            return (
-                encontrado[1] ||
-                ""
-            ).trim();
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* =========================================================
-NUMERO ORDEN
-========================================================= */
-
-function extraerNumeroOrden(texto){
-
-    const encontrado =
-    texto.match(
-
-        /(?:nro\.?\s*orden|n[uú]mero\s*de\s*orden|orden)\s*:?\s*([A-Z0-9\-]+)/i
-
-    );
-
-
-    return encontrado
-    ?
-    encontrado[1]
-    :
-    "";
-
-}
-
-
-
-/* =========================================================
-FECHA
-========================================================= */
-
-function extraerFecha(texto){
-
-    const encontrado =
-    texto.match(
-
-        /(?:fecha|fech[aá])\s*:?\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i
-
-    );
-
-
-    return encontrado
-    ?
-    encontrado[1]
-    :
-    "";
-
-}
-
-
-
-/* =========================================================
-PESO
-========================================================= */
-
-function extraerPeso(texto){
-
-    const encontrado =
-    texto.match(
-
-        /(?:peso)\s*:?\s*([0-9]+(?:[.,][0-9]+)?\s*(?:kg|kgs|kilos)?)/i
-
-    );
-
-
-    return encontrado
-    ?
-    encontrado[1].trim()
-    :
-    "";
-
-}
-
-
-
-/* =========================================================
-BULTOS
-========================================================= */
-
-function extraerBultos(texto){
-
-    const encontrado =
-    texto.match(
-
-        /(?:bultos?|piezas?)\s*:?\s*([0-9]+)/i
-
-    );
-
-
-    return encontrado
-    ?
-    encontrado[1]
-    :
-    "";
-
-}
-
-
-
-/* =========================================================
-NUMERO BULTO
-========================================================= */
-
-function extraerNumeroBulto(texto){
-
-    const patrones = [
-
-        /(?:nro\.?\s*bulto|n[uú]mero\s*de\s*bulto)\s*:?\s*([0-9]+)/i,
-
-        /bulto\s*:?\s*([0-9]+)\s*(?:de|\/)\s*([0-9]+)/i
-
-    ];
-
-
-    for(
-        const patron
-        of patrones
-    ){
-
-        const encontrado =
-        texto.match(
-            patron
-        );
-
-
-        if(encontrado){
-
-            return encontrado[1];
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* =========================================================
-CAMPO POR ETIQUETA
-========================================================= */
-
-function extraerCampoPorEtiqueta(
-    texto,
-    etiquetas
-){
-
-    const lineas =
-    texto.split("\n");
-
-
-    for(
-        let i = 0;
-        i < lineas.length;
-        i++
-    ){
-
-        const linea =
-        lineas[i].trim();
-
-
-        for(
-            const etiqueta
-            of etiquetas
-        ){
-
-            const regex =
-            new RegExp(
-
-                "^"
-                +
-                etiqueta
-                +
-                "\\s*:?\\s*(.*)$",
-
-                "i"
-
-            );
-
-
-            const encontrado =
-            linea.match(
-                regex
-            );
-
-
-            if(encontrado){
-
-                if(
-                    encontrado[1] &&
-                    encontrado[1].trim()
-                ){
-
-                    return limpiarValor(
-                        encontrado[1]
-                    );
-
-                }
-
-
-                if(
-                    lineas[i + 1]
-                ){
-
-                    return limpiarValor(
-                        lineas[i + 1]
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* =========================================================
-DESTINATARIO
-========================================================= */
-
-function extraerDestinatario(texto){
-
-    return limpiarNombre(
-
-        extraerCampoPorEtiqueta(
-
-            texto,
-
-            [
-                "Destinatario",
-                "Destinatário",
-                "Destino"
-            ]
-
-        )
-
-    );
-
-}
-
-
-
-/* =========================================================
-TELEFONO
-========================================================= */
-
-function extraerTelefono(texto){
-
-    const patrones = [
-
-        /(?:tel[eé]fono|telefono|tel\.?|celular|cel\.?)\s*:?\s*([0-9+\-\s]{8,25})/i,
-
-        /\b(?:011|15|54)?\s*\d{4}[\s\-]?\d{4}\b/
-
-    ];
-
-
-    for(
-        const patron
-        of patrones
-    ){
-
-        const encontrado =
-        texto.match(
-            patron
-        );
-
-
-        if(encontrado){
-
-            return (
-
-                encontrado[1] ||
-
-                encontrado[0]
-
-            )
-            .replace(
-                /\s+/g,
-                " "
-            )
-            .trim();
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* =========================================================
-DIRECCION
-========================================================= */
-
-function extraerDireccion(texto){
-
-    const lineas =
-    texto.split("\n");
-
-
-    for(
-        let i = 0;
-        i < lineas.length;
-        i++
-    ){
-
-        const linea =
-        lineas[i].trim();
-
-
-        const directa =
-        linea.match(
-
-            /^(?:direcci[oó]n|direccion|domicilio)\s*:?\s*(.+)$/i
-
-        );
-
-
-        if(
-            directa &&
-            directa[1]
-        ){
-
-            return limpiarValor(
-                directa[1]
-            );
-
-        }
-
-
-        if(
-
-            /^(?:direcci[oó]n|direccion|domicilio)\s*:?\s*$/i
-            .test(
-                linea
-            )
-
-        ){
-
-            if(
-                lineas[i + 1]
-            ){
-
-                return limpiarValor(
-                    lineas[i + 1]
-                );
-
-            }
-
-        }
-
-    }
-
-
-    for(
-        const linea
-        of lineas
-    ){
-
-        if(
-            pareceDireccion(
-                linea
-            )
-        ){
-
-            return limpiarValor(
-                linea
-            );
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-
-/* =========================================================
-PARECE DIRECCION
-========================================================= */
-
-function pareceDireccion(linea){
-
-    if(
-        !linea ||
-        linea.length < 5
-    ){
-
-        return false;
-
-    }
-
-
-    const texto =
-    linea.toLowerCase();
-
-
-    const prohibidas = [
-
-        "destinatario",
-
-        "remitente",
-
-        "telefono",
-
-        "teléfono",
-
-        "fecha",
-
-        "peso",
-
-        "bulto",
-
-        "orden",
-
-        "caba",
-
-        "cp",
-
-        "código",
-
-        "codigo",
-
-        "localidad",
-
-        "barrio"
-
-    ];
-
-
-    if(
-        prohibidas.some(
-            palabra =>
-            texto.includes(
-                palabra
-            )
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    if(
-        !/\d{2,5}/.test(
-            linea
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    return true;
-
-}
-
-
-
-/* =========================================================
-LOCALIDAD
-========================================================= */
-
-function extraerLocalidad(texto){
-
-    const lineas =
-    texto.split("\n");
-
-
-    for(
-        let i = 0;
-        i < lineas.length;
-        i++
-    ){
-
-        const encontrado =
-        lineas[i].match(
-
-            /^(?:localidad|barrio|ciudad)\s*:?\s*(.+)$/i
-
-        );
-
-
-        if(
-            encontrado &&
-            encontrado[1]
-        ){
-
-            return limpiarLocalidad(
-                encontrado[1]
-            );
-
-        }
-
-    }
-
-
-    for(
-        let i = 0;
-        i < lineas.length;
-        i++
-    ){
-
-        if(
-            /^caba$/i.test(
-                lineas[i]
-            )
-        ){
-
-            if(
-                lineas[i + 1] &&
-                esPosibleLocalidad(
-                    lineas[i + 1]
-                )
-            ){
-
-                return limpiarLocalidad(
-                    lineas[i + 1]
-                );
-
-            }
-
-        }
-
-    }
-
-
-    for(
-        const linea
-        of lineas
-    ){
-
-        const encontrado =
-        linea.match(
-
-            /\bCABA\b\s*[-–|]\s*([A-Za-zÁÉÍÓÚáéíóúÑñ .]+)/i
-
-        );
-
-
-        if(
-            encontrado &&
-            encontrado[1]
-        ){
-
-            return limpiarLocalidad(
-                encontrado[1]
-            );
-
-        }
-
-    }
-
-
-    const direccion =
-    extraerDireccion(
-        texto
-    );
-
-
-    if(direccion){
-
-        const indice =
-        lineas.findIndex(
-
-            linea =>
-
-            linea.toLowerCase()
-            ===
-            direccion.toLowerCase()
-
-        );
-
-
-        if(
-            indice >= 0
-        ){
-
-            for(
-                let i = indice + 1;
-
-                i <
-                Math.min(
-                    indice + 4,
-                    lineas.length
-                );
-
-                i++
-            ){
-
-                if(
-                    esPosibleLocalidad(
-                        lineas[i]
-                    )
-                ){
-
-                    return limpiarLocalidad(
-                        lineas[i]
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return "CABA";
-
-}
-
-
-
-/* =========================================================
-POSIBLE LOCALIDAD
-========================================================= */
-
-function esPosibleLocalidad(linea){
-
-    if(
-        !linea ||
-        linea.length < 3
-    ){
-
-        return false;
-
-    }
-
-
-    const texto =
-    linea.toLowerCase();
-
-
-    const excluir = [
-
-        "dirección",
-
-        "direccion",
-
-        "domicilio",
-
-        "destinatario",
-
-        "remitente",
-
-        "telefono",
-
-        "teléfono",
-
-        "fecha",
-
-        "peso",
-
-        "bulto",
-
-        "caba",
-
-        "cp",
-
-        "orden",
-
-        "código",
-
-        "codigo"
-
-    ];
-
-
-    if(
-        excluir.some(
-            palabra =>
-            texto.includes(
-                palabra
-            )
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    if(
-        /^\d+$/.test(
-            linea
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    if(
-        /\d{2,5}/.test(
-            linea
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    return /[A-Za-zÁÉÍÓÚáéíóúÑñ]/.test(
-        linea
-    );
-
-}
-
-
-
-/* =========================================================
-LIMPIAR LOCALIDAD
-========================================================= */
-
-function limpiarLocalidad(valor){
-
-    return (
-        valor || ""
-    )
-
-    .replace(
-        /\d{4,}/g,
-        ""
-    )
-
-    .replace(
-        /[-–|]/g,
-        " "
-    )
-
-    .replace(
-        /\s+/g,
-        " "
-    )
-
-    .trim();
-
-}
-
-
-
-/* =========================================================
-OBSERVACIONES
-========================================================= */
-
-function extraerObservaciones(texto){
-
-    return extraerCampoPorEtiqueta(
-
-        texto,
-
-        [
-
-            "Observaciones",
-
-            "Observación",
-
-            "Referencia"
-
-        ]
-
-    );
-
-}
-
-
-
-/* =========================================================
-LIMPIAR VALOR
-========================================================= */
-
-function limpiarValor(valor){
-
-    return (
-        valor || ""
-    )
-
-    .replace(
-        /^[\s:|-]+/,
-        ""
-    )
-
-    .replace(
-        /\s+/g,
-        " "
-    )
-
-    .trim();
-
-}
-
-
-
-/* =========================================================
-LIMPIAR NOMBRE
-========================================================= */
-
-function limpiarNombre(valor){
-
-    return (
-        valor || ""
-    )
-
-    .replace(
-        /\([^)]*\)/g,
-        ""
-    )
-
-    .replace(
-        /\s+/g,
-        " "
-    )
-
-    .trim();
-
-}
-
-
-
-/* =========================================================
-SET VALUE
-========================================================= */
-
-function setValue(
-    id,
-    valor
-){
-
-    const elemento =
-    document.getElementById(
-        id
-    );
-
-
-    if(elemento){
-
-        elemento.value =
-        valor || "";
-
-    }
-
-}
-
-
-
-/* =========================================================
-GENERAR CODIGO INTERNO
-========================================================= */
-
-function generarCodigoInterno(){
-
-    const numero =
-    Date.now()
-    .toString()
-    .slice(-6);
-
-
-    codigoInterno.innerText =
-    "PKG-" +
-    numero;
-
-}
-
-
-
-/* =========================================================
-OBTENER DATOS
-========================================================= */
-
-function obtenerDatosFormulario(){
-
-    return {
-
-        cliente_id:
-        document.getElementById(
-            "cliente_id"
-        ).value,
-
-        codigoInterno:
-        codigoInterno.innerText,
-
-        codigoBarras:
-        document.getElementById(
-            "codigoBarras"
-        ).value.trim(),
-
-        numeroOrden:
-        document.getElementById(
-            "numeroOrden"
-        ).value.trim(),
-
-        fechaEmision:
-        document.getElementById(
-            "fechaEmision"
-        ).value.trim(),
-
-        peso:
-        document.getElementById(
-            "peso"
-        ).value.trim(),
-
-        bultos:
-        document.getElementById(
-            "bultos"
-        ).value.trim(),
-
-        numeroBulto:
-        document.getElementById(
-            "numeroBulto"
-        ).value.trim(),
-
-        remitente:
-        document.getElementById(
-            "remitente"
-        ).value.trim(),
-
-        destinatario:
-        document.getElementById(
-            "destinatario"
-        ).value.trim(),
-
-        telefono:
-        document.getElementById(
-            "telefono"
-        ).value.trim(),
-
-        direccion:
-        document.getElementById(
-            "direccion"
-        ).value.trim(),
-
-        localidad:
-        document.getElementById(
-            "localidad"
-        ).value.trim(),
-
-        zona:
-        document.getElementById(
-            "zona"
-        ).value.trim(),
-
-        observaciones:
-        document.getElementById(
-            "observaciones"
-        ).value.trim(),
-
-        textoOCR:
-        ultimoTextoOCR,
-
-        fechaRegistro:
-        new Date().toISOString()
-
-    };
-
-}
-
-
-
-/* =========================================================
-NUEVO ESCANEO
-========================================================= */
-
-document
-.getElementById(
-    "nuevoEscaneo"
-)
-.addEventListener(
-    "click",
-    function(){
-
-        resultado.style.display =
-        "none";
-
-
-        procesandoBox.style.display =
-        "none";
-
-
-        codigoBarras.value =
-        "";
-
-
-        codigoBarrasDetectado =
-        "";
-
-
-        ocrTexto.value =
-        "";
-
-
-        ocrContainer.style.display =
-        "none";
-
-
-        fotoPreview.style.display =
-        "none";
-
-
-        imagenEtiqueta.src =
-        "";
-
-
-        ultimoTextoOCR =
-        "";
-
-
         const captura =
         document.getElementById(
             "capturaEtiqueta"
@@ -5485,50 +3323,24 @@ document
 
         if(captura){
 
-            captura.remove();
+            captura.style.display =
+            "none";
 
         }
 
 
-        const campos = [
-
-            "numeroOrden",
-
-            "fechaEmision",
-
-            "peso",
-
-            "bultos",
-
-            "numeroBulto",
-
-            "remitente",
-
-            "destinatario",
-
-            "telefono",
-
-            "direccion",
-
-            "localidad",
-
-            "zona",
-
-            "observaciones"
-
-        ];
-
-
-        campos.forEach(
-            id => {
-
-                setValue(
-                    id,
-                    ""
-                );
-
-            }
+        const input =
+        document.getElementById(
+            "fotoEtiqueta"
         );
+
+
+        if(input){
+
+            input.value =
+            "";
+
+        }
 
 
         generarCodigoInterno();
@@ -5568,6 +3380,7 @@ document
                 "Seleccioná un cliente interno."
             );
 
+
             return;
 
         }
@@ -5584,19 +3397,11 @@ document
 
 
         /*
-        IMPORTANTE:
+        POR AHORA NO ENVIAMOS
+        AL SERVIDOR.
 
-        YA NO EXIGIMOS CODIGO DE BARRAS.
-
-        Puede ser una etiqueta con:
-        - código de barras
-        - QR
-        - solo texto
-        - etiqueta impresa
-        - etiqueta manuscrita
-
-        El sistema permite guardar
-        todos los casos.
+        Primero comprobamos que
+        OCR y extracción funcionan.
         */
 
 
@@ -5619,8 +3424,11 @@ document
             +
 
             (
+
                 datos.codigoBarras ||
+
                 "No detectado"
+
             )
 
             +
@@ -5630,8 +3438,11 @@ document
             +
 
             (
+
                 datos.destinatario ||
+
                 "No detectado"
+
             )
 
             +
@@ -5641,8 +3452,11 @@ document
             +
 
             (
+
                 datos.direccion ||
+
                 "No detectada"
+
             )
 
             +
@@ -5652,8 +3466,11 @@ document
             +
 
             (
+
                 datos.localidad ||
+
                 "No detectada"
+
             )
 
         );
@@ -5662,6 +3479,7 @@ document
 );
 
 </script>
+
 
 </body>
 
