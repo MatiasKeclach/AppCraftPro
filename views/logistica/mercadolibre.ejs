@@ -1,8 +1,9 @@
-
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
+
 
 <meta charset="UTF-8">
 
@@ -12,7 +13,7 @@
 >
 
 <title>
-    Mercado Libre | AppCraftPro Logistics
+    Mercado Libre | AppCraftPro
 </title>
 
 <link
@@ -27,1895 +28,899 @@
 
 <style>
 
-/* =========================================================
-   APPCRAFTPRO LOGISTICS
-   MERCADO LIBRE COMMAND CENTER
-========================================================= */
-
-:root{
-
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
-
-    --success:#16a34a;
-    --warning:#d97706;
-    --danger:#dc2626;
-
-    --dark:#0f172a;
-    --dark-2:#1e293b;
-
-    --text:#172033;
-    --muted:#64748b;
-
-    --border:#e5e7eb;
-
-    --bg:#f5f7fb;
-
-    --card:#ffffff;
-
-    --shadow:
-        0 10px 35px
-        rgba(15,23,42,.06);
-
-    --radius:18px;
-
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-*{
-
-    margin:0;
-
-    padding:0;
-
-    box-sizing:border-box;
-
-}
-
-
-body{
-
-    font-family:
-        Inter,
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background:
-        var(--bg);
-
-    color:
-        var(--text);
-
-}
-
-
-/* =========================================================
-   WRAPPER
-========================================================= */
-
-.ml-wrapper{
-
-    min-height:
-        100vh;
-
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.ml-header{
-
-    background:
-
-        radial-gradient(
-            circle at top right,
-            rgba(37,99,235,.30),
-            transparent 35%
-        ),
-
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #1e293b
-        );
-
-    color:
-        white;
-
-    padding:
-        24px 35px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
-
-    box-shadow:
-        0 8px 30px
-        rgba(15,23,42,.18);
-
-}
-
-
-.header-left{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        16px;
-
-}
-
-
-.ml-logo{
-
-    width:
-        58px;
-
-    height:
-        58px;
-
-    border-radius:
-        16px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    background:
-        #ffe600;
-
-    color:
-        #111827;
-
-    font-size:
-        26px;
-
-    box-shadow:
-        0 10px 25px
-        rgba(0,0,0,.25);
-
-}
-
-
-.header-title h1{
-
-    font-size:
-        24px;
-
-    margin-bottom:
-        5px;
-
-}
-
-
-.header-title p{
-
-    color:
-        #cbd5e1;
-
-    font-size:
-        13px;
-
-}
-
-
-.header-actions{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        10px;
-
-    flex-wrap:
-        wrap;
-
-}
-
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.btn{
-
-    border:
-        none;
-
-    border-radius:
-        11px;
-
-    padding:
-        11px 17px;
-
-    cursor:
-        pointer;
-
-    text-decoration:
-        none;
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    gap:
-        8px;
-
-    font-size:
-        13px;
-
-    font-weight:
-        700;
-
-    transition:
-        .2s ease;
-
-}
-
-
-.btn:hover{
-
-    transform:
-        translateY(-2px);
-
-}
-
-
-.btn-back{
-
-    background:
-        rgba(255,255,255,.08);
-
-    color:
-        white;
-
-    border:
-        1px solid
-        rgba(255,255,255,.15);
-
-}
-
-
-.btn-connect{
-
-    background:
-        #ffe600;
-
-    color:
-        #111827;
-
-}
-
-
-.btn-sync{
-
-    background:
-        var(--primary);
-
-    color:
-        white;
-
-}
-
-
-.btn-sync:hover{
-
-    background:
-        var(--primary-dark);
-
-}
-
-
-.btn-sync:disabled{
-
-    opacity:
-        .6;
-
-    cursor:
-        not-allowed;
-
-    transform:
-        none;
-
-}
-
-
-.btn-success{
-
-    background:
-        var(--success);
-
-    color:
-        white;
-
-}
-
-
-.btn-secondary{
-
-    background:
-        #f1f5f9;
-
-    color:
-        #334155;
-
-}
-
-
-/* =========================================================
-   CONTENT
-========================================================= */
-
-.ml-content{
-
-    max-width:
-        1550px;
-
-    margin:
-        0 auto;
-
-    padding:
-        30px;
-
-}
-
-
-/* =========================================================
-   BREADCRUMB
-========================================================= */
-
-.breadcrumb{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        8px;
-
-    color:
-        var(--muted);
-
-    font-size:
-        13px;
-
-    margin-bottom:
-        22px;
-
-}
-
-
-.breadcrumb a{
-
-    color:
-        var(--primary);
-
-    text-decoration:
-        none;
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-.connection-card{
-
-    background:
-        var(--card);
-
-    border-radius:
-        var(--radius);
-
-    padding:
-        22px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
-
-    margin-bottom:
-        24px;
-
-    border:
-        1px solid
-        var(--border);
-
-    box-shadow:
-        var(--shadow);
-
-}
-
-
-.connection-info{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        16px;
-
-}
-
-
-.status-icon{
-
-    width:
-        52px;
-
-    height:
-        52px;
-
-    border-radius:
-        14px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        21px;
-
-    background:
-        #fef3c7;
-
-    color:
-        var(--warning);
-
-}
-
-
-.status-icon.connected{
-
-    background:
-        #dcfce7;
-
-    color:
-        var(--success);
-
-}
-
-
-.connection-info h2{
-
-    font-size:
-        18px;
-
-    margin-bottom:
-        5px;
-
-}
-
-
-.connection-info p{
-
-    color:
-        var(--muted);
-
-    font-size:
-        13px;
-
-}
-
-
-.status-badge{
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    gap:
-        7px;
-
-    margin-top:
-        8px;
-
-    padding:
-        6px 11px;
-
-    border-radius:
-        999px;
-
-    font-size:
-        11px;
-
-    font-weight:
-        700;
-
-    background:
-        #fef3c7;
-
-    color:
-        #92400e;
-
-}
-
-
-.status-badge.connected{
-
-    background:
-        #dcfce7;
-
-    color:
-        #166534;
-
-}
-
-
-.status-dot{
-
-    width:
-        7px;
-
-    height:
-        7px;
-
-    border-radius:
-        50%;
-
-    background:
-        currentColor;
-
-}
-
-
-/* =========================================================
-   KPI
-========================================================= */
-
-.stats-grid{
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0,1fr));
-
-    gap:
-        16px;
-
-    margin-bottom:
-        24px;
-
-}
-
-
-.stat-card{
-
-    background:
-        var(--card);
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        16px;
-
-    padding:
-        20px;
-
-    box-shadow:
-        var(--shadow);
-
-}
-
-
-.stat-top{
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-}
-
-
-.stat-label{
-
-    color:
-        var(--muted);
-
-    font-size:
-        12px;
-
-    margin-bottom:
-        6px;
-
-}
-
-
-.stat-value{
-
-    font-size:
-        27px;
-
-    font-weight:
-        800;
-
-    color:
-        #0f172a;
-
-}
-
-
-.stat-icon{
-
-    width:
-        43px;
-
-    height:
-        43px;
-
-    border-radius:
-        12px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    background:
-        #eff6ff;
-
-    color:
-        var(--primary);
-
-}
-
-
-/* =========================================================
-   SYNC CENTER
-========================================================= */
-
-.sync-center{
-
-    background:
-
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #f8fafc
-        );
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        var(--radius);
-
-    padding:
-        25px;
-
-    margin-bottom:
-        24px;
-
-    box-shadow:
-        var(--shadow);
-
-}
-
-
-.sync-header{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        15px;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-.sync-header h3{
-
-    font-size:
-        18px;
-
-}
-
-
-.sync-header p{
-
-    color:
-        var(--muted);
-
-    font-size:
-        13px;
-
-    margin-top:
-        5px;
-
-}
-
-
-.sync-status{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        8px;
-
-    font-size:
-        12px;
-
-    color:
-        var(--muted);
-
-}
-
-
-.sync-status i{
-
-    color:
-        var(--success);
-
-}
-
-
-/* =========================================================
-   NEW PACKAGES
-========================================================= */
-
-.new-packages{
-
-    background:
-        var(--card);
-
-    border:
-        1px solid
-        #bfdbfe;
-
-    border-radius:
-        var(--radius);
-
-    padding:
-        25px;
-
-    margin-bottom:
-        24px;
-
-    box-shadow:
-        0 10px 35px
-        rgba(37,99,235,.08);
-
-}
-
-
-.new-packages-header{
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    gap:
-        15px;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-.new-packages-title{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        12px;
-
-}
-
-
-.new-packages-icon{
-
-    width:
-        43px;
-
-    height:
-        43px;
-
-    border-radius:
-        12px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    background:
-        #dbeafe;
-
-    color:
-        var(--primary);
-
-}
-
-
-.new-packages-title h3{
-
-    font-size:
-        18px;
-
-}
-
-
-.new-packages-title p{
-
-    font-size:
-        12px;
-
-    color:
-        var(--muted);
-
-    margin-top:
-        4px;
-
-}
-
-
-.new-count{
-
-    background:
-        #dbeafe;
-
-    color:
-        #1d4ed8;
-
-    padding:
-        8px 13px;
-
-    border-radius:
-        999px;
-
-    font-size:
-        12px;
-
-    font-weight:
-        800;
-
-}
-
-
-/* =========================================================
-   ASSIGN BAR
-========================================================= */
-
-.assign-bar{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        12px;
-
-    flex-wrap:
-        wrap;
-
-    padding:
-        15px;
-
-    background:
-        #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    border-radius:
-        13px;
-
-    margin-bottom:
-        18px;
-
-}
-
-
-.assign-bar label{
-
-    font-size:
-        12px;
-
-    font-weight:
-        700;
-
-    color:
-        #334155;
-
-}
-
-
-.client-select{
-
-    min-width:
-        240px;
-
-    padding:
-        10px 12px;
-
-    border:
-        1px solid
-        #cbd5e1;
-
-    border-radius:
-        9px;
-
-    background:
-        white;
-
-    font-size:
-        13px;
-
-    outline:
-        none;
-
-}
-
-
-.client-select:focus{
-
-    border-color:
-        var(--primary);
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37,99,235,.1);
-
-}
-
-
-/* =========================================================
-   TOOLBAR
-========================================================= */
-
-.table-toolbar{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        12px;
-
-    flex-wrap:
-        wrap;
-
-    margin-bottom:
-        15px;
-
-}
-
-
-.search-box{
-
-    position:
-        relative;
-
-    flex:
-        1;
-
-    min-width:
-        250px;
-
-}
-
-
-.search-box i{
-
-    position:
-        absolute;
-
-    left:
-        13px;
-
-    top:
-        50%;
-
-    transform:
-        translateY(-50%);
-
-    color:
-        #94a3b8;
-
-}
-
-
-.search-box input{
-
-    width:
-        100%;
-
-    padding:
-        11px 12px 11px 38px;
-
-    border:
-        1px solid
-        #cbd5e1;
-
-    border-radius:
-        10px;
-
-    outline:
-        none;
-
-    font-size:
-        13px;
-
-}
-
-
-.search-box input:focus{
-
-    border-color:
-        var(--primary);
-
-}
-
-
-/* =========================================================
-   TABLE
-========================================================= */
-
-.table-container{
-
-    overflow-x:
-        auto;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        13px;
-
-}
-
-
-.packages-table{
-
-    width:
-        100%;
-
-    border-collapse:
-        collapse;
-
-    min-width:
-        950px;
-
-}
-
-
-.packages-table th{
-
-    background:
-        #f8fafc;
-
-    color:
-        #64748b;
-
-    font-size:
-        11px;
-
-    text-transform:
-        uppercase;
-
-    letter-spacing:
-        .04em;
-
-    padding:
-        13px;
-
-    text-align:
-        left;
-
-    border-bottom:
-        1px solid
-        var(--border);
-
-}
-
-
-.packages-table td{
-
-    padding:
-        13px;
-
-    border-bottom:
-        1px solid
-        #f1f5f9;
-
-    font-size:
-        12px;
-
-}
-
-
-.packages-table tr:last-child td{
-
-    border-bottom:
-        none;
-
-}
-
-
-.packages-table tr:hover{
-
-    background:
-        #f8fafc;
-
-}
-
-
-/* =========================================================
-   CHECKBOX
-========================================================= */
-
-.package-check{
-
-    width:
-        16px;
-
-    height:
-        16px;
-
-    cursor:
-        pointer;
-
-}
-
-
-/* =========================================================
-   BADGES
-========================================================= */
-
-.badge{
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    gap:
-        5px;
-
-    padding:
-        5px 9px;
-
-    border-radius:
-        999px;
-
-    font-size:
-        10px;
-
-    font-weight:
-        800;
-
-}
-
-
-.badge-flex{
-
-    background:
-        #fef3c7;
-
-    color:
-        #92400e;
-
-}
-
-
-.badge-received{
-
-    background:
-        #dbeafe;
-
-    color:
-        #1d4ed8;
-
-}
-
-
-.badge-assigned{
-
-    background:
-        #ede9fe;
-
-    color:
-        #6d28d9;
-
-}
-
-
-.badge-delivered{
-
-    background:
-        #dcfce7;
-
-    color:
-        #166534;
-
-}
-
-
-/* =========================================================
-   MAIN GRID
-========================================================= */
-
-.main-grid{
-
-    display:
-        grid;
-
-    grid-template-columns:
-        2fr 1fr;
-
-    gap:
-        22px;
-
-}
-
-
-.panel-card{
-
-    background:
-        var(--card);
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        var(--radius);
-
-    padding:
-        25px;
-
-    box-shadow:
-        var(--shadow);
-
-}
-
-
-.panel-header{
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-.panel-header h3{
-
-    font-size:
-        17px;
-
-}
-
-
-.panel-header span{
-
-    font-size:
-        11px;
-
-    color:
-        var(--muted);
-
-}
-
-
-/* =========================================================
-   CLIENT SUMMARY
-========================================================= */
-
-.client-summary{
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        10px;
-
-}
-
-
-.client-row{
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    padding:
-        13px;
-
-    background:
-        #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    border-radius:
-        11px;
-
-}
-
-
-.client-info{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        10px;
-
-}
-
-
-.client-avatar{
-
-    width:
-        35px;
-
-    height:
-        35px;
-
-    border-radius:
-        10px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    background:
-        #dbeafe;
-
-    color:
-        var(--primary);
-
-    font-weight:
-        800;
-
-    font-size:
-        12px;
-
-}
-
-
-.client-name{
-
-    font-weight:
-        700;
-
-    font-size:
-        13px;
-
-}
-
-
-.client-meta{
-
-    color:
-        var(--muted);
-
-    font-size:
-        10px;
-
-    margin-top:
-        3px;
-
-}
-
-
-.client-count{
-
-    font-size:
-        18px;
-
-    font-weight:
-        800;
-
-    color:
-        var(--primary);
-
-}
-
-
-/* =========================================================
-   ACTIONS
-========================================================= */
-
-.actions-list{
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        10px;
-
-}
-
-
-.action{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        12px;
-
-    padding:
-        13px;
-
-    border-radius:
-        11px;
-
-    background:
-        #f8fafc;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-    text-decoration:
-        none;
-
-    color:
-        #1e293b;
-
-    transition:
-        .2s;
-
-}
-
-
-.action:hover{
-
-    background:
-        #f1f5f9;
-
-    transform:
-        translateX(3px);
-
-}
-
-
-.action-icon{
-
-    width:
-        37px;
-
-    height:
-        37px;
-
-    border-radius:
-        10px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    background:
-        #eff6ff;
-
-    color:
-        var(--primary);
-
-}
-
-
-.action strong{
-
-    display:
-        block;
-
-    font-size:
-        13px;
-
-    margin-bottom:
-        3px;
-
-}
-
-
-.action small{
-
-    color:
-        var(--muted);
-
-    font-size:
-        11px;
-
-}
-
-
-/* =========================================================
-   INTEGRATION
-========================================================= */
-
-.integration-list{
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        14px;
-
-}
-
-
-.integration-row{
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    padding-bottom:
-        13px;
-
-    border-bottom:
-        1px solid
-        #f1f5f9;
-
-}
-
-
-.integration-row:last-child{
-
-    border-bottom:
-        none;
-
-    padding-bottom:
-        0;
-
-}
-
-
-.integration-row span:first-child{
-
-    color:
-        var(--muted);
-
-    font-size:
-        12px;
-
-}
-
-
-.integration-row strong{
-
-    font-size:
-        12px;
-
-}
-
-
-.online{
-
-    color:
-        var(--success);
-
-}
-
-
-.offline{
-
-    color:
-        var(--danger);
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-
-    position:
-        fixed;
-
-    right:
-        25px;
-
-    bottom:
-        25px;
-
-    background:
-        #0f172a;
-
-    color:
-        white;
-
-    padding:
-        14px 18px;
-
-    border-radius:
-        12px;
-
-    box-shadow:
-        0 15px 40px
-        rgba(0,0,0,.2);
-
-    transform:
-        translateY(120px);
-
-    opacity:
-        0;
-
-    transition:
-        .3s;
-
-    z-index:
-        9999;
-
-    font-size:
-        13px;
-
-}
-
-
-.toast.show{
-
-    transform:
-        translateY(0);
-
-    opacity:
-        1;
-
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media(max-width:1100px){
-
-    .stats-grid{
-
-        grid-template-columns:
-            repeat(2,1fr);
-
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    .main-grid{
+    body {
+        font-family:
+            Inter,
+            Arial,
+            Helvetica,
+            sans-serif;
 
-        grid-template-columns:
-            1fr;
+        background: #f5f7fb;
 
+        color: #172033;
     }
 
-}
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
 
+    .ml-wrapper {
+        min-height: 100vh;
+    }
 
-@media(max-width:700px){
+    .ml-header {
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #1e293b
+            );
 
-    .ml-header{
+        color: white;
+
+        padding: 28px 35px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 20px;
+
+        box-shadow:
+            0 4px 20px
+            rgba(15, 23, 42, .12);
+    }
+
+    .header-left {
+        display: flex;
+
+        align-items: center;
+
+        gap: 18px;
+    }
+
+    .ml-logo {
+        width: 58px;
+
+        height: 58px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background:
+            #ffe600;
+
+        color:
+            #111827;
+
+        font-size: 27px;
+
+        box-shadow:
+            0 8px 20px
+            rgba(0,0,0,.2);
+    }
+
+    .header-title h1 {
+        font-size: 25px;
+
+        margin-bottom: 5px;
+    }
+
+    .header-title p {
+        color:
+            #cbd5e1;
+
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        border: none;
+
+        border-radius: 10px;
 
         padding:
-            20px;
+            11px 17px;
 
-        flex-direction:
-            column;
+        cursor: pointer;
 
-        align-items:
-            flex-start;
+        text-decoration: none;
 
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        transition:
+            .2s ease;
     }
 
-    .header-actions{
-
-        width:
-            100%;
-
+    .btn:hover {
+        transform:
+            translateY(-2px);
     }
 
-    .header-actions .btn{
+    .btn-back {
+        background:
+            rgba(255,255,255,.1);
 
-        flex:
-            1;
+        color:
+            white;
 
+        border:
+            1px solid
+            rgba(255,255,255,.15);
     }
 
-    .ml-content{
+    .btn-connect {
+        background:
+            #ffe600;
+
+        color:
+            #111827;
+    }
+
+    .btn-sync {
+        background:
+            #2563eb;
+
+        color:
+            white;
+    }
+
+    .btn-sync:disabled {
+        opacity: .6;
+
+        cursor:
+            not-allowed;
+
+        transform:
+            none;
+    }
+
+    /* =====================================================
+       CONTENT
+    ===================================================== */
+
+    .ml-content {
+        max-width:
+            1500px;
+
+        margin:
+            0 auto;
 
         padding:
+            30px;
+    }
+
+    .breadcrumb {
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        color:
+            #64748b;
+
+        font-size: 13px;
+
+        margin-bottom:
+            22px;
+    }
+
+    .breadcrumb a {
+        color:
+            #2563eb;
+
+        text-decoration:
+            none;
+    }
+
+    /* =====================================================
+       CONNECTION STATUS
+    ===================================================== */
+
+    .connection-card {
+        background:
+            white;
+
+        border-radius:
             18px;
 
+        padding:
+            25px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 25px;
+
+        margin-bottom:
+            25px;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        box-shadow:
+            0 8px 30px
+            rgba(15,23,42,.06);
     }
 
-    .connection-card{
+    .connection-info {
+        display: flex;
 
-        flex-direction:
-            column;
+        align-items: center;
+
+        gap: 18px;
+    }
+
+    .status-icon {
+        width:
+            52px;
+
+        height:
+            52px;
+
+        border-radius:
+            14px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size:
+            22px;
+
+        background:
+            #fef3c7;
+
+        color:
+            #d97706;
+    }
+
+    .status-icon.connected {
+        background:
+            #dcfce7;
+
+        color:
+            #16a34a;
+    }
+
+    .connection-info h2 {
+        font-size:
+            18px;
+
+        margin-bottom:
+            5px;
+    }
+
+    .connection-info p {
+        color:
+            #64748b;
+
+        font-size:
+            14px;
+    }
+
+    .status-badge {
+        display:
+            inline-flex;
 
         align-items:
-            flex-start;
+            center;
 
+        gap:
+            7px;
+
+        padding:
+            7px 12px;
+
+        border-radius:
+            999px;
+
+        font-size:
+            12px;
+
+        font-weight:
+            700;
+
+        background:
+            #fef3c7;
+
+        color:
+            #92400e;
     }
 
-    .stats-grid{
+    .status-badge.connected {
+        background:
+            #dcfce7;
+
+        color:
+            #166534;
+    }
+
+    .status-dot {
+        width:
+            7px;
+
+        height:
+            7px;
+
+        border-radius:
+            50%;
+
+        background:
+            currentColor;
+    }
+
+    /* =====================================================
+       KPI CARDS
+    ===================================================== */
+
+    .stats-grid {
+        display:
+            grid;
 
         grid-template-columns:
-            1fr;
+            repeat(
+                4,
+                minmax(0,1fr)
+            );
 
+        gap:
+            18px;
+
+        margin-bottom:
+            25px;
     }
 
-    .sync-header{
+    .stat-card {
+        background:
+            white;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        border-radius:
+            16px;
+
+        padding:
+            22px;
+
+        box-shadow:
+            0 6px 25px
+            rgba(15,23,42,.05);
+    }
+
+    .stat-top {
+        display:
+            flex;
+
+        justify-content:
+            space-between;
+
+        align-items:
+            center;
+
+        margin-bottom:
+            18px;
+    }
+
+    .stat-icon {
+        width:
+            43px;
+
+        height:
+            43px;
+
+        border-radius:
+            12px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        background:
+            #eff6ff;
+
+        color:
+            #2563eb;
+    }
+
+    .stat-card:nth-child(2)
+    .stat-icon {
+        background:
+            #fff7ed;
+
+        color:
+            #ea580c;
+    }
+
+    .stat-card:nth-child(3)
+    .stat-icon {
+        background:
+            #ecfdf5;
+
+        color:
+            #059669;
+    }
+
+    .stat-card:nth-child(4)
+    .stat-icon {
+        background:
+            #f5f3ff;
+
+        color:
+            #7c3aed;
+    }
+
+    .stat-label {
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+
+        margin-bottom:
+            7px;
+    }
+
+    .stat-value {
+        font-size:
+            28px;
+
+        font-weight:
+            750;
+
+        color:
+            #0f172a;
+    }
+
+    /* =====================================================
+       MAIN GRID
+    ===================================================== */
+
+    .main-grid {
+        display:
+            grid;
+
+        grid-template-columns:
+            2fr 1fr;
+
+        gap:
+            22px;
+    }
+
+    .panel-card {
+        background:
+            white;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        border-radius:
+            18px;
+
+        padding:
+            25px;
+
+        box-shadow:
+            0 6px 25px
+            rgba(15,23,42,.05);
+    }
+
+    .panel-header {
+        display:
+            flex;
+
+        justify-content:
+            space-between;
+
+        align-items:
+            center;
+
+        margin-bottom:
+            22px;
+    }
+
+    .panel-header h3 {
+        font-size:
+            17px;
+    }
+
+    .panel-header span {
+        font-size:
+            12px;
+
+        color:
+            #64748b;
+    }
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
+
+    .empty-state {
+        min-height:
+            260px;
+
+        display:
+            flex;
 
         flex-direction:
             column;
 
         align-items:
-            flex-start;
+            center;
+
+        justify-content:
+            center;
+
+        text-align:
+            center;
+
+        color:
+            #64748b;
+    }
+
+    .empty-state i {
+        font-size:
+            45px;
+
+        color:
+            #cbd5e1;
+
+        margin-bottom:
+            15px;
+    }
+
+    .empty-state h4 {
+        color:
+            #334155;
+
+        margin-bottom:
+            7px;
+    }
+
+    .empty-state p {
+        max-width:
+            420px;
+
+        font-size:
+            14px;
+
+        line-height:
+            1.6;
+    }
+
+    /* =====================================================
+       QUICK ACTIONS
+    ===================================================== */
+
+    .actions-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            12px;
+    }
+
+    .action {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            13px;
+
+        padding:
+            14px;
+
+        border-radius:
+            12px;
+
+        background:
+            #f8fafc;
+
+        border:
+            1px solid
+            #e2e8f0;
+
+        text-decoration:
+            none;
+
+        color:
+            #1e293b;
+
+        transition:
+            .2s;
+    }
+
+    .action:hover {
+        background:
+            #f1f5f9;
+
+        transform:
+            translateX(3px);
+    }
+
+    .action-icon {
+        width:
+            38px;
+
+        height:
+            38px;
+
+        border-radius:
+            10px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        background:
+            #eff6ff;
+
+        color:
+            #2563eb;
+    }
+
+    .action strong {
+        display:
+            block;
+
+        font-size:
+            14px;
+
+        margin-bottom:
+            3px;
+    }
+
+    .action small {
+        color:
+            #64748b;
+
+        font-size:
+            12px;
+    }
+
+    /* =====================================================
+       INTEGRATION INFO
+    ===================================================== */
+
+    .integration-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            15px;
+    }
+
+    .integration-row {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        padding-bottom:
+            14px;
+
+        border-bottom:
+            1px solid
+            #f1f5f9;
+    }
+
+    .integration-row:last-child {
+        border-bottom:
+            none;
+
+        padding-bottom:
+            0;
+    }
+
+    .integration-row span:first-child {
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+    }
+
+    .integration-row strong {
+        font-size:
+            13px;
+    }
+
+    .online {
+        color:
+            #16a34a;
+    }
+
+    .offline {
+        color:
+            #dc2626;
+    }
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    .toast {
+        position:
+            fixed;
+
+        right:
+            25px;
+
+        bottom:
+            25px;
+
+        background:
+            #0f172a;
+
+        color:
+            white;
+
+        padding:
+            15px 20px;
+
+        border-radius:
+            12px;
+
+        box-shadow:
+            0 15px 40px
+            rgba(0,0,0,.2);
+
+        transform:
+            translateY(120px);
+
+        opacity:
+            0;
+
+        transition:
+            .3s;
+
+        z-index:
+            9999;
+    }
+
+    .toast.show {
+        transform:
+            translateY(0);
+
+        opacity:
+            1;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width:1100px) {
+
+        .stats-grid {
+            grid-template-columns:
+                repeat(2,1fr);
+        }
+
+        .main-grid {
+            grid-template-columns:
+                1fr;
+        }
 
     }
 
-}
+    @media(max-width:700px) {
 
+        .ml-header {
+            padding:
+                20px;
 
-/* =========================================================
-   HIDDEN
-========================================================= */
+            flex-direction:
+                column;
 
-.hidden{
+            align-items:
+                flex-start;
+        }
 
-    display:
-        none !important;
+        .header-actions {
+            width:
+                100%;
+        }
 
-}
+        .header-actions .btn {
+            flex:
+                1;
+        }
+
+        .ml-content {
+            padding:
+                20px;
+        }
+
+        .connection-card {
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .stats-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+    }
 
 </style>
 
-</head>
 
+</head>
 
 <body>
 
-
 <div class="ml-wrapper">
-
 
 <!-- =====================================================
      HEADER
@@ -1923,36 +928,30 @@ body{
 
 <header class="ml-header">
 
-
     <div class="header-left">
-
 
         <div class="ml-logo">
 
-            <i class="fas fa-boxes-stacked"></i>
+            <i class="fas fa-store"></i>
 
         </div>
-
 
         <div class="header-title">
 
             <h1>
-                Centro de Operaciones Logísticas
+                Depósito - Boedo 
             </h1>
 
             <p>
-                Mercado Libre · Flex · Recepción · Distribución
+                Integración logística y gestión de envíos
             </p>
 
         </div>
 
-
     </div>
 
 
-
     <div class="header-actions">
-
 
         <a
             href="/panel/logistica"
@@ -1961,10 +960,9 @@ body{
 
             <i class="fas fa-arrow-left"></i>
 
-            Logística
+            Volver a Logística
 
         </a>
-
 
 
         <button
@@ -1975,16 +973,13 @@ body{
 
             <i class="fas fa-rotate"></i>
 
-            Sincronizar ahora
+            Sincronizar
 
         </button>
 
-
     </div>
 
-
 </header>
-
 
 
 <!-- =====================================================
@@ -1995,7 +990,6 @@ body{
 
 
     <!-- BREADCRUMB -->
-
 
     <div class="breadcrumb">
 
@@ -2018,11 +1012,9 @@ body{
     </div>
 
 
-
     <!-- =================================================
          CONNECTION
     ================================================== -->
-
 
     <section class="connection-card">
 
@@ -2040,18 +1032,18 @@ body{
             </div>
 
 
-
             <div>
 
                 <h2>
-                    Integración Mercado Libre
+                    Conexión con Mercado Libre
                 </h2>
 
                 <p>
-                    AppCraftPro monitorea y registra
+                    Vinculá tu cuenta para sincronizar
                     automáticamente tus operaciones logísticas.
                 </p>
 
+                <br>
 
                 <span
                     id="connectionStatus"
@@ -2060,16 +1052,13 @@ body{
 
                     <span class="status-dot"></span>
 
-                    Verificando conexión...
+                    No conectado
 
                 </span>
 
-
             </div>
 
-
         </div>
-
 
 
         <a
@@ -2079,7 +1068,7 @@ body{
 
             <i class="fas fa-plug"></i>
 
-            Administrar conexión
+            Conectar Mercado Libre
 
         </a>
 
@@ -2087,11 +1076,9 @@ body{
     </section>
 
 
-
     <!-- =================================================
          KPI
     ================================================== -->
-
 
     <section class="stats-grid">
 
@@ -2103,13 +1090,10 @@ body{
                 <div>
 
                     <div class="stat-label">
-                        Envíos registrados
+                        Envíos totales
                     </div>
 
-                    <div
-                        id="totalShipments"
-                        class="stat-value"
-                    >
+                    <div class="stat-value">
                         <%= totalShipments || 0 %>
                     </div>
 
@@ -2126,7 +1110,6 @@ body{
         </div>
 
 
-
         <div class="stat-card">
 
             <div class="stat-top">
@@ -2137,10 +1120,7 @@ body{
                         Pendientes
                     </div>
 
-                    <div
-                        id="pendingShipments"
-                        class="stat-value"
-                    >
+                    <div class="stat-value">
                         <%= pendingShipments || 0 %>
                     </div>
 
@@ -2157,7 +1137,6 @@ body{
         </div>
 
 
-
         <div class="stat-card">
 
             <div class="stat-top">
@@ -2165,28 +1144,24 @@ body{
                 <div>
 
                     <div class="stat-label">
-                        Nuevos para clasificar
+                        Importados hoy
                     </div>
 
-                    <div
-                        id="newShipments"
-                        class="stat-value"
-                    >
-                        0
+                    <div class="stat-value">
+                        <%= importedToday || 0 %>
                     </div>
 
                 </div>
 
                 <div class="stat-icon">
 
-                    <i class="fas fa-inbox"></i>
+                    <i class="fas fa-cloud-arrow-down"></i>
 
                 </div>
 
             </div>
 
         </div>
-
 
 
         <div class="stat-card">
@@ -2200,7 +1175,6 @@ body{
                     </div>
 
                     <div
-                        id="lastSync"
                         class="stat-value"
                         style="font-size:18px"
                     >
@@ -2225,392 +1199,89 @@ body{
     </section>
 
 
-
     <!-- =================================================
-         SYNC CENTER
+         MAIN
     ================================================== -->
-
-
-    <section class="sync-center">
-
-
-        <div class="sync-header">
-
-
-            <div>
-
-                <h3>
-                    Centro de sincronización
-                </h3>
-
-                <p>
-                    Sincronizá Mercado Libre para detectar
-                    nuevos paquetes recibidos en tu operación.
-                </p>
-
-            </div>
-
-
-
-            <div
-                id="syncStatus"
-                class="sync-status"
-            >
-
-                <i class="fas fa-circle-check"></i>
-
-                Sistema listo
-
-            </div>
-
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         NEW PACKAGES
-    ================================================== -->
-
-
-    <section
-        id="newPackagesSection"
-        class="new-packages hidden"
-    >
-
-
-        <div class="new-packages-header">
-
-
-            <div class="new-packages-title">
-
-
-                <div class="new-packages-icon">
-
-                    <i class="fas fa-sparkles"></i>
-
-                </div>
-
-
-                <div>
-
-                    <h3>
-                        Nuevos paquetes detectados
-                    </h3>
-
-                    <p>
-                        Estos envíos todavía no están clasificados
-                        dentro de AppCraftPro.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div
-                id="newCount"
-                class="new-count"
-            >
-
-                0 nuevos
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- ASIGNACIÓN -->
-
-
-        <div class="assign-bar">
-
-
-            <label>
-
-                Asignar paquetes seleccionados a:
-
-            </label>
-
-
-
-            <select
-                id="clienteSelect"
-                class="client-select"
-            >
-
-                <option value="">
-
-                    Seleccionar cliente...
-
-                </option>
-
-
-                <% if (clientes && clientes.length) { %>
-
-
-                    <% clientes.forEach(cliente => { %>
-
-                        <option
-                            value="<%= cliente.id %>"
-                        >
-
-                            <%= cliente.nombre %>
-
-                            <% if (cliente.empresa) { %>
-
-                                · <%= cliente.empresa %>
-
-                            <% } %>
-
-                        </option>
-
-                    <% }) %>
-
-
-                <% } %>
-
-
-            </select>
-
-
-
-            <button
-                class="btn btn-success"
-                onclick="asignarSeleccionados()"
-            >
-
-                <i class="fas fa-check"></i>
-
-                Asignar y guardar
-
-            </button>
-
-
-            <button
-                class="btn btn-secondary"
-                onclick="seleccionarTodos()"
-            >
-
-                <i class="fas fa-check-double"></i>
-
-                Seleccionar todos
-
-            </button>
-
-
-        </div>
-
-
-
-        <!-- BUSCADOR -->
-
-
-        <div class="table-toolbar">
-
-
-            <div class="search-box">
-
-                <i class="fas fa-search"></i>
-
-                <input
-                    type="text"
-                    id="packageSearch"
-                    placeholder="Buscar por código, destinatario o dirección..."
-                    oninput="filtrarPaquetes()"
-                >
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- TABLA -->
-
-
-        <div class="table-container">
-
-
-            <table class="packages-table">
-
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-
-                            <input
-                                type="checkbox"
-                                id="selectAll"
-                                class="package-check"
-                                onchange="seleccionarTodos()"
-                            >
-
-                        </th>
-
-                        <th>
-                            Código
-                        </th>
-
-                        <th>
-                            Destinatario
-                        </th>
-
-                        <th>
-                            Dirección
-                        </th>
-
-                        <th>
-                            Localidad
-                        </th>
-
-                        <th>
-                            Tipo
-                        </th>
-
-                        <th>
-                            Estado
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-
-                <tbody
-                    id="newPackagesBody"
-                >
-
-                </tbody>
-
-
-            </table>
-
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         MAIN GRID
-    ================================================== -->
-
 
     <section class="main-grid">
 
 
-        <!-- RESUMEN CLIENTES -->
-
+        <!-- ENVÍOS -->
 
         <div class="panel-card">
 
-
             <div class="panel-header">
 
-
                 <h3>
-                    Recepción por cliente
+                    Últimos envíos
                 </h3>
 
-
                 <span>
-                    Operación del día
+                    Mercado Libre
                 </span>
 
-
             </div>
 
 
+            <div class="empty-state">
 
-            <div
-                id="clientSummary"
-                class="client-summary"
-            >
+                <i class="fas fa-box-open"></i>
 
-                <div class="client-row">
+                <h4>
+                    Todavía no hay envíos sincronizados
+                </h4>
 
-
-                    <div class="client-info">
-
-
-                        <div class="client-avatar">
-
-                            —
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="client-name">
-
-                                Sin movimientos todavía
-
-                            </div>
-
-
-                            <div class="client-meta">
-
-                                Los paquetes clasificados aparecerán aquí.
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <div class="client-count">
-
-                        0
-
-                    </div>
-
-
-                </div>
-
+                <p>
+                    Conectá tu cuenta de Mercado Libre
+                    y ejecutá una sincronización para
+                    comenzar a importar tus operaciones.
+                </p>
 
             </div>
-
 
         </div>
 
 
-
         <!-- ACCIONES -->
-
 
         <div class="panel-card">
 
-
             <div class="panel-header">
-
 
                 <h3>
                     Acciones rápidas
                 </h3>
 
-
             </div>
 
 
-
             <div class="actions-list">
+
+
+                <a
+                    href="/panel/logistica/mercadolibre/conectar"
+                    class="action"
+                >
+
+                    <div class="action-icon">
+
+                        <i class="fas fa-plug"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Conectar cuenta
+                        </strong>
+
+                        <small>
+                            Autorizar acceso a Mercado Libre
+                        </small>
+
+                    </div>
+
+                </a>
 
 
                 <a
@@ -2624,49 +1295,19 @@ body{
 
                     </div>
 
-
                     <div>
 
                         <strong>
-                            Ver todos los paquetes
+                            Ver paquetes
                         </strong>
 
                         <small>
-                            Consultar paquetes registrados
+                            Administrar paquetes registrados
                         </small>
 
                     </div>
 
                 </a>
-
-
-
-                <a
-                    href="/panel/logistica/colectas"
-                    class="action"
-                >
-
-                    <div class="action-icon">
-
-                        <i class="fas fa-layer-group"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Ver colectas
-                        </strong>
-
-                        <small>
-                            Consultar recepción por cliente y fecha
-                        </small>
-
-                    </div>
-
-                </a>
-
 
 
                 <a
@@ -2679,7 +1320,6 @@ body{
                         <i class="fas fa-truck"></i>
 
                     </div>
-
 
                     <div>
 
@@ -2696,7 +1336,6 @@ body{
                 </a>
 
 
-
                 <a
                     href="/panel/logistica"
                     class="action"
@@ -2708,15 +1347,14 @@ body{
 
                     </div>
 
-
                     <div>
 
                         <strong>
-                            Dashboard logístico
+                            Volver al módulo
                         </strong>
 
                         <small>
-                            Volver al centro de operaciones
+                            Panel general de logística
                         </small>
 
                     </div>
@@ -2726,40 +1364,32 @@ body{
 
             </div>
 
-
         </div>
 
 
     </section>
 
 
-
     <!-- =================================================
          INTEGRATION STATUS
     ================================================== -->
-
 
     <section
         class="panel-card"
         style="margin-top:22px"
     >
 
-
         <div class="panel-header">
-
 
             <h3>
                 Estado de integración
             </h3>
 
-
             <span>
                 AppCraftPro
             </span>
 
-
         </div>
-
 
 
         <div class="integration-list">
@@ -2782,7 +1412,6 @@ body{
             </div>
 
 
-
             <div class="integration-row">
 
                 <span>
@@ -2798,7 +1427,6 @@ body{
                 </strong>
 
             </div>
-
 
 
             <div class="integration-row">
@@ -2818,25 +1446,6 @@ body{
             </div>
 
 
-
-            <div class="integration-row">
-
-                <span>
-                    Base de datos
-                </span>
-
-                <strong class="online">
-
-                    <i class="fas fa-database"></i>
-
-                    Persistente
-
-                </strong>
-
-            </div>
-
-
-
             <div class="integration-row">
 
                 <span>
@@ -2850,7 +1459,7 @@ body{
 
                     <i class="fas fa-circle-xmark"></i>
 
-                    Verificando...
+                    No conectada
 
                 </strong>
 
@@ -2859,213 +1468,123 @@ body{
 
         </div>
 
-
     </section>
 
 
 </main>
-
+```
 
 </div>
 
-
-
-<!-- =====================================================
-     TOAST
-====================================================== -->
-
+<!-- TOAST -->
 
 <div
     id="toast"
     class="toast"
 >
-    Sistema listo.
+    Sincronización iniciada...
 </div>
-
-
 
 <script>
 
-/* =========================================================
-   ESTADO GLOBAL
-========================================================= */
+    // =====================================================
+    // SINCRONIZAR MERCADO LIBRE
+    // =====================================================
 
-let paquetesNuevos = [];
+    async function sincronizar() {
 
+        const button =
+            document.getElementById(
+                "syncButton"
+            );
 
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-function mostrarToast(mensaje){
-
-    const toast =
-        document.getElementById("toast");
-
-
-    toast.innerText =
-        mensaje;
+        const toast =
+            document.getElementById(
+                "toast"
+            );
 
 
-    toast.classList.add("show");
+        button.disabled =
+            true;
 
 
-    setTimeout(() => {
+        button.innerHTML =
 
-        toast.classList.remove("show");
-
-    },3500);
-
-}
+            '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
 
 
-
-/* =========================================================
-   SINCRONIZAR MERCADO LIBRE
-========================================================= */
-
-async function sincronizar(){
+        toast.classList.add(
+            "show"
+        );
 
 
-    const button =
-        document.getElementById("syncButton");
+        try {
 
+            const response =
+                await fetch(
+                    "/panel/logistica/mercadolibre/sincronizar",
+                    {
 
-    const status =
-        document.getElementById("syncStatus");
+                        method:
+                            "POST",
 
+                        headers: {
 
-    button.disabled =
-        true;
+                            "Content-Type":
+                                "application/json"
 
-
-    button.innerHTML =
-
-        '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
-
-
-    status.innerHTML =
-
-        '<i class="fas fa-spinner fa-spin"></i> Consultando Mercado Libre...';
-
-
-    mostrarToast(
-        "Sincronización iniciada..."
-    );
-
-
-    try{
-
-
-        const response =
-            await fetch(
-                "/panel/logistica/mercadolibre/sincronizar",
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-
-                        "Content-Type":
-                            "application/json"
+                        }
 
                     }
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            throw new Error(
-                data.mensaje ||
-                "Error de sincronización"
-            );
-
-        }
-
-
-        if(data.ok){
-
-
-            mostrarToast(
-
-                data.mensaje ||
-
-                "Sincronización completada."
-
-            );
-
-
-            status.innerHTML =
-
-                '<i class="fas fa-circle-check"></i> Sincronización completada';
-
-
-            if(
-                data.nuevos &&
-                Array.isArray(data.nuevos)
-            ){
-
-                cargarPaquetesNuevos(
-                    data.nuevos
                 );
 
-            }else{
 
-                cargarPaquetesNuevos();
+            const data =
+                await response.json();
+
+
+            if (
+                data.ok
+            ) {
+
+                toast.innerText =
+                    data.mensaje ||
+                    "Sincronización completada.";
+
+            } else {
+
+                toast.innerText =
+                    data.mensaje ||
+                    "No se pudo sincronizar.";
 
             }
 
 
-            cargarResumen();
+        } catch (
+            error
+        ) {
 
-
-        }else{
-
-
-            throw new Error(
-
-                data.mensaje ||
-
-                "No se pudo sincronizar."
-
+            console.error(
+                error
             );
 
+
+            toast.innerText =
+                "Error de conexión con el servidor.";
 
         }
 
 
-    }catch(error){
+        setTimeout(
+            () => {
 
+                toast.classList.remove(
+                    "show"
+                );
 
-        console.error(
-            "Error sincronizando:",
-            error
+            },
+            3500
         );
-
-
-        status.innerHTML =
-
-            '<i class="fas fa-circle-xmark"></i> Error de sincronización';
-
-
-        mostrarToast(
-
-            error.message ||
-
-            "Error de conexión con el servidor."
-
-        );
-
-
-    }finally{
 
 
         button.disabled =
@@ -3074,38 +1593,22 @@ async function sincronizar(){
 
         button.innerHTML =
 
-            '<i class="fas fa-rotate"></i> Sincronizar ahora';
-
+            '<i class="fas fa-rotate"></i> Sincronizar';
 
     }
 
 
-}
+    // =====================================================
+    // CONSULTAR ESTADO
+    // =====================================================
 
+    async function cargarEstado() {
 
-
-/* =========================================================
-   CARGAR PAQUETES NUEVOS
-========================================================= */
-
-async function cargarPaquetesNuevos(
-    datos = null
-){
-
-
-    try{
-
-
-        let paquetes =
-            datos;
-
-
-        if(!paquetes){
-
+        try {
 
             const response =
                 await fetch(
-                    "/panel/logistica/mercadolibre/nuevos"
+                    "/panel/logistica/mercadolibre/estado"
                 );
 
 
@@ -3113,987 +1616,83 @@ async function cargarPaquetesNuevos(
                 await response.json();
 
 
-            if(
+            if (
                 data.ok &&
-                Array.isArray(data.paquetes)
-            ){
+                data.conectado
+            ) {
 
-                paquetes =
-                    data.paquetes;
+                const badge =
+                    document.getElementById(
+                        "connectionStatus"
+                    );
 
-            }else{
 
-                paquetes =
-                    [];
+                const icon =
+                    document.getElementById(
+                        "statusIcon"
+                    );
+
+
+                const account =
+                    document.getElementById(
+                        "accountStatus"
+                    );
+
+
+                badge.classList.add(
+                    "connected"
+                );
+
+
+                badge.innerHTML =
+
+                    '<span class="status-dot"></span> Conectado';
+
+
+                icon.classList.add(
+                    "connected"
+                );
+
+
+                icon.innerHTML =
+
+                    '<i class="fas fa-check"></i>';
+
+
+                account.className =
+                    "online";
+
+
+                account.innerHTML =
+
+                    '<i class="fas fa-circle-check"></i> Conectada';
 
             }
 
-
-        }
-
-
-        paquetesNuevos =
-            paquetes || [];
-
-
-        renderizarPaquetesNuevos();
-
-
-    }catch(error){
-
-
-        console.error(
-            "Error cargando paquetes nuevos:",
+        } catch (
             error
-        );
-
-
-    }
-
-
-}
-
-
-
-/* =========================================================
-   RENDER PAQUETES
-========================================================= */
-
-function renderizarPaquetesNuevos(){
-
-
-    const section =
-        document.getElementById(
-            "newPackagesSection"
-        );
-
-
-    const body =
-        document.getElementById(
-            "newPackagesBody"
-        );
-
-
-    const count =
-        document.getElementById(
-            "newCount"
-        );
-
-
-    const newCounter =
-        document.getElementById(
-            "newShipments"
-        );
-
-
-    count.innerText =
-
-        paquetesNuevos.length +
-
-        (
-            paquetesNuevos.length === 1
-
-            ? " nuevo"
-
-            : " nuevos"
-
-        );
-
-
-    newCounter.innerText =
-
-        paquetesNuevos.length;
-
-
-    if(
-        !paquetesNuevos.length
-    ){
-
-
-        section.classList.add(
-            "hidden"
-        );
-
-
-        body.innerHTML =
-            "";
-
-
-        return;
-
-
-    }
-
-
-    section.classList.remove(
-        "hidden"
-    );
-
-
-    body.innerHTML =
-
-        paquetesNuevos.map(
-
-            (paquete,index) => {
-
-
-                const codigo =
-
-                    paquete.codigo_externo ||
-
-                    paquete.codigo ||
-
-                    paquete.shipment_id ||
-
-                    "Sin código";
-
-
-                const destinatario =
-
-                    paquete.destinatario ||
-
-                    paquete.receiver_name ||
-
-                    "Sin destinatario";
-
-
-                const direccion =
-
-                    paquete.direccion ||
-
-                    paquete.address ||
-
-                    "Sin dirección";
-
-
-                const localidad =
-
-                    paquete.localidad ||
-
-                    paquete.city ||
-
-                    "-";
-
-
-                return `
-
-                <tr
-                    data-search="
-                        ${codigo}
-                        ${destinatario}
-                        ${direccion}
-                        ${localidad}
-                    "
-                >
-
-                    <td>
-
-                        <input
-
-                            type="checkbox"
-
-                            class="package-check package-item"
-
-                            value="${escapeHtml(
-                                paquete.shipment_id ||
-                                paquete.id ||
-                                codigo
-                            )}"
-
-                            data-index="${index}"
-
-                        >
-
-                    </td>
-
-
-                    <td>
-
-                        <strong>
-
-                            ${escapeHtml(codigo)}
-
-                        </strong>
-
-                    </td>
-
-
-                    <td>
-
-                        ${escapeHtml(destinatario)}
-
-                    </td>
-
-
-                    <td>
-
-                        ${escapeHtml(direccion)}
-
-                    </td>
-
-
-                    <td>
-
-                        ${escapeHtml(localidad)}
-
-                    </td>
-
-
-                    <td>
-
-                        <span class="badge badge-flex">
-
-                            <i class="fas fa-bolt"></i>
-
-                            FLEX
-
-                        </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <span class="badge badge-received">
-
-                            Recibido
-
-                        </span>
-
-                    </td>
-
-
-                </tr>
-
-                `;
-
-
-            }
-
-        ).join("");
-
-
-}
-
-
-
-/* =========================================================
-   SELECCIONAR TODOS
-========================================================= */
-
-function seleccionarTodos(){
-
-
-    const master =
-        document.getElementById(
-            "selectAll"
-        );
-
-
-    const checks =
-        document.querySelectorAll(
-            ".package-item"
-        );
-
-
-    const estado =
-        master.checked;
-
-
-    checks.forEach(
-
-        checkbox => {
-
-            checkbox.checked =
-                estado;
-
-        }
-
-    );
-
-
-}
-
-
-
-/* =========================================================
-   ASIGNAR SELECCIONADOS
-========================================================= */
-
-async function asignarSeleccionados(){
-
-
-    const clienteSelect =
-        document.getElementById(
-            "clienteSelect"
-        );
-
-
-    const clienteId =
-        clienteSelect.value;
-
-
-    if(!clienteId){
-
-        mostrarToast(
-            "Seleccioná un cliente antes de continuar."
-        );
-
-        return;
-
-    }
-
-
-    const seleccionados =
-
-        Array.from(
-
-            document.querySelectorAll(
-                ".package-item:checked"
-            )
-
-        ).map(
-
-            checkbox =>
-
-                paquetesNuevos[
-                    Number(
-                        checkbox.dataset.index
-                    )
-                ]
-
-        );
-
-
-    if(
-        !seleccionados.length
-    ){
-
-        mostrarToast(
-            "Seleccioná al menos un paquete."
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-
-        mostrarToast(
-            "Guardando paquetes..."
-        );
-
-
-        const response =
-
-            await fetch(
-
-                "/panel/logistica/mercadolibre/asignar",
-
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body:
-
-                        JSON.stringify({
-
-                            cliente_id:
-                                clienteId,
-
-                            paquetes:
-                                seleccionados
-
-                        })
-
-                }
-
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            throw new Error(
-
-                data.mensaje ||
-
-                "Error guardando paquetes"
-
-            );
-
-        }
-
-
-        if(data.ok){
-
-
-            mostrarToast(
-
-                data.mensaje ||
-
-                "Paquetes guardados correctamente."
-
-            );
-
-
-            paquetesNuevos =
-
-                paquetesNuevos.filter(
-
-                    paquete =>
-
-                        !seleccionados.includes(
-                            paquete
-                        )
-
-                );
-
-
-            renderizarPaquetesNuevos();
-
-
-            cargarResumen();
-
-
-            clienteSelect.value =
-                "";
-
-
-            document.getElementById(
-                "selectAll"
-            ).checked =
-                false;
-
-
-        }else{
-
-
-            throw new Error(
-
-                data.mensaje ||
-
-                "No se pudieron guardar los paquetes."
-
-            );
-
-
-        }
-
-
-    }catch(error){
-
-
-        console.error(
-            error
-        );
-
-
-        mostrarToast(
-
-            error.message ||
-
-            "Error guardando paquetes."
-
-        );
-
-
-    }
-
-
-}
-
-
-
-/* =========================================================
-   FILTRAR PAQUETES
-========================================================= */
-
-function filtrarPaquetes(){
-
-
-    const search =
-
-        document
-        .getElementById(
-            "packageSearch"
-        )
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    const rows =
-
-        document.querySelectorAll(
-
-            "#newPackagesBody tr"
-
-        );
-
-
-    rows.forEach(
-
-        row => {
-
-
-            const texto =
-
-                row
-                .dataset
-                .search
-                .toLowerCase();
-
-
-            row.style.display =
-
-                texto.includes(
-                    search
-                )
-
-                ? ""
-
-                : "none";
-
-
-        }
-
-    );
-
-
-}
-
-
-
-/* =========================================================
-   CARGAR RESUMEN
-========================================================= */
-
-async function cargarResumen(){
-
-
-    try{
-
-
-        const response =
-
-            await fetch(
-
-                "/panel/logistica/mercadolibre/resumen"
-
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !data.ok ||
-            !Array.isArray(
-                data.clientes
-            )
-        ){
-
-            return;
-
-        }
-
-
-        const container =
-
-            document.getElementById(
-                "clientSummary"
-            );
-
-
-        if(
-            !data.clientes.length
-        ){
-
-            container.innerHTML = `
-
-                <div class="client-row">
-
-                    <div class="client-info">
-
-                        <div class="client-avatar">
-
-                            —
-
-                        </div>
-
-                        <div>
-
-                            <div class="client-name">
-
-                                Sin movimientos todavía
-
-                            </div>
-
-                            <div class="client-meta">
-
-                                Los paquetes clasificados aparecerán aquí.
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="client-count">
-
-                        0
-
-                    </div>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-
-            data.clientes.map(
-
-                cliente => `
-
-                    <div class="client-row">
-
-                        <div class="client-info">
-
-                            <div class="client-avatar">
-
-                                ${escapeHtml(
-
-                                    (
-
-                                        cliente.nombre ||
-
-                                        "?"
-
-                                    )
-
-                                    .charAt(0)
-
-                                    .toUpperCase()
-
-                                )}
-
-                            </div>
-
-                            <div>
-
-                                <div class="client-name">
-
-                                    ${escapeHtml(
-
-                                        cliente.nombre ||
-
-                                        "Sin nombre"
-
-                                    )}
-
-                                </div>
-
-                                <div class="client-meta">
-
-                                    Paquetes recibidos hoy
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="client-count">
-
-                            ${cliente.total || 0}
-
-                        </div>
-
-                    </div>
-
-                `
-
-            ).join("");
-
-
-    }catch(error){
-
-
-        console.error(
-
-            "Error cargando resumen:",
-
-            error
-
-        );
-
-
-    }
-
-
-}
-
-
-
-/* =========================================================
-   ESTADO MERCADO LIBRE
-========================================================= */
-
-async function cargarEstado(){
-
-
-    try{
-
-
-        const response =
-
-            await fetch(
-
-                "/panel/logistica/mercadolibre/estado"
-
-            );
-
-
-        const data =
-
-            await response.json();
-
-
-        if(
-            data.ok &&
-            data.conectado
-        ){
-
-
-            const badge =
-
-                document.getElementById(
-
-                    "connectionStatus"
-
-                );
-
-
-            const icon =
-
-                document.getElementById(
-
-                    "statusIcon"
-
-                );
-
-
-            const account =
-
-                document.getElementById(
-
-                    "accountStatus"
-
-                );
-
-
-            badge.classList.add(
-                "connected"
-            );
-
-
-            badge.innerHTML =
-
-                '<span class="status-dot"></span> Conectado';
-
-
-            icon.classList.add(
-                "connected"
-            );
-
-
-            icon.innerHTML =
-
-                '<i class="fas fa-check"></i>';
-
-
-            account.className =
-                "online";
-
-
-            account.innerHTML =
-
-                '<i class="fas fa-circle-check"></i> Conectada';
-
-
-        }else{
-
-
-            const badge =
-
-                document.getElementById(
-
-                    "connectionStatus"
-
-                );
-
-
-            badge.innerHTML =
-
-                '<span class="status-dot"></span> No conectado';
-
-
-        }
-
-
-    }catch(error){
-
-
-        console.error(
-
-            "Error consultando estado:",
-
-            error
-
-        );
-
-
-    }
-
-
-}
-
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(
-    value
-){
-
-
-    if(
-        value === null ||
-        value === undefined
-    ){
-
-        return "";
-
-    }
-
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-
-/* =========================================================
-   INICIO
-========================================================= */
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    async () => {
-
-
-        await cargarEstado();
-
-
-        await cargarPaquetesNuevos();
-
-
-        await cargarResumen();
-
-
-    }
-
-);
-
-
-
-/* =========================================================
-   ACTUALIZACIÓN AUTOMÁTICA
-========================================================= */
-
-setInterval(
-
-    async () => {
-
-
-        try{
-
-
-            await cargarPaquetesNuevos();
-
-
-            await cargarResumen();
-
-
-        }catch(error){
-
+        ) {
 
             console.error(
-                "Actualización automática:",
+                "Error consultando estado:",
                 error
             );
 
-
         }
 
+    }
 
-    },
 
-    60000
+    // =====================================================
+    // INICIAR
+    // =====================================================
 
-);
+    document.addEventListener(
+        "DOMContentLoaded",
+        cargarEstado
+    );
 
 </script>
-
 
 </body>
 
