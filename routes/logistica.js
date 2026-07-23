@@ -1,3 +1,8 @@
+// ============================================================
+// routes/logistica.js
+// MÓDULO COMPLETO DE LOGÍSTICA - APPCRAFTPRO
+// ============================================================
+
 const express = require("express");
 const router = express.Router();
 
@@ -9,924 +14,967 @@ const path = require("path");
 const fs = require("fs");
 
 
-
-// ==============================
+// ============================================================
 // DASHBOARD LOGÍSTICA
-// ==============================
+// GET /panel/logistica
+// ============================================================
 
 router.get("/", isAuthenticated, (req, res) => {
 
-    res.render("logistica/dashboard", {
-
-        username: req.session.user.username,
-
-        role: req.session.user.role
-
-    });
-
-});
-
-
-
-// ==============================
-// FLEX SCANNER
-// ==============================
-
-router.get("/flex-scanner", isAuthenticated, (req, res) => {
-
     try {
 
-        const clientes = db.prepare(`
-            SELECT *
-            FROM logistica_clientes
-            WHERE estado = 'activo'
-            ORDER BY nombre ASC
-        `).all();
+        res.render("logistica/dashboard", {
 
-        res.render("logistica/flex-scanner", {
+            username:
+                req.session.user.username,
 
-            username: req.session.user.username,
-
-            role: req.session.user.role,
-
-            clientes
+            role:
+                req.session.user.role
 
         });
 
     } catch (error) {
 
         console.error(
-            "Error cargando Flex Scanner:",
+            "❌ Error cargando dashboard de logística:",
             error
         );
 
-        res.status(500)
-        .send("Error cargando Flex Scanner");
+        res
+            .status(500)
+            .send("Error cargando el módulo de logística.");
 
     }
 
 });
 
-// ==============================
+
+// ============================================================
+// FLEX SCANNER
+// GET /panel/logistica/flex-scanner
+// ============================================================
+
+router.get(
+    "/flex-scanner",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const clientes = db.prepare(`
+
+                SELECT *
+
+                FROM logistica_clientes
+
+                WHERE estado = 'activo'
+
+                ORDER BY nombre ASC
+
+            `).all();
+
+
+            res.render(
+                "logistica/flex-scanner",
+                {
+
+                    username:
+                        req.session.user.username,
+
+                    role:
+                        req.session.user.role,
+
+                    clientes
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error cargando Flex Scanner:",
+                error
+            );
+
+            res
+                .status(500)
+                .send(
+                    "Error cargando Flex Scanner"
+                );
+
+        }
+
+    }
+);
+
+
+// ============================================================
 // GUARDAR PAQUETE PARTICULAR
-// ==============================
+// POST /panel/logistica/flex-scanner/guardar
+// ============================================================
 
-router.post("/flex-scanner/guardar", isAuthenticated, (req, res) => {
+router.post(
+    "/flex-scanner/guardar",
+    isAuthenticated,
+    (req, res) => {
 
-    try {
+        try {
 
-        const {
+            const {
 
-            cliente_id,
-            codigo_externo,
-            numero_orden,
-            fecha_emision,
-            peso,
-            bultos,
-            numero_bulto,
-            remitente,
-            destinatario,
-            telefono,
-            direccion,
-            localidad,
-            zona,
-            observaciones
+                cliente_id,
+                codigo_externo,
+                numero_orden,
+                fecha_emision,
+                peso,
+                bultos,
+                numero_bulto,
+                remitente,
+                destinatario,
+                telefono,
+                direccion,
+                localidad,
+                zona,
+                observaciones
 
-        } = req.body;
-
-
-        // ==============================
-        // VALIDAR CLIENTE
-        // ==============================
-
-        if (!cliente_id) {
-
-            return res.status(400).json({
-
-                ok: false,
-
-                mensaje: "Debe seleccionar un cliente interno."
-
-            });
-
-        }
+            } = req.body;
 
 
-        // ==============================
-        // GENERAR CÓDIGO INTERNO
-        // ==============================
+            // ------------------------------------------------
+            // VALIDAR CLIENTE
+            // ------------------------------------------------
 
-        const ultimo = db.prepare(`
+            if (!cliente_id) {
 
-            SELECT id
+                return res
+                    .status(400)
+                    .json({
 
-            FROM logistica_paquetes
+                        ok: false,
 
-            ORDER BY id DESC
+                        mensaje:
+                            "Debe seleccionar un cliente interno."
 
-            LIMIT 1
+                    });
 
-        `).get();
-
-
-        let numero = 1;
-
-
-        if (ultimo) {
-
-            numero = ultimo.id + 1;
-
-        }
+            }
 
 
-        const codigoInterno =
+            // ------------------------------------------------
+            // GENERAR CÓDIGO INTERNO
+            // ------------------------------------------------
 
-            "PKG-" +
+            const ultimo = db.prepare(`
 
-            String(numero).padStart(6, "0");
+                SELECT id
+
+                FROM logistica_paquetes
+
+                ORDER BY id DESC
+
+                LIMIT 1
+
+            `).get();
 
 
-        // ==============================
-        // GUARDAR PAQUETE
-        // ==============================
+            let numero = 1;
 
-        const resultado = db.prepare(`
 
-            INSERT INTO logistica_paquetes
+            if (ultimo) {
 
-            (
+                numero =
+                    Number(ultimo.id) + 1;
+
+            }
+
+
+            const codigoInterno =
+                "PKG-" +
+                String(numero).padStart(6, "0");
+
+
+            // ------------------------------------------------
+            // INSERTAR PAQUETE
+            // ------------------------------------------------
+
+            const resultado = db.prepare(`
+
+                INSERT INTO logistica_paquetes
+
+                (
+
+                    cliente_id,
+
+                    tipo,
+
+                    codigo_externo,
+
+                    codigo_interno,
+
+                    numero_orden,
+
+                    fecha_emision,
+
+                    peso,
+
+                    bultos,
+
+                    numero_bulto,
+
+                    remitente,
+
+                    destinatario,
+
+                    telefono,
+
+                    direccion,
+
+                    localidad,
+
+                    zona,
+
+                    observaciones,
+
+                    colectado_por,
+
+                    estado
+
+                )
+
+                VALUES
+
+                (
+
+                    ?,
+
+                    'particular',
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    ?,
+
+                    'recibido'
+
+                )
+
+            `).run(
 
                 cliente_id,
 
-                tipo,
+                codigo_externo || null,
 
-                codigo_externo,
+                codigoInterno,
 
-                codigo_interno,
+                numero_orden || null,
 
-                numero_orden,
+                fecha_emision || null,
 
-                fecha_emision,
+                peso || null,
 
-                peso,
+                bultos || null,
 
-                bultos,
+                numero_bulto || null,
 
-                numero_bulto,
+                remitente || null,
 
-                remitente,
+                destinatario || null,
 
-                destinatario,
+                telefono || null,
 
-                telefono,
+                direccion || null,
 
-                direccion,
+                localidad || null,
 
-                localidad,
+                zona || null,
 
-                zona,
+                observaciones || null,
 
-                observaciones,
+                req.session.user.username
 
-                colectado_por,
+            );
 
-                estado
 
-            )
+            console.log(
+                "📦 Paquete particular guardado:",
+                codigoInterno
+            );
 
-            VALUES
 
-            (
+            // ------------------------------------------------
+            // RESPUESTA
+            // ------------------------------------------------
 
-                ?,
+            return res.json({
 
-                'particular',
+                ok: true,
 
-                ?,
+                mensaje:
+                    "Paquete guardado correctamente.",
 
-                ?,
+                id:
+                    resultado.lastInsertRowid,
 
-                ?,
+                codigo_interno:
+                    codigoInterno
 
-                ?,
+            });
 
-                ?,
 
-                ?,
+        } catch (error) {
 
-                ?,
+            console.error(
+                "❌ Error guardando paquete particular:",
+                error
+            );
 
-                ?,
 
-                ?,
+            return res
+                .status(500)
+                .json({
 
-                ?,
+                    ok: false,
 
-                ?,
+                    mensaje:
+                        "Error guardando paquete.",
 
-                ?,
+                    error:
+                        error.message
 
-                ?,
+                });
 
-                ?,
-
-                ?,
-
-                'recibido'
-
-            )
-
-        `).run(
-
-            cliente_id,
-
-            codigo_externo,
-
-            codigoInterno,
-
-            numero_orden,
-
-            fecha_emision,
-
-            peso,
-
-            bultos,
-
-            numero_bulto,
-
-            remitente,
-
-            destinatario,
-
-            telefono,
-
-            direccion,
-
-            localidad,
-
-            zona,
-
-            observaciones,
-
-            req.session.user.username
-
-        );
-
-
-        console.log(
-
-            "📦 Paquete particular guardado:",
-
-            codigoInterno
-
-        );
-
-
-        // ==============================
-        // RESPUESTA
-        // ==============================
-
-        res.json({
-
-            ok: true,
-
-            mensaje: "Paquete guardado correctamente.",
-
-            id: resultado.lastInsertRowid,
-
-            codigo_interno: codigoInterno
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-
-            "❌ Error guardando paquete particular:",
-
-            error
-
-        );
-
-
-        res.status(500).json({
-
-            ok: false,
-
-            mensaje: "Error guardando paquete.",
-
-            error: error.message
-
-        });
+        }
 
     }
-
-});
-
-// ==============================
-// LISTADO DE CLIENTES
-// ==============================
-
-router.get("/clientes", isAuthenticated, (req, res) => {
+);
 
 
-    try {
+// ============================================================
+// CLIENTES
+// ============================================================
+
+// LISTADO
+// GET /panel/logistica/clientes
+
+router.get(
+    "/clientes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const clientes =
+                db.prepare(`
+
+                    SELECT *
+
+                    FROM logistica_clientes
+
+                    ORDER BY id DESC
+
+                `).all();
 
 
-        const clientes = db.prepare(
-            `
-            SELECT *
-            FROM logistica_clientes
-            ORDER BY id DESC
-            `
-        ).all();
+            res.render(
+                "logistica/clientes",
+                {
+
+                    username:
+                        req.session.user.username,
+
+                    clientes
+
+                }
+            );
 
 
+        } catch (error) {
 
-        res.render("logistica/clientes", {
-
-            username: req.session.user.username,
-
-            clientes
-
-        });
+            console.error(
+                "❌ Error cargando clientes:",
+                error
+            );
 
 
+            res
+                .status(500)
+                .send(
+                    "Error cargando clientes"
+                );
 
-    } catch(error){
-
-
-        console.error("Error cargando clientes:", error);
-
-
-        res.status(500)
-        .send("Error cargando clientes");
-
+        }
 
     }
+);
 
 
-});
-
-
-
-
-
-// ==============================
+// ============================================================
 // CREAR CLIENTE
-// ==============================
+// POST /panel/logistica/clientes
+// ============================================================
 
-router.post("/clientes", isAuthenticated, (req,res)=>{
+router.post(
+    "/clientes",
+    isAuthenticated,
+    (req, res) => {
 
+        try {
 
-    try {
+            const {
 
-
-        const {
-
-            nombre,
-
-            empresa,
-
-            telefono,
-
-            email,
-
-            direccion
-
-
-        } = req.body;
-
-
-
-        db.prepare(
-            `
-            INSERT INTO logistica_clientes
-            (
                 nombre,
                 empresa,
                 telefono,
                 email,
                 direccion
-            )
 
-            VALUES (?, ?, ?, ?, ?)
-
-            `
-        ).run(
-
-            nombre,
-
-            empresa,
-
-            telefono,
-
-            email,
-
-            direccion
-
-        );
+            } = req.body;
 
 
+            if (!nombre) {
 
-        res.redirect(
-            "/panel/logistica/clientes"
-        );
+                return res
+                    .status(400)
+                    .send(
+                        "El nombre del cliente es obligatorio."
+                    );
 
-
-
-    } catch(error){
-
-
-        console.error(
-            "Error creando cliente:",
-            error
-        );
+            }
 
 
-        res.status(500)
-        .send("Error creando cliente");
+            db.prepare(`
+
+                INSERT INTO logistica_clientes
+
+                (
+
+                    nombre,
+
+                    empresa,
+
+                    telefono,
+
+                    email,
+
+                    direccion
+
+                )
+
+                VALUES (?, ?, ?, ?, ?)
+
+            `).run(
+
+                nombre,
+                empresa || null,
+                telefono || null,
+                email || null,
+                direccion || null
+
+            );
 
 
-    }
+            return res.redirect(
+                "/panel/logistica/clientes"
+            );
 
 
-});
+        } catch (error) {
 
+            console.error(
+                "❌ Error creando cliente:",
+                error
+            );
 
-
-
-
-
-// ==============================
-// FORMULARIO EDITAR CLIENTE
-// ==============================
-
-router.get("/clientes/editar/:id", isAuthenticated, (req,res)=>{
-
-
-    try {
-
-
-        const cliente = db.prepare(
-            `
-            SELECT *
-            FROM logistica_clientes
-            WHERE id = ?
-            `
-        )
-        .get(req.params.id);
-
-
-
-        if(!cliente){
 
             return res
-            .status(404)
-            .send("Cliente no encontrado");
+                .status(500)
+                .send(
+                    "Error creando cliente"
+                );
 
         }
 
+    }
+);
 
 
-        res.render(
-            "logistica/editarCliente",
-            {
+// ============================================================
+// FORMULARIO EDITAR CLIENTE
+// GET /panel/logistica/clientes/editar/:id
+// ============================================================
 
-                username:req.session.user.username,
+router.get(
+    "/clientes/editar/:id",
+    isAuthenticated,
+    (req, res) => {
 
-                cliente
+        try {
+
+            const cliente =
+                db.prepare(`
+
+                    SELECT *
+
+                    FROM logistica_clientes
+
+                    WHERE id = ?
+
+                `).get(
+                    req.params.id
+                );
+
+
+            if (!cliente) {
+
+                return res
+                    .status(404)
+                    .send(
+                        "Cliente no encontrado"
+                    );
 
             }
-        );
 
 
+            return res.render(
+                "logistica/editarCliente",
+                {
 
-    } catch(error){
+                    username:
+                        req.session.user.username,
+
+                    cliente
+
+                }
+            );
 
 
-        console.error(error);
+        } catch (error) {
 
-        res.status(500)
-        .send("Error buscando cliente");
+            console.error(
+                "❌ Error buscando cliente:",
+                error
+            );
 
+
+            return res
+                .status(500)
+                .send(
+                    "Error buscando cliente"
+                );
+
+        }
 
     }
+);
 
 
-});
-
-
-
-
-
-
-
-// ==============================
+// ============================================================
 // ACTUALIZAR CLIENTE
-// ==============================
+// POST /panel/logistica/clientes/editar/:id
+// ============================================================
 
-router.post("/clientes/editar/:id", isAuthenticated,(req,res)=>{
+router.post(
+    "/clientes/editar/:id",
+    isAuthenticated,
+    (req, res) => {
 
+        try {
 
-    try {
+            const {
 
+                nombre,
+                empresa,
+                telefono,
+                email,
+                direccion
 
-        const {
-
-            nombre,
-
-            empresa,
-
-            telefono,
-
-            email,
-
-            direccion
-
-
-        } = req.body;
+            } = req.body;
 
 
+            db.prepare(`
 
-        db.prepare(
-            `
-            UPDATE logistica_clientes
+                UPDATE logistica_clientes
 
-            SET
+                SET
 
-            nombre = ?,
+                    nombre = ?,
 
-            empresa = ?,
+                    empresa = ?,
 
-            telefono = ?,
+                    telefono = ?,
 
-            email = ?,
+                    email = ?,
 
-            direccion = ?,
+                    direccion = ?,
 
-            updated_at = CURRENT_TIMESTAMP
+                    updated_at =
+                        CURRENT_TIMESTAMP
 
+                WHERE id = ?
 
-            WHERE id = ?
+            `).run(
 
-            `
-        )
-        .run(
+                nombre,
+                empresa || null,
+                telefono || null,
+                email || null,
+                direccion || null,
+                req.params.id
 
-            nombre,
-
-            empresa,
-
-            telefono,
-
-            email,
-
-            direccion,
-
-            req.params.id
-
-        );
+            );
 
 
-
-        res.redirect(
-            "/panel/logistica/clientes"
-        );
-
+            return res.redirect(
+                "/panel/logistica/clientes"
+            );
 
 
-    } catch(error){
+        } catch (error) {
+
+            console.error(
+                "❌ Error actualizando cliente:",
+                error
+            );
 
 
-        console.error(
-            "Error actualizando cliente:",
-            error
-        );
+            return res
+                .status(500)
+                .send(
+                    "Error actualizando cliente"
+                );
 
-
-        res.status(500)
-        .send("Error actualizando cliente");
-
+        }
 
     }
+);
 
 
-});
-
-
-
-
-
-
-
-// ==============================
+// ============================================================
 // ELIMINAR CLIENTE
-// ==============================
+// GET /panel/logistica/clientes/eliminar/:id
+// ============================================================
 
-router.get("/clientes/eliminar/:id", isAuthenticated,(req,res)=>{
+router.get(
+    "/clientes/eliminar/:id",
+    isAuthenticated,
+    (req, res) => {
 
+        try {
 
-    try {
+            db.prepare(`
 
+                DELETE FROM logistica_clientes
 
-        db.prepare(
-            `
-            DELETE FROM logistica_clientes
+                WHERE id = ?
 
-            WHERE id = ?
-
-            `
-        )
-        .run(req.params.id);
-
-
-
-        res.redirect(
-            "/panel/logistica/clientes"
-        );
+            `).run(
+                req.params.id
+            );
 
 
-
-    } catch(error){
-
-
-        console.error(
-            "Error eliminando cliente:",
-            error
-        );
+            return res.redirect(
+                "/panel/logistica/clientes"
+            );
 
 
-        res.status(500)
-        .send("Error eliminando cliente");
+        } catch (error) {
 
+            console.error(
+                "❌ Error eliminando cliente:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .send(
+                    "Error eliminando cliente"
+                );
+
+        }
 
     }
+);
 
 
-});
-
-
-
-// ==============================
-// COLECTAS DE PAQUETES
-// ==============================
-
+// ============================================================
+// COLECTAS
+// ============================================================
 
 // LISTADO DE COLECTAS
+// GET /panel/logistica/colectas
 
-router.get("/colectas", isAuthenticated, (req,res)=>{
+router.get(
+    "/colectas",
+    isAuthenticated,
+    (req, res) => {
 
+        try {
 
-    try {
+            const colectas =
+                db.prepare(`
 
+                    SELECT
 
-        const colectas = db.prepare(`
+                        logistica_colectas.*,
 
-            SELECT
+                        logistica_clientes.nombre
+                        AS cliente_nombre
 
-                logistica_colectas.*,
+                    FROM logistica_colectas
 
-                logistica_clientes.nombre AS cliente_nombre
+                    INNER JOIN logistica_clientes
 
-            FROM logistica_colectas
+                    ON
+                        logistica_colectas.cliente_id
+                        =
+                        logistica_clientes.id
 
-            INNER JOIN logistica_clientes
+                    ORDER BY
+                        logistica_colectas.id DESC
 
-            ON logistica_colectas.cliente_id = logistica_clientes.id
-
-            ORDER BY logistica_colectas.id DESC
-
-
-        `).all();
-
-
-
-
-        const clientes = db.prepare(`
-
-            SELECT *
-
-            FROM logistica_clientes
-
-            ORDER BY nombre ASC
-
-        `).all();
+                `).all();
 
 
+            const clientes =
+                db.prepare(`
+
+                    SELECT *
+
+                    FROM logistica_clientes
+
+                    WHERE estado = 'activo'
+
+                    ORDER BY nombre ASC
+
+                `).all();
 
 
+            res.render(
+                "logistica/colectas",
+                {
 
-        res.render("logistica/colectas",{
+                    username:
+                        req.session.user.username,
 
+                    role:
+                        req.session.user.role,
 
-            username:req.session.user.username,
+                    colectas,
 
-            role:req.session.user.role,
+                    clientes
 
-            colectas,
-
-            clientes
-
-
-        });
-
-
-
-
-    } catch(error){
+                }
+            );
 
 
-        console.error(
-            "Error cargando colectas:",
-            error
-        );
+        } catch (error) {
+
+            console.error(
+                "❌ Error cargando colectas:",
+                error
+            );
 
 
-        res.status(500)
-        .send("Error cargando colectas");
+            res
+                .status(500)
+                .send(
+                    "Error cargando colectas"
+                );
 
+        }
 
     }
+);
 
 
-});
-
-
-
-
-
-
-
+// ============================================================
 // CREAR COLECTA
+// POST /panel/logistica/colectas
+// ============================================================
+
+router.post(
+    "/colectas",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const {
+
+                cliente_id,
+                chofer,
+                cantidad_paquetes,
+                observaciones
+
+            } = req.body;
 
 
-router.post("/colectas", isAuthenticated,(req,res)=>{
+            if (!cliente_id) {
+
+                return res
+                    .status(400)
+                    .send(
+                        "Debe seleccionar un cliente."
+                    );
+
+            }
 
 
-    try {
+            db.prepare(`
 
+                INSERT INTO logistica_colectas
 
-        const {
+                (
 
+                    cliente_id,
 
-            cliente_id,
+                    chofer,
 
-            chofer,
+                    cantidad_paquetes,
 
-            cantidad_paquetes,
+                    observaciones
 
-            observaciones
+                )
 
+                VALUES (?, ?, ?, ?)
 
-        } = req.body;
-
-
-
-
-
-        db.prepare(`
-
-            INSERT INTO logistica_colectas
-
-            (
+            `).run(
 
                 cliente_id,
 
-                chofer,
+                chofer || null,
 
-                cantidad_paquetes,
+                Number(cantidad_paquetes) || 0,
 
-                observaciones
+                observaciones || null
 
-            )
-
-
-            VALUES (?,?,?,?)
+            );
 
 
-        `).run(
+            return res.redirect(
+                "/panel/logistica/colectas"
+            );
 
 
-            cliente_id,
+        } catch (error) {
 
-            chofer,
-
-            cantidad_paquetes,
-
-            observaciones
-
-
-        );
+            console.error(
+                "❌ Error creando colecta:",
+                error
+            );
 
 
+            return res
+                .status(500)
+                .send(
+                    "Error creando colecta"
+                );
 
-
-        res.redirect(
-            "/panel/logistica/colectas"
-        );
-
-
-
-
-    } catch(error){
-
-
-        console.error(
-            "Error creando colecta:",
-            error
-        );
-
-
-        res.status(500)
-        .send("Error creando colecta");
-
+        }
 
     }
+);
 
 
-});
-
-//module.exports = router;
-
-// ==============================
+// ============================================================
 // CHOFERES
-// ==============================
+// ============================================================
 
-// LISTADO DE CHOFERES
+// LISTADO
+// GET /panel/logistica/choferes
 
-router.get("/choferes", isAuthenticated, (req,res)=>{
+router.get(
+    "/choferes",
+    isAuthenticated,
+    (req, res) => {
 
-    try {
+        try {
 
-        const choferes = db.prepare(`
+            const choferes =
+                db.prepare(`
 
-            SELECT *
+                    SELECT *
 
-            FROM logistica_choferes
+                    FROM logistica_choferes
 
-            ORDER BY id DESC
+                    ORDER BY id DESC
 
-        `).all();
-
-
-
-        res.render("logistica/choferes",{
-
-            username:req.session.user.username,
-
-            choferes
-
-        });
+                `).all();
 
 
+            res.render(
+                "logistica/choferes",
+                {
 
-    } catch(error){
+                    username:
+                        req.session.user.username,
 
-        console.error(
-            "Error cargando choferes:",
-            error
-        );
+                    choferes
 
-        res.status(500)
-        .send("Error cargando choferes");
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error cargando choferes:",
+                error
+            );
+
+
+            res
+                .status(500)
+                .send(
+                    "Error cargando choferes"
+                );
+
+        }
 
     }
+);
 
 
-});
-
-
-
-
-
+// ============================================================
 // CREAR CHOFER
+// POST /panel/logistica/choferes
+// ============================================================
 
+router.post(
+    "/choferes",
+    isAuthenticated,
+    (req, res) => {
 
-router.post("/choferes", isAuthenticated,(req,res)=>{
+        try {
 
-
-    try {
-
-
-        const {
-
-            nombre,
-            telefono,
-            vehiculo,
-            patente,
-            estado
-
-        } = req.body;
-
-
-
-        db.prepare(`
-
-            INSERT INTO logistica_choferes
-
-            (
+            const {
 
                 nombre,
                 telefono,
@@ -934,516 +982,794 @@ router.post("/choferes", isAuthenticated,(req,res)=>{
                 patente,
                 estado
 
-            )
+            } = req.body;
 
 
-            VALUES (?,?,?,?,?)
+            if (!nombre) {
+
+                return res
+                    .status(400)
+                    .send(
+                        "El nombre del chofer es obligatorio."
+                    );
+
+            }
 
 
-        `).run(
+            db.prepare(`
 
-            nombre,
-            telefono,
-            vehiculo,
-            patente,
-            estado || "activo"
+                INSERT INTO logistica_choferes
 
-        );
+                (
 
+                    nombre,
 
+                    telefono,
 
-        res.redirect(
-            "/panel/logistica/choferes"
-        );
+                    vehiculo,
 
+                    patente,
 
+                    estado
 
-    } catch(error){
+                )
 
+                VALUES (?, ?, ?, ?, ?)
 
-        console.error(
-            "Error creando chofer:",
-            error
-        );
+            `).run(
 
+                nombre,
 
-        res.status(500)
-        .send("Error creando chofer");
+                telefono || null,
 
+                vehiculo || null,
 
-    }
+                patente || null,
 
+                estado || "activo"
 
-});
+            );
 
 
+            return res.redirect(
+                "/panel/logistica/choferes"
+            );
 
 
+        } catch (error) {
 
+            console.error(
+                "❌ Error creando chofer:",
+                error
+            );
 
-// FORMULARIO EDITAR CHOFER
-
-
-router.get("/choferes/editar/:id", isAuthenticated,(req,res)=>{
-
-
-    try {
-
-
-        const chofer = db.prepare(`
-
-            SELECT *
-
-            FROM logistica_choferes
-
-            WHERE id = ?
-
-        `)
-        .get(req.params.id);
-
-
-
-        if(!chofer){
 
             return res
-            .status(404)
-            .send("Chofer no encontrado");
+                .status(500)
+                .send(
+                    "Error creando chofer"
+                );
 
         }
 
-
-
-        res.render(
-            "logistica/editarChofer",
-            {
-
-                username:req.session.user.username,
-
-                chofer
-
-            }
-        );
-
-
-
-    } catch(error){
-
-
-        console.error(error);
-
-
-        res.status(500)
-        .send("Error buscando chofer");
-
-
     }
-
-
-});
-
-
-
-
-
-
-
-// ACTUALIZAR CHOFER
-
-
-router.post("/choferes/editar/:id", isAuthenticated,(req,res)=>{
-
-
-    try {
-
-
-        const {
-
-            nombre,
-            telefono,
-            vehiculo,
-            patente,
-            estado
-
-        } = req.body;
-
-
-
-        db.prepare(`
-
-            UPDATE logistica_choferes
-
-            SET
-
-                nombre=?,
-                telefono=?,
-                vehiculo=?,
-                patente=?,
-                estado=?
-
-
-            WHERE id=?
-
-
-        `)
-        .run(
-
-            nombre,
-            telefono,
-            vehiculo,
-            patente,
-            estado,
-            req.params.id
-
-        );
-
-
-
-        res.redirect(
-            "/panel/logistica/choferes"
-        );
-
-
-
-    } catch(error){
-
-
-        console.error(error);
-
-
-        res.status(500)
-        .send("Error actualizando chofer");
-
-
-    }
-
-
-});
-
-
-
-
-
-
-
-// ELIMINAR CHOFER
-
-
-router.get("/choferes/eliminar/:id", isAuthenticated,(req,res)=>{
-
-
-    try {
-
-
-        db.prepare(`
-
-            DELETE FROM logistica_choferes
-
-            WHERE id=?
-
-        `)
-        .run(req.params.id);
-
-
-
-        res.redirect(
-            "/panel/logistica/choferes"
-        );
-
-
-
-    } catch(error){
-
-
-        console.error(error);
-
-
-        res.status(500)
-        .send("Error eliminando chofer");
-
-
-    }
-
-
-});
-
-// ==============================
-// PAQUETES
-// ==============================
-
-
-// LISTADO DE PAQUETES
-
-router.get("/paquetes", isAuthenticated, (req,res)=>{
-
-    try {
-
-
-        const paquetes = db.prepare(`
-
-            SELECT 
-
-            logistica_paquetes.*,
-
-            logistica_clientes.nombre AS cliente_nombre
-
-            FROM logistica_paquetes
-
-            INNER JOIN logistica_clientes
-
-            ON logistica_paquetes.cliente_id = logistica_clientes.id
-
-            ORDER BY logistica_paquetes.id DESC
-
-
-        `).all();
-
-
-
-        const clientes = db.prepare(`
-
-            SELECT *
-
-            FROM logistica_clientes
-
-            WHERE estado='activo'
-
-            ORDER BY nombre ASC
-
-        `).all();
-
-
-
-        res.render("logistica/paquetes",{
-
-
-            username:req.session.user.username,
-
-            role:req.session.user.role,
-
-            paquetes,
-
-            clientes
-
-
-        });
-
-
-
-    } catch(error){
-
-
-        console.error(
-            "Error cargando paquetes:",
-            error
-        );
-
-
-        res.status(500)
-        .send("Error cargando paquetes");
-
-
-    }
-
-
-});
-
-
-
-
-
-
-
-// CREAR PAQUETE
-
-
-router.post("/paquetes", isAuthenticated, async(req,res)=>{
-
-
-try{
-
-
-const {
-
-cliente_id,
-
-tipo,
-
-codigo_externo,
-
-descripcion
-
-
-}=req.body;
-
-
-
-
-// generar código interno
-
-const ultimo = db.prepare(`
-
-SELECT id
-
-FROM logistica_paquetes
-
-ORDER BY id DESC
-
-LIMIT 1
-
-`).get();
-
-
-
-let numero = 1;
-
-
-if(ultimo){
-
-numero = ultimo.id + 1;
-
-}
-
-
-
-const codigoInterno =
-"PKG-" +
-String(numero).padStart(6,"0");
-
-
-
-
-// generar QR
-
-const qrNombre =
-codigoInterno + ".png";
-
-
-const carpetaQR = path.join(
-    __dirname,
-    "../public/uploads/qr"
-);
-
-if (!fs.existsSync(carpetaQR)) {
-    fs.mkdirSync(carpetaQR, { recursive: true });
-}
-
-const rutaQR = path.join(
-    carpetaQR,
-    qrNombre
 );
 
 
-await QRCode.toFile(
-
-rutaQR,
-
-codigoInterno
-
-);
-
-
-
-
-
-// guardar paquete
-
-
-db.prepare(`
-
-INSERT INTO logistica_paquetes
-
-(
-
-cliente_id,
-
-tipo,
-
-codigo_externo,
-
-codigo_interno,
-
-qr_codigo,
-
-descripcion,
-
-colectado_por
-
-)
-
-
-VALUES (?,?,?,?,?,?,?)
-
-
-`).run(
-
-
-cliente_id,
-
-tipo,
-
-codigo_externo,
-
-codigoInterno,
-
-"/uploads/qr/"+qrNombre,
-
-descripcion,
-
-req.session.user.username
-
-
-);
-
-
-
-
-res.redirect(
-"/panel/logistica/paquetes"
-);
-
-
-
-}catch(error){
-
-
-console.error(
-"Error creando paquete:",
-error
-);
-
-
-res.status(500)
-.send("Error creando paquete");
-
-
-}
-
-
-
-});
-
-// ==============================
-// MERCADO LIBRE - OAUTH
-// ==============================
+// ============================================================
+// EDITAR CHOFER
+// GET /panel/logistica/choferes/editar/:id
+// ============================================================
 
 router.get(
-    "/mercadolibre/callback",
-    async (req, res) => {
+    "/choferes/editar/:id",
+    isAuthenticated,
+    (req, res) => {
 
-        console.log(
-            "🔵 Callback recibido desde Mercado Libre"
-        );
+        try {
 
-        console.log(
-            "Query:",
-            req.query
-        );
+            const chofer =
+                db.prepare(`
 
-        res.send(
-            "Mercado Libre devolvió la autorización correctamente."
-        );
+                    SELECT *
+
+                    FROM logistica_choferes
+
+                    WHERE id = ?
+
+                `).get(
+                    req.params.id
+                );
+
+
+            if (!chofer) {
+
+                return res
+                    .status(404)
+                    .send(
+                        "Chofer no encontrado"
+                    );
+
+            }
+
+
+            return res.render(
+                "logistica/editarChofer",
+                {
+
+                    username:
+                        req.session.user.username,
+
+                    chofer
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error buscando chofer:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .send(
+                    "Error buscando chofer"
+                );
+
+        }
 
     }
 );
+
+
+// ============================================================
+// ACTUALIZAR CHOFER
+// POST /panel/logistica/choferes/editar/:id
+// ============================================================
+
+router.post(
+    "/choferes/editar/:id",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const {
+
+                nombre,
+                telefono,
+                vehiculo,
+                patente,
+                estado
+
+            } = req.body;
+
+
+            db.prepare(`
+
+                UPDATE logistica_choferes
+
+                SET
+
+                    nombre = ?,
+
+                    telefono = ?,
+
+                    vehiculo = ?,
+
+                    patente = ?,
+
+                    estado = ?
+
+                WHERE id = ?
+
+            `).run(
+
+                nombre,
+                telefono || null,
+                vehiculo || null,
+                patente || null,
+                estado || "activo",
+                req.params.id
+
+            );
+
+
+            return res.redirect(
+                "/panel/logistica/choferes"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error actualizando chofer:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .send(
+                    "Error actualizando chofer"
+                );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// ELIMINAR CHOFER
+// GET /panel/logistica/choferes/eliminar/:id
+// ============================================================
+
+router.get(
+    "/choferes/eliminar/:id",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            db.prepare(`
+
+                DELETE FROM logistica_choferes
+
+                WHERE id = ?
+
+            `).run(
+                req.params.id
+            );
+
+
+            return res.redirect(
+                "/panel/logistica/choferes"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error eliminando chofer:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .send(
+                    "Error eliminando chofer"
+                );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// PAQUETES
+// ============================================================
+
+// LISTADO DE PAQUETES
+// GET /panel/logistica/paquetes
+
+router.get(
+    "/paquetes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const paquetes =
+                db.prepare(`
+
+                    SELECT
+
+                        logistica_paquetes.*,
+
+                        logistica_clientes.nombre
+                        AS cliente_nombre
+
+                    FROM logistica_paquetes
+
+                    INNER JOIN logistica_clientes
+
+                    ON
+                        logistica_paquetes.cliente_id
+                        =
+                        logistica_clientes.id
+
+                    ORDER BY
+                        logistica_paquetes.id DESC
+
+                `).all();
+
+
+            const clientes =
+                db.prepare(`
+
+                    SELECT *
+
+                    FROM logistica_clientes
+
+                    WHERE estado = 'activo'
+
+                    ORDER BY nombre ASC
+
+                `).all();
+
+
+            res.render(
+                "logistica/paquetes",
+                {
+
+                    username:
+                        req.session.user.username,
+
+                    role:
+                        req.session.user.role,
+
+                    paquetes,
+
+                    clientes
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error cargando paquetes:",
+                error
+            );
+
+
+            res
+                .status(500)
+                .send(
+                    "Error cargando paquetes"
+                );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// CREAR PAQUETE
+// POST /panel/logistica/paquetes
+// ============================================================
+
+router.post(
+    "/paquetes",
+    isAuthenticated,
+    async (req, res) => {
+
+        try {
+
+            const {
+
+                cliente_id,
+                tipo,
+                codigo_externo,
+                descripcion
+
+            } = req.body;
+
+
+            if (!cliente_id) {
+
+                return res
+                    .status(400)
+                    .send(
+                        "Debe seleccionar un cliente."
+                    );
+
+            }
+
+
+            // ------------------------------------------------
+            // GENERAR CÓDIGO INTERNO
+            // ------------------------------------------------
+
+            const ultimo =
+                db.prepare(`
+
+                    SELECT id
+
+                    FROM logistica_paquetes
+
+                    ORDER BY id DESC
+
+                    LIMIT 1
+
+                `).get();
+
+
+            let numero = 1;
+
+
+            if (ultimo) {
+
+                numero =
+                    Number(ultimo.id) + 1;
+
+            }
+
+
+            const codigoInterno =
+                "PKG-" +
+                String(numero).padStart(6, "0");
+
+
+            // ------------------------------------------------
+            // GENERAR QR
+            // ------------------------------------------------
+
+            const qrNombre =
+                codigoInterno + ".png";
+
+
+            const carpetaQR =
+                path.join(
+                    __dirname,
+                    "../public/uploads/qr"
+                );
+
+
+            if (
+                !fs.existsSync(carpetaQR)
+            ) {
+
+                fs.mkdirSync(
+                    carpetaQR,
+                    {
+                        recursive: true
+                    }
+                );
+
+            }
+
+
+            const rutaQR =
+                path.join(
+                    carpetaQR,
+                    qrNombre
+                );
+
+
+            await QRCode.toFile(
+
+                rutaQR,
+
+                codigoInterno
+
+            );
+
+
+            // ------------------------------------------------
+            // GUARDAR PAQUETE
+            // ------------------------------------------------
+
+            db.prepare(`
+
+                INSERT INTO logistica_paquetes
+
+                (
+
+                    cliente_id,
+
+                    tipo,
+
+                    codigo_externo,
+
+                    codigo_interno,
+
+                    qr_codigo,
+
+                    descripcion,
+
+                    colectado_por
+
+                )
+
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+
+            `).run(
+
+                cliente_id,
+
+                tipo || "flex",
+
+                codigo_externo || null,
+
+                codigoInterno,
+
+                "/uploads/qr/" +
+                    qrNombre,
+
+                descripcion || null,
+
+                req.session.user.username
+
+            );
+
+
+            console.log(
+                "📦 Paquete creado:",
+                codigoInterno
+            );
+
+
+            return res.redirect(
+                "/panel/logistica/paquetes"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error creando paquete:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .send(
+                    "Error creando paquete"
+                );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// API AUXILIAR PARA MERCADO LIBRE
+//
+// Estas rutas NO reemplazan mercadolibre.js.
+// Sirven para que mercadolibre.ejs pueda consultar
+// información logística desde el frontend.
+//
+// GET /panel/logistica/api/clientes
+// GET /panel/logistica/api/choferes
+// GET /panel/logistica/api/paquetes
+// ============================================================
+
+
+// ------------------------------------------------------------
+// CLIENTES
+// ------------------------------------------------------------
+
+router.get(
+    "/api/clientes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const clientes =
+                db.prepare(`
+
+                    SELECT
+
+                        id,
+
+                        nombre,
+
+                        empresa,
+
+                        telefono,
+
+                        email,
+
+                        direccion,
+
+                        localidad,
+
+                        provincia,
+
+                        estado
+
+                    FROM logistica_clientes
+
+                    WHERE estado = 'activo'
+
+                    ORDER BY nombre ASC
+
+                `).all();
+
+
+            return res.json({
+
+                ok: true,
+
+                clientes
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error API clientes:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .json({
+
+                    ok: false,
+
+                    mensaje:
+                        "Error obteniendo clientes."
+
+                });
+
+        }
+
+    }
+);
+
+
+// ------------------------------------------------------------
+// CHOFERES
+// ------------------------------------------------------------
+
+router.get(
+    "/api/choferes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const choferes =
+                db.prepare(`
+
+                    SELECT
+
+                        id,
+
+                        nombre,
+
+                        telefono,
+
+                        vehiculo,
+
+                        patente,
+
+                        estado
+
+                    FROM logistica_choferes
+
+                    WHERE estado = 'activo'
+
+                    ORDER BY nombre ASC
+
+                `).all();
+
+
+            return res.json({
+
+                ok: true,
+
+                choferes
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error API choferes:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .json({
+
+                    ok: false,
+
+                    mensaje:
+                        "Error obteniendo choferes."
+
+                });
+
+        }
+
+    }
+);
+
+
+// ------------------------------------------------------------
+// PAQUETES
+// ------------------------------------------------------------
+
+router.get(
+    "/api/paquetes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const paquetes =
+                db.prepare(`
+
+                    SELECT
+
+                        p.*,
+
+                        c.nombre
+                        AS cliente_nombre,
+
+                        c.empresa
+                        AS cliente_empresa
+
+                    FROM logistica_paquetes p
+
+                    LEFT JOIN logistica_clientes c
+
+                    ON
+                        p.cliente_id
+                        =
+                        c.id
+
+                    ORDER BY
+                        p.id DESC
+
+                `).all();
+
+
+            return res.json({
+
+                ok: true,
+
+                paquetes
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error API paquetes:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .json({
+
+                    ok: false,
+
+                    mensaje:
+                        "Error obteniendo paquetes."
+
+                });
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// EXPORTAR ROUTER
+// ============================================================
 
 module.exports = router;

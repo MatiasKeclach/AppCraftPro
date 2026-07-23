@@ -547,3 +547,232 @@ for (const columna in columnasParticulares) {
 console.log(
     "✅ Campos de paquetes particulares actualizados"
 );
+
+// ==========================================
+// INTEGRACIÓN MERCADO LIBRE - LOGÍSTICA
+// ==========================================
+
+console.log("");
+console.log("==========================================");
+console.log("🔵 INICIANDO ACTUALIZACIÓN MERCADO LIBRE");
+console.log("==========================================");
+
+
+// ==========================================
+// FUNCIÓN SEGURA PARA AGREGAR COLUMNAS
+// ==========================================
+
+function agregarColumnaMercadoLibre(tabla, columna, tipo) {
+
+    const columnas = db
+        .prepare(`PRAGMA table_info(${tabla})`)
+        .all()
+        .map(c => c.name);
+
+
+    if (!columnas.includes(columna)) {
+
+        console.log(
+            `🔹 Agregando columna '${columna}' a '${tabla}'...`
+        );
+
+
+        db.prepare(`
+            ALTER TABLE ${tabla}
+            ADD COLUMN ${columna} ${tipo}
+        `).run();
+
+
+        console.log(
+            `✅ Columna '${columna}' agregada correctamente`
+        );
+
+    } else {
+
+        console.log(
+            `✔️ Columna '${columna}' ya existe`
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// COLUMNAS MERCADO LIBRE EN PAQUETES
+// ==========================================
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "colecta_id",
+    "INTEGER"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "mercadolibre_order_id",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "mercadolibre_shipment_id",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "mercadolibre_pack_id",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "mercadolibre_status",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "tracking_number",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "destinatario",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "telefono",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "direccion",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "localidad",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "provincia",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "codigo_postal",
+    "TEXT"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "fecha_importacion",
+    "DATETIME"
+);
+
+
+agregarColumnaMercadoLibre(
+    "logistica_paquetes",
+    "origen",
+    "TEXT DEFAULT 'mercadolibre'"
+);
+
+
+// ==========================================
+// TABLA DE RELACIÓN MERCADO LIBRE
+// ==========================================
+
+db.exec(`
+
+    CREATE TABLE IF NOT EXISTS logistica_mercadolibre_importaciones (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        mercadolibre_order_id TEXT,
+
+        mercadolibre_shipment_id TEXT UNIQUE,
+
+        mercadolibre_pack_id TEXT,
+
+        paquete_id INTEGER,
+
+        cliente_id INTEGER,
+
+        colecta_id INTEGER,
+
+        estado TEXT DEFAULT 'importado',
+
+        fecha_importacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (paquete_id)
+            REFERENCES logistica_paquetes(id),
+
+        FOREIGN KEY (cliente_id)
+            REFERENCES logistica_clientes(id),
+
+        FOREIGN KEY (colecta_id)
+            REFERENCES logistica_colectas(id)
+
+    );
+
+`);
+
+
+console.log(
+    "✅ Tabla 'logistica_mercadolibre_importaciones' verificada"
+);
+
+
+// ==========================================
+// FINAL
+// ==========================================
+
+console.log("");
+console.log("==========================================");
+console.log("🎉 MERCADO LIBRE - BASE DE DATOS LISTA");
+console.log("==========================================");
+
+console.log(
+    "📦 Paquetes preparados para integración Mercado Libre"
+);
+
+console.log(
+    "🔗 Relación paquete → colecta disponible"
+);
+
+console.log(
+    "👤 Relación paquete → cliente disponible"
+);
+
+console.log(
+    "🚚 Paquetes preparados para asignación a chofer"
+);
+
+console.log(
+    "🔄 Control de envíos duplicados habilitado"
+);
+
+console.log(
+    "==========================================");

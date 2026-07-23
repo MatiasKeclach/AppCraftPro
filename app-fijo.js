@@ -84,7 +84,7 @@ app.use(
   authRoutes
 );
 
-const logisticaRoutes = require("./routes/logistica");
+const logisticaRoutes = require("./routes/logistica-fijo");
 
 app.use("/panel/users", userRoutes);
 

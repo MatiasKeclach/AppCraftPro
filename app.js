@@ -285,7 +285,7 @@ try {
 // ============================================================
 
 const logisticaRoutes =
-    require("./routes/logistica");
+    require("./routes/logistica-fijo");
 
 
 app.use(
