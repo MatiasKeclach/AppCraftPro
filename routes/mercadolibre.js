@@ -1,6 +1,7 @@
 // ============================================================
 // routes/mercadolibre.js
-// INTEGRACIÓN MERCADO LIBRE + LOGÍSTICA APPCRAFTPRO
+// MERCADO LIBRE + MERCADO ENVÍOS FLEX
+// APPCRAFTPRO
 // ============================================================
 
 const express = require("express");
@@ -24,14 +25,6 @@ const MERCADOLIBRE_CLIENT_SECRET =
 
 const MERCADOLIBRE_REDIRECT_URI =
     process.env.MERCADOLIBRE_REDIRECT_URI;
-
-
-// ============================================================
-// CONFIGURACIÓN GENERAL
-// ============================================================
-
-const ML_API =
-    "https://api.mercadolibre.com";
 
 
 // ============================================================
@@ -65,61 +58,7 @@ function validarConfiguracion() {
 
 
 // ============================================================
-// OBTENER TOKEN
-// ============================================================
-
-function obtenerAccessToken(req) {
-
-    if (
-        !req.session ||
-        !req.session.mercadolibreAccessToken
-    ) {
-
-        return null;
-
-    }
-
-    return req.session.mercadolibreAccessToken;
-
-}
-
-
-// ============================================================
-// AXIOS AUTORIZADO
-// ============================================================
-
-function mlRequest(
-    accessToken
-) {
-
-    return axios.create({
-
-        baseURL:
-            ML_API,
-
-        headers: {
-
-            Authorization:
-                `Bearer ${accessToken}`,
-
-            Accept:
-                "application/json"
-
-        },
-
-        timeout:
-            20000
-
-    });
-
-}
-
-
-// ============================================================
 // DASHBOARD
-//
-// GET:
-// /panel/logistica/mercadolibre
 // ============================================================
 
 router.get(
@@ -131,10 +70,6 @@ router.get(
 
             const faltantes =
                 validarConfiguracion();
-
-            const configurado =
-                faltantes.length === 0;
-
 
             return res.render(
                 "logistica/mercadolibre",
@@ -151,10 +86,7 @@ router.get(
                             : "usuario",
 
                     mercadolibreConnected:
-                        Boolean(
-                            req.session &&
-                            req.session.mercadolibreConnected
-                        ),
+                        req.session.mercadolibreConnected === true,
 
                     lastSync:
                         null,
@@ -169,7 +101,7 @@ router.get(
                         0,
 
                     mercadolibreConfigured:
-                        configurado,
+                        faltantes.length === 0,
 
                     configurationErrors:
                         faltantes
@@ -180,7 +112,7 @@ router.get(
         } catch (error) {
 
             console.error(
-                "❌ Error cargando módulo Mercado Libre:",
+                "❌ Error cargando Mercado Libre:",
                 error
             );
 
@@ -198,9 +130,6 @@ router.get(
 
 // ============================================================
 // CONECTAR MERCADO LIBRE
-//
-// GET:
-// /panel/logistica/mercadolibre/conectar
 // ============================================================
 
 router.get(
@@ -225,7 +154,7 @@ router.get(
                         <h2>Configuración incompleta</h2>
 
                         <p>
-                            Faltan:
+                        Faltan:
                         </p>
 
                         <pre>
@@ -265,50 +194,19 @@ ${faltantes.join("\n")}
                 "code"
             );
 
-
             authorizationURL.searchParams.set(
                 "client_id",
                 MERCADOLIBRE_CLIENT_ID
             );
-
 
             authorizationURL.searchParams.set(
                 "redirect_uri",
                 MERCADOLIBRE_REDIRECT_URI
             );
 
-
             authorizationURL.searchParams.set(
                 "state",
                 state
-            );
-
-
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "🔵 INICIANDO OAUTH MERCADO LIBRE"
-            );
-
-            console.log(
-                "👤 Usuario:",
-                req.session.user.username
-            );
-
-            console.log(
-                "🆔 Usuario AppCraftPro:",
-                req.session.user.id
-            );
-
-            console.log(
-                "🔗 Redirect:",
-                MERCADOLIBRE_REDIRECT_URI
-            );
-
-            console.log(
-                "=========================================="
             );
 
 
@@ -320,7 +218,7 @@ ${faltantes.join("\n")}
         } catch (error) {
 
             console.error(
-                "❌ Error iniciando OAuth:",
+                "❌ Error OAuth:",
                 error
             );
 
@@ -338,9 +236,6 @@ ${faltantes.join("\n")}
 
 // ============================================================
 // CALLBACK OAUTH
-//
-// GET:
-// /panel/logistica/mercadolibre/callback
 // ============================================================
 
 router.get(
@@ -368,11 +263,11 @@ router.get(
                         <h2>Autorización cancelada</h2>
 
                         <p>
-                            ${error_description || error}
+                        ${error_description || error}
                         </p>
 
                         <a href="/panel/logistica/mercadolibre">
-                            Volver
+                        Volver
                         </a>
                         `
                     );
@@ -387,7 +282,7 @@ router.get(
                 return res
                     .status(400)
                     .send(
-                        "Mercado Libre no devolvió el código de autorización."
+                        "Mercado Libre no devolvió código de autorización."
                     );
 
             }
@@ -408,17 +303,7 @@ router.get(
                 return res
                     .status(403)
                     .send(
-                        `
-                        <h2>Error de seguridad</h2>
-
-                        <p>
-                            La sesión OAuth no coincide.
-                        </p>
-
-                        <a href="/panel/logistica/mercadolibre">
-                            Volver
-                        </a>
-                        `
+                        "Estado OAuth inválido."
                     );
 
             }
@@ -430,15 +315,10 @@ router.get(
                     : null;
 
 
-            console.log(
-                "🔄 Intercambiando CODE por TOKEN..."
-            );
-
-
             const tokenResponse =
                 await axios.post(
 
-                    `${ML_API}/oauth/token`,
+                    "https://api.mercadolibre.com/oauth/token",
 
                     new URLSearchParams({
 
@@ -495,7 +375,7 @@ router.get(
             ) {
 
                 throw new Error(
-                    "Mercado Libre no devolvió Access Token."
+                    "No se recibió Access Token."
                 );
 
             }
@@ -510,7 +390,7 @@ router.get(
                 const userResponse =
                     await axios.get(
 
-                        `${ML_API}/users/me`,
+                        "https://api.mercadolibre.com/users/me",
 
                         {
 
@@ -529,14 +409,13 @@ router.get(
                 mercadoLibreUser =
                     userResponse.data;
 
-
-            } catch (error) {
+            } catch (
+                userError
+            ) {
 
                 console.error(
-                    "⚠️ Error obteniendo usuario ML:",
-                    error.response
-                        ? error.response.data
-                        : error.message
+                    "Error obteniendo usuario ML:",
+                    userError.message
                 );
 
             }
@@ -564,27 +443,11 @@ router.get(
                 appcraftUserId;
 
 
-            delete req.session.mercadolibreOAuthState;
+            delete req.session
+                .mercadolibreOAuthState;
 
-            delete req.session.mercadolibreOAuthUserId;
-
-
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "🎉 MERCADO LIBRE CONECTADO"
-            );
-
-            console.log(
-                "👤 ML USER:",
-                mercadoLibreUserId
-            );
-
-            console.log(
-                "=========================================="
-            );
+            delete req.session
+                .mercadolibreOAuthUserId;
 
 
             return res.redirect(
@@ -595,15 +458,11 @@ router.get(
         } catch (error) {
 
             console.error(
-                "❌ ERROR CALLBACK MERCADO LIBRE"
-            );
-
-            console.error(
+                "❌ ERROR CALLBACK ML:",
                 error.response
                     ? error.response.data
                     : error.message
             );
-
 
             return res
                 .status(500)
@@ -612,11 +471,11 @@ router.get(
                     <h2>Error conectando Mercado Libre</h2>
 
                     <p>
-                        No se pudo completar la conexión.
+                    ${error.message}
                     </p>
 
                     <a href="/panel/logistica/mercadolibre">
-                        Volver
+                    Volver
                     </a>
                     `
                 );
@@ -628,10 +487,7 @@ router.get(
 
 
 // ============================================================
-// ESTADO DE CONEXIÓN
-//
-// GET:
-// /panel/logistica/mercadolibre/estado
+// ESTADO
 // ============================================================
 
 router.get(
@@ -641,51 +497,17 @@ router.get(
 
         try {
 
-            const accessToken =
-                obtenerAccessToken(req);
-
-
-            if (
-                !accessToken
-            ) {
-
-                return res.json({
-
-                    ok:
-                        true,
-
-                    conectado:
-                        false,
-
-                    cuenta:
-                        null
-
-                });
-
-            }
-
-
-            const api =
-                mlRequest(
-                    accessToken
-                );
-
-
-            const response =
-                await api.get(
-                    "/users/me"
+            const conectado =
+                !!(
+                    req.session &&
+                    req.session.mercadolibreAccessToken
                 );
 
 
             const cuenta =
-                response.data;
-
-
-            req.session.mercadolibreConnected =
-                true;
-
-            req.session.mercadolibreAccount =
-                cuenta;
+                req.session
+                    ? req.session.mercadolibreAccount
+                    : null;
 
 
             return res.json({
@@ -693,50 +515,45 @@ router.get(
                 ok:
                     true,
 
-                conectado:
-                    true,
+                conectado,
 
-                cuenta: {
+                cuenta:
+                    cuenta
+                        ? {
 
-                    id:
-                        cuenta.id,
+                            id:
+                                cuenta.id,
 
-                    nickname:
-                        cuenta.nickname,
+                            nickname:
+                                cuenta.nickname,
 
-                    firstName:
-                        cuenta.first_name,
+                            firstName:
+                                cuenta.first_name,
 
-                    lastName:
-                        cuenta.last_name
+                            lastName:
+                                cuenta.last_name
 
-                }
+                        }
+                        : null
 
             });
-
 
         } catch (error) {
 
-            console.error(
-                "❌ Error estado ML:",
-                error.response
-                    ? error.response.data
-                    : error.message
-            );
+            return res
+                .status(500)
+                .json({
 
+                    ok:
+                        false,
 
-            return res.json({
+                    conectado:
+                        false,
 
-                ok:
-                    false,
+                    mensaje:
+                        "Error consultando conexión."
 
-                conectado:
-                    false,
-
-                cuenta:
-                    null
-
-            });
+                });
 
         }
 
@@ -745,28 +562,19 @@ router.get(
 
 
 // ============================================================
-// OBTENER ÓRDENES RECIENTES
-//
-// Esta ruta busca las órdenes de la cuenta.
-// Luego obtenemos el shipment_id de cada orden.
-//
-// GET:
-// /panel/logistica/mercadolibre/envios-flex
+// SINCRONIZAR ENVÍOS
 // ============================================================
 
-router.get(
-    "/envios-flex",
+router.post(
+    "/sincronizar",
     isAuthenticated,
     async (req, res) => {
 
         try {
 
-            const accessToken =
-                obtenerAccessToken(req);
-
-
             if (
-                !accessToken
+                !req.session ||
+                !req.session.mercadolibreAccessToken
             ) {
 
                 return res
@@ -787,38 +595,47 @@ router.get(
             }
 
 
-            const api =
-                mlRequest(
-                    accessToken
-                );
+            const accessToken =
+                req.session.mercadolibreAccessToken;
+
+
+            const userId =
+                req.session.mercadolibreUserId;
 
 
             console.log(
-                "=========================================="
+                "======================================"
             );
 
             console.log(
-                "📦 CONSULTANDO ÓRDENES MERCADO LIBRE"
+                "🔄 SINCRONIZACIÓN MERCADO LIBRE"
             );
 
             console.log(
-                "=========================================="
+                "👤 Usuario:",
+                userId
+            );
+
+            console.log(
+                "======================================"
             );
 
 
-            // ------------------------------------------------
-            // Buscar órdenes recientes
-            // ------------------------------------------------
+            // ==================================================
+            // BUSCAR ÓRDENES RECIENTES
+            // ==================================================
 
             const ordersResponse =
-                await api.get(
-                    "/orders/search",
+                await axios.get(
+
+                    "https://api.mercadolibre.com/orders/search",
+
                     {
 
                         params: {
 
                             seller:
-                                req.session.mercadolibreUserId,
+                                userId,
 
                             sort:
                                 "date_desc",
@@ -826,15 +643,22 @@ router.get(
                             limit:
                                 50
 
+                        },
+
+                        headers: {
+
+                            Authorization:
+                                `Bearer ${accessToken}`
+
                         }
 
                     }
+
                 );
 
 
             const orders =
-                ordersResponse.data.results ||
-                [];
+                ordersResponse.data.results || [];
 
 
             console.log(
@@ -847,139 +671,72 @@ router.get(
                 [];
 
 
-            // ------------------------------------------------
-            // Recorrer órdenes
-            // ------------------------------------------------
+            // ==================================================
+            // PROCESAR ÓRDENES
+            // ==================================================
 
             for (
                 const order of orders
             ) {
 
+                const shipmentId =
+                    order.shipping &&
+                    order.shipping.id;
+
+
+                if (
+                    !shipmentId
+                ) {
+
+                    continue;
+
+                }
+
+
                 try {
 
-                    const shippingId =
-                        order.shipping
-                            ? order.shipping.id
-                            : null;
+                    const shipmentResponse =
+                        await axios.get(
 
+                            `https://api.mercadolibre.com/shipments/${shipmentId}`,
 
-                    if (
-                        !shippingId
-                    ) {
+                            {
 
-                        continue;
+                                headers: {
 
-                    }
+                                    Authorization:
+                                        `Bearer ${accessToken}`
 
+                                }
 
-                    let shipping =
-                        null;
-
-
-                    try {
-
-                        const shippingResponse =
-                            await api.get(
-
-                                `/shipments/${shippingId}`
-
-                            );
-
-
-                        shipping =
-                            shippingResponse.data;
-
-
-                    } catch (
-                        shippingError
-                    ) {
-
-                        console.error(
-
-                            "⚠️ Error consultando shipment:",
-                            shippingId,
-
-                            shippingError.response
-                                ? shippingError.response.data
-                                : shippingError.message
+                            }
 
                         );
 
-                        continue;
 
-                    }
+                    const shipment =
+                        shipmentResponse.data;
 
-
-                    if (
-                        !shipping
-                    ) {
-
-                        continue;
-
-                    }
-
-
-                    // ------------------------------------------------
-                    // Datos del envío
-                    // ------------------------------------------------
 
                     const receiver =
-                        shipping.receiver_address ||
+                        shipment.receiver_address ||
                         {};
 
 
-                    const receiverName =
-                        receiver.receiver_name ||
-                        shipping.receiver_name ||
-                        "";
+                    const shippingOption =
+                        shipment.shipping_option ||
+                        {};
 
-
-                    const streetName =
-                        receiver.street_name ||
-                        "";
-
-
-                    const streetNumber =
-                        receiver.street_number ||
-                        "";
-
-
-                    const direccion =
-                        `${streetName} ${streetNumber}`.trim();
-
-
-                    const localidad =
-                        receiver.city
-                            ? receiver.city.name
-                            : "";
-
-
-                    const codigo =
-                        shipping.tracking_number ||
-                        shipping.id ||
-                        order.id;
-
-
-                    const estado =
-                        shipping.status ||
-                        order.status ||
-                        "pendiente";
-
-
-                    // ------------------------------------------------
-                    // Intentar identificar Flex
-                    // ------------------------------------------------
 
                     const logisticType =
-                        shipping.logistic_type ||
+                        shipment.logistic_type ||
+                        shippingOption.name ||
                         "";
 
 
-                    const isFlex =
+                    const esFlex =
                         logisticType
-                            .toLowerCase()
-                            .includes("self_service") ||
-                        logisticType
+                            .toString()
                             .toLowerCase()
                             .includes("flex");
 
@@ -987,64 +744,75 @@ router.get(
                     envios.push({
 
                         id:
-                            shipping.id,
+                            shipment.id,
+
+                        shipment_id:
+                            shipment.id,
 
                         order_id:
                             order.id,
 
                         codigo:
-                            codigo,
+                            shipment.tracking_number ||
+                            shipment.id,
 
-                        shipment_id:
-                            shipping.id,
+                        tracking_number:
+                            shipment.tracking_number ||
+                            "",
 
                         destinatario:
-                            receiverName,
+                            receiver.receiver_name ||
+                            receiver.name ||
+                            order.buyer
+                                ? (
+                                    order.buyer.nickname ||
+                                    ""
+                                )
+                                : "",
 
                         direccion:
-                            direccion,
+                            receiver.address_line ||
+                            receiver.address ||
+                            "",
 
                         localidad:
-                            localidad,
-
-                        telefono:
-                            receiver.receiver_phone ||
+                            receiver.city ||
                             "",
 
                         estado:
-                            estado,
+                            shipment.status ||
+                            order.status ||
+                            "pendiente",
 
                         logistic_type:
                             logisticType,
 
                         es_flex:
-                            isFlex,
+                            esFlex,
 
                         fecha:
                             order.date_created ||
                             null,
 
                         raw:
-                            {
-
-                                order:
-                                    order,
-
-                                shipping:
-                                    shipping
-
-                            }
+                            shipment
 
                     });
 
 
                 } catch (
-                    orderError
+                    shipmentError
                 ) {
 
                     console.error(
-                        "⚠️ Error procesando orden:",
-                        orderError.message
+
+                        "Error consultando shipment",
+                        shipmentId,
+
+                        shipmentError.response
+                            ? shipmentError.response.data
+                            : shipmentError.message
+
                     );
 
                 }
@@ -1052,11 +820,9 @@ router.get(
             }
 
 
-            console.log(
-                "📦 Envíos procesados:",
-                envios.length
-            );
-
+            // ==================================================
+            // SOLO FLEX
+            // ==================================================
 
             const enviosFlex =
                 envios.filter(
@@ -1066,9 +832,20 @@ router.get(
 
 
             console.log(
-                "🚚 Posibles envíos Flex:",
+                "🚚 Envíos Flex encontrados:",
                 enviosFlex.length
             );
+
+
+            // ==================================================
+            // SI NO DETECTA FLEX
+            // DEVOLVEMOS TODOS PARA DIAGNÓSTICO
+            // ==================================================
+
+            const resultadoFinal =
+                enviosFlex.length > 0
+                    ? enviosFlex
+                    : envios;
 
 
             return res.json({
@@ -1079,17 +856,26 @@ router.get(
                 conectado:
                     true,
 
-                total:
-                    envios.length,
+                mensaje:
+                    resultadoFinal.length > 0
+                        ? `Se encontraron ${resultadoFinal.length} envíos.`
+                        : "No se encontraron envíos.",
 
-                totalFlex:
-                    enviosFlex.length,
+                totalShipments:
+                    resultadoFinal.length,
+
+                pendingShipments:
+                    resultadoFinal.filter(
+                        envio =>
+                            envio.estado === "pending" ||
+                            envio.estado === "pendiente"
+                    ).length,
+
+                importedToday:
+                    0,
 
                 envios:
-                    envios,
-
-                mensaje:
-                    `${envios.length} envíos encontrados.`
+                    resultadoFinal
 
             });
 
@@ -1097,7 +883,7 @@ router.get(
         } catch (error) {
 
             console.error(
-                "❌ Error consultando envíos:",
+                "❌ Error sincronizando:",
                 error.response
                     ? error.response.data
                     : error.message
@@ -1151,470 +937,12 @@ router.get(
                         false,
 
                     mensaje:
-                        "Error consultando los envíos de Mercado Libre.",
+                        "Error sincronizando envíos.",
 
                     detalle:
                         error.response
                             ? error.response.data
                             : error.message
-
-                });
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// SINCRONIZAR
-//
-// POST:
-// /panel/logistica/mercadolibre/sincronizar
-// ============================================================
-
-router.post(
-    "/sincronizar",
-    isAuthenticated,
-    async (req, res) => {
-
-        try {
-
-            const accessToken =
-                obtenerAccessToken(req);
-
-
-            if (
-                !accessToken
-            ) {
-
-                return res
-                    .status(401)
-                    .json({
-
-                        ok:
-                            false,
-
-                        conectado:
-                            false,
-
-                        mensaje:
-                            "La cuenta de Mercado Libre no está conectada."
-
-                    });
-
-            }
-
-
-            const api =
-                mlRequest(
-                    accessToken
-                );
-
-
-            const userResponse =
-                await api.get(
-                    "/users/me"
-                );
-
-
-            const cuenta =
-                userResponse.data;
-
-
-            // ------------------------------------------------
-            // Obtener envíos
-            // ------------------------------------------------
-
-            const ordersResponse =
-                await api.get(
-                    "/orders/search",
-                    {
-
-                        params: {
-
-                            seller:
-                                cuenta.id,
-
-                            sort:
-                                "date_desc",
-
-                            limit:
-                                50
-
-                        }
-
-                    }
-                );
-
-
-            const orders =
-                ordersResponse.data.results ||
-                [];
-
-
-            const envios =
-                [];
-
-
-            for (
-                const order of orders
-            ) {
-
-                const shippingId =
-                    order.shipping
-                        ? order.shipping.id
-                        : null;
-
-
-                if (
-                    !shippingId
-                ) {
-
-                    continue;
-
-                }
-
-
-                try {
-
-                    const shippingResponse =
-                        await api.get(
-
-                            `/shipments/${shippingId}`
-
-                        );
-
-
-                    const shipping =
-                        shippingResponse.data;
-
-
-                    const receiver =
-                        shipping.receiver_address ||
-                        {};
-
-
-                    envios.push({
-
-                        id:
-                            shipping.id,
-
-                        order_id:
-                            order.id,
-
-                        codigo:
-                            shipping.tracking_number ||
-                            shipping.id,
-
-                        destinatario:
-                            receiver.receiver_name ||
-                            "",
-
-                        direccion:
-                            `${receiver.street_name || ""} ${receiver.street_number || ""}`.trim(),
-
-                        localidad:
-                            receiver.city
-                                ? receiver.city.name
-                                : "",
-
-                        telefono:
-                            receiver.receiver_phone ||
-                            "",
-
-                        estado:
-                            shipping.status ||
-                            order.status ||
-                            "pendiente",
-
-                        logistic_type:
-                            shipping.logistic_type ||
-                            "",
-
-                        fecha:
-                            order.date_created ||
-                            null
-
-                    });
-
-
-                } catch (
-                    shipmentError
-                ) {
-
-                    console.error(
-
-                        "⚠️ Error shipment:",
-                        shippingId,
-
-                        shipmentError.message
-
-                    );
-
-                }
-
-            }
-
-
-            return res.json({
-
-                ok:
-                    true,
-
-                mensaje:
-                    `${envios.length} envíos encontrados correctamente.`,
-
-                cuenta: {
-
-                    id:
-                        cuenta.id,
-
-                    nickname:
-                        cuenta.nickname
-
-                },
-
-                totalShipments:
-                    envios.length,
-
-                pendingShipments:
-                    envios.filter(
-                        envio =>
-                            envio.estado === "pending"
-                    ).length,
-
-                importedToday:
-                    0,
-
-                lastSync:
-                    new Date(),
-
-                envios:
-                    envios
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ Error sincronizando:",
-                error.response
-                    ? error.response.data
-                    : error.message
-            );
-
-
-            if (
-                error.response &&
-                (
-                    error.response.status === 401 ||
-                    error.response.status === 403
-                )
-            ) {
-
-                if (
-                    req.session
-                ) {
-
-                    req.session.mercadolibreConnected =
-                        false;
-
-                    delete req.session
-                        .mercadolibreAccessToken;
-
-                }
-
-
-                return res
-                    .status(401)
-                    .json({
-
-                        ok:
-                            false,
-
-                        conectado:
-                            false,
-
-                        mensaje:
-                            "La sesión de Mercado Libre expiró. Volvé a conectar la cuenta."
-
-                    });
-
-            }
-
-
-            return res
-                .status(500)
-                .json({
-
-                    ok:
-                        false,
-
-                    mensaje:
-                        "Error sincronizando Mercado Libre.",
-
-                    detalle:
-                        error.response
-                            ? error.response.data
-                            : error.message
-
-                });
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// ASIGNAR PAQUETES A COLECTA
-//
-// POST:
-// /panel/logistica/mercadolibre/asignar-colecta
-//
-// Body esperado:
-//
-// {
-//     "clienteId": 123,
-//     "paquetes": [
-//         {
-//             "id": 123,
-//             "codigo": "ML123"
-//         }
-//     ]
-// }
-//
-// ============================================================
-
-router.post(
-    "/asignar-colecta",
-    isAuthenticated,
-    async (req, res) => {
-
-        try {
-
-            const {
-                clienteId,
-                paquetes
-            } = req.body;
-
-
-            if (
-                !clienteId
-            ) {
-
-                return res
-                    .status(400)
-                    .json({
-
-                        ok:
-                            false,
-
-                        mensaje:
-                            "Debe seleccionar un cliente o colecta."
-
-                    });
-
-            }
-
-
-            if (
-                !Array.isArray(paquetes) ||
-                paquetes.length === 0
-            ) {
-
-                return res
-                    .status(400)
-                    .json({
-
-                        ok:
-                            false,
-
-                        mensaje:
-                            "No hay paquetes seleccionados."
-
-                    });
-
-            }
-
-
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "📦 ASIGNANDO PAQUETES"
-            );
-
-            console.log(
-                "👤 Cliente:",
-                clienteId
-            );
-
-            console.log(
-                "📦 Cantidad:",
-                paquetes.length
-            );
-
-            console.log(
-                "=========================================="
-            );
-
-
-            /*
-            =====================================================
-            IMPORTANTE
-
-            ACÁ TENEMOS QUE CONECTAR CON TU BASE DE DATOS.
-
-            EJEMPLO:
-
-            for (const paquete of paquetes) {
-
-                INSERT INTO paquetes (...)
-
-            }
-
-            =====================================================
-            */
-
-
-            return res.json({
-
-                ok:
-                    true,
-
-                mensaje:
-                    `${paquetes.length} paquetes asignados correctamente.`,
-
-                cantidad:
-                    paquetes.length,
-
-                clienteId:
-                    clienteId
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ Error asignando paquetes:",
-                error
-            );
-
-
-            return res
-                .status(500)
-                .json({
-
-                    ok:
-                        false,
-
-                    mensaje:
-                        "Error asignando paquetes."
 
                 });
 
@@ -1626,52 +954,25 @@ router.post(
 
 // ============================================================
 // WEBHOOK
-//
-// POST:
-// /panel/logistica/mercadolibre/webhook
 // ============================================================
 
 router.post(
     "/webhook",
     async (req, res) => {
 
-        try {
+        console.log(
+            "📡 WEBHOOK MERCADO LIBRE"
+        );
 
-            console.log(
-                "📡 WEBHOOK MERCADO LIBRE"
-            );
+        console.log(
+            new Date().toISOString()
+        );
 
-            console.log(
-                "Fecha:",
-                new Date().toISOString()
-            );
+        console.log(
+            req.body
+        );
 
-            console.log(
-                "Body:",
-                req.body
-            );
-
-
-            return res
-                .sendStatus(
-                    200
-                );
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ Error webhook:",
-                error
-            );
-
-
-            return res
-                .sendStatus(
-                    500
-                );
-
-        }
+        return res.sendStatus(200);
 
     }
 );
