@@ -58,57 +58,6 @@ function validarConfiguracion() {
 
 
 // ============================================================
-// OBTENER ACCESS TOKEN
-// ============================================================
-
-function obtenerAccessToken(req) {
-
-    if (
-        !req.session ||
-        !req.session.mercadolibreAccessToken
-    ) {
-
-        return null;
-
-    }
-
-    return req.session.mercadolibreAccessToken;
-
-}
-
-
-// ============================================================
-// OBTENER USUARIO ML
-// ============================================================
-
-async function obtenerUsuarioML(
-    accessToken
-) {
-
-    const response =
-        await axios.get(
-
-            "https://api.mercadolibre.com/users/me",
-
-            {
-
-                headers: {
-
-                    Authorization:
-                        `Bearer ${accessToken}`
-
-                }
-
-            }
-
-        );
-
-    return response.data;
-
-}
-
-
-// ============================================================
 // DASHBOARD
 // ============================================================
 
@@ -137,10 +86,7 @@ router.get(
                             : "usuario",
 
                     mercadolibreConnected:
-                        !!(
-                            req.session &&
-                            req.session.mercadolibreAccessToken
-                        ),
+                        req.session.mercadolibreConnected === true,
 
                     lastSync:
                         null,
@@ -216,7 +162,7 @@ ${faltantes.join("\n")}
                         </pre>
 
                         <a href="/panel/logistica/mercadolibre">
-                        Volver
+                            Volver
                         </a>
                         `
                     );
@@ -441,10 +387,27 @@ router.get(
 
             try {
 
-                mercadoLibreUser =
-                    await obtenerUsuarioML(
-                        accessToken
+                const userResponse =
+                    await axios.get(
+
+                        "https://api.mercadolibre.com/users/me",
+
+                        {
+
+                            headers: {
+
+                                Authorization:
+                                    `Bearer ${accessToken}`
+
+                            }
+
+                        }
+
                     );
+
+
+                mercadoLibreUser =
+                    userResponse.data;
 
             } catch (
                 userError
@@ -535,7 +498,10 @@ router.get(
         try {
 
             const conectado =
-                !!obtenerAccessToken(req);
+                !!(
+                    req.session &&
+                    req.session.mercadolibreAccessToken
+                );
 
 
             const cuenta =
@@ -574,11 +540,6 @@ router.get(
 
         } catch (error) {
 
-            console.error(
-                "❌ Error estado ML:",
-                error
-            );
-
             return res
                 .status(500)
                 .json({
@@ -601,27 +562,19 @@ router.get(
 
 
 // ============================================================
-// BUSCAR PAQUETES FLEX
-//
-// ESTE ES EL ENDPOINT PRINCIPAL
-//
-// GET:
-// /panel/logistica/mercadolibre/paquetes-flex
+// SINCRONIZAR ENVÍOS
 // ============================================================
 
-router.get(
-    "/paquetes-flex",
+router.post(
+    "/sincronizar",
     isAuthenticated,
     async (req, res) => {
 
         try {
 
-            const accessToken =
-                obtenerAccessToken(req);
-
-
             if (
-                !accessToken
+                !req.session ||
+                !req.session.mercadolibreAccessToken
             ) {
 
                 return res
@@ -642,25 +595,29 @@ router.get(
             }
 
 
+            const accessToken =
+                req.session.mercadolibreAccessToken;
+
+
             const userId =
                 req.session.mercadolibreUserId;
 
 
             console.log(
-                "=========================================="
+                "======================================"
             );
 
             console.log(
-                "🔎 BUSCANDO PAQUETES FLEX"
+                "🔄 SINCRONIZACIÓN MERCADO LIBRE"
             );
 
             console.log(
-                "👤 Usuario ML:",
+                "👤 Usuario:",
                 userId
             );
 
             console.log(
-                "=========================================="
+                "======================================"
             );
 
 
@@ -710,7 +667,7 @@ router.get(
             );
 
 
-            const paquetes =
+            const envios =
                 [];
 
 
@@ -758,7 +715,7 @@ router.get(
 
 
                     const shipment =
-                        shipmentResponse.data || {};
+                        shipmentResponse.data;
 
 
                     const receiver =
@@ -777,107 +734,14 @@ router.get(
                         "";
 
 
-                    const logisticTypeText =
-                        String(
-                            logisticType
-                        ).toLowerCase();
-
-
                     const esFlex =
-                        logisticTypeText.includes(
-                            "flex"
-                        ) ||
-                        logisticTypeText.includes(
-                            "self_service"
-                        ) ||
-                        logisticTypeText.includes(
-                            "custom"
-                        );
+                        logisticType
+                            .toString()
+                            .toLowerCase()
+                            .includes("flex");
 
 
-                    // ==================================================
-                    // DESTINATARIO
-                    // ==================================================
-
-                    let destinatario =
-                        "";
-
-
-                    if (
-                        receiver.receiver_name
-                    ) {
-
-                        destinatario =
-                            receiver.receiver_name;
-
-                    } else if (
-                        receiver.name
-                    ) {
-
-                        destinatario =
-                            receiver.name;
-
-                    } else if (
-                        order.buyer &&
-                        order.buyer.nickname
-                    ) {
-
-                        destinatario =
-                            order.buyer.nickname;
-
-                    }
-
-
-                    // ==================================================
-                    // DIRECCIÓN
-                    // ==================================================
-
-                    const direccion =
-                        receiver.address_line ||
-                        receiver.address ||
-                        (
-                            receiver.street_name
-                                ? `${receiver.street_name} ${receiver.street_number || ""}`.trim()
-                                : ""
-                        );
-
-
-                    // ==================================================
-                    // LOCALIDAD
-                    // ==================================================
-
-                    const localidad =
-                        receiver.city ||
-                        receiver.city_name ||
-                        receiver.municipality ||
-                        "";
-
-
-                    // ==================================================
-                    // TELÉFONO
-                    // ==================================================
-
-                    const telefono =
-                        receiver.receiver_phone ||
-                        receiver.phone ||
-                        "";
-
-
-                    // ==================================================
-                    // TRACKING
-                    // ==================================================
-
-                    const tracking =
-                        shipment.tracking_number ||
-                        shipment.tracking_method ||
-                        "";
-
-
-                    // ==================================================
-                    // GUARDAR
-                    // ==================================================
-
-                    paquetes.push({
+                    envios.push({
 
                         id:
                             shipment.id,
@@ -889,19 +753,31 @@ router.get(
                             order.id,
 
                         codigo:
-                            tracking ||
+                            shipment.tracking_number ||
                             shipment.id,
 
                         tracking_number:
-                            tracking,
+                            shipment.tracking_number ||
+                            "",
 
-                        destinatario,
+                        destinatario:
+                            receiver.receiver_name ||
+                            receiver.name ||
+                            order.buyer
+                                ? (
+                                    order.buyer.nickname ||
+                                    ""
+                                )
+                                : "",
 
-                        direccion,
+                        direccion:
+                            receiver.address_line ||
+                            receiver.address ||
+                            "",
 
-                        localidad,
-
-                        telefono,
+                        localidad:
+                            receiver.city ||
+                            "",
 
                         estado:
                             shipment.status ||
@@ -918,28 +794,10 @@ router.get(
                             order.date_created ||
                             null,
 
-                        titulo:
-                            order.order_items &&
-                            order.order_items[0]
-                                ? order.order_items[0]
-                                    .item
-                                    .title
-                                : "",
-
                         raw:
                             shipment
 
                     });
-
-
-                    console.log(
-                        "📦 Shipment procesado:",
-                        shipment.id,
-                        "| Tipo:",
-                        logisticType,
-                        "| Flex:",
-                        esFlex
-                    );
 
 
                 } catch (
@@ -948,7 +806,7 @@ router.get(
 
                     console.error(
 
-                        "❌ Error consultando shipment:",
+                        "Error consultando shipment",
                         shipmentId,
 
                         shipmentError.response
@@ -966,188 +824,28 @@ router.get(
             // SOLO FLEX
             // ==================================================
 
-            const paquetesFlex =
-                paquetes.filter(
-                    paquete =>
-                        paquete.es_flex === true
+            const enviosFlex =
+                envios.filter(
+                    envio =>
+                        envio.es_flex
                 );
 
 
             console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "🚚 PAQUETES FLEX:",
-                paquetesFlex.length
-            );
-
-            console.log(
-                "📦 TOTAL:",
-                paquetes.length
-            );
-
-            console.log(
-                "=========================================="
+                "🚚 Envíos Flex encontrados:",
+                enviosFlex.length
             );
 
 
             // ==================================================
-            // IMPORTANTE
-            //
-            // Devolvemos FLEX si encontramos.
-            //
-            // Si no encontramos Flex pero sí hay envíos,
-            // devolvemos todos para diagnóstico.
+            // SI NO DETECTA FLEX
+            // DEVOLVEMOS TODOS PARA DIAGNÓSTICO
             // ==================================================
 
-            const resultado =
-                paquetesFlex.length > 0
-                    ? paquetesFlex
-                    : paquetes;
-
-
-            return res.json({
-
-                ok:
-                    true,
-
-                conectado:
-                    true,
-
-                cantidad:
-                    resultado.length,
-
-                flexEncontrados:
-                    paquetesFlex.length,
-
-                totalEncontrados:
-                    paquetes.length,
-
-                mensaje:
-                    resultado.length > 0
-                        ? `Se encontraron ${resultado.length} paquetes.`
-                        : "No se encontraron paquetes.",
-
-                paquetes:
-                    resultado
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ ERROR BUSCANDO PAQUETES FLEX:",
-                error.response
-                    ? error.response.data
-                    : error.message
-            );
-
-
-            if (
-                error.response &&
-                (
-                    error.response.status === 401 ||
-                    error.response.status === 403
-                )
-            ) {
-
-                if (
-                    req.session
-                ) {
-
-                    delete req.session
-                        .mercadolibreAccessToken;
-
-                    req.session.mercadolibreConnected =
-                        false;
-
-                }
-
-
-                return res
-                    .status(401)
-                    .json({
-
-                        ok:
-                            false,
-
-                        conectado:
-                            false,
-
-                        mensaje:
-                            "La sesión de Mercado Libre expiró."
-
-                    });
-
-            }
-
-
-            return res
-                .status(500)
-                .json({
-
-                    ok:
-                        false,
-
-                    mensaje:
-                        "Error buscando paquetes Flex.",
-
-                    detalle:
-                        error.response
-                            ? error.response.data
-                            : error.message
-
-                });
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// SINCRONIZAR
-// ============================================================
-
-router.post(
-    "/sincronizar",
-    isAuthenticated,
-    async (req, res) => {
-
-        try {
-
-            const accessToken =
-                obtenerAccessToken(req);
-
-
-            if (
-                !accessToken
-            ) {
-
-                return res
-                    .status(401)
-                    .json({
-
-                        ok:
-                            false,
-
-                        conectado:
-                            false,
-
-                        mensaje:
-                            "Mercado Libre no está conectado."
-
-                    });
-
-            }
-
-
-            const cuenta =
-                await obtenerUsuarioML(
-                    accessToken
-                );
+            const resultadoFinal =
+                enviosFlex.length > 0
+                    ? enviosFlex
+                    : envios;
 
 
             return res.json({
@@ -1159,17 +857,25 @@ router.post(
                     true,
 
                 mensaje:
-                    "Cuenta de Mercado Libre sincronizada correctamente.",
+                    resultadoFinal.length > 0
+                        ? `Se encontraron ${resultadoFinal.length} envíos.`
+                        : "No se encontraron envíos.",
 
-                cuenta: {
+                totalShipments:
+                    resultadoFinal.length,
 
-                    id:
-                        cuenta.id,
+                pendingShipments:
+                    resultadoFinal.filter(
+                        envio =>
+                            envio.estado === "pending" ||
+                            envio.estado === "pendiente"
+                    ).length,
 
-                    nickname:
-                        cuenta.nickname
+                importedToday:
+                    0,
 
-                }
+                envios:
+                    resultadoFinal
 
             });
 
@@ -1196,11 +902,11 @@ router.post(
                     req.session
                 ) {
 
-                    delete req.session
-                        .mercadolibreAccessToken;
-
                     req.session.mercadolibreConnected =
                         false;
+
+                    delete req.session
+                        .mercadolibreAccessToken;
 
                 }
 
@@ -1231,7 +937,7 @@ router.post(
                         false,
 
                     mensaje:
-                        "Error sincronizando Mercado Libre.",
+                        "Error sincronizando envíos.",
 
                     detalle:
                         error.response
