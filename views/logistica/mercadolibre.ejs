@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Mercado Libre | AppCraftPro
+</title>
+
+<link
+    rel="stylesheet"
+    href="/css/panel.css"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family:
+            Inter,
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        background: #f5f7fb;
+
+        color: #172033;
+    }
+
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
+
+    .ml-wrapper {
+        min-height: 100vh;
+    }
+
+    .ml-header {
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #1e293b
+            );
+
+        color: white;
+
+        padding: 28px 35px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 20px;
+
+        box-shadow:
+            0 4px 20px
+            rgba(15, 23, 42, .12);
+    }
+
+    .header-left {
+        display: flex;
+
+        align-items: center;
+
+        gap: 18px;
+    }
+
+    .ml-logo {
+        width: 58px;
+
+        height: 58px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background:
+            #ffe600;
+
+        color:
+            #111827;
+
+        font-size: 27px;
+
+        box-shadow:
+            0 8px 20px
+            rgba(0,0,0,.2);
+    }
+
+    .header-title h1 {
+        font-size: 25px;
+
+        margin-bottom: 5px;
+    }
+
+    .header-title p {
+        color:
+            #cbd5e1;
+
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        border: none;
+
+        border-radius: 10px;
+
+        padding:
+            11px 17px;
+
+        cursor: pointer;
+
+        text-decoration: none;
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        transition:
+            .2s ease;
+    }
+
+    .btn:hover {
+        transform:
+            translateY(-2px);
+    }
+
+    .btn-back {
+        background:
+            rgba(255,255,255,.1);
+
+        color:
+            white;
+
+        border:
+            1px solid
+            rgba(255,255,255,.15);
+    }
+
+    .btn-connect {
+        background:
+            #ffe600;
+
+        color:
+            #111827;
+    }
+
+    .btn-sync {
+        background:
+            #2563eb;
+
+        color:
+            white;
+    }
+
+    .btn-sync:disabled {
+        opacity: .6;
+
+        cursor:
+            not-allowed;
+
+        transform:
+            none;
+    }
+
+    /* =====================================================
+       CONTENT
+    ===================================================== */
+
+    .ml-content {
+        max-width:
+            1500px;
+
+        margin:
+            0 auto;
+
+        padding:
+            30px;
+    }
+
+    .breadcrumb {
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        color:
+            #64748b;
+
+        font-size: 13px;
+
+        margin-bottom:
+            22px;
+    }
+
+    .breadcrumb a {
+        color:
+            #2563eb;
+
+        text-decoration:
+            none;
+    }
+
+    /* =====================================================
+       CONNECTION STATUS
+    ===================================================== */
+
+    .connection-card {
+        background:
+            white;
+
+        border-radius:
+            18px;
+
+        padding:
+            25px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 25px;
+
+        margin-bottom:
+            25px;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        box-shadow:
+            0 8px 30px
+            rgba(15,23,42,.06);
+    }
+
+    .connection-info {
+        display: flex;
+
+        align-items: center;
+
+        gap: 18px;
+    }
+
+    .status-icon {
+        width:
+            52px;
+
+        height:
+            52px;
+
+        border-radius:
+            14px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size:
+            22px;
+
+        background:
+            #fef3c7;
+
+        color:
+            #d97706;
+    }
+
+    .status-icon.connected {
+        background:
+            #dcfce7;
+
+        color:
+            #16a34a;
+    }
+
+    .connection-info h2 {
+        font-size:
+            18px;
+
+        margin-bottom:
+            5px;
+    }
+
+    .connection-info p {
+        color:
+            #64748b;
+
+        font-size:
+            14px;
+    }
+
+    .status-badge {
+        display:
+            inline-flex;
+
+        align-items:
+            center;
+
+        gap:
+            7px;
+
+        padding:
+            7px 12px;
+
+        border-radius:
+            999px;
+
+        font-size:
+            12px;
+
+        font-weight:
+            700;
+
+        background:
+            #fef3c7;
+
+        color:
+            #92400e;
+    }
+
+    .status-badge.connected {
+        background:
+            #dcfce7;
+
+        color:
+            #166534;
+    }
+
+    .status-dot {
+        width:
+            7px;
+
+        height:
+            7px;
+
+        border-radius:
+            50%;
+
+        background:
+            currentColor;
+    }
+
+    /* =====================================================
+       KPI CARDS
+    ===================================================== */
+
+    .stats-grid {
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0,1fr)
+            );
+
+        gap:
+            18px;
+
+        margin-bottom:
+            25px;
+    }
+
+    .stat-card {
+        background:
+            white;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        border-radius:
+            16px;
+
+        padding:
+            22px;
+
+        box-shadow:
+            0 6px 25px
+            rgba(15,23,42,.05);
+    }
+
+    .stat-top {
+        display:
+            flex;
+
+        justify-content:
+            space-between;
+
+        align-items:
+            center;
+
+        margin-bottom:
+            18px;
+    }
+
+    .stat-icon {
+        width:
+            43px;
+
+        height:
+            43px;
+
+        border-radius:
+            12px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        background:
+            #eff6ff;
+
+        color:
+            #2563eb;
+    }
+
+    .stat-card:nth-child(2)
+    .stat-icon {
+        background:
+            #fff7ed;
+
+        color:
+            #ea580c;
+    }
+
+    .stat-card:nth-child(3)
+    .stat-icon {
+        background:
+            #ecfdf5;
+
+        color:
+            #059669;
+    }
+
+    .stat-card:nth-child(4)
+    .stat-icon {
+        background:
+            #f5f3ff;
+
+        color:
+            #7c3aed;
+    }
+
+    .stat-label {
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+
+        margin-bottom:
+            7px;
+    }
+
+    .stat-value {
+        font-size:
+            28px;
+
+        font-weight:
+            750;
+
+        color:
+            #0f172a;
+    }
+
+    /* =====================================================
+       MAIN GRID
+    ===================================================== */
+
+    .main-grid {
+        display:
+            grid;
+
+        grid-template-columns:
+            2fr 1fr;
+
+        gap:
+            22px;
+    }
+
+    .panel-card {
+        background:
+            white;
+
+        border:
+            1px solid
+            #e5e7eb;
+
+        border-radius:
+            18px;
+
+        padding:
+            25px;
+
+        box-shadow:
+            0 6px 25px
+            rgba(15,23,42,.05);
+    }
+
+    .panel-header {
+        display:
+            flex;
+
+        justify-content:
+            space-between;
+
+        align-items:
+            center;
+
+        margin-bottom:
+            22px;
+    }
+
+    .panel-header h3 {
+        font-size:
+            17px;
+    }
+
+    .panel-header span {
+        font-size:
+            12px;
+
+        color:
+            #64748b;
+    }
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
+
+    .empty-state {
+        min-height:
+            260px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        text-align:
+            center;
+
+        color:
+            #64748b;
+    }
+
+    .empty-state i {
+        font-size:
+            45px;
+
+        color:
+            #cbd5e1;
+
+        margin-bottom:
+            15px;
+    }
+
+    .empty-state h4 {
+        color:
+            #334155;
+
+        margin-bottom:
+            7px;
+    }
+
+    .empty-state p {
+        max-width:
+            420px;
+
+        font-size:
+            14px;
+
+        line-height:
+            1.6;
+    }
+
+    /* =====================================================
+       QUICK ACTIONS
+    ===================================================== */
+
+    .actions-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            12px;
+    }
+
+    .action {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            13px;
+
+        padding:
+            14px;
+
+        border-radius:
+            12px;
+
+        background:
+            #f8fafc;
+
+        border:
+            1px solid
+            #e2e8f0;
+
+        text-decoration:
+            none;
+
+        color:
+            #1e293b;
+
+        transition:
+            .2s;
+    }
+
+    .action:hover {
+        background:
+            #f1f5f9;
+
+        transform:
+            translateX(3px);
+    }
+
+    .action-icon {
+        width:
+            38px;
+
+        height:
+            38px;
+
+        border-radius:
+            10px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        background:
+            #eff6ff;
+
+        color:
+            #2563eb;
+    }
+
+    .action strong {
+        display:
+            block;
+
+        font-size:
+            14px;
+
+        margin-bottom:
+            3px;
+    }
+
+    .action small {
+        color:
+            #64748b;
+
+        font-size:
+            12px;
+    }
+
+    /* =====================================================
+       INTEGRATION INFO
+    ===================================================== */
+
+    .integration-list {
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        gap:
+            15px;
+    }
+
+    .integration-row {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        padding-bottom:
+            14px;
+
+        border-bottom:
+            1px solid
+            #f1f5f9;
+    }
+
+    .integration-row:last-child {
+        border-bottom:
+            none;
+
+        padding-bottom:
+            0;
+    }
+
+    .integration-row span:first-child {
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+    }
+
+    .integration-row strong {
+        font-size:
+            13px;
+    }
+
+    .online {
+        color:
+            #16a34a;
+    }
+
+    .offline {
+        color:
+            #dc2626;
+    }
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    .toast {
+        position:
+            fixed;
+
+        right:
+            25px;
+
+        bottom:
+            25px;
+
+        background:
+            #0f172a;
+
+        color:
+            white;
+
+        padding:
+            15px 20px;
+
+        border-radius:
+            12px;
+
+        box-shadow:
+            0 15px 40px
+            rgba(0,0,0,.2);
+
+        transform:
+            translateY(120px);
+
+        opacity:
+            0;
+
+        transition:
+            .3s;
+
+        z-index:
+            9999;
+    }
+
+    .toast.show {
+        transform:
+            translateY(0);
+
+        opacity:
+            1;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width:1100px) {
+
+        .stats-grid {
+            grid-template-columns:
+                repeat(2,1fr);
+        }
+
+        .main-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+    }
+
+    @media(max-width:700px) {
+
+        .ml-header {
+            padding:
+                20px;
+
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .header-actions {
+            width:
+                100%;
+        }
+
+        .header-actions .btn {
+            flex:
+                1;
+        }
+
+        .ml-content {
+            padding:
+                20px;
+        }
+
+        .connection-card {
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .stats-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="ml-wrapper">
+
+```
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="ml-header">
+
+    <div class="header-left">
+
+        <div class="ml-logo">
+
+            <i class="fas fa-store"></i>
+
+        </div>
+
+        <div class="header-title">
+
+            <h1>
+                Mercado Libre
+            </h1>
+
+            <p>
+                Integración logística y gestión de envíos
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+        <a
+            href="/panel/logistica"
+            class="btn btn-back"
+        >
+
+            <i class="fas fa-arrow-left"></i>
+
+            Volver a Logística
+
+        </a>
+
+
+        <button
+            id="syncButton"
+            class="btn btn-sync"
+            onclick="sincronizar()"
+        >
+
+            <i class="fas fa-rotate"></i>
+
+            Sincronizar
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     CONTENT
+====================================================== -->
+
+<main class="ml-content">
+
+
+    <!-- BREADCRUMB -->
+
+    <div class="breadcrumb">
+
+        <a href="/panel">
+            Panel
+        </a>
+
+        <i class="fas fa-chevron-right"></i>
+
+        <a href="/panel/logistica">
+            Logística
+        </a>
+
+        <i class="fas fa-chevron-right"></i>
+
+        <span>
+            Mercado Libre
+        </span>
+
+    </div>
+
+
+    <!-- =================================================
+         CONNECTION
+    ================================================== -->
+
+    <section class="connection-card">
+
+
+        <div class="connection-info">
+
+
+            <div
+                id="statusIcon"
+                class="status-icon"
+            >
+
+                <i class="fas fa-link"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Conexión con Mercado Libre
+                </h2>
+
+                <p>
+                    Vinculá tu cuenta para sincronizar
+                    automáticamente tus operaciones logísticas.
+                </p>
+
+                <br>
+
+                <span
+                    id="connectionStatus"
+                    class="status-badge"
+                >
+
+                    <span class="status-dot"></span>
+
+                    No conectado
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="/panel/logistica/mercadolibre/conectar"
+            class="btn btn-connect"
+        >
+
+            <i class="fas fa-plug"></i>
+
+            Conectar Mercado Libre
+
+        </a>
+
+
+    </section>
+
+
+    <!-- =================================================
+         KPI
+    ================================================== -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label">
+                        Envíos totales
+                    </div>
+
+                    <div class="stat-value">
+                        <%= totalShipments || 0 %>
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-boxes-stacked"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label">
+                        Pendientes
+                    </div>
+
+                    <div class="stat-value">
+                        <%= pendingShipments || 0 %>
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-clock"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label">
+                        Importados hoy
+                    </div>
+
+                    <div class="stat-value">
+                        <%= importedToday || 0 %>
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-cloud-arrow-down"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label">
+                        Última sincronización
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        style="font-size:18px"
+                    >
+
+                        <%= lastSync || "Nunca" %>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-sync"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         MAIN
+    ================================================== -->
+
+    <section class="main-grid">
+
+
+        <!-- ENVÍOS -->
+
+        <div class="panel-card">
+
+            <div class="panel-header">
+
+                <h3>
+                    Últimos envíos
+                </h3>
+
+                <span>
+                    Mercado Libre
+                </span>
+
+            </div>
+
+
+            <div class="empty-state">
+
+                <i class="fas fa-box-open"></i>
+
+                <h4>
+                    Todavía no hay envíos sincronizados
+                </h4>
+
+                <p>
+                    Conectá tu cuenta de Mercado Libre
+                    y ejecutá una sincronización para
+                    comenzar a importar tus operaciones.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCIONES -->
+
+        <div class="panel-card">
+
+            <div class="panel-header">
+
+                <h3>
+                    Acciones rápidas
+                </h3>
+
+            </div>
+
+
+            <div class="actions-list">
+
+
+                <a
+                    href="/panel/logistica/mercadolibre/conectar"
+                    class="action"
+                >
+
+                    <div class="action-icon">
+
+                        <i class="fas fa-plug"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Conectar cuenta
+                        </strong>
+
+                        <small>
+                            Autorizar acceso a Mercado Libre
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="/panel/logistica/paquetes"
+                    class="action"
+                >
+
+                    <div class="action-icon">
+
+                        <i class="fas fa-box"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Ver paquetes
+                        </strong>
+
+                        <small>
+                            Administrar paquetes registrados
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="/panel/logistica/choferes"
+                    class="action"
+                >
+
+                    <div class="action-icon">
+
+                        <i class="fas fa-truck"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Gestionar choferes
+                        </strong>
+
+                        <small>
+                            Administrar reparto y asignaciones
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="/panel/logistica"
+                    class="action"
+                >
+
+                    <div class="action-icon">
+
+                        <i class="fas fa-chart-line"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Volver al módulo
+                        </strong>
+
+                        <small>
+                            Panel general de logística
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         INTEGRATION STATUS
+    ================================================== -->
+
+    <section
+        class="panel-card"
+        style="margin-top:22px"
+    >
+
+        <div class="panel-header">
+
+            <h3>
+                Estado de integración
+            </h3>
+
+            <span>
+                AppCraftPro
+            </span>
+
+        </div>
+
+
+        <div class="integration-list">
+
+
+            <div class="integration-row">
+
+                <span>
+                    API Mercado Libre
+                </span>
+
+                <strong class="online">
+
+                    <i class="fas fa-circle-check"></i>
+
+                    Disponible
+
+                </strong>
+
+            </div>
+
+
+            <div class="integration-row">
+
+                <span>
+                    OAuth
+                </span>
+
+                <strong class="online">
+
+                    <i class="fas fa-circle-check"></i>
+
+                    Configurado
+
+                </strong>
+
+            </div>
+
+
+            <div class="integration-row">
+
+                <span>
+                    Webhook
+                </span>
+
+                <strong class="online">
+
+                    <i class="fas fa-circle-check"></i>
+
+                    Activo
+
+                </strong>
+
+            </div>
+
+
+            <div class="integration-row">
+
+                <span>
+                    Cuenta conectada
+                </span>
+
+                <strong
+                    id="accountStatus"
+                    class="offline"
+                >
+
+                    <i class="fas fa-circle-xmark"></i>
+
+                    No conectada
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+```
+
+</div>
+
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast"
+>
+    Sincronización iniciada...
+</div>
+
+<script>
+
+    // =====================================================
+    // SINCRONIZAR MERCADO LIBRE
+    // =====================================================
+
+    async function sincronizar() {
+
+        const button =
+            document.getElementById(
+                "syncButton"
+            );
+
+        const toast =
+            document.getElementById(
+                "toast"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.innerHTML =
+
+            '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
+
+
+        toast.classList.add(
+            "show"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/panel/logistica/mercadolibre/sincronizar",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        }
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                data.ok
+            ) {
+
+                toast.innerText =
+                    data.mensaje ||
+                    "Sincronización completada.";
+
+            } else {
+
+                toast.innerText =
+                    data.mensaje ||
+                    "No se pudo sincronizar.";
+
+            }
+
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                error
+            );
+
+
+            toast.innerText =
+                "Error de conexión con el servidor.";
+
+        }
+
+
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3500
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.innerHTML =
+
+            '<i class="fas fa-rotate"></i> Sincronizar';
+
+    }
+
+
+    // =====================================================
+    // CONSULTAR ESTADO
+    // =====================================================
+
+    async function cargarEstado() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/panel/logistica/mercadolibre/estado"
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                data.ok &&
+                data.conectado
+            ) {
+
+                const badge =
+                    document.getElementById(
+                        "connectionStatus"
+                    );
+
+
+                const icon =
+                    document.getElementById(
+                        "statusIcon"
+                    );
+
+
+                const account =
+                    document.getElementById(
+                        "accountStatus"
+                    );
+
+
+                badge.classList.add(
+                    "connected"
+                );
+
+
+                badge.innerHTML =
+
+                    '<span class="status-dot"></span> Conectado';
+
+
+                icon.classList.add(
+                    "connected"
+                );
+
+
+                icon.innerHTML =
+
+                    '<i class="fas fa-check"></i>';
+
+
+                account.className =
+                    "online";
+
+
+                account.innerHTML =
+
+                    '<i class="fas fa-circle-check"></i> Conectada';
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                "Error consultando estado:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // INICIAR
+    // =====================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        cargarEstado
+    );
+
+</script>
+
+</body>
+
+</html>
