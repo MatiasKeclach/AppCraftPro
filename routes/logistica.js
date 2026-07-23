@@ -1422,4 +1422,28 @@ res.status(500)
 
 });
 
+// ==============================
+// MERCADO LIBRE - OAUTH
+// ==============================
+
+router.get(
+    "/mercadolibre/callback",
+    async (req, res) => {
+
+        console.log(
+            "🔵 Callback recibido desde Mercado Libre"
+        );
+
+        console.log(
+            "Query:",
+            req.query
+        );
+
+        res.send(
+            "Mercado Libre devolvió la autorización correctamente."
+        );
+
+    }
+);
+
 module.exports = router;
