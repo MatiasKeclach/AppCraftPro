@@ -262,7 +262,7 @@ button,
         grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        repeat(4,1fr);
 
     gap:
         20px;
@@ -324,7 +324,7 @@ table{
         collapse;
 
     min-width:
-        900px;
+        1100px;
 
 }
 
@@ -389,6 +389,16 @@ td{
 
     font-weight:
         700;
+
+}
+
+.badge-driver{
+
+    background:
+        #dcfce7;
+
+    color:
+        #166534;
 
 }
 
@@ -496,6 +506,17 @@ td{
 
 }
 
+@media(max-width:1000px){
+
+    .stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
 @media(max-width:800px){
 
     .header{
@@ -539,13 +560,17 @@ td{
     <div>
 
         <h1>
+
             <i class="fas fa-truck-fast"></i>
 
             Mercado Envíos Flex
+
         </h1>
 
         <p>
-            Paquetes registrados en Mercado Libre
+
+            Paquetes escaneados desde la aplicación oficial de Mercado Envíos Flex
+
         </p>
 
     </div>
@@ -568,12 +593,12 @@ td{
         <button
             id="syncButton"
             class="btn btn-sync"
-            onclick="sincronizar()"
+            onclick="cargarPaquetesEscaneados()"
         >
 
             <i class="fas fa-rotate"></i>
 
-            Buscar paquetes nuevos
+            Ver paquetes escaneados
 
         </button>
 
@@ -585,212 +610,280 @@ td{
 <main class="container">
 
 
-    <section class="card connection">
+<section class="card connection">
 
-        <div>
+    <div>
 
-            <h2>
-                Conexión Mercado Libre
-            </h2>
+        <h2>
 
-            <p>
-                Cuenta vinculada:
-                <strong id="accountName">
-                    Verificando...
-                </strong>
-            </p>
-
-        </div>
-
-
-        <div
-            id="connectionStatus"
-            class="status"
-        >
-
-            <i class="fas fa-circle"></i>
-
-            Verificando...
-
-        </div>
-
-
-        <a
-            href="/panel/logistica/mercadolibre/conectar"
-            class="btn btn-sync"
-        >
-
-            <i class="fas fa-plug"></i>
-
-            Conectar
-
-        </a>
-
-    </section>
-
-
-    <section class="stats">
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Envíos encontrados
-            </div>
-
-            <div
-                id="totalShipments"
-                class="stat-value"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Pendientes
-            </div>
-
-            <div
-                id="pendingShipments"
-                class="stat-value"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Última búsqueda
-            </div>
-
-            <div
-                id="lastSync"
-                class="stat-value"
-                style="font-size:20px"
-            >
-                Nunca
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-    <section class="card">
-
-        <h2 style="margin-bottom:20px">
-
-            <i class="fas fa-box-open"></i>
-
-            Paquetes encontrados
+            Conexión Mercado Libre
 
         </h2>
 
+        <p>
 
-        <div
-            id="loading"
-            class="loading"
-        >
+            Cuenta vinculada:
 
-            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <strong id="accountName">
 
-            <p style="margin-top:15px">
+                Verificando...
 
-                Buscando envíos en Mercado Libre...
+            </strong>
 
-            </p>
+        </p>
 
-        </div>
+    </div>
 
 
-        <div
-            id="empty"
-            class="empty"
-        >
+    <div
+        id="connectionStatus"
+        class="status"
+    >
 
-            <i class="fas fa-box-open"></i>
+        <i class="fas fa-circle"></i>
 
-            <h3>
-                No hay paquetes encontrados
-            </h3>
+        Verificando...
 
-            <p style="margin-top:10px">
-
-                Escaneá el paquete desde Mercado Envíos Flex
-                y luego presioná
-                <strong>
-                    Buscar paquetes nuevos
-                </strong>.
-
-            </p>
-
-        </div>
+    </div>
 
 
-        <div
-            id="tableWrapper"
-            class="table-wrapper"
-            style="display:none"
-        >
+    <a
+        href="/panel/logistica/mercadolibre/conectar"
+        class="btn btn-sync"
+    >
 
-            <table>
+        <i class="fas fa-plug"></i>
 
-                <thead>
+        Conectar
 
-                    <tr>
+    </a>
 
-                        <th>
-                            Shipment
-                        </th>
-
-                        <th>
-                            Código
-                        </th>
-
-                        <th>
-                            Destinatario
-                        </th>
-
-                        <th>
-                            Dirección
-                        </th>
-
-                        <th>
-                            Localidad
-                        </th>
-
-                        <th>
-                            Estado
-                        </th>
-
-                        <th>
-                            Tipo
-                        </th>
-
-                    </tr>
-
-                </thead>
+</section>
 
 
-                <tbody
-                    id="shipmentsBody"
-                >
+<section class="stats">
 
-                </tbody>
 
-            </table>
+    <div class="stat">
+
+        <div class="stat-label">
+
+            Paquetes escaneados
 
         </div>
 
-    </section>
+        <div
+            id="totalShipments"
+            class="stat-value"
+        >
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-label">
+
+            Con transportista
+
+        </div>
+
+        <div
+            id="withDriver"
+            class="stat-value"
+        >
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-label">
+
+            Sin transportista
+
+        </div>
+
+        <div
+            id="withoutDriver"
+            class="stat-value"
+        >
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-label">
+
+            Última actualización
+
+        </div>
+
+        <div
+            id="lastSync"
+            class="stat-value"
+            style="font-size:20px"
+        >
+
+            Nunca
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<section class="card">
+
+    <h2 style="margin-bottom:20px">
+
+        <i class="fas fa-box-open"></i>
+
+        Paquetes escaneados en Mercado Envíos Flex
+
+    </h2>
+
+
+    <div
+        id="loading"
+        class="loading"
+    >
+
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+
+        <p style="margin-top:15px">
+
+            Consultando paquetes escaneados...
+
+        </p>
+
+    </div>
+
+
+    <div
+        id="empty"
+        class="empty"
+    >
+
+        <i class="fas fa-box-open"></i>
+
+        <h3>
+
+            No hay paquetes escaneados todavía
+
+        </h3>
+
+        <p style="margin-top:10px">
+
+            Escaneá un paquete desde la aplicación oficial
+            de Mercado Envíos Flex.
+
+            Después presioná
+
+            <strong>
+
+                Ver paquetes escaneados
+
+            </strong>
+
+            para consultar los paquetes recibidos.
+
+        </p>
+
+    </div>
+
+
+    <div
+        id="tableWrapper"
+        class="table-wrapper"
+        style="display:none"
+    >
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+
+                        Shipment
+
+                    </th>
+
+                    <th>
+
+                        Tracking
+
+                    </th>
+
+                    <th>
+
+                        Destinatario
+
+                    </th>
+
+                    <th>
+
+                        Dirección
+
+                    </th>
+
+                    <th>
+
+                        Localidad
+
+                    </th>
+
+                    <th>
+
+                        Teléfono
+
+                    </th>
+
+                    <th>
+
+                        Estado
+
+                    </th>
+
+                    <th>
+
+                        Transportista
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="shipmentsBody"
+            >
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
 
 
 </main>
@@ -804,155 +897,269 @@ td{
 
 <script>
 
-let sincronizando = false;
+
+let cargando = false;
 
 
 const syncButton =
+
     document.getElementById(
+
         "syncButton"
+
     );
 
 
 const loading =
+
     document.getElementById(
+
         "loading"
+
     );
 
 
 const empty =
+
     document.getElementById(
+
         "empty"
+
     );
 
 
 const tableWrapper =
+
     document.getElementById(
+
         "tableWrapper"
+
     );
 
 
 const shipmentsBody =
+
     document.getElementById(
+
         "shipmentsBody"
+
     );
 
 
 const totalShipments =
+
     document.getElementById(
+
         "totalShipments"
+
     );
 
 
-const pendingShipments =
+const withDriver =
+
     document.getElementById(
-        "pendingShipments"
+
+        "withDriver"
+
+    );
+
+
+const withoutDriver =
+
+    document.getElementById(
+
+        "withoutDriver"
+
     );
 
 
 const lastSync =
+
     document.getElementById(
+
         "lastSync"
+
     );
 
 
 const connectionStatus =
+
     document.getElementById(
+
         "connectionStatus"
+
     );
 
 
 const accountName =
+
     document.getElementById(
+
         "accountName"
+
     );
 
 
 const toast =
+
     document.getElementById(
+
         "toast"
+
     );
 
 
+// ============================================================
+// TOAST
+// ============================================================
+
 function mostrarToast(
+
     mensaje,
+
     tipo = ""
+
 ){
 
     toast.innerText =
+
         mensaje;
 
+
     toast.className =
+
         "toast show " +
+
         tipo;
 
+
     setTimeout(
+
         () => {
 
             toast.className =
+
                 "toast";
 
         },
+
         4000
+
     );
 
 }
 
 
+// ============================================================
+// ESCAPAR HTML
+// ============================================================
+
 function escaparHTML(
+
     valor
+
 ){
 
-    if(
+    if (
+
         valor === null ||
+
         valor === undefined
+
     ){
 
         return "";
 
     }
 
+
     return String(valor)
+
         .replace(
+
             /&/g,
+
             "&amp;"
+
         )
+
         .replace(
+
             /</g,
+
             "&lt;"
+
         )
+
         .replace(
+
             />/g,
+
             "&gt;"
+
         )
+
         .replace(
+
             /"/g,
+
             "&quot;"
+
         )
+
         .replace(
+
             /'/g,
+
             "&#039;"
+
         );
 
 }
 
 
+// ============================================================
+// RENDERIZAR
+// ============================================================
+
 function renderizarEnvios(
+
     envios
+
 ){
 
-    if(
+    if (
+
         !Array.isArray(envios) ||
+
         envios.length === 0
+
     ){
 
         tableWrapper.style.display =
+
             "none";
 
+
         empty.style.display =
+
             "block";
 
+
         totalShipments.innerText =
+
             "0";
+
+
+        withDriver.innerText =
+
+            "0";
+
+
+        withoutDriver.innerText =
+
+            "0";
+
 
         return;
 
@@ -960,28 +1167,50 @@ function renderizarEnvios(
 
 
     empty.style.display =
+
         "none";
 
+
     tableWrapper.style.display =
+
         "block";
 
 
     totalShipments.innerText =
+
         envios.length;
 
 
-    pendingShipments.innerText =
+    const cantidadConDriver =
+
         envios.filter(
+
             envio =>
-                envio.estado === "pending" ||
-                envio.estado === "pendiente"
+
+                envio.driver_id
+
         ).length;
+
+
+    withDriver.innerText =
+
+        cantidadConDriver;
+
+
+    withoutDriver.innerText =
+
+        envios.length -
+
+        cantidadConDriver;
 
 
     shipmentsBody.innerHTML =
 
+
         envios
+
             .map(
+
                 envio => {
 
                     return `
@@ -993,9 +1222,13 @@ function renderizarEnvios(
                             <span class="code">
 
                                 ${escaparHTML(
+
                                     envio.shipment_id ||
+
                                     envio.id ||
+
                                     "-"
+
                                 )}
 
                             </span>
@@ -1006,9 +1239,13 @@ function renderizarEnvios(
                         <td>
 
                             ${escaparHTML(
+
                                 envio.tracking_number ||
+
                                 envio.codigo ||
+
                                 "-"
+
                             )}
 
                         </td>
@@ -1017,8 +1254,11 @@ function renderizarEnvios(
                         <td>
 
                             ${escaparHTML(
+
                                 envio.destinatario ||
+
                                 "-"
+
                             )}
 
                         </td>
@@ -1027,8 +1267,11 @@ function renderizarEnvios(
                         <td>
 
                             ${escaparHTML(
+
                                 envio.direccion ||
+
                                 "-"
+
                             )}
 
                         </td>
@@ -1037,8 +1280,24 @@ function renderizarEnvios(
                         <td>
 
                             ${escaparHTML(
+
                                 envio.localidad ||
+
                                 "-"
+
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escaparHTML(
+
+                                envio.telefono ||
+
+                                "-"
+
                             )}
 
                         </td>
@@ -1049,8 +1308,11 @@ function renderizarEnvios(
                             <span class="badge">
 
                                 ${escaparHTML(
+
                                     envio.estado ||
-                                    "Pendiente"
+
+                                    "Escaneado"
+
                                 )}
 
                             </span>
@@ -1060,18 +1322,38 @@ function renderizarEnvios(
 
                         <td>
 
-                            <span class="badge">
+                            ${
+                                envio.driver_id
 
-                                ${
-                                    envio.es_flex
-                                        ? "FLEX"
-                                        : (
-                                            envio.logistic_type ||
-                                            "Envío"
-                                        )
-                                }
+                                    ? `
 
-                            </span>
+                                    <span class="badge badge-driver">
+
+                                        <i class="fas fa-user"></i>
+
+                                        ${escaparHTML(
+
+                                            envio.driver_id
+
+                                        )}
+
+                                    </span>
+
+                                    `
+
+                                    :
+
+                                    `
+
+                                    <span class="badge">
+
+                                        Pendiente
+
+                                    </span>
+
+                                    `
+
+                            }
 
                         </td>
 
@@ -1080,68 +1362,100 @@ function renderizarEnvios(
                     `;
 
                 }
+
             )
+
             .join("");
 
 }
 
+
+// ============================================================
+// ESTADO
+// ============================================================
 
 async function cargarEstado(){
 
     try{
 
         const response =
+
             await fetch(
+
                 "/panel/logistica/mercadolibre/estado",
+
                 {
+
                     cache:
+
                         "no-store"
+
                 }
+
             );
 
 
         const data =
+
             await response.json();
 
 
-        if(
+        if (
+
             data.conectado
+
         ){
 
             connectionStatus.className =
+
                 "status connected";
+
 
             connectionStatus.innerHTML =
 
                 `
+
                 <i class="fas fa-circle-check"></i>
+
                 Conectado
+
                 `;
 
 
             accountName.innerText =
 
                 data.cuenta
+
                     ? (
+
                         data.cuenta.nickname ||
+
                         "Cuenta conectada"
+
                     )
+
                     : "Cuenta conectada";
 
         }else{
 
             connectionStatus.className =
+
                 "status";
+
 
             connectionStatus.innerHTML =
 
                 `
+
                 <i class="fas fa-circle-xmark"></i>
+
                 No conectado
+
                 `;
 
 
             accountName.innerText =
+
                 "No conectada";
 
         }
@@ -1149,7 +1463,11 @@ async function cargarEstado(){
     }catch(error){
 
         console.error(
+
+            "Error estado:",
+
             error
+
         );
 
     }
@@ -1157,10 +1475,16 @@ async function cargarEstado(){
 }
 
 
-async function sincronizar(){
+// ============================================================
+// CARGAR PAQUETES ESCANEADOS
+// ============================================================
 
-    if(
-        sincronizando
+async function cargarPaquetesEscaneados(){
+
+    if (
+
+        cargando
+
     ){
 
         return;
@@ -1168,86 +1492,80 @@ async function sincronizar(){
     }
 
 
-    sincronizando =
+    cargando =
+
         true;
 
 
     syncButton.disabled =
+
         true;
 
 
     syncButton.innerHTML =
 
         `
+
         <i class="fas fa-spinner fa-spin"></i>
-        Buscando...
+
+        Consultando...
+
         `;
 
 
     loading.classList.add(
+
         "visible"
+
     );
 
 
     empty.style.display =
+
         "none";
 
 
     try{
 
         const response =
+
             await fetch(
-                "/panel/logistica/mercadolibre/sincronizar",
+
+                "/panel/logistica/mercadolibre/paquetes-escaneados",
+
                 {
 
                     method:
-                        "POST",
 
-                    headers: {
+                        "GET",
 
-                        "Content-Type":
-                            "application/json",
+                    cache:
 
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({})
+                        "no-store"
 
                 }
+
             );
 
 
         const data =
+
             await response.json();
 
 
-        if(
-            response.status === 401
-        ){
+        if (
 
-            mostrarToast(
-                data.mensaje ||
-                "La sesión expiró.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        if(
             !response.ok ||
+
             data.ok === false
+
         ){
 
             throw new Error(
 
                 data.mensaje ||
-                "No se pudieron consultar los envíos."
+
+                "No se pudieron consultar los paquetes."
 
             );
 
@@ -1256,7 +1574,8 @@ async function sincronizar(){
 
         renderizarEnvios(
 
-            data.envios ||
+            data.paquetes ||
+
             []
 
         );
@@ -1265,33 +1584,56 @@ async function sincronizar(){
         lastSync.innerText =
 
             new Date()
+
                 .toLocaleString(
+
                     "es-AR"
+
                 );
 
 
-        mostrarToast(
+        if (
 
-            data.mensaje ||
-            "Sincronización completada.",
+            data.total > 0
 
-            "success"
+        ){
 
-        );
+            mostrarToast(
 
+                `Se encontraron ${data.total} paquetes escaneados.`,
+
+                "success"
+
+            );
+
+        }else{
+
+            mostrarToast(
+
+                "Todavía no se recibió ningún escaneo.",
+
+                ""
+
+            );
+
+        }
 
     }catch(error){
 
         console.error(
-            "Error:",
+
+            "Error paquetes:",
+
             error
+
         );
 
 
         mostrarToast(
 
             error.message ||
-            "Error sincronizando Mercado Libre.",
+
+            "Error consultando paquetes.",
 
             "error"
 
@@ -1299,30 +1641,41 @@ async function sincronizar(){
 
     }finally{
 
-        sincronizando =
+        cargando =
+
             false;
 
 
         loading.classList.remove(
+
             "visible"
+
         );
 
 
         syncButton.disabled =
+
             false;
 
 
         syncButton.innerHTML =
 
             `
+
             <i class="fas fa-rotate"></i>
-            Buscar paquetes nuevos
+
+            Ver paquetes escaneados
+
             `;
 
     }
 
 }
 
+
+// ============================================================
+// INICIO
+// ============================================================
 
 document.addEventListener(
 
@@ -1332,11 +1685,19 @@ document.addEventListener(
 
         cargarEstado();
 
+
+        // Cargar automáticamente
+        // los paquetes ya recibidos
+
+        cargarPaquetesEscaneados();
+
     }
 
 );
 
+
 </script>
+
 
 </body>
 
