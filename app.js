@@ -8,13 +8,10 @@ const session = require("express-session");
 const path = require("path");
 const http = require("http");
 
-const {
-    Server
-} = require("socket.io");
+const { Server } = require("socket.io");
 
 const isAuthenticated =
     require("./middleware/authMiddleware");
-
 
 // ============================================================
 // BASE DE DATOS
@@ -24,7 +21,6 @@ const db =
     require("./models/db");
 
 require("./models/initDB");
-
 
 // ============================================================
 // APLICACIÓN
@@ -36,9 +32,8 @@ const app =
 const PORT =
     process.env.PORT || 3000;
 
-
 // ============================================================
-// MOTOR DE VISTAS EJS
+// MOTOR DE VISTAS
 // ============================================================
 
 app.set(
@@ -54,9 +49,8 @@ app.set(
     )
 );
 
-
 // ============================================================
-// MIDDLEWARE JSON
+// MIDDLEWARES
 // ============================================================
 
 app.use(
@@ -65,18 +59,12 @@ app.use(
     })
 );
 
-
-// ============================================================
-// MIDDLEWARE FORMULARIOS
-// ============================================================
-
 app.use(
     express.urlencoded({
         extended: true,
         limit: "10mb"
     })
 );
-
 
 // ============================================================
 // SESIONES
@@ -119,7 +107,6 @@ app.use(
     })
 );
 
-
 // ============================================================
 // ARCHIVOS PÚBLICOS
 // ============================================================
@@ -133,24 +120,9 @@ app.use(
     )
 );
 
-
 // ============================================================
 // RUTAS
 // ============================================================
-
-
-// ============================================================
-// USUARIOS
-// ============================================================
-
-const userRoutes =
-    require("./routes/users");
-
-app.use(
-    "/panel/users",
-    userRoutes
-);
-
 
 // ============================================================
 // AUTENTICACIÓN
@@ -164,6 +136,17 @@ app.use(
     authRoutes
 );
 
+// ============================================================
+// USUARIOS
+// ============================================================
+
+const userRoutes =
+    require("./routes/users");
+
+app.use(
+    "/panel/users",
+    userRoutes
+);
 
 // ============================================================
 // LOGÍSTICA
@@ -177,19 +160,21 @@ app.use(
     logisticaRoutes
 );
 
-
 // ============================================================
 // MERCADO LIBRE
 // ============================================================
 //
-// URL BASE:
+// IMPORTANTE:
+//
+// Archivo:
+// routes/mercadolibre.js
+//
+// Vista:
+// views/logistica/mercadolibre.ejs
+//
+// URL:
 //
 // /panel/logistica/mercadolibre
-//
-// IMPORTANTE:
-// El archivo debe existir en:
-//
-// routes/mercadolibre.js
 //
 // ============================================================
 
@@ -201,29 +186,24 @@ app.use(
     mercadoLibreRoutes
 );
 
-
-// ============================================================
-// LOG DE RUTAS MERCADO LIBRE
-// ============================================================
-
 console.log(
-    "🛒 Ruta Mercado Libre registrada:"
+    "🛒 Mercado Libre registrado correctamente:"
 );
 
 console.log(
-    "   GET /panel/logistica/mercadolibre"
+    "   GET  /panel/logistica/mercadolibre"
 );
 
 console.log(
-    "   GET /panel/logistica/mercadolibre/conectar"
+    "   GET  /panel/logistica/mercadolibre/conectar"
 );
 
 console.log(
-    "   GET /panel/logistica/mercadolibre/callback"
+    "   GET  /panel/logistica/mercadolibre/callback"
 );
 
 console.log(
-    "   GET /panel/logistica/mercadolibre/estado"
+    "   GET  /panel/logistica/mercadolibre/estado"
 );
 
 console.log(
@@ -233,7 +213,6 @@ console.log(
 console.log(
     "   POST /panel/logistica/mercadolibre/webhook"
 );
-
 
 // ============================================================
 // PANEL PRINCIPAL
@@ -249,10 +228,6 @@ app.get(
 
         try {
 
-            // ------------------------------------------------
-            // OBTENER APLICACIONES
-            // ------------------------------------------------
-
             const apps =
                 db
                     .prepare(
@@ -260,22 +235,12 @@ app.get(
                     )
                     .all();
 
-
-            // ------------------------------------------------
-            // OBTENER USUARIOS
-            // ------------------------------------------------
-
             const usuarios =
                 db
                     .prepare(
                         "SELECT * FROM users"
                     )
                     .all();
-
-
-            // ------------------------------------------------
-            // CONTAR USUARIOS POR ROL
-            // ------------------------------------------------
 
             const totalPorRol = {
 
@@ -302,21 +267,14 @@ app.get(
 
             };
 
-
-            // ------------------------------------------------
-            // OBTENER PLANTILLAS
-            // ------------------------------------------------
-
             let plantillas =
                 [];
-
 
             const templatesPath =
                 path.join(
                     __dirname,
                     "templates"
                 );
-
 
             if (
                 fs.existsSync(
@@ -356,11 +314,6 @@ app.get(
 
             }
 
-
-            // ------------------------------------------------
-            // RENDER PANEL
-            // ------------------------------------------------
-
             return res.render(
                 "panel",
                 {
@@ -382,7 +335,6 @@ app.get(
                 }
             );
 
-
         } catch (
             error
         ) {
@@ -391,7 +343,6 @@ app.get(
                 "❌ Error cargando panel:",
                 error
             );
-
 
             return res.render(
                 "panel",
@@ -427,7 +378,6 @@ app.get(
     }
 );
 
-
 // ============================================================
 // FRAMEWORK
 // ============================================================
@@ -456,23 +406,20 @@ app.get(
     }
 );
 
-
 // ============================================================
 // LOGIN
 // ============================================================
 //
-// NO MODIFICAMOS TU LOGIN
+// "/" y "/login" muestran la misma vista.
 //
-// Tu login actual sigue funcionando en:
+// Esto soluciona:
 //
-// /
-//
-// POST /auth/login
+// GET /login
 //
 // ============================================================
 
 app.get(
-    "/",
+    ["/", "/login"],
     (req, res) => {
 
         return res.render(
@@ -481,7 +428,6 @@ app.get(
 
     }
 );
-
 
 // ============================================================
 // HEALTH CHECK
@@ -507,9 +453,8 @@ app.get(
     }
 );
 
-
 // ============================================================
-// RUTA 404
+// 404
 // ============================================================
 
 app.use(
@@ -520,11 +465,6 @@ app.use(
             req.method,
             req.originalUrl
         );
-
-
-        // ------------------------------------------------
-        // API
-        // ------------------------------------------------
 
         if (
             req.path.startsWith(
@@ -546,32 +486,94 @@ app.use(
 
         }
 
-
-        // ------------------------------------------------
-        // HTML
-        // ------------------------------------------------
-
         return res
             .status(404)
             .send(
                 `
-                <h1>Página no encontrada</h1>
+                <!DOCTYPE html>
 
-                <p>
-                Ruta:
-                ${req.method}
-                ${req.originalUrl}
-                </p>
+                <html lang="es">
 
-                <a href="/panel">
-                    Volver al panel
-                </a>
+                <head>
+
+                    <meta charset="UTF-8">
+
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0"
+                    >
+
+                    <title>
+                        Página no encontrada
+                    </title>
+
+                    <style>
+
+                        body {
+                            font-family: Arial, sans-serif;
+                            background: #0f172a;
+                            color: white;
+                            min-height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0;
+                        }
+
+                        .card {
+                            text-align: center;
+                            padding: 40px;
+                            background: #1e293b;
+                            border-radius: 20px;
+                            max-width: 500px;
+                        }
+
+                        h1 {
+                            margin-top: 0;
+                        }
+
+                        a {
+                            display: inline-block;
+                            margin-top: 20px;
+                            padding: 12px 20px;
+                            background: #2563eb;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 10px;
+                        }
+
+                    </style>
+
+                </head>
+
+                <body>
+
+                    <div class="card">
+
+                        <h1>
+                            Página no encontrada
+                        </h1>
+
+                        <p>
+                            Ruta:
+                            ${req.method}
+                            ${req.originalUrl}
+                        </p>
+
+                        <a href="/panel">
+                            Volver al panel
+                        </a>
+
+                    </div>
+
+                </body>
+
+                </html>
                 `
             );
 
     }
 );
-
 
 // ============================================================
 // MANEJO GLOBAL DE ERRORES
@@ -590,7 +592,6 @@ app.use(
             error
         );
 
-
         if (
             res.headersSent
         ) {
@@ -600,7 +601,6 @@ app.use(
             );
 
         }
-
 
         if (
             req.path.startsWith(
@@ -622,7 +622,6 @@ app.use(
 
         }
 
-
         return res
             .status(500)
             .send(
@@ -632,7 +631,6 @@ app.use(
     }
 );
 
-
 // ============================================================
 // SERVIDOR HTTP
 // ============================================================
@@ -641,7 +639,6 @@ const server =
     http.createServer(
         app
     );
-
 
 // ============================================================
 // SOCKET.IO
@@ -667,9 +664,8 @@ const io =
         }
     );
 
-
 // ============================================================
-// SOCKET.IO
+// SOCKET.IO CONNECTION
 // ============================================================
 
 io.on(
@@ -680,7 +676,6 @@ io.on(
             "⚡ Cliente conectado:",
             socket.id
         );
-
 
         socket.on(
             "disconnect",
@@ -696,7 +691,6 @@ io.on(
 
     }
 );
-
 
 // ============================================================
 // INICIAR SERVIDOR
@@ -720,6 +714,18 @@ server.listen(
 
         console.log(
             `🚀 Puerto: ${PORT}`
+        );
+
+        console.log(
+            "🔐 Login:"
+        );
+
+        console.log(
+            "   /"
+        );
+
+        console.log(
+            "   /login"
         );
 
         console.log(
