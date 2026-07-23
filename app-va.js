@@ -177,7 +177,7 @@ app.use(
 // --------------------------------------------------
 
 const mercadoLibreRoutes =
-    require("./routes/mercadolibre");
+    require("./routes/mercadolibre-fijo");
 
 app.use(
     "/panel/logistica/mercadolibre",

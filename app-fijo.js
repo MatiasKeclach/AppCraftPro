@@ -97,7 +97,7 @@ app.use("/panel/logistica", logisticaRoutes);
 // ==================================================
 
 const mercadoLibreRoutes =
-  require("./routes/mercadolibre");
+  require("./routes/mercadolibre-fijo");
 
 app.use(
   "/panel/logistica/mercadolibre",
