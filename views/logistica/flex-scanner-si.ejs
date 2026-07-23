@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -307,9 +308,7 @@ textarea{
 
 </head>
 
-
 <body>
-
 
 <header class="header">
 
@@ -323,13 +322,12 @@ Escaneo automático de etiquetas de paquetes particulares
 
 </header>
 
-
 <div class="container">
-
 
 <a
 href="/panel/logistica"
 class="back"
+
 >
 
 <i class="fas fa-arrow-left"></i>
@@ -337,7 +335,6 @@ class="back"
 Volver a Logística
 
 </a>
-
 
 <div class="panel">
 
@@ -375,16 +372,13 @@ Seleccionar cliente...
 
 </div>
 
-
 <div class="panel">
 
 <h2>
 📷 Escanear etiqueta
 </h2>
 
-
 <div class="scanner">
-
 
 <div class="camera-wrapper">
 
@@ -393,22 +387,23 @@ id="video"
 autoplay
 playsinline
 muted
-></video>
+
+> </video>
 
 <div class="scan-frame"></div>
 
 </div>
 
-
 <canvas
 id="canvas"
 style="display:none"
-></canvas>
 
+> </canvas>
 
 <button
 class="btn btn-primary"
 id="iniciarScanner"
+
 >
 
 <i class="fas fa-camera"></i>
@@ -417,11 +412,11 @@ Abrir cámara
 
 </button>
 
-
 <button
 class="btn btn-danger"
 id="detenerScanner"
 style="display:none"
+
 >
 
 <i class="fas fa-stop"></i>
@@ -429,7 +424,6 @@ style="display:none"
 Detener cámara
 
 </button>
-
 
 <div
 class="estado-scanner"
@@ -440,11 +434,9 @@ Scanner detenido
 
 </div>
 
-
 </div>
 
 </div>
-
 
 <div
 class="panel progreso"
@@ -455,7 +447,6 @@ id="progreso"
 🔎 Analizando etiqueta...
 </h2>
 
-
 <div class="progress-bar">
 
 <div
@@ -464,7 +455,6 @@ id="progressFill"
 ></div>
 
 </div>
-
 
 <div
 class="progress-text"
@@ -477,17 +467,14 @@ Preparando OCR...
 
 </div>
 
-
 <div
 class="panel resultado"
 id="resultado"
 >
 
-
 <h2>
 📦 Resultado del escaneo
 </h2>
-
 
 <div class="estado">
 
@@ -504,7 +491,6 @@ PKG-000001
 
 </div>
 
-
 <div
 class="alerta alerta-ok"
 id="alertaOk"
@@ -514,23 +500,20 @@ id="alertaOk"
 
 </div>
 
-
 <div
 class="alerta alerta-error"
 id="alertaError"
 >
 
 ⚠️ Algunos datos no pudieron detectarse automáticamente.
-Podés completarlos manualmente.
+Podés completarlos manualmente o volver a escanear.
 
 </div>
-
 
 <div
 class="form-grid"
 style="margin-top:20px"
 >
-
 
 <div>
 
@@ -541,11 +524,10 @@ Código de barras
 <input
 type="text"
 id="codigoBarras"
-placeholder="Opcional"
+
 >
 
 </div>
-
 
 <div>
 
@@ -556,10 +538,10 @@ Número de orden
 <input
 type="text"
 id="numeroOrden"
+
 >
 
 </div>
-
 
 <div>
 
@@ -570,10 +552,10 @@ Fecha emisión
 <input
 type="text"
 id="fechaEmision"
+
 >
 
 </div>
-
 
 <div>
 
@@ -585,10 +567,10 @@ Fecha y hora de recepción
 type="text"
 id="fechaRecepcion"
 readonly
+
 >
 
 </div>
-
 
 <div>
 
@@ -599,10 +581,10 @@ Peso
 <input
 type="text"
 id="peso"
+
 >
 
 </div>
-
 
 <div>
 
@@ -613,10 +595,10 @@ Cantidad de bultos
 <input
 type="text"
 id="bultos"
+
 >
 
 </div>
-
 
 <div>
 
@@ -627,10 +609,10 @@ Número de bulto
 <input
 type="text"
 id="numeroBulto"
+
 >
 
 </div>
-
 
 <div>
 
@@ -641,10 +623,10 @@ Remitente
 <input
 type="text"
 id="remitente"
+
 >
 
 </div>
-
 
 <div>
 
@@ -655,10 +637,10 @@ Destinatario
 <input
 type="text"
 id="destinatario"
+
 >
 
 </div>
-
 
 <div>
 
@@ -669,10 +651,10 @@ Teléfono
 <input
 type="text"
 id="telefono"
+
 >
 
 </div>
-
 
 <div>
 
@@ -683,10 +665,10 @@ Dirección
 <input
 type="text"
 id="direccion"
+
 >
 
 </div>
-
 
 <div>
 
@@ -697,10 +679,10 @@ Código postal
 <input
 type="text"
 id="codigoPostal"
+
 >
 
 </div>
-
 
 <div>
 
@@ -711,10 +693,10 @@ Localidad
 <input
 type="text"
 id="localidad"
+
 >
 
 </div>
-
 
 <div>
 
@@ -725,13 +707,12 @@ Zona / Barrio
 <input
 type="text"
 id="zona"
+
 >
 
 </div>
 
-
 </div>
-
 
 <div style="margin-top:20px">
 
@@ -744,7 +725,6 @@ id="observaciones"
 ></textarea>
 
 </div>
-
 
 <div class="ocr-box">
 
@@ -759,10 +739,10 @@ readonly
 
 </div>
 
-
 <button
 class="btn btn-success"
 id="guardarPaquete"
+
 >
 
 <i class="fas fa-save"></i>
@@ -771,10 +751,10 @@ Guardar paquete
 
 </button>
 
-
 <button
 class="btn btn-warning"
 id="escanearOtro"
+
 >
 
 <i class="fas fa-redo"></i>
@@ -783,19 +763,11 @@ Volver a escanear
 
 </button>
 
-
 </div>
 
-
 </div>
-
 
 <script>
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
 
 let stream = null;
 
@@ -804,6 +776,8 @@ let procesando = false;
 let scannerActivo = false;
 
 let intervaloCaptura = null;
+
+let ultimoTextoProcesado = "";
 
 
 const video =
@@ -836,10 +810,6 @@ document.getElementById("progressText");
 const textoOCR =
 document.getElementById("textoOCR");
 
-
-/* =========================================================
-   SONIDOS
-========================================================= */
 
 function sonidoOK(){
 
@@ -933,10 +903,6 @@ function sonidoError(){
 }
 
 
-/* =========================================================
-   GENERAR CÓDIGO INTERNO
-========================================================= */
-
 function generarCodigoInterno(){
 
     return "PKG-" +
@@ -949,10 +915,6 @@ function generarCodigoInterno(){
 }
 
 
-/* =========================================================
-   FECHA ACTUAL
-========================================================= */
-
 function fechaActual(){
 
     return new Date()
@@ -962,10 +924,6 @@ function fechaActual(){
 
 }
 
-
-/* =========================================================
-   ABRIR CÁMARA
-========================================================= */
 
 iniciar.addEventListener(
 "click",
@@ -1046,10 +1004,6 @@ async function(){
 });
 
 
-/* =========================================================
-   DETENER CÁMARA
-========================================================= */
-
 detener.addEventListener(
 "click",
 detenerScanner
@@ -1105,10 +1059,6 @@ function detenerScanner(){
 
 }
 
-
-/* =========================================================
-   CAPTURAR IMAGEN
-========================================================= */
 
 async function capturarImagen(){
 
@@ -1187,10 +1137,6 @@ async function capturarImagen(){
 
 }
 
-
-/* =========================================================
-   ANALIZAR IMAGEN
-========================================================= */
 
 async function analizarImagen(
     imagen
@@ -1278,26 +1224,15 @@ async function analizarImagen(
 
 
         console.log(
-            "=============================="
-        );
-
-        console.log(
-            "OCR COMPLETO:"
-        );
-
-        console.log(
+            "OCR COMPLETO:",
             texto
-        );
-
-        console.log(
-            "=============================="
         );
 
 
         if(
             !texto ||
             texto.length <
-            10
+            35
         ){
 
             throw new Error(
@@ -1313,10 +1248,29 @@ async function analizarImagen(
         );
 
 
-        console.log(
-            "DATOS EXTRAÍDOS:",
+        const cantidad =
+        Object.values(
             datos
-        );
+        )
+        .filter(
+            valor =>
+            valor &&
+            String(valor)
+            .trim()
+        )
+        .length;
+
+
+        if(
+            cantidad <
+            4
+        ){
+
+            throw new Error(
+                "La etiqueta no fue reconocida correctamente"
+            );
+
+        }
 
 
         textoOCR.value =
@@ -1365,10 +1319,6 @@ async function analizarImagen(
 
 }
 
-
-/* =========================================================
-   PROCESAR TODOS LOS DATOS
-========================================================= */
 
 function procesarDatos(
     texto
@@ -1452,10 +1402,6 @@ function procesarDatos(
 }
 
 
-/* =========================================================
-   MOSTRAR RESULTADO
-========================================================= */
-
 function mostrarResultado(
     datos,
     texto
@@ -1527,14 +1473,12 @@ function mostrarResultado(
             campos[id] ||
             "";
 
-
             input.classList.toggle(
                 "detectado",
                 Boolean(
                     campos[id]
                 )
             );
-
 
             input.classList.toggle(
                 "faltante",
@@ -1552,67 +1496,9 @@ function mostrarResultado(
     fechaActual();
 
 
-    /*
-    IMPORTANTE:
-
-    El OCR completo queda disponible
-    en Observaciones y Texto OCR.
-
-    Pero ahora Observaciones también
-    muestra un resumen de lo detectado.
-    */
-
-
-    const resumen = [
-
-        datos.direccion
-        ?
-        "Dirección: " +
-        datos.direccion
-        :
-        "",
-
-        datos.codigoPostal
-        ?
-        "Código postal: " +
-        datos.codigoPostal
-        :
-        "",
-
-        datos.localidad
-        ?
-        "Localidad: " +
-        datos.localidad
-        :
-        "",
-
-        datos.zona
-        ?
-        "Zona/Barrio: " +
-        datos.zona
-        :
-        ""
-
-    ]
-    .filter(Boolean)
-    .join("\n");
-
-
     document.getElementById(
         "observaciones"
     ).value =
-
-    resumen
-    ?
-
-    resumen
-    +
-    "\n\n--- OCR COMPLETO ---\n"
-    +
-    texto
-
-    :
-
     texto;
 
 
@@ -1624,25 +1510,13 @@ function mostrarResultado(
     "block";
 
 
-    const camposObligatorios = [
-
-        datos.destinatario,
-
-        datos.telefono,
-
-        datos.direccion,
-
-        datos.localidad
-
-    ];
-
-
     const faltantes =
-    camposObligatorios
+    Object.values(
+        campos
+    )
     .filter(
         valor =>
-        !valor ||
-        !String(valor).trim()
+        !valor
     )
     .length;
 
@@ -1656,7 +1530,6 @@ function mostrarResultado(
         ).style.display =
         "block";
 
-
         document.getElementById(
             "alertaError"
         ).style.display =
@@ -1668,7 +1541,6 @@ function mostrarResultado(
             "alertaOk"
         ).style.display =
         "none";
-
 
         document.getElementById(
             "alertaError"
@@ -1683,10 +1555,6 @@ function mostrarResultado(
 
 }
 
-
-/* =========================================================
-   NORMALIZAR TEXTO
-========================================================= */
 
 function lineasTexto(
     texto
@@ -1710,28 +1578,6 @@ function lineasTexto(
 }
 
 
-function limpiarCampo(
-    valor
-){
-
-    return String(valor || "")
-    .replace(
-        /^[\s:;\-]+/,
-        ""
-    )
-    .replace(
-        /\s+/g,
-        " "
-    )
-    .trim();
-
-}
-
-
-/* =========================================================
-   CÓDIGO DE BARRAS
-========================================================= */
-
 function detectarCodigoBarras(
     texto
 ){
@@ -1751,15 +1597,14 @@ function detectarCodigoBarras(
     ){
 
         const limpia =
-        linea
-        .replace(
-            /[\s\-\.]/g,
+        linea.replace(
+            /\s/g,
             ""
         );
 
 
         if(
-            /^\d{8,14}$/
+            /^\d{6,14}$/
             .test(
                 limpia
             )
@@ -1796,10 +1641,6 @@ function detectarCodigoBarras(
 }
 
 
-/* =========================================================
-   FECHA
-========================================================= */
-
 function detectarFecha(
     texto
 ){
@@ -1819,10 +1660,6 @@ function detectarFecha(
 }
 
 
-/* =========================================================
-   NÚMERO DE ORDEN
-========================================================= */
-
 function detectarOrden(
     texto
 ){
@@ -1840,658 +1677,20 @@ function detectarOrden(
     ){
 
         if(
-            /Nro\.?\s*Ord|Nro\.?\s*Orden|Orden/i
+            /Nro\.?\s*Ord/i
             .test(
                 lineas[i]
             )
         ){
 
-            const bloque =
+            const numeros =
             lineas
             .slice(
                 i,
                 i+3
             )
-            .join(" ");
-
-
-            const numeros =
-            bloque.match(
-                /\b\d{4,10}\b/g
-            );
-
-
-            if(
-                numeros &&
-                numeros.length
-            ){
-
-                return numeros[
-                    numeros.length - 1
-                ];
-
-            }
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   PESO
-========================================================= */
-
-function detectarPeso(
-    texto
-){
-
-    const match =
-    texto.match(
-        /PESO\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:KG|KGS|KILOS)?/i
-    );
-
-
-    if(match){
-
-        return match[1];
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   BULTOS
-========================================================= */
-
-function detectarBultos(
-    texto
-){
-
-    const match =
-    texto.match(
-        /BULTOS?\s*:?\s*(\d{1,3})/i
-    );
-
-
-    return match
-    ?
-    match[1]
-    :
-    "";
-
-}
-
-
-/* =========================================================
-   NÚMERO DE BULTO
-========================================================= */
-
-function detectarNumeroBulto(
-    texto
-){
-
-    const match =
-    texto.match(
-        /\b(\d{1,3})\s*(?:de|\/)\s*(\d{1,3})\b/i
-    );
-
-
-    if(match){
-
-        return (
-            match[1]
-            +
-            " de "
-            +
-            match[2]
-        );
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   REMITENTE
-========================================================= */
-
-function detectarRemitente(
-    texto
-){
-
-    const lineas =
-    lineasTexto(
-        texto
-    );
-
-
-    for(
-        let i=0;
-        i<lineas.length;
-        i++
-    ){
-
-        const linea =
-        lineas[i];
-
-
-        const inline =
-        linea.match(
-            /^Remitente\s*:?\s*(.+)$/i
-        );
-
-
-        if(inline){
-
-            return limpiarCampo(
-                inline[1]
-            );
-
-        }
-
-
-        if(
-            /^Remitente\s*:?\s*$/i
-            .test(
-                linea
-            )
-        ){
-
-            if(
-                lineas[i+1]
-            ){
-
-                return limpiarCampo(
-                    lineas[i+1]
-                );
-
-            }
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   DESTINATARIO
-========================================================= */
-
-function detectarDestinatario(
-    texto
-){
-
-    const lineas =
-    lineasTexto(
-        texto
-    );
-
-
-    for(
-        let i=0;
-        i<lineas.length;
-        i++
-    ){
-
-        const linea =
-        lineas[i];
-
-
-        const inline =
-        linea.match(
-            /^Destinatario\s*:?\s*(.+)$/i
-        );
-
-
-        if(inline){
-
-            return limpiarCampo(
-                inline[1]
-            )
-            .replace(
-                /\(\s*\d[\d\s\-]{7,}\)/g,
-                ""
-            )
-            .trim();
-
-        }
-
-
-        if(
-            /^Destinatario\s*:?\s*$/i
-            .test(
-                linea
-            )
-        ){
-
-            let siguiente =
-            lineas[i+1];
-
-
-            if(siguiente){
-
-                siguiente =
-                siguiente
-                .replace(
-                    /\(\s*\d[\d\s\-]{7,}\)/g,
-                    ""
-                )
-                .trim();
-
-
-                if(
-                    siguiente &&
-                    !/^Tel[eé]fono/i
-                    .test(
-                        siguiente
-                    )
-                ){
-
-                    return siguiente;
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   TELÉFONO
-========================================================= */
-
-function detectarTelefono(
-    texto
-){
-
-    const lineas =
-    lineasTexto(
-        texto
-    );
-
-
-    for(
-        let i=0;
-        i<lineas.length;
-        i++
-    ){
-
-        const matchLinea =
-        lineas[i].match(
-            /Tel[eé]fono\s*:?\s*(.+)$/i
-        );
-
-
-        if(matchLinea){
-
-            const numeros =
-            matchLinea[1]
+            .join(" ")
             .match(
-                /\d[\d\s\-]{7,}\d|\d{8,15}/
-            );
-
-
-            if(numeros){
-
-                return numeros[0]
-                .replace(
-                    /\D/g,
-                    ""
-                );
-
-            }
-
-        }
-
-    }
-
-
-    const entreParentesis =
-    texto.match(
-        /\(\s*(\d{8,15})\s*\)/
-    );
-
-
-    if(
-        entreParentesis
-    ){
-
-        return entreParentesis[1];
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   DIRECCIÓN
-========================================================= */
-
-function detectarDireccion(
-    texto
-){
-
-    const lineas =
-    lineasTexto(
-        texto
-    );
-
-
-    /*
-    1. Buscar una dirección después
-       de Destinatario.
-    */
-
-    for(
-        let i=0;
-        i<lineas.length;
-        i++
-    ){
-
-        if(
-            /^Destinatario/i
-            .test(
-                lineas[i]
-            )
-        ){
-
-            for(
-                let j=i+1;
-                j<
-                Math.min(
-                    i+7,
-                    lineas.length
-                );
-                j++
-            ){
-
-                const linea =
-                lineas[j];
-
-
-                if(
-                    esDireccionValida(
-                        linea
-                    )
-                ){
-
-                    return limpiarDireccion(
-                        linea
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    /*
-    2. Buscar patrones generales
-       como Bolívar 1640.
-    */
-
-    for(
-        const linea
-        of lineas
-    ){
-
-        if(
-            esDireccionValida(
-                linea
-            )
-        ){
-
-            return limpiarDireccion(
-                linea
-            );
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-function esDireccionValida(
-    linea
-){
-
-    if(
-        !linea
-    ){
-
-        return false;
-
-    }
-
-
-    const texto =
-    linea.trim();
-
-
-    if(
-        texto.length <
-        5
-    ){
-
-        return false;
-
-    }
-
-
-    /*
-    Nunca tomar teléfono
-    como dirección.
-    */
-
-    const soloNumeros =
-    texto.replace(
-        /\D/g,
-        ""
-    );
-
-
-    if(
-        soloNumeros.length >=
-        8 &&
-        !/[A-Za-zÁÉÍÓÚáéíóúÑñ]/.test(
-            texto
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /*
-    No tomar códigos postales
-    */
-
-    if(
-        /^(?:C\.?P\.?|Código Postal)/i
-        .test(
-            texto
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /*
-    No tomar campos de la etiqueta
-    */
-
-    if(
-        /^(?:Tel[eé]fono|Peso|Bultos?|Nro\.?\s*Orden|Orden|Remitente|Destinatario|Observaciones)/i
-        .test(
-            texto
-        )
-    ){
-
-        return false;
-
-    }
-
-
-    /*
-    Dirección típica:
-
-    Bolívar 1640
-    Av. Rivadavia 1234
-    Calle Falsa 123
-    San Martín 250
-    */
-
-    if(
-        /^[A-Za-zÁÉÍÓÚáéíóúÑñüÜ.\s'’-]{3,40}\s+\d{2,6}(?:\s*[A-Za-z]?)?$/i
-        .test(
-            texto
-        )
-    ){
-
-        return true;
-
-    }
-
-
-    /*
-    Dirección con número
-    dentro de una línea.
-    */
-
-    if(
-        /[A-Za-zÁÉÍÓÚáéíóúÑñüÜ]{3,}\s+\d{2,6}\b/
-        .test(
-            texto
-        )
-    ){
-
-        return true;
-
-    }
-
-
-    return false;
-
-}
-
-
-function limpiarDireccion(
-direccion
-){
-
-    return direccion
-    .replace(
-        /\s+/g,
-        " "
-    )
-    .trim();
-
-}
-
-
-/* =========================================================
-   CÓDIGO POSTAL
-========================================================= */
-
-function detectarCodigoPostal(
-texto
-){
-
-    /*
-    Ejemplos:
-
-    C.P.: Capital Federal = 1141
-    CP: 1141
-    C.P. 1141
-    Código Postal: 1141
-    */
-
-    const match =
-    texto.match(
-        /(?:C\.?\s*P\.?|Código\s+Postal)\s*:?\s*(?:[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+?\s*=\s*)?(\d{4,8})\b/i
-    );
-
-
-    if(match){
-
-        return match[1];
-
-    }
-
-
-    /*
-    Fallback:
-
-    Buscar un número de 4 a 8
-    dígitos cercano a CP.
-    */
-
-    const lineas =
-    lineasTexto(
-        texto
-    );
-
-
-    for(
-        let i=0;
-        i<lineas.length;
-        i++
-    ){
-
-        if(
-            /C\.?\s*P\.?|Código Postal/i
-            .test(
-                lineas[i]
-            )
-        ){
-
-            const bloque =
-            lineas
-            .slice(
-                i,
-                i+2
-            )
-            .join(" ");
-
-
-            const numeros =
-            bloque.match(
                 /\b\d{4,8}\b/g
             );
 
@@ -2517,12 +1716,8 @@ texto
 }
 
 
-/* =========================================================
-   LOCALIDAD
-========================================================= */
-
-function detectarLocalidad(
-texto
+function detectarPeso(
+    texto
 ){
 
     const lineas =
@@ -2531,94 +1726,65 @@ texto
     );
 
 
-    /*
-    Caso:
-
-    C.P.: Capital Federal = 1141
-
-    Devuelve:
-
-    Capital Federal
-    */
-
     for(
-        const linea
-        of lineas
+        let i=0;
+        i<lineas.length;
+        i++
     ){
 
-        const match =
-        linea.match(
-            /(?:C\.?\s*P\.?|Código\s+Postal)\s*:?\s*(.+?)\s*=\s*\d{4,8}\b/i
-        );
+        if(
+            /PESO/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            const bloque =
+            lineas
+            .slice(
+                i,
+                i+3
+            )
+            .join(" ");
 
 
-        if(match){
-
-            const localidad =
-            limpiarCampo(
-                match[1]
+            const match =
+            bloque.match(
+                /PESO.*?(\d+(?:[.,]\d+)?)/i
             );
 
 
-            if(
-                localidad &&
-                !/^\d+$/.test(
-                    localidad
-                )
-            ){
+            if(match){
 
-                return localidad;
+                return match[1];
 
             }
 
-        }
 
-    }
-
-
-    /*
-    Caso:
-
-    Localidad: Lanús
-    Ciudad: Buenos Aires
-    */
-
-    const match =
-    texto.match(
-        /(?:Localidad|Ciudad)\s*:?\s*([^\n]+)/i
-    );
+            const siguiente =
+            lineas[i+1];
 
 
-    if(match){
+            if(
+                siguiente
+            ){
 
-        return limpiarCampo(
-            match[1]
-        );
-
-    }
-
-
-    /*
-    Si aparece CP seguido
-    de texto y no hay número.
-    */
-
-    for(
-        const linea
-        of lineas
-    ){
-
-        const matchCP =
-        linea.match(
-            /^C\.?\s*P\.?\s*:?\s*([A-Za-zÁÉÍÓÚáéíóúÑñ\s]+)$/i
-        );
+                const nums =
+                siguiente.match(
+                    /\b\d+(?:[.,]\d+)?\b/g
+                );
 
 
-        if(matchCP){
+                if(
+                    nums &&
+                    nums.length
+                ){
 
-            return limpiarCampo(
-                matchCP[1]
-            );
+                    return nums[0];
+
+                }
+
+            }
 
         }
 
@@ -2630,9 +1796,422 @@ texto
 }
 
 
-/* =========================================================
-   ZONA / BARRIO
-========================================================= */
+function detectarBultos(
+    texto
+){
+
+    const lineas =
+    lineasTexto(
+        texto
+    );
+
+
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
+
+        if(
+            /BULTOS/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            const bloque =
+            lineas
+            .slice(
+                i,
+                i+3
+            )
+            .join(" ");
+
+
+            const match =
+            bloque.match(
+                /BULTOS.*?(\d{1,2})/i
+            );
+
+
+            if(match){
+
+                return match[1];
+
+            }
+
+
+            const siguiente =
+            lineas[i+1];
+
+
+            if(
+                siguiente
+            ){
+
+                const nums =
+                siguiente.match(
+                    /\b\d{1,2}\b/g
+                );
+
+
+                if(
+                    nums &&
+                    nums.length >= 2
+                ){
+
+                    return nums[1];
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+function detectarNumeroBulto(
+    texto
+){
+
+    const match =
+    texto.match(
+        /\b(\d{1,2})\s*(?:de|\/)\s*(\d{1,2})\b/i
+    );
+
+
+    if(match){
+
+        return (
+            match[1]
+            +
+            " de "
+            +
+            match[2]
+        );
+
+    }
+
+
+    const match2 =
+    texto.match(
+        /\b(\d{1,2})\s+de\s+(\d{1,2})\b/i
+    );
+
+
+    return match2
+    ?
+    match2[1]
+    +
+    " de "
+    +
+    match2[2]
+    :
+    "";
+
+}
+
+
+function detectarRemitente(
+    texto
+){
+
+    const match =
+    texto.match(
+        /Remitente\s*:?\s*([^\n]+)/i
+    );
+
+
+    return match
+    ?
+    limpiarCampo(
+        match[1]
+    )
+    :
+    "";
+
+}
+
+
+function detectarDestinatario(
+    texto
+){
+
+    const lineas =
+    lineasTexto(
+        texto
+    );
+
+
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
+
+        if(
+            /^Destinatario\s*:?\s*$/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            const siguiente =
+            lineas[i+1];
+
+
+            if(
+                siguiente
+            ){
+
+                return siguiente
+                .replace(
+                    /\(\s*\d[\d\s\-]{7,}\)/g,
+                    ""
+                )
+                .trim();
+
+            }
+
+        }
+
+
+        const inline =
+        lineas[i].match(
+            /^Destinatario\s*:?\s*(.+)$/i
+        );
+
+
+        if(inline){
+
+            return inline[1]
+            .replace(
+                /\(\s*\d[\d\s\-]{7,}\)/g,
+                ""
+            )
+            .trim();
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+function detectarTelefono(
+    texto
+){
+
+    const match =
+    texto.match(
+        /\(\s*(\d{8,15})\s*\)/
+    );
+
+
+    if(match){
+
+        return match[1];
+
+    }
+
+
+    const numeros =
+    texto.match(
+        /\b\d{10,15}\b/g
+    );
+
+
+    if(
+        numeros &&
+        numeros.length
+    ){
+
+        return numeros[0];
+
+    }
+
+
+    return "";
+
+}
+
+
+function detectarDireccion(
+    texto
+){
+
+    const lineas =
+    lineasTexto(
+        texto
+    );
+
+
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
+
+        if(
+            /^Destinatario/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            for(
+                let j=i+1;
+                j<
+                Math.min(
+                    i+4,
+                    lineas.length
+                );
+                j++
+            ){
+
+                const linea =
+                lineas[j];
+
+
+                if(
+                    /\d{3,}/.test(
+                        linea
+                    ) &&
+                    !/CP|CABA|código postal/i
+                    .test(
+                        linea
+                    )
+                ){
+
+                    return linea;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    for(
+        const linea
+        of lineas
+    ){
+
+        if(
+            /\b[A-Za-zÁÉÍÓÚáéíóúÑñ]+\s+\d{2,5}\b/
+            .test(
+                linea
+            )
+        ){
+
+            if(
+                !/PESO|BULTOS|NRO|ORD|CP|CABA/i
+                .test(
+                    linea
+                )
+            ){
+
+                return linea;
+
+            }
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+function detectarCodigoPostal(
+    texto
+){
+
+    const match =
+    texto.match(
+        /(?:CP|C\.P\.|Código Postal)\s*:?\s*(?:[A-Za-z]+\s*)?(\d{4,8})/i
+    );
+
+
+    return match
+    ?
+    match[1]
+    :
+    "";
+
+}
+
+
+function detectarLocalidad(
+    texto
+){
+
+    const lineas =
+    lineasTexto(
+        texto
+    );
+
+
+    for(
+        let i=0;
+        i<lineas.length;
+        i++
+    ){
+
+        if(
+            /^CP\b/i
+            .test(
+                lineas[i]
+            )
+        ){
+
+            const valor =
+            lineas[i]
+            .replace(
+                /^CP\s*:?\s*/i,
+                ""
+            )
+            .trim();
+
+
+            if(valor){
+
+                return valor;
+
+            }
+
+        }
+
+    }
+
+
+    const match =
+    texto.match(
+        /(?:Localidad|Ciudad)\s*:?\s*([^\n]+)/i
+    );
+
+
+    return match
+    ?
+    match[1].trim()
+    :
+    "";
+
+}
+
 
 function detectarZona(
     texto,
@@ -2652,8 +2231,7 @@ function detectarZona(
         +
         direccion
 
-    )
-    .toLowerCase();
+    ).toLowerCase();
 
 
     const zonas = [
@@ -2702,14 +2280,14 @@ function detectarZona(
         "villa general mitre",
         "monte castro",
         "villa ortuzar",
+        "agrnomía",
         "agronomía",
-        "agronomia",
         "paternal",
         "parque chas",
         "villa santa rita",
         "villa riachuelo",
-        "nueva pompeya"
-
+        "nueva pompeya",
+        "boedo"
     ];
 
 
@@ -2736,9 +2314,23 @@ function detectarZona(
 }
 
 
-/* =========================================================
-   VOLVER A ESCANEAR
-========================================================= */
+function limpiarCampo(
+    valor
+){
+
+    return valor
+    .replace(
+        /^[\s:;\-]+/,
+        ""
+    )
+    .replace(
+        /\s+/g,
+        " "
+    )
+    .trim();
+
+}
+
 
 document
 .getElementById(
@@ -2754,10 +2346,8 @@ function(){
     progreso.style.display =
     "none";
 
-
     textoOCR.value =
     "";
-
 
     document
     .querySelectorAll(
@@ -2766,15 +2356,8 @@ function(){
     .forEach(
         input => {
 
-            if(
-                input.id !==
-                "fechaRecepcion"
-            ){
-
-                input.value =
-                "";
-
-            }
+            input.value =
+            "";
 
             input.classList.remove(
                 "detectado",
@@ -2783,12 +2366,6 @@ function(){
 
         }
     );
-
-
-    document.getElementById(
-        "observaciones"
-    ).value =
-    "";
 
 
     document.getElementById(
@@ -2818,10 +2395,6 @@ function(){
 });
 
 
-/* =========================================================
-   GUARDAR PAQUETE
-========================================================= */
-
 document
 .getElementById(
 "guardarPaquete"
@@ -2838,37 +2411,10 @@ function(){
     .value;
 
 
-    const codigoInterno =
-    document
-    .getElementById(
-        "codigoInterno"
-    )
-    .innerText
-    .trim();
-
-
-    const codigoBarras =
+    const codigo =
     document
     .getElementById(
         "codigoBarras"
-    )
-    .value
-    .trim();
-
-
-    const destinatario =
-    document
-    .getElementById(
-        "destinatario"
-    )
-    .value
-    .trim();
-
-
-    const direccion =
-    document
-    .getElementById(
-        "direccion"
     )
     .value
     .trim();
@@ -2887,83 +2433,24 @@ function(){
     }
 
 
-    /*
-    EL CÓDIGO DE BARRAS
-    YA NO ES OBLIGATORIO.
-
-    El paquete puede existir
-    solamente con código interno.
-    */
-
-
     if(
-        !destinatario &&
-        !direccion
+        !codigo
     ){
 
-        const continuar =
-        confirm(
-            "No se detectó destinatario ni dirección. ¿Querés guardar igualmente el paquete?"
+        alert(
+            "No se detectó el código de barras. Podés ingresarlo manualmente."
         );
 
-
-        if(
-            !continuar
-        ){
-
-            return;
-
-        }
+        return;
 
     }
 
 
-    console.log(
-        "PAQUETE PREPARADO:",
-        {
-
-            codigoInterno,
-
-            codigoBarras,
-
-            destinatario,
-
-            direccion,
-
-            cliente
-
-        }
-    );
-
-
     alert(
-
-        "✅ Paquete preparado correctamente.\n\n"
-        +
-        "Código interno: "
-        +
-        codigoInterno
-        +
-        "\n"
-        +
-        (
-            codigoBarras
-            ?
-            "Código de barras: "
-            +
-            codigoBarras
-            :
-            "Sin código de barras"
-        )
-        +
-        "\n\n"
-        +
-        "El siguiente paso será conectar este formulario con la ruta de guardado en la base de datos."
-
+        "Los datos fueron preparados correctamente. El siguiente paso será conectar este formulario con la ruta de guardado en la base de datos."
     );
 
 });
-
 
 </script>
 
