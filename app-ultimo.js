@@ -2,12 +2,12 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const isAuthenticated = require("./middleware/authMiddleware");
+const isAuthenticated = require("./middleware/authMiddleware.js");
 
 // ------------------ Base de datos ------------------ //
 
-const db = require("./models/db");
-require("./models/initDB");
+const db = require("./models/db.js");
+require("./models/initDB.js");
 
 
 // ------------------ Aplicación ------------------ //
@@ -67,7 +67,7 @@ app.use(
 
 // ------------------ Rutas de usuarios ------------------ //
 
-const userRoutes = require("./routes/users");
+const userRoutes = require("./routes/users.js");
 
 app.use(
   "/panel/users",
@@ -77,14 +77,14 @@ app.use(
 
 // ------------------ Rutas de autenticación ------------------ //
 
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth.js");
 
 app.use(
   "/auth",
   authRoutes
 );
 
-const logisticaRoutes = require("./routes/logistica-fijo");
+const logisticaRoutes = require("./routes/logistica-fijo.js");
 
 app.use("/panel/users", userRoutes);
 
@@ -97,7 +97,7 @@ app.use("/panel/logistica", logisticaRoutes);
 // ==================================================
 
 const mercadoLibreRoutes =
-  require("./routes/mercadolibre.js");
+  require("./routes/mercadolibre-anterior.js");
 
 app.use(
   "/panel/logistica/mercadolibre",
