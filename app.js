@@ -153,14 +153,46 @@ app.use(
 // MERCADO LIBRE
 // ------------------------------
 
-const mercadoLibreRoutes =
-    require("./routes/mercadolibre");
+// ==================================================
+// MERCADO LIBRE CON DETECCIÓN DE ERRORES
+// ==================================================
+
+try {
+
+    console.log("🔄 Cargando módulo Mercado Libre...");
+
+    const mercadoLibreRoutes =
+        require("./routes/mercadolibre.js");
 
 
-app.use(
-    "/panel/logistica/mercadolibre",
-    mercadoLibreRoutes
-);
+    app.use(
+        "/panel/logistica/mercadolibre",
+        mercadoLibreRoutes
+    );
+
+
+    console.log("✅ Mercado Libre cargado correctamente");
+
+
+} catch(error) {
+
+    console.error(
+        "=========================================="
+    );
+
+    console.error(
+        "❌ ERROR CARGANDO mercadolibre.js"
+    );
+
+    console.error(
+        error.stack
+    );
+
+    console.error(
+        "=========================================="
+    );
+
+}
 
 
 
