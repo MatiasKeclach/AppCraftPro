@@ -1,4 +1,4 @@
-```javascript
+
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
@@ -201,9 +201,7 @@ io.on("connection", (socket) => {
 // startBinanceStream(io);
 
 
+
 server.listen(PORT, () => {
-
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-
 });
-```

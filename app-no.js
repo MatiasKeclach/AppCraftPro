@@ -13,11 +13,11 @@ const path = require("path");
 const isAuthenticated = require("./middleware/authMiddleware");
 
 // 👇 AGREGÁ ESTO
-const { startBinanceStream } = require("./services/binanceService");
+//const { startBinanceStream } = require("./services/binanceService2");
 
 // DB
 const db = require("./models/db");
-require("./models/initDB2");
+require("./models/initDB");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,15 +45,11 @@ app.use(express.static(path.join(__dirname, "public")));
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 
-const logisticaRoutes = require("./routes/logistica");
-
 // Vistas usuarios (panel)
 app.use("/panel/users", userRoutes);
 
 // Auth
 app.use("/auth", authRoutes);
-
-app.use("/panel/logistica", logisticaRoutes);
 
 // ------------------ Panel ------------------ //
 app.get("/panel", isAuthenticated, (req, res) => {
@@ -109,7 +105,7 @@ app.get("/panel/framework", isAuthenticated, (req, res) => {
 
 // ------------------ Trading Bot ------------------ //
 // ------------------ Trading Bot ------------------ //
-app.get("/panel/trading-bot", isAuthenticated, (req, res) => {
+/*app.get("/panel/trading-bot", isAuthenticated, (req, res) => {
 
   const symbol = req.query.symbol || "BTCUSDT";
 
@@ -119,10 +115,10 @@ app.get("/panel/trading-bot", isAuthenticated, (req, res) => {
     role: req.session.user.role
   });
 
-});
+;*/
 
 // ------------------ Trading Selector ------------------ //
-app.get("/panel/trading", isAuthenticated, (req, res) => {
+/*app.get("/panel/trading", isAuthenticated, (req, res) => {
 
   const symbols = [
     "BTCUSDT",
@@ -138,17 +134,7 @@ app.get("/panel/trading", isAuthenticated, (req, res) => {
     symbols
   });
 
-});
-
-// ------------------ Logística ------------------ //
-app.get("/panel/logistica", isAuthenticated, (req, res) => {
-
-    res.render("logistica/dashboard", {
-        username: req.session.user.username,
-        role: req.session.user.role
-    });
-
-});
+});*/
 
 // ------------------ Login ------------------ //
 app.get("/", (req, res) => {

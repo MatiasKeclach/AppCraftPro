@@ -1446,4 +1446,27 @@ router.get(
     }
 );
 
+// ==============================
+// MERCADO LIBRE - WEBHOOK
+// ==============================
+
+router.post(
+    "/mercadolibre/webhook",
+    async (req, res) => {
+
+        console.log(
+            "📡 Webhook recibido de Mercado Libre"
+        );
+
+        console.log(
+            "Body:",
+            req.body
+        );
+
+        res.sendStatus(200);
+
+    }
+);
+
+
 module.exports = router;
