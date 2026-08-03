@@ -1,62 +1,101 @@
+// ==================================================
+// APPCRAFTPRO
+// app.js
+// Versión corregida
+// ==================================================
 
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const http = require("http");
+
+const { Server } = require("socket.io");
+
 const isAuthenticated = require("./middleware/authMiddleware");
 
-// ------------------ Base de datos ------------------ //
+
+// ==================================================
+// BASE DE DATOS
+// ==================================================
 
 const db = require("./models/db");
+
 require("./models/initDB");
 
 
-// ------------------ Aplicación ------------------ //
+// ==================================================
+// APP
+// ==================================================
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT =
+    process.env.PORT || 3000;
 
 
-// ------------------ Motor de vistas ------------------ //
-
-app.set("view engine", "ejs");
+// ==================================================
+// MOTOR EJS
+// ==================================================
 
 app.set(
-  "views",
-  path.join(__dirname, "views")
+    "view engine",
+    "ejs"
+);
+
+app.set(
+    "views",
+    path.join(__dirname, "views")
 );
 
 
-// ------------------ Middlewares ------------------ //
+// ==================================================
+// MIDDLEWARES
+// ==================================================
 
 app.use(
-  express.urlencoded({
-    extended: true
-  })
-);
-
-app.use(
-  express.json()
-);
-
-
-// ------------------ Sesiones ------------------ //
-
-app.use(
-  session({
-    secret: "appcraft_secret_key",
-    resave: false,
-    saveUninitialized: true
-  })
+    express.urlencoded({
+        extended: true
+    })
 );
 
 
-// ------------------ Archivos públicos ------------------ //
+app.use(
+    express.json()
+);
+
+
+// ==================================================
+// SESIONES
+// ==================================================
 
 app.use(
-  express.static(
-    path.join(__dirname, "public")
-  )
+    session({
+
+        secret:
+            process.env.SESSION_SECRET ||
+            "appcraft_secret_key",
+
+        resave:
+            false,
+
+        saveUninitialized:
+            false
+
+    })
+);
+
+
+// ==================================================
+// ARCHIVOS PUBLICOS
+// ==================================================
+
+app.use(
+    express.static(
+        path.join(
+            __dirname,
+            "public"
+        )
+    )
 );
 
 
@@ -65,264 +104,292 @@ app.use(
 // ==================================================
 
 
-// ------------------ Rutas de usuarios ------------------ //
+// ------------------------------
+// USUARIOS
+// ------------------------------
 
-const userRoutes = require("./routes/users");
+const userRoutes =
+    require("./routes/users");
+
 
 app.use(
-  "/panel/users",
-  userRoutes
+    "/panel/users",
+    userRoutes
 );
 
 
-// ------------------ Rutas de autenticación ------------------ //
 
-const authRoutes = require("./routes/auth");
+// ------------------------------
+// AUTH
+// ------------------------------
+
+const authRoutes =
+    require("./routes/auth");
+
 
 app.use(
-  "/auth",
-  authRoutes
+    "/auth",
+    authRoutes
 );
 
-const logisticaRoutes = require("./routes/logistica-fijo");
 
-app.use("/panel/users", userRoutes);
 
-app.use("/auth", authRoutes);
+// ------------------------------
+// LOGISTICA
+// ------------------------------
 
-app.use("/panel/logistica", logisticaRoutes);
+const logisticaRoutes =
+    require("./routes/logistica-fijo");
 
-// ==================================================
+
+app.use(
+    "/panel/logistica",
+    logisticaRoutes
+);
+
+
+
+// ------------------------------
 // MERCADO LIBRE
-// ==================================================
+// ------------------------------
 
 const mercadoLibreRoutes =
-  require("./routes/mercadolibre.js");
+    require("./routes/mercadolibre");
+
 
 app.use(
-  "/panel/logistica/mercadolibre",
-  mercadoLibreRoutes
+    "/panel/logistica/mercadolibre",
+    mercadoLibreRoutes
 );
+
+
+
 // ==================================================
 // PANEL PRINCIPAL
 // ==================================================
 
 app.get(
-  "/panel",
-  isAuthenticated,
-  (req, res) => {
-
-    const fs = require("fs");
-
-    try {
-
-      // Obtener aplicaciones
-      const apps = db
-        .prepare("SELECT * FROM apps")
-        .all();
+    "/panel",
+    isAuthenticated,
+    (req, res)=>{
 
 
-      // Obtener usuarios
-      const usuarios = db
-        .prepare("SELECT * FROM users")
-        .all();
+        try {
 
 
-      // Contar usuarios por rol
-      const totalPorRol = {
-
-        superadmin: usuarios.filter(
-          u => u.role === "superadmin"
-        ).length,
-
-        admin: usuarios.filter(
-          u => u.role === "admin"
-        ).length,
-
-        usuario: usuarios.filter(
-          u => u.role === "usuario"
-        ).length
-
-      };
+            const fs =
+                require("fs");
 
 
-      // Obtener plantillas
-      let plantillas = [];
-
-      if (
-        fs.existsSync("./templates")
-      ) {
-
-        plantillas = fs
-          .readdirSync("./templates")
-          .filter(file => {
-
-            try {
-
-              return fs
-                .lstatSync(
-                  `./templates/${file}`
+            const apps =
+                db
+                .prepare(
+                    "SELECT * FROM apps"
                 )
-                .isDirectory();
+                .all();
 
-            } catch (error) {
 
-              return false;
+
+            const usuarios =
+                db
+                .prepare(
+                    "SELECT * FROM users"
+                )
+                .all();
+
+
+
+            const totalPorRol = {
+
+                superadmin:
+                    usuarios.filter(
+                        u =>
+                        u.role === "superadmin"
+                    ).length,
+
+
+                admin:
+                    usuarios.filter(
+                        u =>
+                        u.role === "admin"
+                    ).length,
+
+
+                usuario:
+                    usuarios.filter(
+                        u =>
+                        u.role === "usuario"
+                    ).length
+
+            };
+
+
+
+            let plantillas = [];
+
+
+
+            const templatesPath =
+                path.join(
+                    __dirname,
+                    "templates"
+                );
+
+
+
+            if(
+                fs.existsSync(
+                    templatesPath
+                )
+            ){
+
+
+                plantillas =
+                    fs
+                    .readdirSync(
+                        templatesPath
+                    )
+                    .filter(
+                        file=>{
+
+                            try{
+
+                                return fs
+                                .lstatSync(
+                                    path.join(
+                                        templatesPath,
+                                        file
+                                    )
+                                )
+                                .isDirectory();
+
+
+                            }catch(e){
+
+                                return false;
+
+                            }
+
+                        }
+                    );
 
             }
 
-          });
-
-      }
 
 
-      // Renderizar panel
-      res.render(
-        "panel",
-        {
+            res.render(
+                "panel",
+                {
 
-          username:
-            req.session.user.username,
+                    username:
+                        req.session.user.username,
 
-          role:
-            req.session.user.role,
 
-          apps,
+                    role:
+                        req.session.user.role,
 
-          usuarios,
 
-          plantillas,
+                    apps,
 
-          totalPorRol
+
+                    usuarios,
+
+
+                    plantillas,
+
+
+                    totalPorRol
+
+                }
+            );
+
 
         }
-      );
+        catch(error){
 
 
-    } catch (err) {
-
-      console.error(
-        "❌ Error cargando panel:",
-        err
-      );
+            console.error(
+                "❌ Error panel:",
+                error
+            );
 
 
-      // Renderizar panel vacío
-      // si ocurre algún error
+            res.status(500)
+            .send(
+                "Error cargando panel"
+            );
 
-      res.render(
-        "panel",
-        {
-
-          username:
-            req.session.user.username,
-
-          role:
-            req.session.user.role,
-
-          apps: [],
-
-          usuarios: [],
-
-          plantillas: [],
-
-          totalPorRol: {
-
-            superadmin: 0,
-
-            admin: 0,
-
-            usuario: 0
-
-          }
 
         }
-      );
+
 
     }
-
-  }
 );
 
 
+
 // ==================================================
-// APPCRAFT FRAMEWORK
+// FRAMEWORK
 // ==================================================
 
 app.get(
-  "/panel/framework",
-  isAuthenticated,
-  (req, res) => {
+    "/panel/framework",
+    isAuthenticated,
+    (req,res)=>{
 
-    res.render(
-      "framework",
-      {
 
-        user:
-          req.session.user,
+        res.render(
+            "framework",
+            {
 
-        username:
-          req.session.user.username,
+                user:
+                    req.session.user,
 
-        role:
-          req.session.user.role
 
-      }
-    );
+                username:
+                    req.session.user.username,
 
-  }
+
+                role:
+                    req.session.user.role
+
+            }
+        );
+
+
+    }
 );
 
 
+
 // ==================================================
-// LOGÍSTICA
-// ==================================================
-//
-// Esta ruta será utilizada por la tarjeta
-// "Logística" del panel.
-//
-// Más adelante vamos a crear el módulo:
-//
-// /panel/logistica
-//
-// y dentro:
-//
-// Fleet Scanner
-// Gestión de paquetes
-// Clientes
-// Choferes
-// Colectas
-// Consultas
-//
+// LOGISTICA DASHBOARD
 // ==================================================
 
-/*app.get(
-  "/panel/logistica",
-  isAuthenticated,
-  (req, res) => {
+app.get(
+    "/panel/logistica",
+    isAuthenticated,
+    (req,res)=>{
 
-    res.render(
-      "logistica/dashboard",
-      {
 
-        username:
-          req.session.user.username,
+        res.render(
+            "logistica/dashboard",
+            {
 
-        role:
-          req.session.user.role
+                username:
+                    req.session.user.username,
 
-      }
-    );
 
-  }
-);*/
+                role:
+                    req.session.user.role
 
-app.get("/panel/logistica", isAuthenticated, (req, res) => {
-  res.render("logistica/dashboard", {
-    username: req.session.user.username,
-    role: req.session.user.role
-  });
-});
+            }
+        );
+
+
+    }
+);
+
 
 
 // ==================================================
@@ -330,95 +397,97 @@ app.get("/panel/logistica", isAuthenticated, (req, res) => {
 // ==================================================
 
 app.get(
-  "/",
-  (req, res) => {
+    "/",
+    (req,res)=>{
 
-    res.render("login");
+        res.render(
+            "login"
+        );
 
-  }
+    }
 );
 
-
-// ==================================================
-// SERVIDOR HTTP
-// ==================================================
-
-const http = require("http");
-
-const {
-  Server
-} = require("socket.io");
-
-
-const server =
-  http.createServer(app);
 
 
 // ==================================================
 // SOCKET.IO
 // ==================================================
 
+const server =
+    http.createServer(app);
+
+
+
 const io =
-  new Server(
-    server,
-    {
+    new Server(
+        server,
+        {
 
-      cors: {
+            cors:{
+                origin:"*"
+            }
 
-        origin: "*"
+        }
+    );
 
-      }
-
-    }
-  );
 
 
 io.on(
-  "connection",
-  (socket) => {
+    "connection",
+    socket=>{
 
-    console.log(
-      "⚡ Cliente conectado:",
-      socket.id
-    );
-
-
-    socket.on(
-      "disconnect",
-      () => {
 
         console.log(
-          "❌ Cliente desconectado:",
-          socket.id
+            "⚡ Cliente conectado:",
+            socket.id
         );
 
-      }
-    );
 
-  }
+
+        socket.on(
+            "disconnect",
+            ()=>{
+
+
+                console.log(
+                    "❌ Cliente desconectado:",
+                    socket.id
+                );
+
+
+            }
+        );
+
+
+    }
 );
 
 
+
 // ==================================================
-// BINANCE / TRADING
+// MANEJO GLOBAL DE ERRORES
 // ==================================================
-//
-// TEMPORALMENTE DESACTIVADO.
-//
-// No se carga:
-// services/binanceService.js
-//
-// No se ejecuta:
-// startBinanceStream(io)
-//
-// Esto evita que Render falle por:
-//
-// Cannot find module '../bot/engine'
-//
-// Más adelante podemos volver a activar
-// Trading sin afectar Logística.
-//
-// ==================================================
+
+app.use(
+    (err,req,res,next)=>{
+
+
+        console.error(
+            "ERROR GLOBAL:",
+            err
+        );
+
+
+        res
+        .status(500)
+        .send(
+            "Error interno del servidor"
+        );
+
+
+    }
+);
+
 
 
 // ==================================================
@@ -426,13 +495,14 @@ io.on(
 // ==================================================
 
 server.listen(
-  PORT,
-  () => {
+    PORT,
+    ()=>{
 
-    console.log(
-      `🚀 Servidor corriendo en el puerto ${PORT}`
-    );
 
-  }
+        console.log(
+            `🚀 Servidor corriendo en puerto ${PORT}`
+        );
+
+
+    }
 );
-
