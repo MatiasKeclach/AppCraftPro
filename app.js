@@ -162,7 +162,7 @@ try {
     console.log("🔄 Cargando módulo Mercado Libre...");
 
     const mercadoLibreRoutes =
-        require("./routes/mercadolibre.js");
+        require("./routes/mercadolibre-fijo.js");
 
 
     app.use(
