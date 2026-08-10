@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Control Logística Depósito</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+margin:0;
+background:#f1f3f6;
+color:#222;
+}
+
+header{
+background:#111827;
+color:white;
+padding:20px;
+}
+
+header h1{
+margin:0;
+}
+
+header p{
+margin:5px 0 0;
+opacity:.8;
+}
+
+nav{
+display:flex;
+gap:10px;
+padding:10px;
+background:white;
+border-bottom:1px solid #ddd;
+flex-wrap:wrap;
+}
+
+button{
+padding:12px 15px;
+border:0;
+border-radius:8px;
+cursor:pointer;
+background:#2563eb;
+color:white;
+}
+
+button:hover{
+opacity:.85;
+}
+
+button:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
+.btn-green{
+background:#16a34a;
+}
+
+.btn-danger{
+background:#dc2626;
+}
+
+.btn-orange{
+background:#ea580c;
+}
+
+.btn-gray{
+background:#64748b;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 2px 8px #0002;
+}
+
+input,
+select{
+width:100%;
+padding:10px;
+margin:5px 0 15px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.hidden{
+display:none;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+}
+
+.stat{
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+}
+
+.stat h2{
+font-size:35px;
+margin:0;
+}
+
+.stat-review{
+border:2px solid #f59e0b;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#111827;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+.flex{
+color:#16a34a;
+font-weight:bold;
+}
+
+.particular{
+color:#dc2626;
+font-weight:bold;
+}
+
+.review{
+color:#ea580c;
+font-weight:bold;
+}
+
+img.preview{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.badge{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+color:white;
+font-size:12px;
+font-weight:bold;
+}
+
+.badge-flex{
+background:#16a34a;
+}
+
+.badge-particular{
+background:#dc2626;
+}
+
+.badge-review{
+background:#ea580c;
+}
+
+.filtros{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:10px;
+}
+
+.resultado{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+}
+
+.estado{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+background:#64748b;
+color:white;
+font-size:12px;
+}
+
+.progreso{
+margin-top:15px;
+padding:15px;
+background:#f8fafc;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.progreso-barra{
+height:12px;
+background:#e5e7eb;
+border-radius:20px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.progreso-barra div{
+height:100%;
+width:0%;
+background:#2563eb;
+transition:.2s;
+}
+
+.alerta-revision{
+background:#fff7ed;
+border:1px solid #fdba74;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.vacio{
+padding:20px;
+text-align:center;
+color:#64748b;
+}
+
+.acciones{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:12px;
+}
+
+.info{
+font-size:13px;
+color:#64748b;
+}
+
+</style>
+
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+📦 Control Logística Depósito
+</h1>
+
+<p>
+Sistema operativo - Colectas Flex / Particulares
+</p>
+
+</header>
+
+<nav>
+
+<button onclick="mostrar('dashboard')">
+📊 Dashboard
+</button>
+
+<button onclick="mostrar('colectas')">
+📥 Colectas
+</button>
+
+<button onclick="mostrar('paquetes')">
+📦 Paquetes
+</button>
+
+<button onclick="mostrar('consultas')">
+🔎 Consultas
+</button>
+
+<button onclick="mostrar('clientes')">
+🏢 Clientes
+</button>
+
+<button onclick="mostrar('choferes')">
+🏍️ Choferes
+</button>
+
+</nav>
+
+<div class="container">
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard">
+
+<div class="card">
+
+<h2>
+Resumen operativo
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<h2 id="totalPaquetes">0</h2>
+<p>Paquetes</p>
+</div>
+
+<div class="stat">
+<h2 id="totalFlex">0</h2>
+<p>Flex</p>
+</div>
+
+<div class="stat">
+<h2 id="totalParticulares">0</h2>
+<p>Particulares</p>
+</div>
+
+<div class="stat stat-review">
+<h2 id="totalRevision">0</h2>
+<p>⚠️ Revisar</p>
+</div>
+
+<div class="stat">
+<h2 id="totalColectas">0</h2>
+<p>Colectas</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Últimas colectas
+</h2>
+
+<div id="resumen"></div>
+
+</div>
+
+</section>
+
+<!-- ================= COLECTAS ================= -->
+
+<section id="colectas" class="hidden">
+
+<div class="card">
+
+<h2>
+Nueva colecta
+</h2>
+
+<label>Fecha</label>
+
+<input
+type="date"
+id="fechaColecta"
+
+>
+
+<label>Cliente</label>
+
+<select id="clienteColecta"></select>
+
+<label>Fotos paquetes</label>
+
+<input
+type="file"
+id="fotosColecta"
+multiple
+accept="image/*"
+
+>
+
+<p class="info">
+El sistema intentará detectar el QR varias veces antes de clasificar un paquete.
+Si no puede confirmar el tipo, quedará como <b>REVISAR</b>.
+</p>
+
+<button
+class="btn-green"
+id="btnProcesarColecta"
+onclick="crearColecta()"
+
+>
+
+📸 Procesar colecta </button>
+
+<div
+id="progresoProcesamiento"
+class="progreso hidden"
+>
+
+<div id="textoProgreso">
+Preparando...
+</div>
+
+<div class="progreso-barra">
+<div id="barraProgreso"></div>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Filtros de colectas
+</h2>
+
+<div class="filtros">
+
+<input
+type="date"
+id="filtroFecha"
+onchange="listarColectas()"
+
+>
+
+<input
+id="filtroCliente"
+placeholder="Buscar cliente..."
+onkeyup="listarColectas()"
+
+>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+Colectas cargadas
+</h2>
+
+<div id="listaColectas"></div>
+
+</div>
+
+</section>
+
+<!-- ================= PAQUETES ================= -->
+
+<section id="paquetes" class="hidden">
+
+<div class="card">
+
+<h2>
+Paquetes
+</h2>
+
+<div class="filtros">
+
+<input
+id="buscarPaquete"
+placeholder="Buscar dirección, cliente, DNI, teléfono, chofer..."
+onkeyup="listarPaquetes()"
+
+>
+
+<select
+id="filtroTipo"
+onchange="listarPaquetes()"
+
+>
+
+<option value="">
+Todos
+</option>
+
+<option value="FLEX">
+Flex
+</option>
+
+<option value="PARTICULAR">
+Particular
+</option>
+
+<option value="REVISAR">
+⚠️ Revisar
+</option>
+
+</select>
+
+</div>
+
+<div id="tablaPaquetes"></div>
+
+</div>
+
+</section>
+
+<!-- ================= CONSULTAS ================= -->
+
+<section id="consultas" class="hidden">
+
+<div class="card">
+
+<h2>
+🔎 Consultas avanzadas
+</h2>
+
+<div class="filtros">
+
+<input
+type="date"
+id="consultaFecha"
+
+>
+
+<input
+placeholder="Cliente"
+id="consultaCliente"
+
+>
+
+<select id="consultaTipo">
+
+<option value="">
+Todos los tipos
+</option>
+
+<option value="FLEX">
+Flex
+</option>
+
+<option value="PARTICULAR">
+Particular
+</option>
+
+<option value="REVISAR">
+Revisar
+</option>
+
+</select>
+
+<input
+placeholder="Chofer"
+id="consultaChofer"
+
+>
+
+<input
+placeholder="Buscar general"
+id="consultaTexto"
+
+>
+
+</div>
+
+<button onclick="buscarConsulta()">
+Buscar
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+Resultados
+</h2>
+
+<div
+id="resultadoConsulta"
+class="resultado"
+></div>
+
+</div>
+
+</section>
+
+<!-- ================= CLIENTES ================= -->
+
+<section id="clientes" class="hidden">
+
+<div class="card">
+
+<h2>
+Nuevo cliente
+</h2>
+
+<input
+id="nombreCliente"
+placeholder="Nombre cliente"
+
+>
+
+<input
+id="direccionCliente"
+placeholder="Dirección"
+
+>
+
+<input
+id="zonaCliente"
+placeholder="Zona"
+
+>
+
+<button
+class="btn-green"
+onclick="guardarCliente()"
+
+>
+
+Guardar cliente </button>
+
+</div>
+
+<div class="card">
+
+<h2>
+Clientes registrados
+</h2>
+
+<div id="listaClientes"></div>
+
+</div>
+
+</section>
+
+<!-- ================= CHOFERES ================= -->
+
+<section id="choferes" class="hidden">
+
+<div class="card">
+
+<h2>
+Nuevo chofer
+</h2>
+
+<input
+id="nombreChofer"
+placeholder="Nombre"
+
+>
+
+<input
+id="vehiculoChofer"
+placeholder="Moto / Camioneta"
+
+>
+
+<input
+id="zonaChofer"
+placeholder="Zona"
+
+>
+
+<button
+class="btn-green"
+onclick="guardarChofer()"
+
+>
+
+Guardar chofer </button>
+
+</div>
+
+<div class="card">
+
+<h2>
+Choferes registrados
+</h2>
+
+<div id="listaChoferes"></div>
+
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+/* =====================================================
+   BASE LOCALSTORAGE
+===================================================== */
+
+let clientes =
+JSON.parse(localStorage.getItem("clientes")) || [];
+
+let choferes =
+JSON.parse(localStorage.getItem("choferes")) || [];
+
+let paquetes =
+JSON.parse(localStorage.getItem("paquetes")) || [];
+
+let colectas =
+JSON.parse(localStorage.getItem("colectas")) || [];
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+mostrar("dashboard");
+
+
+/* =====================================================
+   NAVEGACION
+===================================================== */
+
+function mostrar(id){
+
+document.querySelectorAll("section")
+.forEach(s=>{
+s.classList.add("hidden");
+});
+
+const seccion =
+document.getElementById(id);
+
+if(seccion)
+seccion.classList.remove("hidden");
+
+
+if(id==="dashboard")
+actualizarDashboard();
+
+
+if(id==="colectas"){
+
+cargarClientesSelect();
+listarColectas();
+
+}
+
+
+if(id==="paquetes")
+listarPaquetes();
+
+
+if(id==="clientes")
+listarClientes();
+
+
+if(id==="choferes")
+listarChoferes();
+
+}
+
+
+/* =====================================================
+   GUARDAR DATOS
+===================================================== */
+
+function guardarDatos(){
+
+try{
+
+localStorage.setItem(
+"clientes",
+JSON.stringify(clientes)
+);
+
+localStorage.setItem(
+"choferes",
+JSON.stringify(choferes)
+);
+
+localStorage.setItem(
+"paquetes",
+JSON.stringify(paquetes)
+);
+
+localStorage.setItem(
+"colectas",
+JSON.stringify(colectas)
+);
+
+return true;
+
+}
+catch(error){
+
+console.error(
+"Error guardando datos:",
+error
+);
+
+alert(
+"⚠️ No se pudieron guardar los datos.\n\n"+
+"El almacenamiento del navegador puede estar lleno.\n\n"+
+error.message
+);
+
+return false;
+
+}
+
+}
+
+
+/* =====================================================
+   ESCAPAR HTML
+===================================================== */
+
+function escaparHTML(valor){
+
+if(valor===null || valor===undefined)
+return "";
+
+return String(valor)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   CLIENTES
+===================================================== */
+
+function guardarCliente(){
+
+let cliente={
+
+id:Date.now(),
+
+nombre:
+document.getElementById("nombreCliente")
+.value
+.trim(),
+
+direccion:
+document.getElementById("direccionCliente")
+.value
+.trim(),
+
+zona:
+document.getElementById("zonaCliente")
+.value
+.trim()
+
+};
+
+
+if(!cliente.nombre){
+
+alert("Ingresá nombre del cliente");
+return;
+
+}
+
+
+clientes.push(cliente);
+
+guardarDatos();
+
+
+document.getElementById(
+"nombreCliente"
+).value="";
+
+document.getElementById(
+"direccionCliente"
+).value="";
+
+document.getElementById(
+"zonaCliente"
+).value="";
+
+
+listarClientes();
+
+cargarClientesSelect();
+
+}
+
+
+function listarClientes(){
+
+let div =
+document.getElementById(
+"listaClientes"
+);
+
+if(!div)
+return;
+
+
+div.innerHTML="";
+
+
+if(clientes.length===0){
+
+div.innerHTML=
+'<div class="vacio">No hay clientes registrados.</div>';
+
+return;
+
+}
+
+
+clientes.forEach(c=>{
+
+div.innerHTML+=`
+
+<div class="card">
+
+<b>${escaparHTML(c.nombre)}</b>
+
+<br>
+
+Dirección:
+${escaparHTML(c.direccion || "-")}
+
+<br>
+
+Zona:
+${escaparHTML(c.zona || "-")}
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function cargarClientesSelect(){
+
+let select =
+document.getElementById(
+"clienteColecta"
+);
+
+if(!select)
+return;
+
+
+select.innerHTML=
+`
+<option value="">
+Seleccione cliente
+</option>
+`;
+
+
+clientes.forEach(c=>{
+
+select.innerHTML+=`
+
+<option value="${escaparHTML(c.nombre)}">
+${escaparHTML(c.nombre)}
+</option>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+   CHOFERES
+===================================================== */
+
+function guardarChofer(){
+
+let chofer={
+
+id:Date.now(),
+
+nombre:
+document.getElementById(
+"nombreChofer"
+).value.trim(),
+
+vehiculo:
+document.getElementById(
+"vehiculoChofer"
+).value.trim(),
+
+zona:
+document.getElementById(
+"zonaChofer"
+).value.trim()
+
+};
+
+
+if(!chofer.nombre){
+
+alert("Ingresá nombre");
+return;
+
+}
+
+
+choferes.push(chofer);
+
+guardarDatos();
+
+
+document.getElementById(
+"nombreChofer"
+).value="";
+
+document.getElementById(
+"vehiculoChofer"
+).value="";
+
+document.getElementById(
+"zonaChofer"
+).value="";
+
+
+listarChoferes();
+
+}
+
+
+function listarChoferes(){
+
+let div =
+document.getElementById(
+"listaChoferes"
+);
+
+if(!div)
+return;
+
+
+div.innerHTML="";
+
+
+if(choferes.length===0){
+
+div.innerHTML=
+'<div class="vacio">No hay choferes registrados.</div>';
+
+return;
+
+}
+
+
+choferes.forEach(c=>{
+
+div.innerHTML+=`
+
+<div class="card">
+
+<b>
+${escaparHTML(c.nombre)}
+</b>
+
+<br>
+
+Vehículo:
+${escaparHTML(c.vehiculo || "-")}
+
+<br>
+
+Zona:
+${escaparHTML(c.zona || "-")}
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+   CREAR COLECTA
+===================================================== */
+
+async function crearColecta(){
+
+const boton =
+document.getElementById(
+"btnProcesarColecta"
+);
+
+try{
+
+let fecha =
+document.getElementById(
+"fechaColecta"
+).value;
+
+
+let cliente =
+document.getElementById(
+"clienteColecta"
+).value;
+
+
+let archivos =
+document.getElementById(
+"fotosColecta"
+).files;
+
+
+if(!fecha){
+
+alert("Seleccioná fecha");
+return;
+
+}
+
+
+if(!cliente){
+
+alert("Seleccioná cliente");
+return;
+
+}
+
+
+if(archivos.length===0){
+
+alert("Seleccioná fotos");
+return;
+
+}
+
+
+boton.disabled=true;
+boton.innerText="Procesando...";
+
+
+const progreso =
+document.getElementById(
+"progresoProcesamiento"
+);
+
+const textoProgreso =
+document.getElementById(
+"textoProgreso"
+);
+
+const barra =
+document.getElementById(
+"barraProgreso"
+);
+
+
+progreso.classList.remove(
+"hidden"
+);
+
+
+let idColecta=Date.now();
+
+
+let nuevaColecta={
+
+id:idColecta,
+
+fecha,
+
+cliente,
+
+cantidad:archivos.length,
+
+flex:0,
+
+particulares:0,
+
+revision:0,
+
+creada:new Date()
+.toLocaleString()
+
+};
+
+
+for(
+let i=0;
+i<archivos.length;
+i++
+){
+
+let archivo=archivos[i];
+
+
+textoProgreso.innerText=
+`Procesando ${i+1} de ${archivos.length}: ${archivo.name}`;
+
+
+barra.style.width=
+`${((i)/archivos.length)*100}%`;
+
+
+console.log(
+"Procesando:",
+archivo.name
+);
+
+
+/*
+   IMPORTANTE:
+   La foto se comprime antes de guardarla.
+   Esto reduce enormemente el consumo
+   de localStorage.
+*/
+
+let foto =
+await convertirImagenOptimizada(
+archivo
+);
+
+
+let resultado =
+await detectarTipoImagenRobusto(
+archivo
+);
+
+
+let tipo =
+resultado.tipo;
+
+
+let paquete={
+
+id:
+Date.now()+
+Math.random(),
+
+colectaId:
+idColecta,
+
+fecha,
+
+cliente,
+
+foto,
+
+tipo,
+
+confianza:
+resultado.confianza,
+
+motivoRevision:
+resultado.motivo || "",
+
+zona:"",
+
+barrio:"",
+
+direccion:"",
+
+referencia:"",
+
+destinatario:"Pendiente",
+
+dni:"",
+
+telefono:"",
+
+chofer:"Sin asignar",
+
+estado:"Pendiente"
+
+};
+
+
+if(tipo==="FLEX"){
+
+nuevaColecta.flex++;
+
+}
+
+else if(tipo==="PARTICULAR"){
+
+nuevaColecta.particulares++;
+
+}
+
+else{
+
+nuevaColecta.revision++;
+
+}
+
+
+paquetes.push(
+paquete
+);
+
+}
+
+
+/* completar barra */
+
+barra.style.width="100%";
+
+textoProgreso.innerText=
+"Guardando información...";
+
+
+colectas.push(
+nuevaColecta
+);
+
+
+let guardado =
+guardarDatos();
+
+
+if(!guardado){
+
+/*
+   Si falla el localStorage,
+   retiramos lo recién agregado
+   para no dejar memoria inconsistente.
+*/
+
+paquetes =
+paquetes.filter(
+p=>p.colectaId!==idColecta
+);
+
+colectas =
+colectas.filter(
+c=>c.id!==idColecta
+);
+
+return;
+
+}
+
+
+alert(
+
+"✅ Colecta cargada\n\n"+
+cliente+
+"\nPaquetes: "+
+archivos.length+
+"\n\n"+
+"🟢 Flex confirmados: "+
+nuevaColecta.flex+
+"\n"+
+"🔴 Particulares: "+
+nuevaColecta.particulares+
+"\n"+
+"🟠 Para revisar: "+
+nuevaColecta.revision
+
+);
+
+
+document.getElementById(
+"fotosColecta"
+).value="";
+
+
+listarColectas();
+
+actualizarDashboard();
+
+
+}
+
+catch(error){
+
+console.error(
+"Error procesando colecta:",
+error
+);
+
+alert(
+"❌ Error procesando colecta:\n\n"+
+error.message
+);
+
+}
+
+finally{
+
+boton.disabled=false;
+
+boton.innerText=
+"📸 Procesar colecta";
+
+document.getElementById(
+"progresoProcesamiento"
+)
+.classList.add("hidden");
+
+}
+
+}
+
+
+/* =====================================================
+   COMPRESION DE IMAGEN
+===================================================== */
+
+function convertirImagenOptimizada(file){
+
+return new Promise(
+resolve=>{
+
+const lector =
+new FileReader();
+
+
+lector.onload=e=>{
+
+const img =
+new Image();
+
+
+img.onload=()=>{
+
+const maxWidth=700;
+const maxHeight=700;
+
+
+let width=img.width;
+let height=img.height;
+
+
+if(width>maxWidth){
+
+height =
+height*
+(maxWidth/width);
+
+width=maxWidth;
+
+}
+
+
+if(height>maxHeight){
+
+width =
+width*
+(maxHeight/height);
+
+height=maxHeight;
+
+}
+
+
+const canvas =
+document.createElement(
+"canvas"
+);
+
+
+canvas.width=
+Math.round(width);
+
+canvas.height=
+Math.round(height);
+
+
+const ctx =
+canvas.getContext(
+"2d"
+);
+
+
+ctx.drawImage(
+img,
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+
+/*
+   JPEG comprimido.
+   Antes podías guardar imágenes
+   enormes como Base64.
+*/
+
+resolve(
+canvas.toDataURL(
+"image/jpeg",
+0.55
+)
+);
+
+};
+
+
+img.src=e.target.result;
+
+};
+
+
+lector.readAsDataURL(file);
+
+});
+
+}
+
+
+/* =====================================================
+   DETECTOR ROBUSTO
+===================================================== */
+
+/*
+   Esta es la modificación principal.
+
+   Antes:
+
+   QR encontrado = FLEX
+   QR no encontrado = PARTICULAR
+
+   Ahora:
+
+   QR encontrado = FLEX
+   Después de varios intentos sin QR = REVISAR
+
+   NUNCA convertimos directamente
+   una falla de lectura en PARTICULAR.
+*/
+
+async function detectarTipoImagenRobusto(file){
+
+try{
+
+/* -----------------------------------------
+   Intento 1: imagen original
+----------------------------------------- */
+
+let resultado =
+await intentarLeerQR(
+file,
+"original"
+);
+
+if(resultado){
+
+return{
+
+tipo:"FLEX",
+
+confianza:"ALTA",
+
+motivo:"QR detectado en imagen original"
+
+};
+
+}
+
+
+/* -----------------------------------------
+   Intento 2: imagen ampliada
+----------------------------------------- */
+
+resultado =
+await intentarLeerQR(
+file,
+"ampliada"
+);
+
+if(resultado){
+
+return{
+
+tipo:"FLEX",
+
+confianza:"ALTA",
+
+motivo:"QR detectado en imagen ampliada"
+
+};
+
+}
+
+
+/* -----------------------------------------
+   Intento 3: escala de grises
+----------------------------------------- */
+
+resultado =
+await intentarLeerQR(
+file,
+"gris"
+);
+
+if(resultado){
+
+return{
+
+tipo:"FLEX",
+
+confianza:"MEDIA",
+
+motivo:"QR detectado después de mejorar imagen"
+
+};
+
+}
+
+
+/* -----------------------------------------
+   Intento 4: contraste
+----------------------------------------- */
+
+resultado =
+await intentarLeerQR(
+file,
+"contraste"
+);
+
+if(resultado){
+
+return{
+
+tipo:"FLEX",
+
+confianza:"MEDIA",
+
+motivo:"QR detectado después de aumentar contraste"
+
+};
+
+}
+
+
+/*
+   IMPORTANTE:
+
+   Si llegamos acá NO afirmamos que sea particular.
+
+   Puede ser:
+
+   - QR borroso
+   - QR muy pequeño
+   - mala iluminación
+   - foto inclinada
+   - QR parcialmente tapado
+   - problema de cámara
+   - problema de ZXing
+
+   Por eso queda REVISAR.
+*/
+
+return{
+
+tipo:"REVISAR",
+
+confianza:"BAJA",
+
+motivo:
+"No se pudo confirmar la presencia de QR"
+
+};
+
+}
+
+catch(error){
+
+console.error(
+"Error detector:",
+error
+);
+
+return{
+
+tipo:"REVISAR",
+
+confianza:"BAJA",
+
+motivo:
+"Error durante lectura QR"
+
+};
+
+}
+
+}
+
+
+/* =====================================================
+   INTENTAR LEER QR
+===================================================== */
+
+function intentarLeerQR(
+file,
+modo
+){
+
+return new Promise(
+resolve=>{
+
+let lector =
+new FileReader();
+
+
+let finalizado=false;
+
+
+function terminar(valor){
+
+if(finalizado)
+return;
+
+finalizado=true;
+
+resolve(valor);
+
+}
+
+
+lector.onload=function(e){
+
+let img =
+new Image();
+
+
+img.onload=function(){
+
+try{
+
+let canvas =
+document.createElement(
+"canvas"
+);
+
+
+let width =
+img.naturalWidth ||
+img.width;
+
+let height =
+img.naturalHeight ||
+img.height;
+
+
+/*
+   Para algunos modos
+   aumentamos el tamaño.
+*/
+
+let factor=1;
+
+
+if(modo==="ampliada")
+factor=2;
+
+
+if(modo==="gris")
+factor=2;
+
+
+if(modo==="contraste")
+factor=2;
+
+
+canvas.width=
+Math.min(
+width*factor,
+2400
+);
+
+canvas.height=
+Math.min(
+height*factor,
+2400
+);
+
+
+let ctx =
+canvas.getContext(
+"2d",
+{
+willReadFrequently:true
+}
+);
+
+
+ctx.drawImage(
+img,
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+
+/* -----------------------------------------
+   Procesamiento de imagen
+----------------------------------------- */
+
+if(
+modo==="gris" ||
+modo==="contraste"
+){
+
+let imageData =
+ctx.getImageData(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+
+let data =
+imageData.data;
+
+
+for(
+let i=0;
+i<data.length;
+i+=4
+){
+
+let r=data[i];
+let g=data[i+1];
+let b=data[i+2];
+
+
+/*
+   Luminancia.
+*/
+
+let gris =
+0.299*r+
+0.587*g+
+0.114*b;
+
+
+if(modo==="gris"){
+
+data[i]=gris;
+data[i+1]=gris;
+data[i+2]=gris;
+
+}
+else{
+
+/*
+   Contraste aumentado.
+*/
+
+let contraste=1.8;
+
+let nuevo =
+((gris-128)*
+contraste)+128;
+
+nuevo =
+Math.max(
+0,
+Math.min(
+255,
+nuevo
+)
+);
+
+data[i]=nuevo;
+data[i+1]=nuevo;
+data[i+2]=nuevo;
+
+}
+
+}
+
+
+ctx.putImageData(
+imageData,
+0,
+0
+);
+
+}
+
+
+let imagenProcesada =
+new Image();
+
+
+imagenProcesada.onload=
+async function(){
+
+let reader;
+
+
+try{
+
+reader =
+new ZXing.BrowserQRCodeReader();
+
+}
+catch(error){
+
+terminar(false);
+return;
+
+}
+
+
+/*
+   Le damos más tiempo
+   que el timeout original.
+*/
+
+let timer = setTimeout(
+    () => {
+        terminar(false);
+    },
+    8000
+);
+
+
+try{
+
+let resultado =
+await reader
+.decodeFromImageElement(
+imagenProcesada
+);
+
+
+clearTimeout(timer);
+
+if(resultado){
+
+terminar(true);
+
+}
+else{
+
+terminar(false);
+
+}
+
+}
+catch(error){
+
+clearTimeout(timer);
+
+terminar(false);
+
+}
+
+};
+
+
+imagenProcesada.src =
+canvas.toDataURL(
+"image/png"
+);
+
+}
+catch(error){
+
+console.error(
+"Error procesando imagen:",
+error
+);
+
+terminar(false);
+
+}
+
+};
+
+
+img.onerror=function(){
+
+terminar(false);
+
+};
+
+
+img.src=e.target.result;
+
+};
+
+
+lector.onerror=function(){
+
+terminar(false);
+
+};
+
+
+lector.readAsDataURL(file);
+
+});
+
+}
+
+
+/* =====================================================
+   OBTENER BADGE
+===================================================== */
+
+function obtenerBadgeTipo(tipo){
+
+if(tipo==="FLEX"){
+
+return `
+<span class="badge badge-flex">
+🟢 FLEX
+</span>
+`;
+
+}
+
+
+if(tipo==="PARTICULAR"){
+
+return `
+<span class="badge badge-particular">
+🔴 PARTICULAR
+</span>
+`;
+
+}
+
+
+return `
+<span class="badge badge-review">
+🟠 REVISAR
+</span>
+`;
+
+}
+
+
+/* =====================================================
+   LISTAR COLECTAS
+===================================================== */
+
+function listarColectas(){
+
+let div =
+document.getElementById(
+"listaColectas"
+);
+
+if(!div)
+return;
+
+
+let fecha =
+document.getElementById(
+"filtroFecha"
+)?.value || "";
+
+
+let cliente =
+document.getElementById(
+"filtroCliente"
+)?.value
+.toLowerCase() || "";
+
+
+let lista =
+colectas.filter(c=>{
+
+let okFecha =
+!fecha ||
+c.fecha===fecha;
+
+
+let okCliente =
+!cliente ||
+(c.cliente || "")
+.toLowerCase()
+.includes(cliente);
+
+
+return okFecha &&
+okCliente;
+
+});
+
+
+div.innerHTML="";
+
+
+if(lista.length===0){
+
+div.innerHTML=
+'<div class="vacio">No hay colectas encontradas.</div>';
+
+return;
+
+}
+
+
+lista
+.slice()
+.reverse()
+.forEach(c=>{
+
+div.innerHTML+=`
+
+<div class="card">
+
+<h3>
+📦 ${escaparHTML(c.cliente)}
+</h3>
+
+Fecha:
+<b>${escaparHTML(c.fecha)}</b>
+
+<br><br>
+
+Total:
+${c.cantidad}
+
+<br>
+
+<span class="flex">
+🟢 Flex:
+${c.flex || 0}
+</span>
+
+<br>
+
+<span class="particular">
+🔴 Particular:
+${c.particulares || 0}
+</span>
+
+<br>
+
+<span class="review">
+🟠 Revisar:
+${c.revision || 0}
+</span>
+
+<br><br>
+
+<button
+onclick="verColecta(${c.id})"
+>
+👁 Ver paquetes
+</button>
+
+<button
+class="btn-danger"
+onclick="eliminarColecta(${c.id})"
+>
+🗑 Eliminar
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+   VER PAQUETES DE COLECTA
+===================================================== */
+
+function verColecta(id){
+
+mostrar("paquetes");
+
+
+let div =
+document.getElementById(
+"tablaPaquetes"
+);
+
+
+let lista =
+paquetes.filter(
+p=>p.colectaId==id
+);
+
+
+div.innerHTML="";
+
+
+if(lista.length===0){
+
+div.innerHTML=
+'<div class="vacio">No hay paquetes en esta colecta.</div>';
+
+return;
+
+}
+
+
+lista.forEach(p=>{
+
+div.innerHTML+=
+crearHTMLPaquete(p);
+
+});
+
+}
+
+
+/* =====================================================
+   HTML PAQUETE
+===================================================== */
+
+function crearHTMLPaquete(p){
+
+let badge =
+obtenerBadgeTipo(
+p.tipo
+);
+
+
+let revision="";
+
+
+if(p.tipo==="REVISAR"){
+
+revision=`
+
+<div class="alerta-revision">
+
+<b>⚠️ Paquete para revisión</b>
+
+<br>
+
+${escaparHTML(
+p.motivoRevision ||
+"No se pudo confirmar el tipo."
+)}
+
+<br><br>
+
+Podés clasificarlo manualmente.
+
+</div>
+
+`;
+
+}
+
+
+return `
+
+<div class="card">
+
+${
+p.foto
+?
+`
+<img
+src="${p.foto}"
+class="preview"
+>
+`
+:
+""
+}
+
+<br><br>
+
+${badge}
+
+<br><br>
+
+Cliente:
+${escaparHTML(p.cliente)}
+
+<br>
+
+Fecha:
+${escaparHTML(p.fecha)}
+
+<br>
+
+Dirección:
+${escaparHTML(p.direccion || "-")}
+
+<br>
+
+Destinatario:
+${escaparHTML(p.destinatario || "-")}
+
+<br>
+
+DNI:
+${escaparHTML(p.dni || "-")}
+
+<br>
+
+Teléfono:
+${escaparHTML(p.telefono || "-")}
+
+<br>
+
+Chofer:
+${escaparHTML(p.chofer || "-")}
+
+<br>
+
+Estado:
+<span class="estado">
+${escaparHTML(p.estado || "Pendiente")}
+</span>
+
+${revision}
+
+<div class="acciones">
+
+${
+p.tipo!=="FLEX"
+?
+`
+<button
+class="btn-green"
+onclick="cambiarTipoPaquete(${p.id},'FLEX')"
+>
+🟢 Marcar FLEX
+</button>
+`
+:
+""
+}
+
+${
+p.tipo!=="PARTICULAR"
+?
+`
+<button
+class="btn-danger"
+onclick="cambiarTipoPaquete(${p.id},'PARTICULAR')"
+>
+🔴 Marcar PARTICULAR
+</button>
+`
+:
+""
+}
+
+${
+p.tipo!=="REVISAR"
+?
+`
+<button
+class="btn-orange"
+onclick="cambiarTipoPaquete(${p.id},'REVISAR')"
+>
+🟠 Revisar
+</button>
+`
+:
+""
+}
+
+<button
+class="btn-danger"
+onclick="eliminarPaquete(${p.id})"
+>
+🗑 Eliminar
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =====================================================
+   CAMBIAR TIPO MANUALMENTE
+===================================================== */
+
+function cambiarTipoPaquete(
+id,
+nuevoTipo
+){
+
+let paquete =
+paquetes.find(
+p=>p.id==id
+);
+
+
+if(!paquete)
+return;
+
+
+let anterior =
+paquete.tipo;
+
+
+if(anterior===nuevoTipo)
+return;
+
+
+paquete.tipo =
+nuevoTipo;
+
+
+if(nuevoTipo==="FLEX"){
+
+paquete.confianza="MANUAL";
+
+paquete.motivoRevision=
+"Clasificado manualmente como FLEX";
+
+}
+
+else if(
+nuevoTipo==="PARTICULAR"
+){
+
+paquete.confianza="MANUAL";
+
+paquete.motivoRevision=
+"Clasificado manualmente como PARTICULAR";
+
+}
+
+else{
+
+paquete.confianza="MANUAL";
+
+paquete.motivoRevision=
+"Marcado manualmente para revisión";
+
+}
+
+
+actualizarContadoresColecta(
+paquete.colectaId
+);
+
+
+guardarDatos();
+
+
+listarPaquetes();
+
+actualizarDashboard();
+
+}
+
+
+/* =====================================================
+   ACTUALIZAR CONTADORES COLECTA
+===================================================== */
+
+function actualizarContadoresColecta(
+colectaId
+){
+
+let colecta =
+colectas.find(
+c=>c.id==colectaId
+);
+
+
+if(!colecta)
+return;
+
+
+let lista =
+paquetes.filter(
+p=>p.colectaId==colectaId
+);
+
+
+colecta.cantidad =
+lista.length;
+
+
+colecta.flex =
+lista.filter(
+p=>p.tipo==="FLEX"
+).length;
+
+
+colecta.particulares =
+lista.filter(
+p=>p.tipo==="PARTICULAR"
+).length;
+
+
+colecta.revision =
+lista.filter(
+p=>p.tipo==="REVISAR"
+).length;
+
+}
+
+
+/* =====================================================
+   ELIMINAR COLECTA
+===================================================== */
+
+function eliminarColecta(id){
+
+if(!confirm(
+"¿Eliminar colecta completa?\n\nTambién se eliminarán todos sus paquetes."
+))
+return;
+
+
+colectas =
+colectas.filter(
+c=>c.id!==id
+);
+
+
+paquetes =
+paquetes.filter(
+p=>p.colectaId!==id
+);
+
+
+guardarDatos();
+
+
+listarColectas();
+
+actualizarDashboard();
+
+}
+
+
+/* =====================================================
+   ELIMINAR PAQUETE
+===================================================== */
+
+function eliminarPaquete(id){
+
+if(!confirm(
+"¿Eliminar paquete?"
+))
+return;
+
+
+let paquete =
+paquetes.find(
+p=>p.id==id
+);
+
+
+let colectaId =
+paquete?.colectaId;
+
+
+paquetes =
+paquetes.filter(
+p=>p.id!==id
+);
+
+
+if(colectaId){
+
+actualizarContadoresColecta(
+colectaId
+);
+
+}
+
+
+guardarDatos();
+
+
+listarPaquetes();
+
+actualizarDashboard();
+
+}
+
+
+/* =====================================================
+   LISTAR PAQUETES
+===================================================== */
+
+function listarPaquetes(){
+
+let div =
+document.getElementById(
+"tablaPaquetes"
+);
+
+if(!div)
+return;
+
+
+let texto =
+document.getElementById(
+"buscarPaquete"
+)?.value
+.toLowerCase()
+|| "";
+
+
+let tipo =
+document.getElementById(
+"filtroTipo"
+)?.value
+|| "";
+
+
+let lista =
+paquetes.filter(p=>{
+
+let buscar = (
+
+(p.cliente || "")+
+(p.direccion || "")+
+(p.destinatario || "")+
+(p.dni || "")+
+(p.telefono || "")+
+(p.chofer || "")+
+(p.zona || "")+
+(p.barrio || "")
+
+)
+.toLowerCase()
+.includes(texto);
+
+
+let tipoOk =
+!tipo ||
+p.tipo===tipo;
+
+
+return buscar &&
+tipoOk;
+
+});
+
+
+div.innerHTML="";
+
+
+if(lista.length===0){
+
+div.innerHTML=
+'<div class="vacio">No hay paquetes.</div>';
+
+return;
+
+}
+
+
+lista
+.slice()
+.reverse()
+.forEach(p=>{
+
+div.innerHTML+=
+crearHTMLPaquete(p);
+
+});
+
+}
+
+
+/* =====================================================
+   CONSULTA AVANZADA
+===================================================== */
+
+function buscarConsulta(){
+
+let fecha =
+document.getElementById(
+"consultaFecha"
+).value;
+
+
+let cliente =
+document.getElementById(
+"consultaCliente"
+).value
+.toLowerCase();
+
+
+let tipo =
+document.getElementById(
+"consultaTipo"
+).value;
+
+
+let chofer =
+document.getElementById(
+"consultaChofer"
+).value
+.toLowerCase();
+
+
+let texto =
+document.getElementById(
+"consultaTexto"
+).value
+.toLowerCase();
+
+
+let resultado =
+document.getElementById(
+"resultadoConsulta"
+);
+
+
+resultado.innerHTML="";
+
+
+let lista =
+paquetes.filter(p=>{
+
+return (
+
+(!fecha ||
+p.fecha===fecha)
+
+&&
+
+(!cliente ||
+(p.cliente || "")
+.toLowerCase()
+.includes(cliente))
+
+&&
+
+(!tipo ||
+p.tipo===tipo)
+
+&&
+
+(!chofer ||
+(p.chofer || "")
+.toLowerCase()
+.includes(chofer))
+
+&&
+
+(!texto ||
+
+(
+
+(p.cliente || "")+
+(p.direccion || "")+
+(p.destinatario || "")+
+(p.telefono || "")+
+(p.dni || "")+
+(p.chofer || "")+
+(p.tipo || "")
+
+)
+.toLowerCase()
+.includes(texto)
+
+)
+
+);
+
+});
+
+
+if(lista.length===0){
+
+resultado.innerHTML=
+"<p>No se encontraron resultados.</p>";
+
+return;
+
+}
+
+
+lista.forEach(p=>{
+
+resultado.innerHTML+=`
+
+<div class="card">
+
+${obtenerBadgeTipo(p.tipo)}
+
+<br><br>
+
+<b>
+${escaparHTML(p.cliente)}
+</b>
+
+<br>
+
+Fecha:
+${escaparHTML(p.fecha)}
+
+<br>
+
+Tipo:
+${escaparHTML(p.tipo)}
+
+<br>
+
+Dirección:
+${escaparHTML(p.direccion || "-")}
+
+<br>
+
+Destinatario:
+${escaparHTML(p.destinatario || "-")}
+
+<br>
+
+Chofer:
+${escaparHTML(p.chofer || "-")}
+
+<br>
+
+Estado:
+${escaparHTML(p.estado || "Pendiente")}
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function actualizarDashboard(){
+
+let total =
+document.getElementById(
+"totalPaquetes"
+);
+
+
+let flex =
+document.getElementById(
+"totalFlex"
+);
+
+
+let particulares =
+document.getElementById(
+"totalParticulares"
+);
+
+
+let revision =
+document.getElementById(
+"totalRevision"
+);
+
+
+let totalColectas =
+document.getElementById(
+"totalColectas"
+);
+
+
+if(total)
+total.innerText =
+paquetes.length;
+
+
+if(flex)
+flex.innerText =
+paquetes.filter(
+p=>p.tipo==="FLEX"
+).length;
+
+
+if(particulares)
+particulares.innerText =
+paquetes.filter(
+p=>p.tipo==="PARTICULAR"
+).length;
+
+
+if(revision)
+revision.innerText =
+paquetes.filter(
+p=>p.tipo==="REVISAR"
+).length;
+
+
+if(totalColectas)
+totalColectas.innerText =
+colectas.length;
+
+
+let resumen =
+document.getElementById(
+"resumen"
+);
+
+
+if(!resumen)
+return;
+
+
+resumen.innerHTML="";
+
+
+if(colectas.length===0){
+
+resumen.innerHTML=
+'<div class="vacio">Todavía no hay colectas cargadas.</div>';
+
+return;
+
+}
+
+
+colectas
+.slice()
+.reverse()
+.slice(0,10)
+.forEach(c=>{
+
+resumen.innerHTML+=`
+
+<p>
+
+<b>
+${escaparHTML(c.cliente)}
+</b>
+
+-
+
+${escaparHTML(c.fecha)}
+
+-
+
+${c.cantidad}
+
+paquetes
+
+<br>
+
+<span class="flex">
+🟢 ${c.flex || 0} Flex
+</span>
+
+&nbsp;
+
+<span class="particular">
+🔴 ${c.particulares || 0} Particular
+</span>
+
+&nbsp;
+
+<span class="review">
+🟠 ${c.revision || 0} Revisar
+</span>
+
+</p>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+   AUTO ACTUALIZACION
+===================================================== */
+
+window.onload=function(){
+
+/*
+   Migración de datos antiguos.
+
+   Los paquetes anteriores a esta versión
+   pueden no tener algunos campos.
+*/
+
+paquetes.forEach(p=>{
+
+if(!p.tipo)
+p.tipo="REVISAR";
+
+if(!p.confianza)
+p.confianza="LEGACY";
+
+if(!p.motivoRevision)
+p.motivoRevision=
+"Paquete cargado con una versión anterior.";
+
+});
+
+
+/*
+   Actualizamos contadores de todas
+   las colectas existentes.
+*/
+
+colectas.forEach(c=>{
+
+actualizarContadoresColecta(
+c.id
+);
+
+});
+
+
+guardarDatos();
+
+actualizarDashboard();
+
+};
+
+
+/* =====================================================
+   ADVERTENCIA ANTES DE CERRAR
+===================================================== */
+
+window.addEventListener(
+"error",
+function(event){
+
+console.error(
+"Error global:",
+event.error || event.message
+);
+
+}
+);
+
+</script>
+
+</body>
+
+</html>

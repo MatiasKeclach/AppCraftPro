@@ -1,568 +1,135 @@
+
+// ============================================================
 // models/initDB.js
+// APPCRAFT PRO
+// BASE DE DATOS PRINCIPAL + MÓDULO LOGÍSTICA
+// ============================================================
+
 const db = require("./db");
 
-// Crear tablas iniciales si no existen
+
+// ============================================================
+// TABLAS PRINCIPALES DE APPCRAFT PRO
+// ============================================================
+
 db.exec(`
--- Tabla de usuarios internos actualizada
+
 CREATE TABLE IF NOT EXISTS users (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     username TEXT UNIQUE NOT NULL,
+
     password TEXT NOT NULL,
-    role TEXT NOT NULL,              -- superadmin | admin | colaborador
-    status TEXT DEFAULT 'active',    -- active | inactive
+
+    role TEXT NOT NULL,
+
+    status TEXT DEFAULT 'active',
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
     last_login_at DATETIME,
+
     last_login_ip TEXT,
+
     nombre TEXT,
+
     apellido TEXT,
+
     email TEXT
+
 );
 
--- Tabla de aplicaciones internas
+
 CREATE TABLE IF NOT EXISTS apps (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     name TEXT NOT NULL,
-    owner_id INTEGER,                -- referencia a users.id
+
+    owner_id INTEGER,
+
     theme TEXT,
+
     style TEXT,
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner_id) REFERENCES users(id)
+
+    FOREIGN KEY (owner_id)
+        REFERENCES users(id)
+
 );
 
--- Tabla de logs de login (opcional para auditoría)
+
 CREATE TABLE IF NOT EXISTS login_logs (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     user_id INTEGER,
+
     login_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
     ip_address TEXT,
-    success INTEGER DEFAULT 1,       -- 1 = éxito, 0 = fallo
-    FOREIGN KEY (user_id) REFERENCES users(id)
+
+    success INTEGER DEFAULT 1,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+
 );
+
 
 CREATE TABLE IF NOT EXISTS templates (
+
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     name TEXT NOT NULL,
+
     description TEXT,
-    folder TEXT NOT NULL, -- nombre de la carpeta dentro de /templates/
+
+    folder TEXT NOT NULL,
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
 );
+
 
 CREATE TABLE IF NOT EXISTS projects (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,               -- Usuario propietario
-  name TEXT NOT NULL,                     -- Nombre del proyecto
-  type TEXT NOT NULL,                     -- Tipo: web, app, crm, etc.
-  data TEXT NOT NULL,                     -- Estado completo del proyecto (JSON como TEXT)
-  status TEXT DEFAULT 'draft',            -- Estado del proyecto: 'draft' o 'published'
-  thumbnail TEXT,                         -- Ruta a una miniatura para vista previa
-  last_modified DATETIME DEFAULT CURRENT_TIMESTAMP, -- Última modificación
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,   -- Fecha de creación
-  UNIQUE(user_id, name),                  -- Evita duplicados de nombre por usuario
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- ==============================
--- Módulo Logística
--- ==============================
-
--- Clientes de logística
-CREATE TABLE IF NOT EXISTS logistica_clientes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nombre TEXT NOT NULL,
-    empresa TEXT,
-
-    contacto TEXT,
-    telefono TEXT,
-    email TEXT,
-
-    direccion TEXT,
-    localidad TEXT,
-    provincia TEXT,
-
-    horario TEXT,
-    observaciones TEXT,
-
-    estado TEXT DEFAULT 'activo',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- ==============================
--- Colectas de paquetes
--- ==============================
-
-CREATE TABLE IF NOT EXISTS logistica_colectas (
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    cliente_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
 
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    name TEXT NOT NULL,
 
-    chofer TEXT,
+    type TEXT NOT NULL,
 
-    cantidad_paquetes INTEGER DEFAULT 0,
+    data TEXT NOT NULL,
 
-    observaciones TEXT,
+    status TEXT DEFAULT 'draft',
 
-    estado TEXT DEFAULT 'recibida',
+    thumbnail TEXT,
+
+    last_modified DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
+    UNIQUE(user_id, name),
 
-);
-
--- Choferes
-CREATE TABLE IF NOT EXISTS logistica_choferes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT NOT NULL,
-    telefono TEXT,
-    vehiculo TEXT,
-    patente TEXT,
-    estado TEXT DEFAULT 'activo',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Paquetes
-CREATE TABLE IF NOT EXISTS logistica_paquetes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cliente_id INTEGER NOT NULL,
-    codigo TEXT,
-    descripcion TEXT,
-    foto TEXT,
-    estado TEXT DEFAULT 'pendiente',
-    fecha_recepcion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
-);
-
--- Asignaciones de paquetes a choferes
-CREATE TABLE IF NOT EXISTS logistica_asignaciones (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    paquete_id INTEGER NOT NULL,
-    chofer_id INTEGER NOT NULL,
-    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado TEXT DEFAULT 'asignado',
-    FOREIGN KEY (paquete_id) REFERENCES logistica_paquetes(id),
-    FOREIGN KEY (chofer_id) REFERENCES logistica_choferes(id)
-);
-
--- Colectas de paquetes
-
-CREATE TABLE IF NOT EXISTS logistica_colectas (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    chofer TEXT,
-
-    cantidad_paquetes INTEGER DEFAULT 0,
-
-    observaciones TEXT,
-
-    estado TEXT DEFAULT 'recibida',
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (cliente_id) REFERENCES logistica_clientes(id)
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
 
 );
 
 `);
 
 
-
-
-// ------------------ Actualizar tabla users ------------------ //
-
-// ------------------ Actualizar tabla users ------------------ //
-
-const tableName = "users";
-
-const newColumns = {
-  nombre: "TEXT",
-  apellido: "TEXT",
-  email: "TEXT"
-};
-
-const existingColumns = db
-  .prepare(`PRAGMA table_info(${tableName})`)
-  .all()
-  .map(c => c.name);
-
-
-for (const columnName in newColumns) {
-
-  if (!existingColumns.includes(columnName)) {
-
-    console.log(`🔹 Agregando columna '${columnName}' a la tabla '${tableName}'`);
-
-    db.prepare(
-      `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${newColumns[columnName]}`
-    ).run();
-
-  }
-
-}
-
-console.log("✅ Tabla 'users' actualizada");
-
-// ==========================================
-// ACTUALIZACIÓN MÓDULO PAQUETES LOGÍSTICA
-// ==========================================
-
-
-// Paquetes completos
-db.exec(`
-
-CREATE TABLE IF NOT EXISTS logistica_paquetes (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER NOT NULL,
-
-    tipo TEXT DEFAULT 'flex',
-    -- flex | particular
-
-
-    codigo_externo TEXT,
-    -- código original del paquete
-
-
-    codigo_interno TEXT UNIQUE,
-    -- generado por sistema
-
-
-    qr_codigo TEXT,
-    -- código para QR interno
-
-
-    descripcion TEXT,
-
-    foto TEXT,
-
-
-    colectado_por TEXT,
-
-
-    fecha_colecta DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    estado TEXT DEFAULT 'recibido',
-    -- recibido
-    -- asignado
-    -- en_reparto
-    -- entregado
-    -- rechazado
-
-
-    chofer_id INTEGER,
-
-
-    fecha_entrega DATETIME,
-
-
-    observaciones TEXT,
-
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY(cliente_id)
-    REFERENCES logistica_clientes(id),
-
-
-    FOREIGN KEY(chofer_id)
-    REFERENCES logistica_choferes(id)
-
-);
-
-
-
-
-
--- Asignaciones de entrega
-
-CREATE TABLE IF NOT EXISTS logistica_asignaciones (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-
-    paquete_id INTEGER NOT NULL,
-
-
-    chofer_id INTEGER NOT NULL,
-
-
-    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    estado TEXT DEFAULT 'asignado',
-
-
-    observaciones TEXT,
-
-
-    FOREIGN KEY(paquete_id)
-    REFERENCES logistica_paquetes(id),
-
-
-    FOREIGN KEY(chofer_id)
-    REFERENCES logistica_choferes(id)
-
-);
-
-
-
-
-
-
--- Historial de movimientos
-
-CREATE TABLE IF NOT EXISTS logistica_movimientos (
-
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-
-    paquete_id INTEGER NOT NULL,
-
-
-    accion TEXT,
-
-
-    detalle TEXT,
-
-
-    usuario TEXT,
-
-
-    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY(paquete_id)
-    REFERENCES logistica_paquetes(id)
-
-);
-
-
-`);
-
-
-
-
-
-// ==========================================
-// AGREGAR COLUMNAS SI FALTAN
-// ==========================================
-
-
-function agregarColumna(tabla,columna,tipo){
-
-
-    const columnas = db
-    .prepare(`PRAGMA table_info(${tabla})`)
-    .all()
-    .map(c=>c.name);
-
-
-
-    if(!columnas.includes(columna)){
-
-
-        console.log(
-            `🔹 Agregando ${columna} a ${tabla}`
-        );
-
-
-        db.prepare(
-            `
-            ALTER TABLE ${tabla}
-            ADD COLUMN ${columna} ${tipo}
-            `
-        ).run();
-
-
-    }
-
-}
-
-
-
-// Paquetes
-
-agregarColumna(
-"logistica_paquetes",
-"tipo",
-"TEXT DEFAULT 'flex'"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"codigo_externo",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"codigo_interno",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"qr_codigo",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"colectado_por",
-"TEXT"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"fecha_colecta",
-"DATETIME"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"chofer_id",
-"INTEGER"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"fecha_entrega",
-"DATETIME"
-);
-
-
-agregarColumna(
-"logistica_paquetes",
-"observaciones",
-"TEXT"
-);
-
-
-
-console.log(
-"✅ Módulo paquetes actualizado"
-);
-
-
-console.log(
-"🚚 Logística lista para colectas y entregas"
-);
-
-
-// ------------------ Actualizar tabla logistica_clientes ------------------ //
-
-const logisticaTable = "logistica_clientes";
-
-const nuevasColumnasLogistica = {
-  contacto: "TEXT",
-  localidad: "TEXT",
-  provincia: "TEXT",
-  horario: "TEXT",
-  observaciones: "TEXT",
-  estado: "TEXT DEFAULT 'activo'",
-  updated_at: "DATETIME"
-};
-
-
-const columnasLogistica = db
-  .prepare(`PRAGMA table_info(${logisticaTable})`)
-  .all()
-  .map(c => c.name);
-
-
-for (const columna in nuevasColumnasLogistica) {
-
-  if (!columnasLogistica.includes(columna)) {
-
-    console.log(`🔹 Agregando columna '${columna}' a '${logisticaTable}'`);
-
-    db.prepare(
-      `ALTER TABLE ${logisticaTable} ADD COLUMN ${columna} ${nuevasColumnasLogistica[columna]}`
-    ).run();
-
-  }
-
-}
-
-
-console.log("✅ Tabla 'logistica_clientes' actualizada");
-console.log("✅ Base de datos inicializada correctamente");
-
-// ==========================================
-// ACTUALIZACIÓN DATOS COMPLETOS PARTICULARES
-// ==========================================
-
-const columnasParticulares = {
-
-    numero_orden: "TEXT",
-    fecha_emision: "TEXT",
-    peso: "TEXT",
-    bultos: "TEXT",
-    numero_bulto: "TEXT",
-
-    remitente: "TEXT",
-    destinatario: "TEXT",
-
-    telefono: "TEXT",
-    direccion: "TEXT",
-
-    localidad: "TEXT",
-    zona: "TEXT"
-
-};
-
-
-for (const columna in columnasParticulares) {
-
-    agregarColumna(
-        "logistica_paquetes",
-        columna,
-        columnasParticulares[columna]
-    );
-
-}
-
-
-console.log(
-    "✅ Campos de paquetes particulares actualizados"
-);
-
-// ==========================================
-// INTEGRACIÓN MERCADO LIBRE - LOGÍSTICA
-// ==========================================
-
-console.log("");
-console.log("==========================================");
-console.log("🔵 INICIANDO ACTUALIZACIÓN MERCADO LIBRE");
-console.log("==========================================");
-
-
-// ==========================================
-// FUNCIÓN SEGURA PARA AGREGAR COLUMNAS
-// ==========================================
-
-function agregarColumnaMercadoLibre(tabla, columna, tipo) {
+// ============================================================
+// FUNCIÓN AUXILIAR
+// AGREGAR COLUMNA SI NO EXISTE
+// ============================================================
+
+function agregarColumna(tabla, columna, tipo) {
 
     const columnas = db
         .prepare(`PRAGMA table_info(${tabla})`)
@@ -573,206 +140,650 @@ function agregarColumnaMercadoLibre(tabla, columna, tipo) {
     if (!columnas.includes(columna)) {
 
         console.log(
-            `🔹 Agregando columna '${columna}' a '${tabla}'...`
+            `🔹 Agregando columna '${columna}' a '${tabla}'`
         );
 
 
-        db.prepare(`
-            ALTER TABLE ${tabla}
-            ADD COLUMN ${columna} ${tipo}
-        `).run();
-
-
-        console.log(
-            `✅ Columna '${columna}' agregada correctamente`
-        );
-
-    } else {
-
-        console.log(
-            `✔️ Columna '${columna}' ya existe`
-        );
+        db.prepare(
+            `ALTER TABLE ${tabla}
+             ADD COLUMN ${columna} ${tipo}`
+        ).run();
 
     }
 
 }
 
 
-// ==========================================
-// COLUMNAS MERCADO LIBRE EN PAQUETES
-// ==========================================
+// ============================================================
+// USUARIOS
+// ============================================================
 
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "colecta_id",
-    "INTEGER"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "mercadolibre_order_id",
+agregarColumna(
+    "users",
+    "nombre",
     "TEXT"
 );
 
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "mercadolibre_shipment_id",
+agregarColumna(
+    "users",
+    "apellido",
     "TEXT"
 );
 
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "mercadolibre_pack_id",
+agregarColumna(
+    "users",
+    "email",
     "TEXT"
 );
 
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "mercadolibre_status",
-    "TEXT"
+console.log(
+    "✅ Tabla users actualizada"
 );
 
 
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "tracking_number",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "destinatario",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "telefono",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "direccion",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "localidad",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "provincia",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "codigo_postal",
-    "TEXT"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "fecha_importacion",
-    "DATETIME"
-);
-
-
-agregarColumnaMercadoLibre(
-    "logistica_paquetes",
-    "origen",
-    "TEXT DEFAULT 'mercadolibre'"
-);
-
-
-// ==========================================
-// TABLA DE RELACIÓN MERCADO LIBRE
-// ==========================================
+// ============================================================
+// CLIENTES LOGÍSTICA
+// ============================================================
 
 db.exec(`
 
-    CREATE TABLE IF NOT EXISTS logistica_mercadolibre_importaciones (
+CREATE TABLE IF NOT EXISTS logistica_clientes (
 
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        mercadolibre_order_id TEXT,
+    nombre TEXT NOT NULL,
 
-        mercadolibre_shipment_id TEXT UNIQUE,
+    empresa TEXT,
 
-        mercadolibre_pack_id TEXT,
+    contacto TEXT,
 
-        paquete_id INTEGER,
+    telefono TEXT,
 
-        cliente_id INTEGER,
+    email TEXT,
 
-        colecta_id INTEGER,
+    direccion TEXT,
 
-        estado TEXT DEFAULT 'importado',
+    localidad TEXT,
 
-        fecha_importacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    provincia TEXT,
 
-        FOREIGN KEY (paquete_id)
-            REFERENCES logistica_paquetes(id),
+    horario TEXT,
 
-        FOREIGN KEY (cliente_id)
-            REFERENCES logistica_clientes(id),
+    observaciones TEXT,
 
-        FOREIGN KEY (colecta_id)
-            REFERENCES logistica_colectas(id)
+    estado TEXT DEFAULT 'activo',
 
-    );
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
+);
 
 `);
 
 
+// ============================================================
+// ACTUALIZAR CLIENTES EXISTENTES
+// ============================================================
+
+const columnasClientes = {
+
+    contacto: "TEXT",
+
+    telefono: "TEXT",
+
+    email: "TEXT",
+
+    direccion: "TEXT",
+
+    localidad: "TEXT",
+
+    provincia: "TEXT",
+
+    horario: "TEXT",
+
+    observaciones: "TEXT",
+
+    estado: "TEXT DEFAULT 'activo'",
+
+    updated_at: "DATETIME"
+
+};
+
+
+for (
+    const columna in columnasClientes
+) {
+
+    agregarColumna(
+        "logistica_clientes",
+        columna,
+        columnasClientes[columna]
+    );
+
+}
+
+
 console.log(
-    "✅ Tabla 'logistica_mercadolibre_importaciones' verificada"
+    "✅ Tabla logistica_clientes actualizada"
 );
 
 
-// ==========================================
+// ============================================================
+// CHOFERES
+// ============================================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS logistica_choferes (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    nombre TEXT NOT NULL,
+
+    telefono TEXT,
+
+    vehiculo TEXT,
+
+    patente TEXT,
+
+    estado TEXT DEFAULT 'activo',
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
+);
+
+`);
+
+console.log(
+    "✅ Tabla logistica_choferes lista"
+);
+
+
+// ============================================================
+// COLECTAS
+//
+// IMPORTANTE:
+// Una colecta representa una recepción de paquetes.
+//
+// Ejemplo:
+//
+// Colecta #25
+// Fecha: 2026-08-10
+// Cliente: Cliente ABC
+// Paquetes: 17
+//
+// Cada paquete tendrá posteriormente:
+// colecta_id = 25
+// ============================================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS logistica_colectas (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    cliente_id INTEGER NOT NULL,
+
+    fecha DATE NOT NULL,
+
+    chofer_id INTEGER,
+
+    cantidad_paquetes INTEGER DEFAULT 0,
+
+    observaciones TEXT,
+
+    estado TEXT DEFAULT 'recibida',
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (cliente_id)
+        REFERENCES logistica_clientes(id),
+
+    FOREIGN KEY (chofer_id)
+        REFERENCES logistica_choferes(id)
+
+);
+
+`);
+
+
+// ============================================================
+// COMPATIBILIDAD CON COLECTAS EXISTENTES
+// ============================================================
+
+agregarColumna(
+    "logistica_colectas",
+    "chofer_id",
+    "INTEGER"
+);
+
+agregarColumna(
+    "logistica_colectas",
+    "updated_at",
+    "DATETIME"
+);
+
+console.log(
+    "✅ Tabla logistica_colectas lista"
+);
+
+
+// ============================================================
+// PAQUETES
+//
+// ESTA ES LA TABLA CENTRAL DEL SISTEMA.
+//
+// Cada paquete pertenece a:
+// - un cliente
+// - una colecta
+//
+// Y puede tener:
+// - foto
+// - dirección
+// - barrio
+// - zona
+// - destinatario
+// - teléfono
+// - DNI
+// - chofer
+// - estado
+// ============================================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS logistica_paquetes (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+
+    -- RELACIONES
+
+    colecta_id INTEGER,
+
+    cliente_id INTEGER NOT NULL,
+
+    chofer_id INTEGER,
+
+
+    -- IDENTIFICACIÓN
+
+    tipo TEXT DEFAULT 'flex',
+
+    codigo_externo TEXT,
+
+    codigo_interno TEXT UNIQUE,
+
+    qr_codigo TEXT,
+
+
+    -- FOTO
+
+    foto TEXT,
+
+
+    -- INFORMACIÓN DEL PAQUETE
+
+    descripcion TEXT,
+
+    peso REAL,
+
+    bultos INTEGER,
+
+    numero_bulto INTEGER,
+
+
+    -- DESTINATARIO
+
+    destinatario TEXT,
+
+    dni TEXT,
+
+    telefono TEXT,
+
+
+    -- DIRECCIÓN
+
+    direccion TEXT,
+
+    barrio TEXT,
+
+    zona TEXT,
+
+    localidad TEXT,
+
+    provincia TEXT,
+
+    referencia TEXT,
+
+
+    -- REMITENTE
+
+    remitente TEXT,
+
+
+    -- OPERACIÓN
+
+    estado TEXT DEFAULT 'recibido',
+
+    fecha_colecta DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    fecha_recepcion DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    fecha_entrega DATETIME,
+
+
+    colectado_por TEXT,
+
+
+    observaciones TEXT,
+
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+
+    FOREIGN KEY (colecta_id)
+        REFERENCES logistica_colectas(id),
+
+    FOREIGN KEY (cliente_id)
+        REFERENCES logistica_clientes(id),
+
+    FOREIGN KEY (chofer_id)
+        REFERENCES logistica_choferes(id)
+
+);
+
+`);
+
+
+// ============================================================
+// AGREGAR CAMPOS A PAQUETES EXISTENTES
+// ============================================================
+
+const columnasPaquetes = {
+
+    colecta_id: "INTEGER",
+
+    tipo: "TEXT DEFAULT 'flex'",
+
+    codigo_externo: "TEXT",
+
+    codigo_interno: "TEXT",
+
+    qr_codigo: "TEXT",
+
+    foto: "TEXT",
+
+    descripcion: "TEXT",
+
+    peso: "REAL",
+
+    bultos: "INTEGER",
+
+    numero_bulto: "INTEGER",
+
+    destinatario: "TEXT",
+
+    dni: "TEXT",
+
+    telefono: "TEXT",
+
+    direccion: "TEXT",
+
+    barrio: "TEXT",
+
+    zona: "TEXT",
+
+    localidad: "TEXT",
+
+    provincia: "TEXT",
+
+    referencia: "TEXT",
+
+    remitente: "TEXT",
+
+    estado: "TEXT DEFAULT 'recibido'",
+
+    fecha_colecta: "DATETIME",
+
+    fecha_recepcion: "DATETIME",
+
+    fecha_entrega: "DATETIME",
+
+    colectado_por: "TEXT",
+
+    observaciones: "TEXT",
+
+    chofer_id: "INTEGER",
+
+    updated_at: "DATETIME"
+
+};
+
+
+for (
+    const columna in columnasPaquetes
+) {
+
+    agregarColumna(
+        "logistica_paquetes",
+        columna,
+        columnasPaquetes[columna]
+    );
+
+}
+
+
+console.log(
+    "✅ Tabla logistica_paquetes actualizada"
+);
+
+
+// ============================================================
+// ASIGNACIONES
+//
+// Permite mantener historial.
+//
+// Un paquete puede ser asignado a un chofer
+// y posteriormente reasignado.
+//
+// La tabla conserva el historial.
+// ============================================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS logistica_asignaciones (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    paquete_id INTEGER NOT NULL,
+
+    chofer_id INTEGER NOT NULL,
+
+    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    estado TEXT DEFAULT 'asignado',
+
+    observaciones TEXT,
+
+    FOREIGN KEY (paquete_id)
+        REFERENCES logistica_paquetes(id),
+
+    FOREIGN KEY (chofer_id)
+        REFERENCES logistica_choferes(id)
+
+);
+
+`);
+
+console.log(
+    "✅ Tabla logistica_asignaciones lista"
+);
+
+
+// ============================================================
+// HISTORIAL DE MOVIMIENTOS
+// ============================================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS logistica_movimientos (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    paquete_id INTEGER NOT NULL,
+
+    accion TEXT,
+
+    detalle TEXT,
+
+    usuario TEXT,
+
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (paquete_id)
+        REFERENCES logistica_paquetes(id)
+
+);
+
+`);
+
+console.log(
+    "✅ Tabla logistica_movimientos lista"
+);
+
+
+// ============================================================
+// ÍNDICES
+//
+// Esto va a ser MUY importante cuando tengamos muchos paquetes.
+//
+// Las búsquedas por fecha, barrio, zona, cliente y chofer
+// serán mucho más rápidas.
+// ============================================================
+
+db.exec(`
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_colecta
+ON logistica_paquetes(colecta_id);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_cliente
+ON logistica_paquetes(cliente_id);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_chofer
+ON logistica_paquetes(chofer_id);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_tipo
+ON logistica_paquetes(tipo);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_estado
+ON logistica_paquetes(estado);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_barrio
+ON logistica_paquetes(barrio);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_zona
+ON logistica_paquetes(zona);
+
+
+CREATE INDEX IF NOT EXISTS idx_paquetes_fecha
+ON logistica_paquetes(fecha_colecta);
+
+
+CREATE INDEX IF NOT EXISTS idx_colectas_fecha
+ON logistica_colectas(fecha);
+
+
+CREATE INDEX IF NOT EXISTS idx_colectas_cliente
+ON logistica_colectas(cliente_id);
+
+`);
+
+console.log(
+    "✅ Índices de logística creados"
+);
+
+
+// ============================================================
+// NORMALIZAR DATOS EXISTENTES
+// ============================================================
+
+// Si existen paquetes viejos sin tipo,
+// los consideramos FLEX por compatibilidad.
+
+db.prepare(`
+
+    UPDATE logistica_paquetes
+
+    SET tipo = 'flex'
+
+    WHERE tipo IS NULL
+       OR TRIM(tipo) = ''
+
+`).run();
+
+
+// Si existen paquetes viejos sin estado,
+// los marcamos como recibidos.
+
+db.prepare(`
+
+    UPDATE logistica_paquetes
+
+    SET estado = 'recibido'
+
+    WHERE estado IS NULL
+       OR TRIM(estado) = ''
+
+`).run();
+
+
+// ============================================================
 // FINAL
-// ==========================================
-
-console.log("");
-console.log("==========================================");
-console.log("🎉 MERCADO LIBRE - BASE DE DATOS LISTA");
-console.log("==========================================");
+// ============================================================
 
 console.log(
-    "📦 Paquetes preparados para integración Mercado Libre"
+    "=================================================="
 );
 
 console.log(
-    "🔗 Relación paquete → colecta disponible"
+    "🚚 APPCRAFT PRO - LOGÍSTICA"
 );
 
 console.log(
-    "👤 Relación paquete → cliente disponible"
+    "✅ Base de datos inicializada correctamente"
 );
 
 console.log(
-    "🚚 Paquetes preparados para asignación a chofer"
+    "📦 Paquetes vinculados a colectas"
 );
 
 console.log(
-    "🔄 Control de envíos duplicados habilitado"
+    "📸 Soporte para fotografías"
 );
 
 console.log(
-    "==========================================");
+    "📍 Dirección / barrio / zona"
+);
+
+console.log(
+    "🚚 Asignación de choferes"
+);
+
+console.log(
+    "🔎 Índices para búsquedas"
+);
+
+console.log(
+    "=================================================="
+);

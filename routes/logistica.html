@@ -1,0 +1,2791 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+Control Logística Depósito
+</title>
+
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+
+body{
+
+margin:0;
+background:#f1f3f6;
+color:#222;
+
+}
+
+
+header{
+
+background:#111827;
+color:white;
+padding:20px;
+
+}
+
+
+header h1{
+
+margin:0;
+
+}
+
+
+header p{
+
+margin:5px 0 0;
+opacity:.8;
+
+}
+
+
+
+nav{
+
+display:flex;
+gap:10px;
+padding:10px;
+background:white;
+border-bottom:1px solid #ddd;
+flex-wrap:wrap;
+
+}
+
+
+button{
+
+padding:12px 15px;
+border:0;
+border-radius:8px;
+cursor:pointer;
+background:#2563eb;
+color:white;
+
+}
+
+
+button:hover{
+
+opacity:.8;
+
+}
+
+
+.btn-green{
+
+background:#16a34a;
+
+}
+
+
+.btn-danger{
+
+background:#dc2626;
+
+}
+
+
+.btn-orange{
+
+background:#ea580c;
+
+}
+
+
+
+.container{
+
+padding:20px;
+
+}
+
+
+
+.card{
+
+background:white;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 2px 8px #0002;
+
+}
+
+
+
+input,
+select{
+
+width:100%;
+padding:10px;
+margin:5px 0 15px;
+border-radius:8px;
+border:1px solid #ccc;
+
+}
+
+
+
+.hidden{
+
+display:none;
+
+}
+
+
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:15px;
+
+}
+
+
+
+.stat{
+
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+
+}
+
+
+
+.stat h2{
+
+font-size:35px;
+margin:0;
+
+}
+
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+
+th{
+
+background:#111827;
+color:white;
+padding:10px;
+
+}
+
+
+td{
+
+padding:10px;
+border-bottom:1px solid #ddd;
+
+}
+
+
+
+.flex{
+
+color:#16a34a;
+font-weight:bold;
+
+}
+
+
+
+.particular{
+
+color:#dc2626;
+font-weight:bold;
+
+}
+
+
+
+img.preview{
+
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:10px;
+
+}
+
+
+
+.badge{
+
+padding:5px 10px;
+border-radius:20px;
+color:white;
+font-size:12px;
+
+}
+
+
+.badge-flex{
+
+background:#16a34a;
+
+}
+
+
+.badge-particular{
+
+background:#dc2626;
+
+}
+
+
+
+.filtros{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+
+gap:10px;
+
+}
+
+
+
+.resultado{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:15px;
+
+}
+
+
+
+.estado{
+
+padding:5px 10px;
+border-radius:20px;
+background:#64748b;
+color:white;
+font-size:12px;
+
+}
+
+
+
+</style>
+
+
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+
+
+</head>
+
+
+
+<body>
+
+
+<header>
+
+<h1>
+📦 Control Logística Depósito
+</h1>
+
+<p>
+Sistema operativo - Colectas Flex / Particulares
+</p>
+
+</header>
+
+
+
+
+<nav>
+
+
+<button onclick="mostrar('dashboard')">
+📊 Dashboard
+</button>
+
+
+<button onclick="mostrar('colectas')">
+📥 Colectas
+</button>
+
+
+<button onclick="mostrar('paquetes')">
+📦 Paquetes
+</button>
+
+
+<button onclick="mostrar('consultas')">
+🔎 Consultas
+</button>
+
+
+<button onclick="mostrar('clientes')">
+🏢 Clientes
+</button>
+
+
+<button onclick="mostrar('choferes')">
+🏍️ Choferes
+</button>
+
+
+</nav>
+
+
+
+
+<div class="container">
+
+    <!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard">
+
+
+<div class="card">
+
+<h2>
+Resumen operativo
+</h2>
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<h2 id="totalPaquetes">
+0
+</h2>
+
+<p>
+Paquetes
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h2 id="totalFlex">
+0
+</h2>
+
+<p>
+Flex
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h2 id="totalParticulares">
+0
+</h2>
+
+<p>
+Particulares
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h2 id="totalColectas">
+0
+</h2>
+
+<p>
+Colectas
+</p>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+Últimas colectas
+</h2>
+
+
+<div id="resumen">
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ================= COLECTAS ================= -->
+
+
+<section id="colectas" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+Nueva colecta
+</h2>
+
+
+
+<label>
+Fecha
+</label>
+
+
+<input 
+type="date"
+id="fechaColecta">
+
+
+
+
+
+
+<label>
+Cliente
+</label>
+
+
+<select id="clienteColecta">
+
+</select>
+
+
+
+
+
+
+
+<label>
+Fotos paquetes
+</label>
+
+
+<input
+type="file"
+id="fotosColecta"
+multiple
+accept="image/*">
+
+
+
+
+
+<button
+class="btn-green"
+onclick="crearColecta()">
+
+📸 Procesar colecta
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+<h2>
+Filtros de colectas
+</h2>
+
+
+<div class="filtros">
+
+
+<input
+type="date"
+id="filtroFecha"
+onchange="listarColectas()">
+
+
+
+<input
+id="filtroCliente"
+placeholder="Buscar cliente..."
+onkeyup="listarColectas()">
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Colectas cargadas
+</h2>
+
+
+<div id="listaColectas">
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- ================= PAQUETES ================= -->
+
+
+
+<section id="paquetes" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+Paquetes
+</h2>
+
+
+
+
+
+<div class="filtros">
+
+
+
+<input
+
+id="buscarPaquete"
+
+placeholder="Buscar dirección, cliente, DNI, teléfono, chofer..."
+
+onkeyup="listarPaquetes()"
+
+>
+
+
+
+
+<select 
+id="filtroTipo"
+onchange="listarPaquetes()">
+
+
+<option value="">
+Todos
+</option>
+
+
+<option value="FLEX">
+Flex
+</option>
+
+
+<option value="PARTICULAR">
+Particular
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+<div id="tablaPaquetes">
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ================= CONSULTAS ================= -->
+
+
+<section id="consultas" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+🔎 Consultas avanzadas
+</h2>
+
+
+
+<div class="filtros">
+
+
+<input
+type="date"
+id="consultaFecha">
+
+
+
+<input
+placeholder="Cliente"
+id="consultaCliente">
+
+
+
+<select id="consultaTipo">
+
+
+<option value="">
+Todos los tipos
+</option>
+
+
+<option value="FLEX">
+Flex
+</option>
+
+
+<option value="PARTICULAR">
+Particular
+</option>
+
+
+</select>
+
+
+
+<input
+placeholder="Chofer"
+id="consultaChofer">
+
+
+
+<input
+placeholder="Buscar general"
+id="consultaTexto">
+
+
+
+</div>
+
+
+
+
+
+<button
+onclick="buscarConsulta()">
+
+Buscar
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Resultados
+</h2>
+
+
+<div id="resultadoConsulta"
+class="resultado">
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ================= CLIENTES ================= -->
+
+
+<section id="clientes" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+Nuevo cliente
+</h2>
+
+
+
+
+<input
+id="nombreCliente"
+placeholder="Nombre cliente">
+
+
+
+<input
+id="direccionCliente"
+placeholder="Dirección">
+
+
+
+<input
+id="zonaCliente"
+placeholder="Zona">
+
+
+
+
+
+<button
+class="btn-green"
+onclick="guardarCliente()">
+
+Guardar cliente
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Clientes registrados
+</h2>
+
+
+
+<div id="listaClientes">
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ================= CHOFERES ================= -->
+
+
+
+<section id="choferes" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+Nuevo chofer
+</h2>
+
+
+
+
+<input
+id="nombreChofer"
+placeholder="Nombre">
+
+
+
+<input
+id="vehiculoChofer"
+placeholder="Moto / Camioneta">
+
+
+
+<input
+id="zonaChofer"
+placeholder="Zona">
+
+
+
+
+
+<button
+class="btn-green"
+onclick="guardarChofer()">
+
+Guardar chofer
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Choferes registrados
+</h2>
+
+
+
+<div id="listaChoferes">
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+</div>
+
+<script>
+
+// =============================================
+// BASE LOCALSTORAGE
+// =============================================
+
+let clientes =
+JSON.parse(localStorage.getItem("clientes")) || [];
+
+let choferes =
+JSON.parse(localStorage.getItem("choferes")) || [];
+
+let paquetes =
+JSON.parse(localStorage.getItem("paquetes")) || [];
+
+let colectas =
+JSON.parse(localStorage.getItem("colectas")) || [];
+
+
+// =============================================
+// INICIO
+// =============================================
+
+mostrar("dashboard");
+
+
+// =============================================
+// NAVEGACION
+// =============================================
+
+function mostrar(id){
+
+document.querySelectorAll("section")
+.forEach(s=>{
+s.classList.add("hidden");
+});
+
+
+let seccion=document.getElementById(id);
+
+if(seccion)
+seccion.classList.remove("hidden");
+
+
+
+if(id==="dashboard")
+actualizarDashboard();
+
+
+
+if(id==="colectas"){
+
+cargarClientesSelect();
+
+listarColectas();
+
+}
+
+
+
+if(id==="paquetes")
+listarPaquetes();
+
+
+
+if(id==="clientes")
+listarClientes();
+
+
+
+if(id==="choferes")
+listarChoferes();
+
+
+
+}
+
+
+
+// =============================================
+// GUARDAR DATOS
+// =============================================
+
+function guardarDatos(){
+
+localStorage.setItem(
+"clientes",
+JSON.stringify(clientes)
+);
+
+
+localStorage.setItem(
+"choferes",
+JSON.stringify(choferes)
+);
+
+
+localStorage.setItem(
+"paquetes",
+JSON.stringify(paquetes)
+);
+
+
+localStorage.setItem(
+"colectas",
+JSON.stringify(colectas)
+);
+
+}
+
+
+
+// =============================================
+// CLIENTES
+// =============================================
+
+
+function guardarCliente(){
+
+
+let cliente={
+
+id:Date.now(),
+
+nombre:
+document.getElementById("nombreCliente").value.trim(),
+
+direccion:
+document.getElementById("direccionCliente").value.trim(),
+
+zona:
+document.getElementById("zonaCliente").value.trim()
+
+};
+
+
+
+if(!cliente.nombre){
+
+alert("Ingresá nombre del cliente");
+
+return;
+
+}
+
+
+
+clientes.push(cliente);
+
+
+guardarDatos();
+
+
+document.getElementById("nombreCliente").value="";
+document.getElementById("direccionCliente").value="";
+document.getElementById("zonaCliente").value="";
+
+
+listarClientes();
+
+cargarClientesSelect();
+
+
+}
+
+
+
+function listarClientes(){
+
+
+let div=document.getElementById("listaClientes");
+
+
+if(!div)
+return;
+
+
+
+div.innerHTML="";
+
+
+
+clientes.forEach(c=>{
+
+
+div.innerHTML+=`
+
+<div class="card">
+
+<b>${c.nombre}</b>
+
+<br>
+
+Dirección:
+${c.direccion || "-"}
+
+<br>
+
+Zona:
+${c.zona || "-"}
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+function cargarClientesSelect(){
+
+
+let select=document.getElementById("clienteColecta");
+
+
+if(!select)
+return;
+
+
+
+select.innerHTML=
+`
+<option value="">
+Seleccione cliente
+</option>
+`;
+
+
+
+clientes.forEach(c=>{
+
+
+select.innerHTML+=`
+
+<option value="${c.nombre}">
+${c.nombre}
+</option>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+// =============================================
+// CHOFERES
+// =============================================
+
+
+function guardarChofer(){
+
+
+let chofer={
+
+
+id:Date.now(),
+
+
+nombre:
+document.getElementById("nombreChofer").value.trim(),
+
+
+vehiculo:
+document.getElementById("vehiculoChofer").value.trim(),
+
+
+zona:
+document.getElementById("zonaChofer").value.trim()
+
+
+};
+
+
+
+if(!chofer.nombre){
+
+alert("Ingresá nombre");
+
+return;
+
+}
+
+
+
+choferes.push(chofer);
+
+
+guardarDatos();
+
+
+document.getElementById("nombreChofer").value="";
+document.getElementById("vehiculoChofer").value="";
+document.getElementById("zonaChofer").value="";
+
+
+listarChoferes();
+
+
+}
+
+
+
+function listarChoferes(){
+
+
+let div=document.getElementById("listaChoferes");
+
+
+if(!div)
+return;
+
+
+
+div.innerHTML="";
+
+
+
+choferes.forEach(c=>{
+
+
+div.innerHTML+=`
+
+<div class="card">
+
+<b>${c.nombre}</b>
+
+<br>
+
+Vehículo:
+${c.vehiculo || "-"}
+
+<br>
+
+Zona:
+${c.zona || "-"}
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+
+
+// =============================================
+// CREAR COLECTA CORREGIDO
+// =============================================
+
+
+async function crearColecta(){
+
+
+try{
+
+
+let fecha =
+document.getElementById("fechaColecta").value;
+
+
+
+let cliente =
+document.getElementById("clienteColecta").value;
+
+
+
+let archivos =
+document.getElementById("fotosColecta").files;
+
+
+
+if(!fecha){
+
+alert("Seleccioná fecha");
+
+return;
+
+}
+
+
+
+if(!cliente){
+
+alert("Seleccioná cliente");
+
+return;
+
+}
+
+
+
+if(archivos.length===0){
+
+alert("Seleccioná fotos");
+
+return;
+
+}
+
+
+
+let boton =
+event?.target;
+
+
+if(boton){
+
+boton.disabled=true;
+boton.innerText="Procesando...";
+
+}
+
+
+
+let idColecta=Date.now();
+
+
+
+let nuevaColecta={
+
+id:idColecta,
+
+fecha,
+
+cliente,
+
+cantidad:archivos.length,
+
+flex:0,
+
+particulares:0,
+
+creada:new Date().toLocaleString()
+
+};
+
+
+
+
+for(let archivo of archivos){
+
+
+console.log("Procesando:",archivo.name);
+
+
+
+let foto =
+await convertirImagen(archivo);
+
+
+
+let tipo =
+await detectarTipoImagen(archivo);
+
+
+
+let paquete={
+
+
+id:Date.now()+Math.random(),
+
+
+colectaId:idColecta,
+
+
+fecha,
+
+
+cliente,
+
+
+foto,
+
+
+tipo,
+
+
+zona:"",
+
+
+barrio:"",
+
+
+direccion:"",
+
+
+referencia:"",
+
+
+destinatario:"Pendiente",
+
+
+dni:"",
+
+
+telefono:"",
+
+
+chofer:"Sin asignar",
+
+
+estado:"Pendiente"
+
+
+};
+
+
+
+
+if(tipo==="FLEX")
+
+nuevaColecta.flex++;
+
+
+
+else
+
+nuevaColecta.particulares++;
+
+
+
+paquetes.push(paquete);
+
+
+
+}
+
+
+
+colectas.push(nuevaColecta);
+
+
+
+guardarDatos();
+
+
+
+alert(
+"✅ Colecta cargada\n\n"+
+cliente+
+"\nPaquetes: "+
+archivos.length
+);
+
+
+
+document.getElementById("fotosColecta").value="";
+
+
+listarColectas();
+
+actualizarDashboard();
+
+
+
+if(boton){
+
+boton.disabled=false;
+boton.innerText="📸 Procesar colecta";
+
+}
+
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"Error procesando colecta: "+
+error.message
+);
+
+}
+
+
+}
+
+
+// =============================================
+// CONVERTIR IMAGEN
+// =============================================
+
+function convertirImagen(file){
+
+return new Promise(resolve=>{
+
+
+let lector=new FileReader();
+
+
+lector.onload=e=>{
+
+resolve(e.target.result);
+
+};
+
+
+lector.readAsDataURL(file);
+
+
+});
+
+
+}
+
+
+
+
+// =============================================
+// DETECTOR QR FLEX MEJORADO
+// =============================================
+// QR encontrado = FLEX
+// Sin QR = PARTICULAR
+// Tiene timeout para no quedarse colgado
+
+
+async function detectarTipoImagen(file){
+
+
+return new Promise(resolve=>{
+
+
+let lector=new FileReader();
+
+
+
+lector.onload=function(e){
+
+
+let img=new Image();
+
+
+
+img.onload=function(){
+
+
+let terminado=false;
+
+
+
+let finalizar=(resultado)=>{
+
+
+if(!terminado){
+
+terminado=true;
+
+resolve(resultado);
+
+}
+
+
+};
+
+
+
+
+
+let timer=setTimeout(()=>{
+
+
+console.log(
+"QR no detectado:",
+file.name
+);
+
+
+finalizar("PARTICULAR");
+
+
+},3000);
+
+
+
+
+
+try{
+
+
+let reader =
+new ZXing.BrowserQRCodeReader();
+
+
+
+reader.decodeFromImageElement(img)
+
+.then(()=>{
+
+
+clearTimeout(timer);
+
+
+finalizar("FLEX");
+
+
+})
+
+.catch(()=>{
+
+
+clearTimeout(timer);
+
+
+finalizar("PARTICULAR");
+
+
+});
+
+
+
+}
+
+catch(error){
+
+
+clearTimeout(timer);
+
+
+finalizar("PARTICULAR");
+
+
+}
+
+
+
+
+};
+
+
+
+
+img.src=e.target.result;
+
+
+
+};
+
+
+
+lector.readAsDataURL(file);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+// =============================================
+// LISTAR COLECTAS
+// =============================================
+
+
+function listarColectas(){
+
+
+
+let div=document.getElementById("listaColectas");
+
+
+if(!div)
+return;
+
+
+
+let fecha =
+document.getElementById("filtroFecha")?.value || "";
+
+
+
+let cliente =
+document.getElementById("filtroCliente")?.value
+.toLowerCase() || "";
+
+
+
+
+
+let lista =
+colectas.filter(c=>{
+
+
+let okFecha =
+!fecha || c.fecha===fecha;
+
+
+
+let okCliente =
+!cliente ||
+c.cliente.toLowerCase()
+.includes(cliente);
+
+
+
+return okFecha && okCliente;
+
+
+});
+
+
+
+
+
+div.innerHTML="";
+
+
+
+
+
+if(lista.length===0){
+
+
+div.innerHTML=
+"<p>No hay colectas encontradas</p>";
+
+return;
+
+
+}
+
+
+
+
+
+lista.reverse().forEach(c=>{
+
+
+
+div.innerHTML+=`
+
+
+<div class="card">
+
+
+<h3>
+📦 ${c.cliente}
+</h3>
+
+
+Fecha:
+<b>${c.fecha}</b>
+
+
+<br>
+
+
+Total:
+${c.cantidad}
+
+
+
+<br>
+
+
+
+<span class="flex">
+
+🟢 Flex:
+${c.flex}
+
+</span>
+
+
+
+<br>
+
+
+
+<span class="particular">
+
+🔴 Particular:
+${c.particulares}
+
+</span>
+
+
+
+<br><br>
+
+
+
+
+<button
+onclick="verColecta(${c.id})">
+
+👁 Ver paquetes
+
+</button>
+
+
+
+
+<button
+class="btn-danger"
+onclick="eliminarColecta(${c.id})">
+
+🗑 Eliminar
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================================
+// VER PAQUETES DE COLECTA
+// =============================================
+
+
+function verColecta(id){
+
+
+
+mostrar("paquetes");
+
+
+
+let div =
+document.getElementById("tablaPaquetes");
+
+
+
+let lista =
+paquetes.filter(
+p=>p.colectaId==id
+);
+
+
+
+div.innerHTML="";
+
+
+
+
+
+lista.forEach(p=>{
+
+
+
+div.innerHTML+=`
+
+
+<div class="card">
+
+
+<img 
+src="${p.foto}"
+class="preview">
+
+
+
+<h3>
+
+
+<span class="badge ${
+p.tipo==="FLEX"
+?
+"badge-flex"
+:
+"badge-particular"
+}">
+
+
+${p.tipo}
+
+
+</span>
+
+
+</h3>
+
+
+
+Cliente:
+
+${p.cliente}
+
+
+<br>
+
+
+Fecha:
+
+${p.fecha}
+
+
+
+<br>
+
+
+Dirección:
+
+${p.direccion || "-"}
+
+
+
+<br>
+
+
+Destinatario:
+
+${p.destinatario}
+
+
+
+<br>
+
+
+Chofer:
+
+${p.chofer}
+
+
+
+<br>
+
+
+Estado:
+
+<span class="estado">
+
+${p.estado}
+
+</span>
+
+
+
+
+<br><br>
+
+
+
+<button
+
+class="btn-danger"
+
+onclick="eliminarPaquete(${p.id})">
+
+🗑 Eliminar paquete
+
+</button>
+
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================================
+// ELIMINAR COLECTA COMPLETA
+// =============================================
+
+
+function eliminarColecta(id){
+
+
+
+if(!confirm(
+"¿Eliminar colecta completa?"
+))
+
+return;
+
+
+
+
+
+colectas =
+colectas.filter(
+c=>c.id!==id
+);
+
+
+
+
+
+paquetes =
+paquetes.filter(
+p=>p.colectaId!==id
+);
+
+
+
+
+
+guardarDatos();
+
+
+
+listarColectas();
+
+
+
+actualizarDashboard();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================================
+// ELIMINAR PAQUETE
+// =============================================
+
+
+function eliminarPaquete(id){
+
+
+
+if(!confirm(
+"¿Eliminar paquete?"
+))
+
+return;
+
+
+
+
+
+paquetes =
+paquetes.filter(
+p=>p.id!==id
+);
+
+
+
+
+
+guardarDatos();
+
+
+
+listarPaquetes();
+
+
+
+actualizarDashboard();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================================
+// LISTAR PAQUETES
+// =============================================
+
+
+function listarPaquetes(){
+
+
+
+let div =
+document.getElementById("tablaPaquetes");
+
+
+
+if(!div)
+return;
+
+
+
+
+
+let texto =
+document.getElementById("buscarPaquete")
+?.value
+.toLowerCase()
+|| "";
+
+
+
+
+
+let tipo =
+document.getElementById("filtroTipo")
+?.value
+|| "";
+
+
+
+
+
+
+let lista =
+paquetes.filter(p=>{
+
+
+
+let buscar =
+
+(
+
+p.cliente+
+p.direccion+
+p.destinatario+
+p.dni+
+p.telefono+
+p.chofer+
+p.zona+
+p.barrio
+
+)
+
+.toLowerCase()
+
+.includes(texto);
+
+
+
+
+
+let tipoOk =
+!tipo ||
+p.tipo===tipo;
+
+
+
+
+
+return buscar && tipoOk;
+
+
+
+});
+
+
+
+
+
+
+
+div.innerHTML="";
+
+
+
+
+
+if(lista.length===0){
+
+
+div.innerHTML=
+"<p>No hay paquetes</p>";
+
+return;
+
+
+}
+
+
+
+
+
+
+
+lista.reverse().forEach(p=>{
+
+
+
+div.innerHTML+=`
+
+
+<div class="card">
+
+
+
+<img
+src="${p.foto}"
+class="preview">
+
+
+
+<br>
+
+
+<span class="badge ${
+p.tipo==="FLEX"
+?
+"badge-flex"
+:
+"badge-particular"
+}">
+
+
+${p.tipo}
+
+
+</span>
+
+
+
+
+<br><br>
+
+
+
+Cliente:
+${p.cliente}
+
+
+
+<br>
+
+
+Fecha:
+${p.fecha}
+
+
+
+<br>
+
+
+Dirección:
+${p.direccion || "-"}
+
+
+
+<br>
+
+
+Destinatario:
+${p.destinatario}
+
+
+
+<br>
+
+
+Chofer:
+${p.chofer}
+
+
+
+<br>
+
+
+Estado:
+${p.estado}
+
+
+
+<br><br>
+
+
+
+
+<button
+
+class="btn-danger"
+
+onclick="eliminarPaquete(${p.id})">
+
+🗑 Eliminar
+
+</button>
+
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+// =============================================
+// CONSULTA AVANZADA
+// =============================================
+
+function buscarConsulta(){
+
+
+let fecha =
+document.getElementById("consultaFecha").value;
+
+
+
+let cliente =
+document.getElementById("consultaCliente")
+.value
+.toLowerCase();
+
+
+
+let tipo =
+document.getElementById("consultaTipo").value;
+
+
+
+let chofer =
+document.getElementById("consultaChofer")
+.value
+.toLowerCase();
+
+
+
+let texto =
+document.getElementById("consultaTexto")
+.value
+.toLowerCase();
+
+
+
+
+
+let resultado =
+document.getElementById("resultadoConsulta");
+
+
+
+resultado.innerHTML="";
+
+
+
+
+
+let lista =
+paquetes.filter(p=>{
+
+
+
+return (
+
+(!fecha || p.fecha===fecha)
+
+&&
+
+(!cliente ||
+p.cliente
+.toLowerCase()
+.includes(cliente))
+
+
+&&
+
+(!tipo ||
+p.tipo===tipo)
+
+
+&&
+
+(!chofer ||
+p.chofer
+.toLowerCase()
+.includes(chofer))
+
+
+&&
+
+(!texto ||
+
+
+(
+p.cliente+
+p.direccion+
+p.destinatario+
+p.telefono+
+p.dni+
+p.chofer
+
+)
+.toLowerCase()
+.includes(texto)
+
+
+
+)
+
+
+);
+
+
+
+});
+
+
+
+
+
+
+
+if(lista.length===0){
+
+
+resultado.innerHTML=
+"<p>No se encontraron resultados</p>";
+
+return;
+
+
+}
+
+
+
+
+
+
+
+lista.forEach(p=>{
+
+
+
+resultado.innerHTML+=`
+
+
+<div class="card">
+
+
+<b>
+${p.cliente}
+</b>
+
+
+
+<br>
+
+
+Fecha:
+
+${p.fecha}
+
+
+
+<br>
+
+
+Tipo:
+
+${p.tipo}
+
+
+
+<br>
+
+
+Dirección:
+
+${p.direccion || "-"}
+
+
+
+<br>
+
+
+Destinatario:
+
+${p.destinatario}
+
+
+
+<br>
+
+
+Chofer:
+
+${p.chofer}
+
+
+
+<br>
+
+
+Estado:
+
+${p.estado}
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================================
+// DASHBOARD
+// =============================================
+
+
+function actualizarDashboard(){
+
+
+
+let total =
+document.getElementById("totalPaquetes");
+
+let flex =
+document.getElementById("totalFlex");
+
+let particulares =
+document.getElementById("totalParticulares");
+
+let totalColectas =
+document.getElementById("totalColectas");
+
+
+
+
+if(total)
+total.innerText =
+paquetes.length;
+
+
+
+if(flex)
+flex.innerText =
+paquetes.filter(
+p=>p.tipo==="FLEX"
+)
+.length;
+
+
+
+if(particulares)
+particulares.innerText =
+paquetes.filter(
+p=>p.tipo==="PARTICULAR"
+)
+.length;
+
+
+
+if(totalColectas)
+totalColectas.innerText =
+colectas.length;
+
+
+
+
+
+let resumen =
+document.getElementById("resumen");
+
+
+
+if(!resumen)
+return;
+
+
+
+
+
+resumen.innerHTML="";
+
+
+
+
+
+colectas
+
+.slice()
+
+.reverse()
+
+.slice(0,10)
+
+.forEach(c=>{
+
+
+
+resumen.innerHTML+=`
+
+
+<p>
+
+
+<b>
+${c.cliente}
+</b>
+
+
+-
+
+${c.fecha}
+
+
+-
+
+${c.cantidad}
+
+paquetes
+
+
+</p>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+// =============================================
+// AUTO ACTUALIZACION AL CARGAR
+// =============================================
+
+
+window.onload=function(){
+
+
+actualizarDashboard();
+
+
+};
+
+
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,3101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07101d">
+
+<title>Fibonacci Pro — Guía completa para BTC/USDT</title>
+
+<style>
+:root{
+    --bg:#060b14;
+    --bg2:#0a1220;
+    --card:#0d1726;
+    --card2:#111d30;
+    --line:#22334d;
+
+    --text:#edf4ff;
+    --muted:#9aa9bf;
+
+    --cyan:#4bdcff;
+    --green:#43e0a0;
+    --red:#ff667f;
+    --yellow:#ffd166;
+    --purple:#a98cff;
+    --blue:#6495ff;
+
+    --shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 20% -10%,#163255 0,transparent 35%),
+        linear-gradient(180deg,#07101d,#060b14 55%,#08101c);
+    color:var(--text);
+    font-family:
+        Inter,
+        Segoe UI,
+        Roboto,
+        Arial,
+        sans-serif;
+    line-height:1.65;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.container{
+    width:min(1180px,calc(100% - 32px));
+    margin:auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:50;
+
+    background:rgba(6,11,20,.86);
+    backdrop-filter:blur(16px);
+
+    border-bottom:1px solid var(--line);
+}
+
+.nav{
+    height:68px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-weight:900;
+    letter-spacing:.8px;
+}
+
+.logo i{
+    font-style:normal;
+
+    width:38px;
+    height:38px;
+
+    border-radius:11px;
+
+    display:grid;
+    place-items:center;
+
+    color:var(--cyan);
+
+    border:1px solid #31517b;
+
+    background:#0c1a2d;
+}
+
+nav{
+    display:flex;
+    gap:18px;
+
+    color:var(--muted);
+
+    font-size:.86rem;
+}
+
+nav a:hover{
+    color:var(--cyan);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    padding:80px 0 60px;
+}
+
+.eyebrow{
+    display:inline-block;
+
+    border:1px solid #2a4c6d;
+
+    background:#0b1b2d;
+
+    color:var(--cyan);
+
+    padding:7px 12px;
+
+    border-radius:99px;
+
+    font-size:.74rem;
+
+    font-weight:900;
+
+    letter-spacing:1.2px;
+
+    text-transform:uppercase;
+}
+
+h1{
+    font-size:clamp(2.7rem,7vw,5.8rem);
+
+    line-height:.94;
+
+    letter-spacing:-4px;
+
+    max-width:950px;
+
+    margin:20px 0;
+}
+
+.gradient{
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            var(--cyan),
+            var(--purple)
+        );
+
+    background-clip:text;
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.lead{
+    max-width:800px;
+
+    color:#b4c0d3;
+
+    font-size:clamp(1rem,2vw,1.22rem);
+}
+
+.actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+
+    margin-top:28px;
+}
+
+.btn{
+    border:1px solid var(--line);
+
+    background:#101c2f;
+
+    color:white;
+
+    border-radius:11px;
+
+    padding:12px 17px;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+    display:inline-block;
+
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn.primary{
+    background:#ddf9ff;
+
+    color:#06101a;
+
+    border-color:#ddf9ff;
+}
+
+.stats{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+
+    margin-top:42px;
+}
+
+.stat{
+    padding:17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,29,48,.95),
+            rgba(9,16,28,.95)
+        );
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+}
+
+.stat b{
+    display:block;
+
+    font-size:1.35rem;
+}
+
+.stat span{
+    color:var(--muted);
+
+    font-size:.8rem;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+section{
+    padding:58px 0;
+}
+
+.kicker{
+    font-size:.72rem;
+
+    color:var(--cyan);
+
+    font-weight:900;
+
+    letter-spacing:1.4px;
+
+    text-transform:uppercase;
+}
+
+.section-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:24px;
+
+    align-items:end;
+
+    margin-bottom:25px;
+}
+
+h2{
+    font-size:clamp(1.9rem,4vw,3rem);
+
+    line-height:1.05;
+
+    margin:5px 0;
+}
+
+.section-head p{
+    color:var(--muted);
+
+    max-width:570px;
+
+    margin:0;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.grid{
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:15px;
+}
+
+.card{
+    padding:21px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,29,48,.95),
+            rgba(9,16,28,.95)
+        );
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+}
+
+.card h3{
+    margin:0 0 7px;
+}
+
+.card p{
+    margin:0;
+
+    color:#aebbd0;
+}
+
+.num{
+    width:34px;
+    height:34px;
+
+    border-radius:10px;
+
+    background:#142641;
+
+    color:var(--cyan);
+
+    display:grid;
+
+    place-items:center;
+
+    font-weight:900;
+
+    margin-bottom:15px;
+}
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice{
+    padding:18px 20px;
+
+    border-left:4px solid var(--yellow);
+
+    background:#181a26;
+
+    border-radius:0 13px 13px 0;
+
+    color:#cbd4e2;
+
+    margin-top:16px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:#0b1422;
+
+    border:1px solid var(--line);
+
+    border-radius:16px;
+
+    overflow:hidden;
+}
+
+th,
+td{
+    padding:14px;
+
+    border-bottom:1px solid var(--line);
+
+    text-align:left;
+}
+
+th{
+    font-size:.76rem;
+
+    color:var(--cyan);
+
+    text-transform:uppercase;
+}
+
+td{
+    color:#c5cfdf;
+}
+
+.badge{
+    display:inline-block;
+
+    padding:3px 8px;
+
+    border-radius:99px;
+
+    font-weight:900;
+
+    font-size:.75rem;
+}
+
+.cyan{
+    background:#0e3041;
+
+    color:#65e3ff;
+}
+
+.yellow{
+    background:#3b3214;
+
+    color:#ffdf80;
+}
+
+.green{
+    background:#10362a;
+
+    color:#62edb3;
+}
+
+.purple{
+    background:#2a2047;
+
+    color:#bca7ff;
+}
+
+.red{
+    background:#3b1723;
+
+    color:#ff8fa1;
+}
+
+/* =========================
+   LONG / SHORT
+========================= */
+
+.compare{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+}
+
+.side{
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    padding:23px;
+
+    background:#0d1726;
+}
+
+.side.long{
+    border-color:#23614e;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0c2923,
+            #0b1620
+        );
+}
+
+.side.short{
+    border-color:#633044;
+
+    background:
+        linear-gradient(
+            145deg,
+            #2a1019,
+            #101522
+        );
+}
+
+.side h3{
+    margin-top:0;
+
+    font-size:1.45rem;
+}
+
+.side li{
+    margin:8px 0;
+
+    color:#c3cede;
+}
+
+/* =========================
+   STEPS
+========================= */
+
+.steps{
+    display:grid;
+
+    gap:11px;
+
+    counter-reset:item;
+}
+
+.step{
+    display:grid;
+
+    grid-template-columns:45px 1fr;
+
+    gap:14px;
+
+    padding:16px;
+
+    background:#0c1524;
+
+    border:1px solid var(--line);
+
+    border-radius:15px;
+}
+
+.step:before{
+    counter-increment:item;
+
+    content:counter(item);
+
+    width:38px;
+    height:38px;
+
+    border-radius:11px;
+
+    display:grid;
+
+    place-items:center;
+
+    background:#13233c;
+
+    color:var(--cyan);
+
+    font-weight:900;
+}
+
+.step b{
+    display:block;
+}
+
+.step span{
+    color:var(--muted);
+}
+
+/* =========================
+   CHART
+========================= */
+
+.chart{
+    height:340px;
+
+    position:relative;
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #091322 0,
+            #091322 49px,
+            #142239 50px
+        ),
+        repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent 79px,
+            #142239 80px
+        );
+}
+
+.chart .line{
+    position:absolute;
+
+    height:2px;
+
+    left:0;
+    right:0;
+
+    border-top:1px dashed;
+
+    z-index:3;
+}
+
+.chart .line span{
+    position:absolute;
+
+    right:10px;
+
+    top:-15px;
+
+    font-size:.72rem;
+
+    padding:2px 7px;
+
+    border-radius:6px;
+
+    background:#111d30;
+}
+
+.l236{
+    top:17%;
+
+    border-color:var(--red);
+}
+
+.l382{
+    top:34%;
+
+    border-color:var(--yellow);
+}
+
+.l50{
+    top:49%;
+
+    border-color:var(--cyan);
+}
+
+.l618{
+    top:66%;
+
+    border-color:var(--purple);
+}
+
+.l786{
+    top:83%;
+
+    border-color:var(--green);
+}
+
+.pricepath{
+    position:absolute;
+
+    inset:9% 8%;
+
+    z-index:2;
+}
+
+.pricepath svg{
+    width:100%;
+    height:100%;
+
+    overflow:visible;
+}
+
+/* =========================
+   QUOTE
+========================= */
+
+.quote{
+    padding:28px;
+
+    border:1px solid #2b486c;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d2038,
+            #12152b
+        );
+
+    font-size:clamp(1.2rem,3vw,2rem);
+
+    font-weight:900;
+
+    line-height:1.3;
+}
+
+/* =========================
+   CALCULATOR
+========================= */
+
+.calc{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+}
+
+.box{
+    padding:22px;
+
+    background:#0c1524;
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+}
+
+label{
+    display:block;
+
+    font-size:.82rem;
+
+    color:#aebbd0;
+
+    font-weight:800;
+
+    margin-bottom:6px;
+}
+
+input,
+select{
+    width:100%;
+
+    padding:12px;
+
+    background:#07101c;
+
+    color:#fff;
+
+    border:1px solid #293c59;
+
+    border-radius:10px;
+
+    margin-bottom:14px;
+
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--cyan);
+}
+
+.result{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:11px 0;
+
+    border-bottom:1px solid var(--line);
+}
+
+.result:last-child{
+    border:0;
+}
+
+.result span{
+    color:var(--muted);
+}
+
+.result b{
+    font-variant-numeric:tabular-nums;
+}
+
+/* =========================
+   FLOW
+========================= */
+
+.flow{
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:8px;
+}
+
+.flow div{
+    padding:15px 10px;
+
+    text-align:center;
+
+    background:#0c1726;
+
+    border:1px solid var(--line);
+
+    border-radius:13px;
+
+    font-size:.82rem;
+
+    font-weight:800;
+}
+
+/* =========================
+   CHECKLIST
+========================= */
+
+.checks{
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:10px;
+}
+
+.check{
+    padding:13px;
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    background:#0c1524;
+
+    color:#c4cfdf;
+}
+
+.check input{
+    width:auto;
+
+    margin:0 8px 0 0;
+
+    accent-color:var(--cyan);
+}
+
+.small{
+    font-size:.83rem;
+
+    color:var(--muted);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    border-top:1px solid var(--line);
+
+    padding:30px 0 45px;
+
+    color:#73829a;
+
+    font-size:.83rem;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    nav{
+        display:none;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .calc,
+    .compare{
+        grid-template-columns:1fr;
+    }
+
+    .flow{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:560px){
+
+    .container{
+        width:calc(100% - 22px);
+    }
+
+    .hero{
+        padding-top:52px;
+    }
+
+    h1{
+        letter-spacing:-2px;
+    }
+
+    .stats,
+    .grid,
+    .checks{
+        grid-template-columns:1fr;
+    }
+
+    .section-head{
+        display:block;
+    }
+
+    .section-head p{
+        margin-top:10px;
+    }
+
+    .chart{
+        height:270px;
+    }
+
+    th,
+    td{
+        padding:9px 7px;
+
+        font-size:.78rem;
+    }
+
+    .flow{
+        grid-template-columns:1fr;
+    }
+
+    .card,
+    .side,
+    .box{
+        padding:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="container nav">
+
+<a class="logo" href="#inicio">
+<i>F</i>
+FIBONACCI PRO
+</a>
+
+<nav>
+<a href="#basico">Básico</a>
+<a href="#como">Cómo usarlo</a>
+<a href="#confluencia">Confluencia</a>
+<a href="#entrada">Entrada</a>
+<a href="#calculadora">Calculadora</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<main id="inicio">
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="container">
+
+<span class="eyebrow">
+Guía completa · BTC/USDT Futures
+</span>
+
+<h1>
+Cómo utilizar bien
+<span class="gradient">
+Fibonacci
+</span>
+</h1>
+
+<p class="lead">
+
+Una guía práctica para pasar de
+“veo un 0.618”
+a un proceso completo de análisis:
+
+identificar el movimiento,
+encontrar zonas,
+buscar confluencias
+y convertir la reacción del precio
+en una entrada con confirmación.
+
+</p>
+
+<div class="actions">
+
+<a class="btn primary" href="#basico">
+Comenzar
+</a>
+
+<a class="btn" href="#entrada">
+Ir al sistema de entrada
+</a>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<b>0.618</b>
+<span>Zona clave</span>
+</div>
+
+<div class="stat">
+<b>0.786</b>
+<span>Retroceso profundo</span>
+</div>
+
+<div class="stat">
+<b>1H → 15M → 5M</b>
+<span>Lectura por temporalidad</span>
+</div>
+
+<div class="stat">
+<b>Fib + precio</b>
+<span>La señal nace de la confluencia</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 1 -->
+
+<section id="basico">
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+01 · Concepto
+</span>
+
+<h2>
+¿Qué mide realmente Fibonacci?
+</h2>
+
+</div>
+
+<p>
+
+El Fibonacci de retroceso intenta responder una pregunta concreta:
+
+después de un movimiento fuerte,
+¿hasta dónde podría retroceder el precio
+antes de continuar o cambiar de tendencia?
+
+</p>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+
+<div class="num">
+01
+</div>
+
+<h3>
+Impulso
+</h3>
+
+<p>
+
+Primero identificás un movimiento fuerte
+y claramente visible.
+
+Sin un swing relevante,
+el Fib pierde sentido.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+02
+</div>
+
+<h3>
+Retroceso
+</h3>
+
+<p>
+
+Medís qué porcentaje del movimiento
+devuelve el precio.
+
+Los niveles son zonas de atención,
+no paredes exactas.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+03
+</div>
+
+<h3>
+Reacción
+</h3>
+
+<p>
+
+La verdadera información aparece
+cuando BTC llega a la zona y muestra:
+
+rechazo,
+absorción,
+continuación
+o ruptura.
+
+</p>
+
+</div>
+
+</div>
+
+
+<div class="notice">
+
+<b>
+Regla fundamental:
+</b>
+
+Fibonacci no predice el mercado.
+
+Es un mapa de posibles
+zonas de decisión.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 2 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+02 · Niveles
+</span>
+
+<h2>
+Los niveles que vas a mirar
+</h2>
+
+</div>
+
+</div>
+
+
+<table>
+
+<tr>
+
+<th>
+Nivel
+</th>
+
+<th>
+Interpretación
+</th>
+
+<th>
+Uso práctico
+</th>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge cyan">
+0.236
+</span>
+</td>
+
+<td>
+Retroceso superficial
+</td>
+
+<td>
+Mercado muy fuerte;
+puede continuar rápido.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge cyan">
+0.382
+</span>
+</td>
+
+<td>
+Retroceso moderado
+</td>
+
+<td>
+Zona frecuente de continuación.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge yellow">
+0.500
+</span>
+</td>
+
+<td>
+Mitad del movimiento
+</td>
+
+<td>
+Nivel psicológico
+y zona de equilibrio.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge purple">
+0.618
+</span>
+</td>
+
+<td>
+Golden ratio
+</td>
+
+<td>
+<b>
+Zona de alta atención.
+</b>
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge green">
+0.786
+</span>
+</td>
+
+<td>
+Retroceso profundo
+</td>
+
+<td>
+<b>
+Zona de decisión estructural.
+</b>
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+<span class="badge red">
+1.000
+</span>
+</td>
+
+<td>
+Retorno al origen
+</td>
+
+<td>
+El movimiento fue completamente recuperado.
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- 3 -->
+
+<section id="como">
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+03 · Dibujo correcto
+</span>
+
+<h2>
+Cómo tirar Fibonacci
+</h2>
+
+</div>
+
+<p>
+
+La dirección desde la que dibujás el Fib
+depende del movimiento que querés medir.
+
+</p>
+
+</div>
+
+
+<div class="compare">
+
+
+<div class="side long">
+
+<h3>
+📈 En una subida
+</h3>
+
+<p>
+Ejemplo:
+<b>
+62.000 → 65.000
+</b>
+</p>
+
+<ul>
+
+<li>
+Fibonacci desde el
+<b>
+mínimo → máximo
+</b>.
+</li>
+
+<li>
+El retroceso comienza desde
+65.000 hacia abajo.
+</li>
+
+<li>
+
+Ejemplo aproximado:
+
+0.382 = 63.854
+
+<br>
+
+0.50 = 63.500
+
+<br>
+
+0.618 = 63.146
+
+<br>
+
+0.786 = 62.642
+
+</li>
+
+<li>
+
+Si BTC cae a 63.150,
+llega al 0.618
+y aparece reacción compradora,
+esa zona puede convertirse
+en escenario para LONG.
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="side short">
+
+<h3>
+📉 En una caída
+</h3>
+
+<p>
+Ejemplo:
+<b>
+65.500 → 62.500
+</b>
+</p>
+
+<ul>
+
+<li>
+Fibonacci desde el
+<b>
+máximo → mínimo
+</b>.
+</li>
+
+<li>
+Ahora medís cuánto de la caída
+está recuperando BTC.
+</li>
+
+<li>
+
+0.382 =
+recuperación pequeña.
+
+<br>
+
+0.50 =
+mitad.
+
+<br>
+
+0.618 =
+recuperación importante.
+
+<br>
+
+0.786 =
+recuperación muy profunda.
+
+</li>
+
+<li>
+
+Si llega a 0.618–0.786,
+prestás atención a un posible rechazo,
+pero
+<b>
+no entrás SHORT automáticamente.
+</b>
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 4 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+04 · Visualización
+</span>
+
+<h2>
+El nivel es una zona
+</h2>
+
+</div>
+
+<p>
+
+BTC puede atravesar un nivel por 50,
+100 o 200 dólares y reaccionar después.
+
+No conviertas un número exacto
+en una barrera mágica.
+
+</p>
+
+</div>
+
+
+<div class="chart">
+
+<div class="line l236">
+<span>
+0.236
+</span>
+</div>
+
+<div class="line l382">
+<span>
+0.382
+</span>
+</div>
+
+<div class="line l50">
+<span>
+0.500
+</span>
+</div>
+
+<div class="line l618">
+<span>
+0.618
+</span>
+</div>
+
+<div class="line l786">
+<span>
+0.786
+</span>
+</div>
+
+
+<div class="pricepath">
+
+<svg
+viewBox="0 0 1000 500"
+preserveAspectRatio="none"
+>
+
+<polyline
+points="
+0,430
+100,390
+190,410
+285,290
+380,330
+475,190
+570,230
+670,100
+765,160
+860,85
+1000,45
+"
+fill="none"
+stroke="#4bdcff"
+stroke-width="5"
+/>
+
+</svg>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 5 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+05 · El error
+</span>
+
+<h2>
+No hagas esto
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="quote">
+
+“BTC está en 63.000
+y mi Fibonacci tiene el 0.786 acá,
+entonces seguramente va a bajar.”
+
+<br>
+
+<span style="color:var(--red)">
+❌ Incorrecto.
+</span>
+
+</div>
+
+
+<div class="notice">
+
+<b>
+La lectura correcta:
+</b>
+
+“BTC llegó a una zona Fibonacci importante.
+Ahora voy a observar la reacción.”
+
+El Fibonacci activa vigilancia;
+
+el comportamiento del precio decide
+si existe una oportunidad.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 6 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+06 · Temporalidades
+</span>
+
+<h2>
+Qué Fibonacci usar en cada timeframe
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="steps">
+
+
+<div class="step">
+
+<div>
+
+<b>
+1H — estructura grande
+</b>
+
+<span>
+
+Usá Fibonacci para localizar
+los grandes niveles estructurales.
+
+Ejemplo:
+
+65.500 → 62.400.
+
+Esos niveles pueden funcionar
+como zonas importantes
+durante varias horas.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+15M — movimiento intermedio
+</b>
+
+<span>
+
+Buscá el swing que forma
+el movimiento operativo.
+
+Ejemplo:
+
+64.100 → 65.300.
+
+Sirve para encontrar
+zonas más precisas dentro
+de la estructura de 1H.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+5M — confirmación
+</b>
+
+<span>
+
+No tires Fibonacci sobre
+cada mini movimiento.
+
+Usalo principalmente
+para estudiar la reacción
+y confirmar la entrada.
+
+</span>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 7 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+07 · Tu configuración
+</span>
+
+<h2>
+Los dos Fibonacci
+</h2>
+
+</div>
+
+<p>
+
+La combinación que venías usando
+puede ser especialmente útil
+cuando los niveles de dos estructuras
+diferentes se encuentran cerca.
+
+</p>
+
+</div>
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<div class="num">
+A
+</div>
+
+<h3>
+Fib de la gran caída
+</h3>
+
+<p>
+
+Medís el movimiento bajista principal.
+
+Te muestra hasta dónde está
+recuperando BTC esa caída.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+B
+</div>
+
+<h3>
+Fib de la recuperación
+</h3>
+
+<p>
+
+Medís el movimiento de recuperación
+posterior.
+
+Te ayuda a entender
+la estructura interna del rebote.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+C
+</div>
+
+<h3>
+Confluencia entre ambos
+</h3>
+
+<p>
+
+Ejemplo:
+
+0.786 de la caída
+≈
+0.618 de la recuperación.
+
+Dos estructuras diferentes
+apuntan a una zona parecida:
+
+aumenta el interés.
+
+</p>
+
+</div>
+
+</div>
+
+
+<div class="notice">
+
+<b>
+Importante:
+</b>
+
+Una confluencia aumenta el interés,
+pero tampoco convierte el nivel
+en una entrada automática.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 8 -->
+
+<section id="confluencia">
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+08 · Sistema
+</span>
+
+<h2>
+Cómo convertir una zona
+en una posible señal
+</h2>
+
+</div>
+
+<p>
+
+La entrada no nace de Fibonacci.
+
+Nace de la secuencia completa.
+
+</p>
+
+</div>
+
+
+<div class="flow">
+
+<div>
+Fibonacci
+</div>
+
+<div>
+Zona
+</div>
+
+<div>
+Reacción
+</div>
+
+<div>
+Volumen
+</div>
+
+<div>
+Stoch / RSI
+</div>
+
+<div>
+Estructura 5M
+</div>
+
+<div>
+Entrada
+</div>
+
+</div>
+
+
+<div class="steps" style="margin-top:18px">
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 1 — Fibonacci
+</b>
+
+<span>
+
+Marcás la zona donde
+esperás una decisión.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 2 — Precio
+</b>
+
+<span>
+
+Esperás que BTC llegue.
+
+No perseguís el precio
+antes de que llegue a la zona.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 3 — Bollinger
+</b>
+
+<span>
+
+Observás si la zona coincide
+con banda superior o inferior.
+
+Es una confluencia,
+no una señal aislada.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 4 — Volumen
+</b>
+
+<span>
+
+Buscás evidencia de participación.
+
+Un rechazo sin volumen puede ser débil;
+
+un movimiento con volumen
+puede tener mayor relevancia.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 5 — Stochastic
+</b>
+
+<span>
+
+Observás si el oscilador gira
+en la dirección compatible
+con tu hipótesis.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 6 — Stoch RSI
+</b>
+
+<span>
+
+Buscás confirmación adicional
+del giro.
+
+No lo uses como autoridad absoluta.
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="step">
+
+<div>
+
+<b>
+Paso 7 — Estructura 5M
+</b>
+
+<span>
+
+Esperás rechazo,
+ruptura,
+recuperación
+o pullback
+
+que confirme que el mercado
+está haciendo lo que esperabas.
+
+</span>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 9 SHORT -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+09 · Setup
+</span>
+
+<h2>
+Construcción de un SHORT
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="compare">
+
+
+<div class="side short">
+
+<h3>
+Condiciones buscadas
+</h3>
+
+<ul>
+
+<li>
+BTC llega a 0.618 / 0.786.
+</li>
+
+<li>
+La zona coincide con resistencia
+o una confluencia de Fibonacci.
+</li>
+
+<li>
+Está cerca de la banda superior
+de Bollinger.
+</li>
+
+<li>
+Aparece rechazo:
+mecha superior,
+cierre débil
+o pérdida del impulso.
+</li>
+
+<li>
+Aumenta el volumen vendedor.
+</li>
+
+<li>
+Stochastic cruza
+o gira hacia abajo.
+</li>
+
+<li>
+Stoch RSI acompaña.
+</li>
+
+<li>
+En 5M pierde una estructura
+o soporte
+y confirma el rechazo.
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="side">
+
+<h3>
+🎯 La idea
+</h3>
+
+<p>
+El razonamiento completo sería:
+</p>
+
+<p>
+
+<b>
+Zona Fib
+→
+llegada
+→
+rechazo
+→
+volumen vendedor
+→
+osciladores giran
+→
+estructura 5M se rompe
+→
+posible SHORT.
+</b>
+
+</p>
+
+<p class="small">
+
+Si solo tenés
+“llegó al 0.786”,
+todavía no tenés
+una señal de entrada.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 10 LONG -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+10 · Setup
+</span>
+
+<h2>
+Construcción de un LONG
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="compare">
+
+
+<div class="side long">
+
+<h3>
+Condiciones buscadas
+</h3>
+
+<ul>
+
+<li>
+BTC retrocede a
+0.382 / 0.50 / 0.618.
+</li>
+
+<li>
+La zona coincide con soporte
+o confluencia.
+</li>
+
+<li>
+Está cerca de la banda inferior
+de Bollinger.
+</li>
+
+<li>
+Aparece rechazo
+o absorción compradora.
+</li>
+
+<li>
+Aumenta el volumen comprador.
+</li>
+
+<li>
+Stochastic gira hacia arriba.
+</li>
+
+<li>
+Stoch RSI acompaña.
+</li>
+
+<li>
+En 5M recupera estructura
+y confirma el rebote.
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="side">
+
+<h3>
+🎯 La idea
+</h3>
+
+<p>
+
+<b>
+Zona Fib
+→
+llegada
+→
+rechazo
+→
+volumen comprador
+→
+osciladores giran
+→
+estructura 5M se recupera
+→
+posible LONG.
+</b>
+
+</p>
+
+<p class="small">
+
+La ausencia de confirmación
+significa esperar.
+
+No hace falta entrar porque
+el precio “tocó el Fib”.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 11 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+11 · Gestión
+</span>
+
+<h2>
+La señal no termina en la entrada
+</h2>
+
+</div>
+
+<p>
+
+Una buena lectura puede fallar.
+
+Por eso la gestión de riesgo
+forma parte del sistema.
+
+</p>
+
+</div>
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<div class="num">
+01
+</div>
+
+<h3>
+Stop definido antes
+</h3>
+
+<p>
+
+El stop debe estar decidido
+antes de entrar,
+
+en un punto que invalide
+la hipótesis
+
+y no simplemente donde
+“duela menos”.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+02
+</div>
+
+<h3>
+Riesgo controlado
+</h3>
+
+<p>
+
+No aumentes el tamaño
+porque la zona Fibonacci
+parece “perfecta”.
+
+Una confluencia
+no elimina el riesgo.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="num">
+03
+</div>
+
+<h3>
+Salida planificada
+</h3>
+
+<p>
+
+Definí zonas de toma
+de ganancias
+
+y qué harás si el precio
+avanza,
+se estanca
+o vuelve contra vos.
+
+</p>
+
+</div>
+
+</div>
+
+
+<div class="notice">
+
+<b>
+Principio:
+</b>
+
+Una entrada de alta calidad
+no es una entrada con certeza.
+
+Es una entrada donde
+la hipótesis,
+la invalidación
+y el riesgo
+están claros.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 12 CALCULADORA -->
+
+<section id="calculadora">
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+12 · Herramienta
+</span>
+
+<h2>
+Calculadora Fibonacci
+</h2>
+
+</div>
+
+<p>
+
+Ingresá el máximo y mínimo
+del movimiento para obtener
+rápidamente los niveles.
+
+</p>
+
+</div>
+
+
+<div class="calc">
+
+
+<div class="box">
+
+<label>
+Máximo
+</label>
+
+<input
+id="high"
+type="number"
+value="65000"
+step="0.01"
+>
+
+
+<label>
+Mínimo
+</label>
+
+<input
+id="low"
+type="number"
+value="62000"
+step="0.01"
+>
+
+
+<label>
+Tipo de movimiento
+</label>
+
+<select id="type">
+
+<option value="up">
+Retroceso de una subida
+</option>
+
+<option value="down">
+Recuperación de una caída
+</option>
+
+</select>
+
+
+<button
+class="btn primary"
+id="calculate"
+style="width:100%"
+>
+Calcular
+</button>
+
+</div>
+
+
+<div class="box" id="output">
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 13 CHECKLIST -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+13 · Checklist
+</span>
+
+<h2>
+Antes de darle a ENTRAR
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="checks">
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Tengo un swing claro.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Dibujé correctamente
+el Fibonacci.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+La zona tiene relevancia
+estructural.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Hay confluencia
+con otro Fibonacci.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+El precio llegó
+a la zona.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Vi una reacción real.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+El volumen acompaña.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Bollinger aporta
+confluencia.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Stochastic acompaña.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Stoch RSI acompaña.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+La estructura 5M confirma.
+
+</label>
+
+
+<label class="check">
+
+<input type="checkbox">
+
+Stop, riesgo y salida
+están definidos.
+
+</label>
+
+
+</div>
+
+
+<div
+class="quote"
+style="margin-top:22px"
+>
+
+Fib
+→
+zona
+→
+reacción del precio
+→
+volumen
+→
+Stoch / Stoch RSI
+→
+confirmación 5M
+→
+entrada.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 14 -->
+
+<section>
+
+<div class="container">
+
+<div class="section-head">
+
+<div>
+
+<span class="kicker">
+14 · Regla final
+</span>
+
+<h2>
+Lo que quiero que te quede
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="quote">
+
+Fibonacci no es una señal de entrada.
+
+Es un mapa de posibles
+zonas de decisión.
+
+La señal aparece cuando
+el precio llega a esa zona
+
+y confirma —o invalida—
+tu hipótesis
+
+mediante comportamiento,
+volumen,
+estructura
+y confluencia.
+
+</div>
+
+
+<div class="notice">
+
+<b>
+Y en tu caso:
+</b>
+
+Mantendría los dos Fibonacci
+que ya tenés
+
+y no los movería para
+“hacerlos encajar” con el precio.
+
+Usalos para buscar
+confluencias entre
+
+la gran caída
+y la recuperación.
+
+Eso es mucho más interesante
+que tener un único Fib aislado.
+
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+<div class="container">
+
+Fibonacci Pro · Guía educativa
+para análisis técnico.
+
+Los ejemplos son ilustrativos
+y no garantizan resultados.
+
+En Futures,
+el apalancamiento puede amplificar
+pérdidas y ganancias.
+
+</div>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   CALCULADORA FIBONACCI
+===================================================== */
+
+const $ = id => document.getElementById(id);
+
+const levels = [
+
+    [0.236,"0.236"],
+
+    [0.382,"0.382"],
+
+    [0.500,"0.500"],
+
+    [0.618,"0.618"],
+
+    [0.786,"0.786"],
+
+    [1.000,"1.000"]
+
+];
+
+
+function formatNumber(number){
+
+    return Number(number).toLocaleString(
+        "en-US",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+function calculateFibonacci(){
+
+    const high =
+        parseFloat($("high").value);
+
+    const low =
+        parseFloat($("low").value);
+
+    const type =
+        $("type").value;
+
+
+    if(
+        !Number.isFinite(high) ||
+        !Number.isFinite(low) ||
+        high <= low
+    ){
+
+        $("output").innerHTML = `
+
+            <p style="color:#ff8fa1">
+
+                Ingresá valores válidos:
+
+                el máximo debe ser mayor
+                que el mínimo.
+
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    const range =
+        high - low;
+
+
+    let html = `
+
+        <h3 style="margin-top:0">
+
+            Niveles calculados
+
+        </h3>
+
+    `;
+
+
+    levels.forEach(
+        ([ratio,label]) => {
+
+            let price;
+
+
+            /*
+                SUBIDA
+
+                mínimo → máximo
+
+                Los retrocesos se calculan
+                desde el máximo hacia abajo.
+            */
+
+            if(type === "up"){
+
+                price =
+                    high -
+                    range * ratio;
+
+            }
+
+
+            /*
+                CAÍDA
+
+                máximo → mínimo
+
+                Calculamos la recuperación
+                desde el mínimo hacia arriba.
+            */
+
+            else{
+
+                price =
+                    low +
+                    range * ratio;
+
+            }
+
+
+            html += `
+
+                <div class="result">
+
+                    <span>
+                        ${label}
+                    </span>
+
+                    <b>
+                        ${formatNumber(price)}
+                    </b>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+        <p class="small">
+
+            Rango analizado:
+
+            ${formatNumber(range)}
+
+            puntos.
+
+        </p>
+
+    `;
+
+
+    $("output").innerHTML =
+        html;
+
+}
+
+
+/* Botón */
+
+$("calculate")
+    .addEventListener(
+        "click",
+        calculateFibonacci
+    );
+
+
+/* Cálculo automático */
+
+["high","low","type"]
+.forEach(
+
+    id => {
+
+        $(id)
+        .addEventListener(
+            "input",
+            calculateFibonacci
+        );
+
+    }
+
+);
+
+
+/* Cálculo inicial */
+
+calculateFibonacci();
+
+</script>
+
+</body>
+</html>

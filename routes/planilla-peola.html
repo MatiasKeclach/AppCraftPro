@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Control Logística Flex</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    margin:0;
+    background:#f1f3f6;
+    color:#222;
+}
+
+
+/* HEADER */
+
+header{
+
+    background:#111827;
+    color:white;
+    padding:20px;
+
+}
+
+header h1{
+
+    margin:0;
+    font-size:24px;
+
+}
+
+header p{
+
+    margin:5px 0 0;
+    opacity:.8;
+
+}
+
+
+
+/* MENU */
+
+nav{
+
+    background:white;
+    display:flex;
+    gap:10px;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+
+}
+
+
+nav button{
+
+    padding:10px 15px;
+    border:0;
+    cursor:pointer;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+
+}
+
+
+nav button:hover{
+
+    opacity:.8;
+
+}
+
+
+
+/* CONTENEDORES */
+
+
+.container{
+
+    padding:20px;
+
+}
+
+
+.card{
+
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+}
+
+
+
+h2{
+
+    margin-top:0;
+
+}
+
+
+
+
+/* FORMULARIOS */
+
+
+input,
+select,
+textarea{
+
+    width:100%;
+    padding:10px;
+    margin:6px 0 12px;
+    border-radius:8px;
+    border:1px solid #ccc;
+
+}
+
+
+
+label{
+
+    font-weight:bold;
+
+}
+
+
+
+.btn{
+
+    background:#16a34a;
+    color:white;
+    border:0;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+
+}
+
+
+.btn-danger{
+
+    background:#dc2626;
+
+}
+
+
+
+.btn-blue{
+
+    background:#2563eb;
+
+}
+
+
+
+/* DASHBOARD */
+
+
+.stats{
+
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+}
+
+
+
+.stat{
+
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+
+}
+
+
+.stat h3{
+
+    margin:0;
+    font-size:30px;
+
+}
+
+
+
+
+
+/* TABLAS */
+
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+
+th{
+
+    background:#111827;
+    color:white;
+    padding:10px;
+
+}
+
+
+td{
+
+    padding:10px;
+    border-bottom:1px solid #ddd;
+
+}
+
+
+
+
+
+/* IMAGENES */
+
+
+.preview{
+
+    max-width:250px;
+    max-height:250px;
+    border-radius:10px;
+    border:2px solid #ddd;
+
+}
+
+
+
+.flex{
+
+    color:#16a34a;
+    font-weight:bold;
+
+}
+
+
+.particular{
+
+    color:#dc2626;
+    font-weight:bold;
+
+}
+
+
+
+
+
+.hidden{
+
+    display:none;
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+    nav{
+
+        flex-wrap:wrap;
+
+    }
+
+
+    .container{
+
+        padding:10px;
+
+    }
+
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<header>
+
+<h1>
+📦 Control Logística Flex
+</h1>
+
+<p>
+Sistema operativo temporal - Depósito
+</p>
+
+
+</header>
+
+
+
+
+<nav>
+
+
+<button onclick="mostrar('dashboard')">
+📊 Dashboard
+</button>
+
+
+<button onclick="mostrar('paquetes')">
+📦 Paquetes
+</button>
+
+
+<button onclick="mostrar('clientes')">
+🏢 Clientes
+</button>
+
+
+<button onclick="mostrar('choferes')">
+🏍️ Choferes
+</button>
+
+
+
+</nav>
+
+
+
+
+
+<div class="container">
+
+
+
+<!-- ========================= -->
+<!-- DASHBOARD -->
+<!-- ========================= -->
+
+
+<section id="dashboard">
+
+
+<div class="card">
+
+
+<h2>
+Resumen del día
+</h2>
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<h3 id="totalPaquetes">
+0
+</h3>
+
+<p>
+Total paquetes
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h3 id="totalFlex">
+0
+</h3>
+
+<p>
+Flex
+</p>
+
+</div>
+
+
+
+
+<div class="stat">
+
+<h3 id="totalParticulares">
+0
+</h3>
+
+<p>
+Particulares
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+Últimos movimientos
+</h2>
+
+
+<div id="resumen">
+
+</div>
+
+
+</div>
+
+<button class="btn btn-blue" onclick="agregarCargaMultiple()">
+📸 Cargar varias fotos
+</button>
+
+
+<button class="btn" onclick="exportarDatos()">
+💾 Backup
+</button>
+
+
+<button class="btn-blue btn" onclick="importarDatos()">
+📂 Restaurar backup
+</button>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ========================= -->
+<!-- PAQUETES -->
+<!-- ========================= -->
+
+
+<section id="paquetes" class="hidden">
+
+
+
+<div class="card">
+
+
+<h2>
+Nueva colecta / paquete
+</h2>
+
+
+
+<label>
+Cliente
+</label>
+
+<select id="paqueteCliente">
+
+</select>
+
+
+
+<label>
+Foto etiqueta
+</label>
+
+<input 
+type="file"
+id="fotoPaquete"
+accept="image/*">
+
+
+
+<img 
+id="previewFoto"
+class="preview hidden">
+
+
+
+
+
+<label>
+Tipo
+</label>
+
+
+<select id="tipoPaquete">
+
+<option value="FLEX">
+FLEX
+</option>
+
+<option value="PARTICULAR">
+PARTICULAR
+</option>
+
+</select>
+
+
+
+
+
+<label>
+Zona
+</label>
+
+<input id="zona">
+
+
+
+<label>
+Barrio
+</label>
+
+<input id="barrio">
+
+
+
+<label>
+Dirección
+</label>
+
+<input id="direccion">
+
+
+
+<label>
+Referencia
+</label>
+
+<input id="referencia">
+
+
+
+<label>
+Destinatario
+</label>
+
+<input id="destinatario">
+
+
+
+<label>
+DNI
+</label>
+
+<input id="dni">
+
+
+
+<label>
+Teléfono
+</label>
+
+<input id="telefono">
+
+
+
+<label>
+Comercial / Residencial
+</label>
+
+
+<select id="tipoEntrega">
+
+
+<option>
+Residencial
+</option>
+
+
+<option>
+Comercial
+</option>
+
+
+</select>
+
+
+
+
+
+<label>
+Chofer
+</label>
+
+
+<select id="paqueteChofer">
+
+</select>
+
+
+
+
+
+<button 
+class="btn"
+onclick="guardarPaquete()">
+
+Guardar paquete
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Paquetes cargados
+</h2>
+
+
+
+<input 
+placeholder="Buscar..."
+id="buscarPaquete"
+onkeyup="listarPaquetes()">
+
+
+
+
+
+<div id="tablaPaquetes">
+
+</div>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ========================= -->
+<!-- CLIENTES -->
+<!-- ========================= -->
+
+
+<section id="clientes" class="hidden">
+
+
+<div class="card">
+
+
+<h2>
+Nuevo cliente
+</h2>
+
+
+
+<input 
+id="clienteNombre"
+placeholder="Nombre cliente">
+
+
+<input 
+id="clienteDireccion"
+placeholder="Dirección">
+
+
+<input 
+id="clienteZona"
+placeholder="Zona">
+
+
+<button 
+class="btn"
+onclick="guardarCliente()">
+
+Guardar cliente
+
+</button>
+
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+Clientes registrados
+</h2>
+
+
+<div id="listaClientes">
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ========================= -->
+<!-- CHOFERES -->
+<!-- ========================= -->
+
+
+<section id="choferes" class="hidden">
+
+
+<div class="card">
+
+
+<h2>
+Nuevo chofer
+</h2>
+
+
+
+<input 
+id="choferNombre"
+placeholder="Nombre">
+
+
+<input 
+id="choferVehiculo"
+placeholder="Moto / Camioneta">
+
+
+<input 
+id="choferZona"
+placeholder="Zona">
+
+
+<button 
+class="btn"
+onclick="guardarChofer()">
+
+Guardar chofer
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+Choferes registrados
+</h2>
+
+
+<div id="listaChoferes">
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+</div>
+
+
+
+<!-- ACA VA EL JAVASCRIPT PARTE 2 Y 3 -->
+ <script>
+
+
+// ==================================================
+// BASE LOCALSTORAGE
+// ==================================================
+
+let clientes =
+    JSON.parse(localStorage.getItem("clientes")) || [];
+
+let choferes =
+    JSON.parse(localStorage.getItem("choferes")) || [];
+
+let paquetes =
+    JSON.parse(localStorage.getItem("paquetes")) || [];
+
+
+
+
+// ==================================================
+// NAVEGACION
+// ==================================================
+
+function mostrar(id){
+
+    document.querySelectorAll("section")
+    .forEach(sec=>{
+        sec.classList.add("hidden");
+    });
+
+
+    document
+    .getElementById(id)
+    .classList.remove("hidden");
+
+
+    if(id==="dashboard"){
+        actualizarDashboard();
+    }
+
+
+    if(id==="clientes"){
+        listarClientes();
+    }
+
+
+    if(id==="choferes"){
+        listarChoferes();
+    }
+
+
+    if(id==="paquetes"){
+        cargarSelects();
+        listarPaquetes();
+    }
+
+}
+
+
+
+
+// ==================================================
+// CLIENTES
+// ==================================================
+
+
+function guardarCliente(){
+
+
+    let cliente={
+
+        id:Date.now(),
+
+        nombre:
+        document.getElementById("clienteNombre").value,
+
+        direccion:
+        document.getElementById("clienteDireccion").value,
+
+        zona:
+        document.getElementById("clienteZona").value
+
+    };
+
+
+    if(!cliente.nombre){
+
+        alert("Ingresá nombre del cliente");
+        return;
+
+    }
+
+
+
+    clientes.push(cliente);
+
+
+    localStorage.setItem(
+        "clientes",
+        JSON.stringify(clientes)
+    );
+
+
+    document.getElementById("clienteNombre").value="";
+    document.getElementById("clienteDireccion").value="";
+    document.getElementById("clienteZona").value="";
+
+
+    listarClientes();
+
+
+    cargarSelects();
+
+
+}
+
+
+
+
+function listarClientes(){
+
+
+    let div =
+    document.getElementById("listaClientes");
+
+
+    div.innerHTML="";
+
+
+    if(clientes.length===0){
+
+        div.innerHTML=
+        "<p>No hay clientes cargados</p>";
+
+        return;
+
+    }
+
+
+
+    clientes.forEach(c=>{
+
+
+        div.innerHTML += `
+
+        <div class="card">
+
+        <b>${c.nombre}</b><br>
+
+        Dirección:
+        ${c.direccion || "-"}
+        <br>
+
+        Zona:
+        ${c.zona || "-"}
+
+        </div>
+
+        `;
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+// ==================================================
+// CHOFERES
+// ==================================================
+
+
+
+function guardarChofer(){
+
+
+    let chofer={
+
+
+        id:Date.now(),
+
+
+        nombre:
+        document.getElementById("choferNombre").value,
+
+
+        vehiculo:
+        document.getElementById("choferVehiculo").value,
+
+
+        zona:
+        document.getElementById("choferZona").value
+
+
+
+    };
+
+
+
+    if(!chofer.nombre){
+
+        alert("Ingresá nombre del chofer");
+
+        return;
+
+    }
+
+
+
+    choferes.push(chofer);
+
+
+
+    localStorage.setItem(
+
+        "choferes",
+
+        JSON.stringify(choferes)
+
+    );
+
+
+
+    document.getElementById("choferNombre").value="";
+    document.getElementById("choferVehiculo").value="";
+    document.getElementById("choferZona").value="";
+
+
+
+    listarChoferes();
+
+
+    cargarSelects();
+
+
+
+}
+
+
+
+
+function listarChoferes(){
+
+
+    let div =
+    document.getElementById("listaChoferes");
+
+
+    div.innerHTML="";
+
+
+
+    if(choferes.length===0){
+
+        div.innerHTML=
+        "<p>No hay choferes cargados</p>";
+
+        return;
+
+    }
+
+
+
+    choferes.forEach(c=>{
+
+
+        div.innerHTML += `
+
+
+        <div class="card">
+
+
+        <b>${c.nombre}</b>
+
+
+        <br>
+
+        Vehículo:
+        ${c.vehiculo || "-"}
+
+
+        <br>
+
+        Zona:
+        ${c.zona || "-"}
+
+
+
+        </div>
+
+
+
+        `;
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+// ==================================================
+// CARGAR SELECTS
+// ==================================================
+
+
+
+function cargarSelects(){
+
+
+    let clienteSelect =
+    document.getElementById("paqueteCliente");
+
+
+    clienteSelect.innerHTML =
+    "<option>Seleccione cliente</option>";
+
+
+
+    clientes.forEach(c=>{
+
+
+        clienteSelect.innerHTML += `
+
+        <option value="${c.nombre}">
+        ${c.nombre}
+        </option>
+
+        `;
+
+
+    });
+
+
+
+
+
+    let choferSelect =
+    document.getElementById("paqueteChofer");
+
+
+
+    choferSelect.innerHTML =
+    "<option>Sin asignar</option>";
+
+
+
+    choferes.forEach(c=>{
+
+
+        choferSelect.innerHTML += `
+
+        <option value="${c.nombre}">
+        ${c.nombre}
+        </option>
+
+        `;
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// GUARDAR PAQUETE
+// ==================================================
+
+
+
+function guardarPaquete(){
+
+
+
+let paquete={
+
+
+id:Date.now(),
+
+
+fecha:
+new Date().toLocaleDateString(),
+
+
+
+cliente:
+
+document.getElementById("paqueteCliente").value,
+
+
+
+tipo:
+
+document.getElementById("tipoPaquete").value,
+
+
+
+zona:
+
+document.getElementById("zona").value,
+
+
+
+barrio:
+
+document.getElementById("barrio").value,
+
+
+
+direccion:
+
+document.getElementById("direccion").value,
+
+
+
+referencia:
+
+document.getElementById("referencia").value,
+
+
+
+destinatario:
+
+document.getElementById("destinatario").value,
+
+
+
+dni:
+
+document.getElementById("dni").value,
+
+
+
+telefono:
+
+document.getElementById("telefono").value,
+
+
+
+entrega:
+
+document.getElementById("tipoEntrega").value,
+
+
+
+chofer:
+
+document.getElementById("paqueteChofer").value,
+
+
+
+foto:
+
+document.getElementById("previewFoto").src || ""
+
+
+
+};
+
+
+
+
+
+paquetes.push(paquete);
+
+
+
+localStorage.setItem(
+
+"paquetes",
+
+JSON.stringify(paquetes)
+
+);
+
+
+
+limpiarFormularioPaquete();
+
+
+
+listarPaquetes();
+
+
+
+actualizarDashboard();
+
+
+
+alert(
+"Paquete guardado"
+);
+
+
+
+}
+
+
+
+
+
+
+
+function limpiarFormularioPaquete(){
+
+
+
+[
+"zona",
+"barrio",
+"direccion",
+"referencia",
+"destinatario",
+"dni",
+"telefono"
+
+]
+
+.forEach(id=>{
+
+document.getElementById(id).value="";
+
+});
+
+
+
+document.getElementById("previewFoto")
+.src="";
+
+document.getElementById("previewFoto")
+.classList.add("hidden");
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// LISTAR PAQUETES
+// ==================================================
+
+
+function listarPaquetes(){
+
+
+
+let div =
+document.getElementById("tablaPaquetes");
+
+
+
+let filtro =
+document.getElementById("buscarPaquete")?.value
+.toLowerCase() || "";
+
+
+
+div.innerHTML="";
+
+
+
+let filtrados =
+paquetes.filter(p=>{
+
+
+return (
+
+p.destinatario.toLowerCase()
+.includes(filtro)
+
+||
+
+p.direccion.toLowerCase()
+.includes(filtro)
+
+||
+
+p.cliente.toLowerCase()
+.includes(filtro)
+
+);
+
+
+});
+
+
+
+
+if(filtrados.length===0){
+
+
+div.innerHTML=
+"<p>No hay paquetes</p>";
+
+return;
+
+
+}
+
+
+
+
+let tabla=`
+
+
+
+<table>
+
+
+<tr>
+
+<th>Foto</th>
+<th>Cliente</th>
+<th>Tipo</th>
+<th>Zona</th>
+<th>Destinatario</th>
+<th>Chofer</th>
+
+
+</tr>
+
+
+
+`;
+
+
+
+
+
+filtrados.forEach(p=>{
+
+
+
+tabla+=`
+
+
+
+<tr>
+
+
+<td>
+
+${p.foto?
+
+`<img class="preview" src="${p.foto}">`
+
+:
+
+"Sin foto"
+
+}
+
+
+</td>
+
+
+
+<td>${p.cliente}</td>
+
+
+<td class="${p.tipo.toLowerCase()}">
+
+${p.tipo}
+
+</td>
+
+
+<td>${p.zona}</td>
+
+
+<td>${p.destinatario}</td>
+
+
+<td>${p.chofer}</td>
+
+
+
+</tr>
+
+
+`;
+
+
+
+});
+
+
+
+tabla+="</table>";
+
+
+
+div.innerHTML=tabla;
+
+
+
+}
+
+
+
+
+
+
+
+
+// ==================================================
+// DASHBOARD
+// ==================================================
+
+
+function actualizarDashboard(){
+
+
+
+document.getElementById("totalPaquetes")
+.innerText =
+paquetes.length;
+
+
+
+document.getElementById("totalFlex")
+.innerText =
+
+paquetes.filter(p=>
+p.tipo==="FLEX"
+).length;
+
+
+
+document.getElementById("totalParticulares")
+.innerText =
+
+paquetes.filter(p=>
+p.tipo==="PARTICULAR"
+).length;
+
+
+
+
+let resumen =
+document.getElementById("resumen");
+
+
+
+if(!resumen)
+return;
+
+
+
+let html="";
+
+
+
+let clientesDia={};
+
+
+
+paquetes.forEach(p=>{
+
+
+clientesDia[p.cliente] =
+(clientesDia[p.cliente]||0)+1;
+
+
+});
+
+
+
+for(let c in clientesDia){
+
+
+html += `
+
+<p>
+
+<b>${c}</b> :
+
+${clientesDia[c]} paquetes
+
+</p>
+
+`;
+
+
+}
+
+
+
+resumen.innerHTML=html;
+
+
+
+}
+
+
+
+
+// iniciar
+
+mostrar("dashboard");
+
+
+
+
+// ==================================================
+// PREVIEW FOTO INDIVIDUAL
+// ==================================================
+
+document
+.getElementById("fotoPaquete")
+.addEventListener("change", function(e){
+
+
+    const archivo =
+    e.target.files[0];
+
+
+    if(!archivo)
+    return;
+
+
+
+    const lector =
+    new FileReader();
+
+
+
+    lector.onload=function(ev){
+
+
+        const img =
+        document.getElementById("previewFoto");
+
+
+        img.src =
+        ev.target.result;
+
+
+        img.classList.remove("hidden");
+
+
+
+    }
+
+
+
+    lector.readAsDataURL(archivo);
+
+
+
+});
+
+
+
+
+
+// ==================================================
+// DETECCION BASICA FLEX / PARTICULAR
+// ==================================================
+//
+// En esta V1 hacemos una detección visual básica.
+// Si después agregamos ZXing puede leer QR real.
+//
+// Para mañana lo importante:
+// QR = FLEX
+// Sin QR = PARTICULAR
+//
+// ==================================================
+
+
+
+async function detectarTipoImagen(archivo){
+
+
+    return new Promise(resolve=>{
+
+
+        const img =
+        new Image();
+
+
+
+        const lector =
+        new FileReader();
+
+
+
+        lector.onload=function(e){
+
+
+            img.onload=function(){
+
+
+                // Simulación inicial:
+                // dejamos FLEX por defecto
+                // porque las etiquetas Flex tienen QR
+
+
+                resolve("FLEX");
+
+
+            }
+
+
+
+            img.src=e.target.result;
+
+
+        }
+
+
+
+        lector.readAsDataURL(archivo);
+
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+// ==================================================
+// CARGA RAPIDA MULTIPLE
+// ==================================================
+
+
+
+function agregarCargaMultiple(){
+
+
+    let input =
+    document.createElement("input");
+
+
+    input.type="file";
+
+    input.accept="image/*";
+
+    input.multiple=true;
+
+
+
+    input.onchange=async function(e){
+
+
+
+        const archivos =
+        Array.from(e.target.files);
+
+
+
+        for(let archivo of archivos){
+
+
+
+            let tipo =
+            await detectarTipoImagen(
+                archivo
+            );
+
+
+
+            let foto =
+            await convertirImagen(
+                archivo
+            );
+
+
+
+
+            let paquete={
+
+
+                id:Date.now()+Math.random(),
+
+
+                fecha:
+                new Date()
+                .toLocaleDateString(),
+
+
+
+                cliente:
+                document
+                .getElementById(
+                    "paqueteCliente"
+                )
+                .value,
+
+
+
+                tipo,
+
+
+
+                zona:"",
+
+
+                barrio:"",
+
+
+                direccion:"",
+
+
+                referencia:"",
+
+
+                destinatario:
+                "Pendiente",
+
+
+                dni:"",
+
+
+                telefono:"",
+
+
+                entrega:"",
+
+
+                chofer:"Sin asignar",
+
+
+                foto
+
+
+
+            };
+
+
+
+
+            paquetes.push(paquete);
+
+
+
+        }
+
+
+
+
+        localStorage.setItem(
+            "paquetes",
+            JSON.stringify(paquetes)
+        );
+
+
+
+        listarPaquetes();
+
+        actualizarDashboard();
+
+
+
+        alert(
+            archivos.length+
+            " paquetes cargados"
+        );
+
+
+
+    };
+
+
+
+    input.click();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// CONVERTIR IMAGEN A BASE64
+// ==================================================
+
+
+
+function convertirImagen(file){
+
+
+
+return new Promise(resolve=>{
+
+
+const lector =
+new FileReader();
+
+
+
+lector.onload=function(e){
+
+
+resolve(
+e.target.result
+);
+
+
+};
+
+
+
+lector.readAsDataURL(file);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+// ==================================================
+// BOTON BACKUP
+// ==================================================
+
+
+
+function exportarDatos(){
+
+
+let datos={
+
+
+clientes,
+
+choferes,
+
+paquetes,
+
+
+fecha:
+new Date()
+.toISOString()
+
+
+
+};
+
+
+
+let archivo =
+new Blob(
+
+[
+JSON.stringify(
+datos,
+null,
+2
+)
+
+],
+
+{
+type:
+"application/json"
+}
+
+);
+
+
+
+let url =
+URL.createObjectURL(
+archivo
+);
+
+
+
+let a =
+document.createElement("a");
+
+
+a.href=url;
+
+
+a.download=
+"backup_logistica.json";
+
+
+a.click();
+
+
+
+}
+
+
+
+
+
+// ==================================================
+// BOTON IMPORTAR BACKUP
+// ==================================================
+
+
+
+function importarDatos(){
+
+
+
+let input =
+document.createElement("input");
+
+
+input.type="file";
+
+input.accept=".json";
+
+
+
+input.onchange=function(e){
+
+
+
+let archivo =
+e.target.files[0];
+
+
+
+let lector =
+new FileReader();
+
+
+
+lector.onload=function(ev){
+
+
+let datos =
+JSON.parse(
+ev.target.result
+);
+
+
+
+clientes =
+datos.clientes || [];
+
+choferes =
+datos.choferes || [];
+
+paquetes =
+datos.paquetes || [];
+
+
+
+localStorage.setItem(
+"clientes",
+JSON.stringify(clientes)
+);
+
+
+localStorage.setItem(
+"choferes",
+JSON.stringify(choferes)
+);
+
+
+localStorage.setItem(
+"paquetes",
+JSON.stringify(paquetes)
+);
+
+
+
+alert(
+"Backup restaurado"
+);
+
+
+
+location.reload();
+
+
+
+}
+
+
+
+lector.readAsText(archivo);
+
+
+
+}
+
+
+
+input.click();
+
+
+
+}
+ 
+
+
+
+</script>
+
+
+
+</body>
+</html>
