@@ -1320,7 +1320,55 @@ router.get("/choferes/eliminar/:id", isAuthenticated,(req,res)=>{
 // PAQUETES
 // ==============================
 
+// ======================================================
+// API - PAQUETES DE UNA COLECTA
+// ======================================================
 
+router.get(
+    "/api/colectas/:id/paquetes",
+    isAuthenticated,
+    (req, res) => {
+
+        try {
+
+            const colectaId = req.params.id;
+
+            const paquetes = db.prepare(`
+                SELECT
+                    p.*,
+                    c.nombre AS cliente_nombre
+                FROM logistica_paquetes p
+
+                LEFT JOIN logistica_clientes c
+                    ON p.cliente_id = c.id
+
+                WHERE p.colecta_id = ?
+
+                ORDER BY p.id DESC
+            `).all(colectaId);
+
+            res.json({
+                ok: true,
+                paquetes
+            });
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error cargando paquetes de colecta:",
+                error
+            );
+
+            res.status(500).json({
+                ok: false,
+                mensaje: "Error cargando los paquetes",
+                error: error.message
+            });
+
+        }
+
+    }
+);
 // LISTADO DE PAQUETES
 
 router.get("/paquetes", isAuthenticated, (req,res)=>{
