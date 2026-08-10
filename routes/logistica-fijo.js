@@ -762,7 +762,7 @@ router.get("/colectas", isAuthenticated, (req,res)=>{
 // CREAR COLECTA
 
 
-router.post("/colectas", isAuthenticated,(req,res)=>{
+/*router.post("/colectas", isAuthenticated,(req,res)=>{
 
 
     try {
@@ -847,6 +847,156 @@ router.post("/colectas", isAuthenticated,(req,res)=>{
 
 
 });
+*/
+
+// ==============================
+// COLECTAS - NUEVA GESTIÓN
+// ==============================
+
+
+// ==============================
+// COLECTAS - NUEVA GESTIÓN
+// ==============================
+
+router.get("/colectas", isAuthenticated, (req, res) => {
+
+    try {
+
+        // ==========================================
+        // COLECTAS
+        // ==========================================
+
+        const colectas = db.prepare(`
+
+            SELECT
+
+                c.id,
+
+                c.cliente_id,
+
+                c.fecha,
+
+                c.chofer,
+
+                c.chofer_id,
+
+                c.cantidad_paquetes,
+
+                c.observaciones,
+
+                c.estado,
+
+                c.created_at,
+
+                cl.nombre AS cliente_nombre,
+
+                COUNT(p.id) AS paquetes_reales
+
+            FROM logistica_colectas c
+
+            LEFT JOIN logistica_clientes cl
+                ON c.cliente_id = cl.id
+
+            LEFT JOIN logistica_paquetes p
+                ON p.colecta_id = c.id
+
+            GROUP BY c.id
+
+            ORDER BY c.fecha DESC, c.id DESC
+
+        `).all();
+
+
+        // ==========================================
+        // CLIENTES ACTIVOS
+        // ==========================================
+
+        const clientes = db.prepare(`
+
+            SELECT
+
+                id,
+                nombre,
+                empresa
+
+            FROM logistica_clientes
+
+            WHERE estado = 'activo'
+
+            ORDER BY nombre ASC
+
+        `).all();
+
+
+        // ==========================================
+        // CHOFERES ACTIVOS
+        // ==========================================
+
+        const choferes = db.prepare(`
+
+            SELECT
+
+                id,
+                nombre,
+                telefono,
+                vehiculo,
+                patente
+
+            FROM logistica_choferes
+
+            WHERE estado = 'activo'
+
+            ORDER BY nombre ASC
+
+        `).all();
+
+
+        // ==========================================
+        // RENDER
+        // ==========================================
+
+        res.render(
+
+            "logistica/colectas-nueva",
+
+            {
+
+                username:
+                    req.session.user.username,
+
+                role:
+                    req.session.user.role,
+
+                colectas,
+
+                clientes,
+
+                choferes
+
+            }
+
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Error cargando gestión de colectas:",
+            error
+        );
+
+
+        res
+            .status(500)
+            .send(
+                "Error cargando gestión de colectas"
+            );
+
+    }
+
+});
+
+
 
 //module.exports = router;
 

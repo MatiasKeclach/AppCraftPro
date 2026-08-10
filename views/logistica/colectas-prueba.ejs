@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Colectas - Logística</title>
+
+<link rel="stylesheet" href="/css/panel.css">
+
+<style>
+
+:root{
+    --primary:#2563eb;
+    --dark:#0f172a;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --border:#e2e8f0;
+    --text:#334155;
+}
+
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+    background:var(--bg);
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+
+}
+
+
+/* HEADER */
+
+.header{
+
+    background:linear-gradient(135deg,#0f172a,#1e40af);
+    color:white;
+    padding:25px;
+
+}
+
+
+.header h2{
+
+    margin:0;
+
+}
+
+
+.header p{
+
+    margin-bottom:0;
+    opacity:.8;
+
+}
+
+
+
+/* CONTENEDOR */
+
+.container{
+
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
+
+}
+
+
+
+/* TARJETAS */
+
+.box{
+
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    border:1px solid var(--border);
+
+}
+
+
+.box h3{
+
+    margin-top:0;
+    color:var(--dark);
+
+}
+
+
+
+/* FORMULARIO */
+
+form{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+
+
+input,
+select,
+textarea{
+
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #cbd5e1;
+    font-size:15px;
+
+}
+
+
+textarea{
+
+    min-height:100px;
+    resize:vertical;
+
+}
+
+
+
+button{
+
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+    opacity:.9;
+
+}
+
+
+
+/* TABLA */
+
+.table-container{
+
+    width:100%;
+    overflow-x:auto;
+
+}
+
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+
+}
+
+
+
+th{
+
+    background:#f8fafc;
+    text-align:left;
+
+}
+
+
+th,
+td{
+
+    padding:14px;
+    border-bottom:1px solid var(--border);
+
+}
+
+
+
+.estado{
+
+    background:#dbeafe;
+    color:#1d4ed8;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+
+
+
+/* TABLET */
+
+@media(min-width:768px){
+
+
+    form{
+
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+
+    textarea,
+    button{
+
+        grid-column:span 2;
+
+    }
+
+
+}
+
+
+
+/* CELULAR */
+
+@media(max-width:600px){
+
+
+    .container{
+
+        padding:15px;
+
+    }
+
+
+    .box{
+
+        padding:18px;
+
+    }
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+<h2>
+📦 Colectas de paquetes
+</h2>
+
+<p>
+Usuario: <%= username %>
+</p>
+
+</div>
+
+
+
+
+<div class="container">
+
+
+
+<div class="box">
+
+
+<h3>
+➕ Nueva colecta
+</h3>
+
+
+
+<form method="POST" action="/panel/logistica/colectas">
+
+
+
+<select name="cliente_id" required>
+
+<option value="">
+Seleccionar cliente
+</option>
+
+
+<% clientes.forEach(cliente => { %>
+
+<option value="<%= cliente.id %>">
+
+<%= cliente.nombre %>
+
+<%= cliente.empresa ? " - " + cliente.empresa : "" %>
+
+</option>
+
+<% }) %>
+
+
+</select>
+
+
+
+
+<input
+
+name="chofer"
+
+placeholder="Chofer que realizó la colecta"
+
+>
+
+
+
+<input
+
+type="number"
+
+name="cantidad_paquetes"
+
+placeholder="Cantidad de paquetes"
+
+min="0"
+
+required
+
+>
+
+
+
+
+<textarea
+
+name="observaciones"
+
+placeholder="Observaciones"
+
+></textarea>
+
+
+
+
+<button type="submit">
+
+💾 Guardar colecta
+
+</button>
+
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="box">
+
+
+<h3>
+📋 Colectas realizadas
+</h3>
+
+
+
+<div class="table-container">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Cliente</th>
+
+<th>Fecha</th>
+
+<th>Chofer</th>
+
+<th>Cantidad</th>
+
+<th>Estado</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+
+<% colectas.forEach(colecta => { %>
+
+
+<tr>
+
+<td>
+<%= colecta.id %>
+</td>
+
+
+<td>
+<%= colecta.cliente_nombre %>
+</td>
+
+
+<td>
+<%= colecta.fecha %>
+</td>
+
+
+<td>
+<%= colecta.chofer || "-" %>
+</td>
+
+
+<td>
+<%= colecta.cantidad_paquetes %>
+</td>
+
+
+<td>
+
+<span class="estado">
+
+<%= colecta.estado %>
+
+</span>
+
+</td>
+
+
+</tr>
+
+
+<% }) %>
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</body>
+
+</html>
