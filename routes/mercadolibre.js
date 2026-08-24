@@ -1,18 +1,32 @@
-
 // ============================================================
 // routes/mercadolibre.js
+// MERCADO LIBRE + MERCADO ENVÍOS FLEX
 // APPCRAFTPRO
 //
-// MERCADO LIBRE + MERCADO ENVÍOS FLEX
+// IMPORTANTE:
+// Este archivo recibe notificaciones "flex-handshakes"
+// cuando un paquete Flex es escaneado por primera vez.
 //
-// VERSION CORREGIDA + DIAGNÓSTICO
+// FLUJO:
 //
-// - OAuth Mercado Libre
-// - Tokens SQLite
-// - Webhook Flex
-// - Scanner shipment
-// - Preparado para logística
-// - Diagnóstico de errores EJS
+// APP MERCADO ENVÍOS FLEX
+//       ↓
+// ESCANEO DEL PAQUETE
+//       ↓
+// MERCADO LIBRE
+//       ↓
+// flex-handshakes
+//       ↓
+// /webhook
+//       ↓
+// shipment_id
+//       ↓
+// /flex/sites/MLA/shipments/{id}/assignment/v2
+//       ↓
+// /shipments/{id}
+//       ↓
+// PAQUETE ESCANEADO EN APPCRAFTPRO
+//
 // ============================================================
 
 const express = require("express");
@@ -23,12 +37,9 @@ const router = express.Router();
 const isAuthenticated =
     require("../middleware/authMiddleware");
 
-const db =
-    require("../models/db");
-
 
 // ============================================================
-// CONFIGURACIÓN MERCADO LIBRE
+// CONFIGURACIÓN
 // ============================================================
 
 const MERCADOLIBRE_CLIENT_ID =
@@ -40,182 +51,78 @@ const MERCADOLIBRE_CLIENT_SECRET =
 const MERCADOLIBRE_REDIRECT_URI =
     process.env.MERCADOLIBRE_REDIRECT_URI;
 
+
+// ============================================================
+// CONFIGURACIÓN FLEX
+// ============================================================
+
 const MERCADOLIBRE_SITE_ID =
     process.env.MERCADOLIBRE_SITE_ID || "MLA";
 
 
 // ============================================================
-// CREAR TABLA TOKENS
-// ============================================================
-
-try {
-
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS mercadolibre_tokens (
-
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            user_id TEXT UNIQUE,
-
-            access_token TEXT,
-
-            refresh_token TEXT,
-
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-
-        )
-    `).run();
-
-    console.log(
-        "✅ Tabla mercadolibre_tokens lista"
-    );
-
-} catch (error) {
-
-    console.error(
-        "❌ Error creando tabla mercadolibre_tokens:",
-        error
-    );
-
-}
-
-
-// ============================================================
-// CACHE TEMPORAL PAQUETES FLEX
+// ALMACÉN TEMPORAL DE PAQUETES ESCANEADOS
+//
+// IMPORTANTE:
+//
+// Esto es TEMPORAL para probar la integración.
+//
+// Cuando comprobemos que los webhooks llegan correctamente,
+// lo conectamos a tu SQLite/Supabase.
+//
+// Mientras Render esté funcionando, los datos quedan en
+// memoria. Si Render reinicia, se pierden.
+//
 // ============================================================
 
 const paquetesFlexEscaneados = [];
 
 
 // ============================================================
-// GUARDAR TOKEN MERCADO LIBRE
+// EVITAR DUPLICADOS
 // ============================================================
 
-function guardarTokenUsuario(
-    userId,
-    accessToken,
-    refreshToken
+function paqueteYaExiste(
+    shipmentId
 ) {
 
-    try {
+    return paquetesFlexEscaneados.some(
 
-        db.prepare(`
-            INSERT INTO mercadolibre_tokens
-            (
-                user_id,
-                access_token,
-                refresh_token
+        paquete =>
+
+            String(
+                paquete.shipment_id
+            ) === String(
+                shipmentId
             )
 
-            VALUES
-            (
-                ?,
-                ?,
-                ?
-            )
-
-            ON CONFLICT(user_id)
-
-            DO UPDATE SET
-
-                access_token =
-                    excluded.access_token,
-
-                refresh_token =
-                    excluded.refresh_token,
-
-                updated_at =
-                    CURRENT_TIMESTAMP
-        `).run(
-            String(userId),
-            accessToken,
-            refreshToken
-        );
-
-        console.log(
-            "🔐 Token ML guardado:",
-            userId
-        );
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "❌ Error guardando token ML:",
-            error
-        );
-
-        return false;
-
-    }
+    );
 
 }
 
 
 // ============================================================
-// OBTENER TOKEN POR USER ID
+// OBTENER ACCESS TOKEN DE SESIÓN
 // ============================================================
 
-function obtenerTokenPorUsuario(
-    userId
+function obtenerAccessToken(
+    req
 ) {
 
-    try {
+    if (
 
-        if (!userId) {
-            return null;
-        }
+        !req.session ||
 
-        const row =
-            db.prepare(`
-                SELECT access_token
+        !req.session.mercadolibreAccessToken
 
-                FROM mercadolibre_tokens
-
-                WHERE user_id = ?
-            `).get(
-                String(userId)
-            );
-
-        if (!row) {
-            return null;
-        }
-
-        return row.access_token || null;
-
-    } catch (error) {
-
-        console.error(
-            "❌ Error buscando token ML:",
-            error
-        );
+    ) {
 
         return null;
 
     }
 
-}
 
-
-// ============================================================
-// OBTENER TOKEN DESDE SESIÓN
-// ============================================================
-
-function obtenerAccessToken(req) {
-
-    if (
-        req.session &&
-        req.session.mercadolibreAccessToken
-    ) {
-
-        return req.session.mercadolibreAccessToken;
-
-    }
-
-    return null;
+    return req.session.mercadolibreAccessToken;
 
 }
 
@@ -228,7 +135,10 @@ function validarConfiguracion() {
 
     const faltantes = [];
 
-    if (!MERCADOLIBRE_CLIENT_ID) {
+
+    if (
+        !MERCADOLIBRE_CLIENT_ID
+    ) {
 
         faltantes.push(
             "MERCADOLIBRE_CLIENT_ID"
@@ -236,7 +146,10 @@ function validarConfiguracion() {
 
     }
 
-    if (!MERCADOLIBRE_CLIENT_SECRET) {
+
+    if (
+        !MERCADOLIBRE_CLIENT_SECRET
+    ) {
 
         faltantes.push(
             "MERCADOLIBRE_CLIENT_SECRET"
@@ -244,7 +157,10 @@ function validarConfiguracion() {
 
     }
 
-    if (!MERCADOLIBRE_REDIRECT_URI) {
+
+    if (
+        !MERCADOLIBRE_REDIRECT_URI
+    ) {
 
         faltantes.push(
             "MERCADOLIBRE_REDIRECT_URI"
@@ -252,31 +168,30 @@ function validarConfiguracion() {
 
     }
 
+
     return faltantes;
 
 }
 
 
 // ============================================================
-// PETICIÓN GET MERCADO LIBRE
+// PETICIÓN GET A MERCADO LIBRE
 // ============================================================
 
 async function mlGet(
+
     url,
+
     accessToken,
+
     params = {}
+
 ) {
 
-    if (!accessToken) {
+    return await axios.get(
 
-        throw new Error(
-            "Access Token de Mercado Libre inexistente."
-        );
-
-    }
-
-    return axios.get(
         url,
+
         {
 
             params,
@@ -284,76 +199,140 @@ async function mlGet(
             headers: {
 
                 Authorization:
+
                     `Bearer ${accessToken}`,
 
                 Accept:
+
                     "application/json"
 
             },
 
             timeout:
+
                 20000
 
         }
+
     );
 
 }
 
 
 // ============================================================
-// EXTRAER SHIPMENT ID
+// OBTENER SHIPMENT ID DESDE RESOURCE
+//
+// Ejemplo:
+//
+// /flex/sites/MLA/shipments/407323124706/assignment/v1
+//
+// Devuelve:
+//
+// 407323124706
+//
 // ============================================================
 
 function extraerShipmentId(
+
     resource
+
 ) {
 
     if (
+
         !resource ||
+
         typeof resource !== "string"
+
     ) {
 
         return null;
 
     }
 
+
     const match =
+
         resource.match(
+
             /\/shipments\/(\d+)/
+
         );
 
-    return match
-        ? match[1]
-        : null;
+
+    if (
+
+        !match ||
+
+        !match[1]
+
+    ) {
+
+        return null;
+
+    }
+
+
+    return match[1];
 
 }
 
 
 // ============================================================
 // EXTRAER SITE ID
+//
+// Ejemplo:
+//
+// /flex/sites/MLA/shipments/123/assignment/v1
+//
+// Devuelve:
+//
+// MLA
+//
 // ============================================================
 
 function extraerSiteId(
+
     resource
+
 ) {
 
     if (
+
         !resource ||
+
         typeof resource !== "string"
+
     ) {
 
         return MERCADOLIBRE_SITE_ID;
 
     }
 
+
     const match =
+
         resource.match(
+
             /\/flex\/sites\/([^/]+)/
+
         );
 
-    return match
-        ? match[1]
-        : MERCADOLIBRE_SITE_ID;
+
+    if (
+
+        !match ||
+
+        !match[1]
+
+    ) {
+
+        return MERCADOLIBRE_SITE_ID;
+
+    }
+
+
+    return match[1];
 
 }
 
@@ -363,38 +342,56 @@ function extraerSiteId(
 // ============================================================
 
 function detectarFlex(
+
     shipment
+
 ) {
 
-    if (!shipment) {
+    if (
+        !shipment
+    ) {
 
         return false;
 
     }
 
-    const texto = [
 
-        shipment.logistic_type,
+    const logisticType =
 
-        shipment.mode,
+        shipment.logistic_type || "";
 
-        shipment.shipping_option?.name,
 
-        shipment.shipping_option?.type
+    const shippingOption =
 
-    ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+        shipment.shipping_option || {};
+
+
+    const texto =
+
+        [
+
+            logisticType,
+
+            shippingOption.name,
+
+            shippingOption.type,
+
+            shipment.mode
+
+        ]
+
+            .filter(Boolean)
+
+            .join(" ")
+
+            .toLowerCase();
+
 
     return (
 
-        texto.includes("flex")
+        texto.includes("flex") ||
 
-        ||
-
-        shipment.logistic_type ===
-        "self_service"
+        logisticType === "self_service"
 
     );
 
@@ -406,83 +403,269 @@ function detectarFlex(
 // ============================================================
 
 function transformarShipment(
+
     shipment,
+
     order = null,
-    assignment = null
+
+    assignment = null,
+
+    webhookData = null
+
 ) {
 
     shipment =
+
         shipment || {};
 
+
     const receiver =
-        shipment.receiver_address || {};
+
+        shipment.receiver_address ||
+
+        {};
+
+
+    const shippingOption =
+
+        shipment.shipping_option ||
+
+        {};
+
 
     const buyer =
-        order?.buyer || {};
 
-    const destinatario =
+        order &&
+
+        order.buyer
+
+            ? order.buyer
+
+            : {};
+
+
+    const addressLine =
+
+        receiver.address_line ||
+
+        receiver.address ||
+
+        receiver.street_name ||
+
+        receiver.street_address ||
+
+        "";
+
+
+    const city =
+
+        receiver.city ||
+
+        receiver.city_name ||
+
+        receiver.municipality ||
+
+        receiver.neighborhood ||
+
+        receiver.state ||
+
+        "";
+
+
+    let destinatario =
 
         receiver.receiver_name ||
 
-        `${buyer.first_name || ""} ${buyer.last_name || ""}`.trim();
+        receiver.name ||
+
+        receiver.receiver ||
+
+        "";
+
+
+    if (
+
+        !destinatario &&
+
+        buyer.first_name
+
+    ) {
+
+        destinatario =
+
+            `${buyer.first_name} ${buyer.last_name || ""}`
+
+                .trim();
+
+    }
+
+
+    if (
+
+        !destinatario &&
+
+        buyer.nickname
+
+    ) {
+
+        destinatario =
+
+            buyer.nickname;
+
+    }
+
+
+    const trackingNumber =
+
+        shipment.tracking_number ||
+
+        shipment.tracking_id ||
+
+        shipment.tracking ||
+
+        "";
+
+
+    const logisticType =
+
+        shipment.logistic_type ||
+
+        shippingOption.name ||
+
+        shippingOption.type ||
+
+        "";
+
 
     return {
 
+        // --------------------------------------------
+        // IDENTIFICADORES
+        // --------------------------------------------
+
         id:
-            shipment.id || null,
+
+            shipment.id ||
+
+            null,
+
 
         shipment_id:
-            shipment.id || null,
+
+            shipment.id ||
+
+            null,
+
 
         order_id:
-            order?.id || null,
+
+            order
+
+                ? order.id
+
+                : null,
+
+
+        pack_id:
+
+            order
+
+                ? (
+                    order.pack_id ||
+
+                    null
+                )
+
+                : null,
+
+
+        // --------------------------------------------
+        // CÓDIGO
+        // --------------------------------------------
 
         codigo:
-            shipment.tracking_number ||
+
+            trackingNumber ||
+
             shipment.id ||
+
             "",
+
 
         tracking_number:
-            shipment.tracking_number ||
-            "",
 
-        destinatario,
+            trackingNumber,
+
+
+        // --------------------------------------------
+        // DESTINATARIO
+        // --------------------------------------------
+
+        destinatario:
+
+            destinatario,
+
+
+        // --------------------------------------------
+        // DIRECCIÓN
+        // --------------------------------------------
 
         direccion:
 
-            receiver.address_line ||
+            addressLine,
 
-            receiver.street_name ||
-
-            "",
 
         localidad:
 
-            receiver.city?.name ||
+            city,
 
-            receiver.city_name ||
 
-            receiver.state?.name ||
-
-            "",
+        // --------------------------------------------
+        // TELÉFONO
+        // --------------------------------------------
 
         telefono:
 
             receiver.receiver_phone ||
 
+            receiver.phone ||
+
+            (
+                buyer.phone
+                    ? (
+                        buyer.phone.area_code || ""
+                    ) +
+                    (
+                        buyer.phone.number || ""
+                    )
+                    : ""
+            ) ||
+
+
             "",
+
+
+        // --------------------------------------------
+        // ESTADO
+        // --------------------------------------------
 
         estado:
 
             shipment.status ||
 
-            "unknown",
+            shipment.substatus ||
+
+            "shipped",
+
+
+        // --------------------------------------------
+        // FLEX
+        // --------------------------------------------
 
         logistic_type:
 
-            shipment.logistic_type ||
+            logisticType,
 
-            "",
 
         es_flex:
 
@@ -490,25 +673,69 @@ function transformarShipment(
                 shipment
             ),
 
+
+        // --------------------------------------------
+        // DRIVER
+        // --------------------------------------------
+
         driver_id:
 
-            assignment?.driver_id ||
+            assignment &&
 
-            null,
+            assignment.driver_id
+
+                ? assignment.driver_id
+
+                : null,
+
+
+        // --------------------------------------------
+        // FECHA
+        // --------------------------------------------
 
         fecha:
 
             shipment.date_created ||
 
-            new Date().toISOString(),
+            new Date()
+                .toISOString(),
+
+
+        // --------------------------------------------
+        // ORIGEN
+        // --------------------------------------------
 
         origen:
 
-            "mercadolibre-flex",
+            "flex-handshakes",
+
+
+        // --------------------------------------------
+        // DATOS WEBHOOK
+        // --------------------------------------------
+
+        webhook:
+
+            webhookData || null,
+
+
+        // --------------------------------------------
+        // DATOS ORIGINALES
+        // --------------------------------------------
 
         raw:
 
-            shipment
+            shipment,
+
+
+        order_raw:
+
+            order,
+
+
+        assignment_raw:
+
+            assignment
 
     };
 
@@ -516,326 +743,901 @@ function transformarShipment(
 
 
 // ============================================================
-// EVITAR DUPLICADOS
+// PROCESAR FLEX HANDSHAKE
+//
+// Este es el corazón de la integración.
+//
+// Mercado Libre envía:
+//
+// {
+//   topic: "flex-handshakes",
+//   resource:
+//     "/flex/sites/MLA/shipments/123/assignment/v1",
+//   user_id: 123456
+// }
+//
+// Nosotros:
+//
+// 1. Extraemos shipment_id
+// 2. Buscamos access_token del usuario
+// 3. Consultamos assignment/v2
+// 4. Consultamos shipment
+// 5. Guardamos paquete
+//
 // ============================================================
 
-function paqueteExiste(
-    shipmentId
+async function procesarFlexHandshake(
+
+    webhookData
+
 ) {
 
-    return paquetesFlexEscaneados.some(
+    console.log(
+        "=========================================="
+    );
 
-        p =>
 
-            String(
-                p.shipment_id
-            )
+    console.log(
+        "🚚 PROCESANDO FLEX HANDSHAKE"
+    );
 
-            ===
 
-            String(
+    console.log(
+        "=========================================="
+    );
+
+
+    const resource =
+
+        webhookData.resource;
+
+
+    const userId =
+
+        webhookData.user_id;
+
+
+    const shipmentId =
+
+        extraerShipmentId(
+            resource
+        );
+
+
+    const siteId =
+
+        extraerSiteId(
+            resource
+        );
+
+
+    console.log(
+
+        "📡 Resource:",
+
+        resource
+
+    );
+
+
+    console.log(
+
+        "👤 User ID:",
+
+        userId
+
+    );
+
+
+    console.log(
+
+        "📦 Shipment ID:",
+
+        shipmentId
+
+    );
+
+
+    console.log(
+
+        "🌎 Site:",
+
+        siteId
+
+    );
+
+
+    if (
+        !shipmentId
+    ) {
+
+        console.error(
+
+            "❌ No se pudo extraer shipment_id."
+
+        );
+
+
+        return {
+
+            ok:
+
+                false,
+
+
+            error:
+
+                "No se pudo extraer shipment_id."
+
+        };
+
+    }
+
+
+    // ========================================================
+    // EVITAR DUPLICADOS
+    // ========================================================
+
+    if (
+
+        paqueteYaExiste(
+            shipmentId
+        )
+
+    ) {
+
+        console.log(
+
+            "ℹ️ El paquete ya estaba registrado:",
+
+            shipmentId
+
+        );
+
+
+        return {
+
+            ok:
+
+                true,
+
+
+            duplicado:
+
+                true,
+
+
+            shipment_id:
+
                 shipmentId
+
+        };
+
+    }
+
+
+    // ========================================================
+    // BUSCAR ACCESS TOKEN
+    //
+    // IMPORTANTE:
+    //
+    // El webhook no tiene sesión de navegador.
+    //
+    // Por ahora buscamos tokens disponibles en una estructura
+    // temporal.
+    //
+    // Para producción debemos guardar los tokens por user_id
+    // en base de datos.
+    //
+    // ========================================================
+
+    const accessToken =
+
+        obtenerTokenPorUsuario(
+            userId
+        );
+
+
+    if (
+        !accessToken
+    ) {
+
+        console.error(
+
+            "❌ NO HAY ACCESS TOKEN PARA EL USER ID:",
+
+            userId
+
+        );
+
+
+        console.error(
+
+            "⚠️ El webhook llegó correctamente,",
+
+            "pero no podemos consultar shipment.",
+
+            "Hay que guardar el OAuth token asociado al user_id."
+
+        );
+
+
+        // Guardamos el evento igualmente
+
+        const paquetePendiente = {
+
+            shipment_id:
+
+                shipmentId,
+
+
+            user_id:
+
+                userId,
+
+
+            site_id:
+
+                siteId,
+
+
+            resource:
+
+                resource,
+
+
+            estado:
+
+                "webhook_recibido_sin_token",
+
+
+            fecha:
+
+                new Date()
+                    .toISOString(),
+
+
+            webhook:
+
+                webhookData
+
+        };
+
+
+        paquetesFlexEscaneados.push(
+
+            paquetePendiente
+
+        );
+
+
+        return {
+
+            ok:
+
+                false,
+
+
+            pendiente:
+
+                true,
+
+
+            motivo:
+
+                "Webhook recibido pero no hay access token guardado.",
+
+
+            shipment_id:
+
+                shipmentId
+
+        };
+
+    }
+
+
+    // ========================================================
+    // OBTENER ASSIGNMENT
+    //
+    // Primero intentamos v2.
+    //
+    // Si falla 404, probamos v1 porque el webhook puede
+    // entregar un resource antiguo con assignment/v1.
+    //
+    // ========================================================
+
+    let assignment = null;
+
+
+    try {
+
+        const assignmentResponse =
+
+            await mlGet(
+
+                `https://api.mercadolibre.com/flex/sites/${siteId}/shipments/${shipmentId}/assignment/v2`,
+
+                accessToken
+
+            );
+
+
+        assignment =
+
+            assignmentResponse.data;
+
+
+        console.log(
+
+            "🚚 Assignment obtenido:",
+
+            JSON.stringify(
+
+                assignment,
+
+                null,
+
+                2
+
             )
+
+        );
+
+    } catch (
+        assignmentError
+    ) {
+
+        console.error(
+
+            "⚠️ Error assignment/v2:",
+
+            assignmentError.response
+
+                ? assignmentError.response.data
+
+                : assignmentError.message
+
+        );
+
+
+        try {
+
+            const assignmentV1Response =
+
+                await mlGet(
+
+                    `https://api.mercadolibre.com/flex/sites/${siteId}/shipments/${shipmentId}/assignment/v1`,
+
+                    accessToken
+
+                );
+
+
+            assignment =
+
+                assignmentV1Response.data;
+
+
+            console.log(
+
+                "🚚 Assignment v1 obtenido:",
+
+                JSON.stringify(
+
+                    assignment,
+
+                    null,
+
+                    2
+
+                )
+
+            );
+
+        } catch (
+            assignmentV1Error
+        ) {
+
+            console.error(
+
+                "⚠️ No se pudo obtener assignment v1/v2."
+
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // OBTENER SHIPMENT
+    // ========================================================
+
+    let shipment = null;
+
+
+    try {
+
+        const shipmentResponse =
+
+            await mlGet(
+
+                `https://api.mercadolibre.com/shipments/${shipmentId}`,
+
+                accessToken
+
+            );
+
+
+        shipment =
+
+            shipmentResponse.data;
+
+
+        console.log(
+
+            "📦 Shipment obtenido correctamente."
+
+        );
+
+    } catch (
+        shipmentError
+    ) {
+
+        console.error(
+
+            "❌ Error obteniendo shipment:",
+
+            shipmentError.response
+
+                ? shipmentError.response.data
+
+                : shipmentError.message
+
+        );
+
+
+        return {
+
+            ok:
+
+                false,
+
+
+            error:
+
+                "No se pudo obtener el shipment.",
+
+
+            shipment_id:
+
+                shipmentId
+
+        };
+
+    }
+
+
+    // ========================================================
+    // OBTENER ORDEN
+    //
+    // Intentamos obtener order_id desde shipment si existe.
+    //
+    // ========================================================
+
+    let order = null;
+
+
+    const orderId =
+
+        shipment.order_id ||
+
+
+        shipment.order_ids &&
+
+        shipment.order_ids[0] ||
+
+
+        null;
+
+
+    if (
+        orderId
+    ) {
+
+        try {
+
+            const orderResponse =
+
+                await mlGet(
+
+                    `https://api.mercadolibre.com/orders/${orderId}`,
+
+                    accessToken
+
+                );
+
+
+            order =
+
+                orderResponse.data;
+
+        } catch (
+            orderError
+        ) {
+
+            console.error(
+
+                "⚠️ No se pudo obtener la orden:",
+
+                orderError.response
+
+                    ? orderError.response.data
+
+                    : orderError.message
+
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // TRANSFORMAR
+    // ========================================================
+
+    const paquete =
+
+        transformarShipment(
+
+            shipment,
+
+            order,
+
+            assignment,
+
+            webhookData
+
+        );
+
+
+    // ========================================================
+    // GUARDAR
+    // ========================================================
+
+    paquetesFlexEscaneados.push(
+
+        paquete
+
+    );
+
+
+    console.log(
+        "=========================================="
+    );
+
+
+    console.log(
+
+        "✅ PAQUETE FLEX ESCANEADO REGISTRADO"
+
+    );
+
+
+    console.log(
+
+        "📦 Shipment:",
+
+        paquete.shipment_id
+
+    );
+
+
+    console.log(
+
+        "🔢 Tracking:",
+
+        paquete.tracking_number
+
+    );
+
+
+    console.log(
+
+        "👤 Destinatario:",
+
+        paquete.destinatario
+
+    );
+
+
+    console.log(
+
+        "📍 Dirección:",
+
+        paquete.direccion
+
+    );
+
+
+    console.log(
+
+        "🏙️ Localidad:",
+
+        paquete.localidad
+
+    );
+
+
+    console.log(
+
+        "🚚 Driver:",
+
+        paquete.driver_id
+
+    );
+
+
+    console.log(
+        "=========================================="
+    );
+
+
+    return {
+
+        ok:
+
+            true,
+
+
+        paquete:
+
+            paquete
+
+    };
+
+}
+
+
+// ============================================================
+// TOKENS TEMPORALES
+//
+// IMPORTANTE:
+//
+// Un webhook no tiene sesión de navegador.
+//
+// Guardamos el token OAuth asociado al user_id.
+//
+// ESTO FUNCIONA PARA LA PRUEBA MIENTRAS EL SERVIDOR
+// ESTÉ ACTIVO.
+//
+// Después hay que llevar esto a la base de datos.
+//
+// ============================================================
+
+const tokensMercadoLibre = new Map();
+
+
+function guardarTokenUsuario(
+
+    userId,
+
+    accessToken,
+
+    refreshToken = null
+
+) {
+
+    if (
+
+        !userId ||
+
+        !accessToken
+
+    ) {
+
+        return;
+
+    }
+
+
+    tokensMercadoLibre.set(
+
+        String(userId),
+
+        {
+
+            accessToken:
+
+                accessToken,
+
+
+            refreshToken:
+
+                refreshToken,
+
+
+            actualizado:
+
+                new Date()
+                    .toISOString()
+
+        }
+
+    );
+
+
+    console.log(
+
+        "🔐 Token guardado para usuario ML:",
+
+        userId
 
     );
 
 }
 
 
+function obtenerTokenPorUsuario(
+
+    userId
+
+) {
+
+    if (
+        !userId
+    ) {
+
+        return null;
+
+    }
+
+
+    const datos =
+
+        tokensMercadoLibre.get(
+
+            String(userId)
+
+        );
+
+
+    if (
+        !datos
+    ) {
+
+        return null;
+
+    }
+
+
+    return datos.accessToken;
+
+}
+
+
 // ============================================================
-// DASHBOARD MERCADO LIBRE
-//
-// IMPORTANTE:
-// ESTA ES LA RUTA RAÍZ DEL ROUTER.
-//
-// app.js:
-// /panel/logistica/mercadolibre
-//
-// router:
-// /
-//
-// RESULTADO:
-// /panel/logistica/mercadolibre
+// DASHBOARD
 // ============================================================
 
 router.get(
+
     "/",
+
     isAuthenticated,
-    async (req, res) => {
 
-        console.log(
-            "=========================================="
-        );
+    async (
 
-        console.log(
-            "🟢 ENTRANDO AL MÓDULO MERCADO LIBRE"
-        );
+        req,
 
-        console.log(
-            "URL:",
-            req.originalUrl
-        );
+        res
 
-        console.log(
-            "METHOD:",
-            req.method
-        );
-
-        console.log(
-            "SESSION USER:",
-            req.session?.user
-        );
-
-        console.log(
-            "=========================================="
-        );
-
+    ) => {
 
         try {
 
-            // ------------------------------------------------
-            // VALIDAR CONFIGURACIÓN
-            // ------------------------------------------------
-
             const faltantes =
+
                 validarConfiguracion();
-
-            console.log(
-                "🔍 Variables Mercado Libre faltantes:",
-                faltantes
-            );
-
-
-            // ------------------------------------------------
-            // PREPARAR DATOS PARA EJS
-            // ------------------------------------------------
-
-            const datosVista = {
-
-                username:
-                    req.session?.user?.username ||
-                    "Usuario",
-
-                role:
-                    req.session?.user?.role ||
-                    "usuario",
-
-                mercadolibreConnected:
-
-                    !!req.session
-                        ?.mercadolibreAccessToken,
-
-                totalShipments:
-
-                    paquetesFlexEscaneados.length,
-
-                importedToday:
-
-                    paquetesFlexEscaneados.length,
-
-                pendingShipments:
-
-                    paquetesFlexEscaneados.length,
-
-                mercadolibreConfigured:
-
-                    faltantes.length === 0,
-
-                configurationErrors:
-
-                    faltantes
-
-            };
-
-
-            console.log(
-                "📦 DATOS QUE SE ENVIARÁN A EJS:"
-            );
-
-            console.log(
-                JSON.stringify(
-                    datosVista,
-                    null,
-                    2
-                )
-            );
-
-
-            // ------------------------------------------------
-            // RENDERIZAR VISTA
-            // ------------------------------------------------
-
-            console.log(
-                "🎨 Intentando renderizar:"
-            );
-
-            console.log(
-                "logistica/mercadolibre"
-            );
 
 
             return res.render(
 
                 "logistica/mercadolibre",
 
-                datosVista,
+                {
 
-                (error, html) => {
+                    username:
 
-                    // ----------------------------------------
-                    // ERROR REAL DE EJS
-                    // ----------------------------------------
+                        req.session.user
 
-                    if (error) {
+                            ? req.session.user.username
 
-                        console.error(
-                            "=========================================="
-                        );
-
-                        console.error(
-                            "❌❌❌ ERROR REAL RENDERIZANDO EJS ❌❌❌"
-                        );
-
-                        console.error(
-                            "=========================================="
-                        );
-
-                        console.error(
-                            "Mensaje:",
-                            error.message
-                        );
-
-                        console.error(
-                            "Stack:",
-                            error.stack
-                        );
-
-                        console.error(
-                            "=========================================="
-                        );
+                            : "Usuario",
 
 
-                        return res
-                            .status(500)
-                            .send(`
-                                <!DOCTYPE html>
+                    role:
 
-                                <html lang="es">
+                        req.session.user
 
-                                <head>
+                            ? req.session.user.role
 
-                                    <meta charset="UTF-8">
-
-                                    <title>
-                                        Error Mercado Libre
-                                    </title>
-
-                                </head>
-
-                                <body>
-
-                                    <h1>
-                                        Error renderizando Mercado Libre
-                                    </h1>
-
-                                    <h2>
-                                        Mensaje:
-                                    </h2>
-
-                                    <pre>
-${error.message}
-                                    </pre>
-
-                                    <h2>
-                                        Stack:
-                                    </h2>
-
-                                    <pre style="white-space: pre-wrap;">
-${error.stack}
-                                    </pre>
-
-                                </body>
-
-                                </html>
-                            `);
-
-                    }
+                            : "usuario",
 
 
-                    // ----------------------------------------
-                    // VISTA CORRECTA
-                    // ----------------------------------------
+                    mercadolibreConnected:
 
-                    console.log(
-                        "✅ Vista Mercado Libre renderizada correctamente"
-                    );
+                        !!(
+
+                            req.session &&
+
+                            req.session.mercadolibreAccessToken
+
+                        ),
 
 
-                    return res.send(
-                        html
-                    );
+                    lastSync:
+
+                        null,
+
+
+                    totalShipments:
+
+                        paquetesFlexEscaneados.length,
+
+
+                    pendingShipments:
+
+                        paquetesFlexEscaneados.length,
+
+
+                    importedToday:
+
+                        paquetesFlexEscaneados.length,
+
+
+                    mercadolibreConfigured:
+
+                        faltantes.length === 0,
+
+
+                    configurationErrors:
+
+                        faltantes
 
                 }
 
             );
 
-
-        } catch (error) {
-
-            console.error(
-                "=========================================="
-            );
+        } catch (
+            error
+        ) {
 
             console.error(
-                "❌❌❌ ERROR GENERAL EN MERCADO LIBRE ❌❌❌"
-            );
 
-            console.error(
-                "=========================================="
-            );
+                "❌ Error dashboard ML:",
 
-            console.error(
-                "Mensaje:",
-                error.message
-            );
+                error
 
-            console.error(
-                "Stack:",
-                error.stack
-            );
-
-            console.error(
-                "=========================================="
             );
 
 
             return res
+
                 .status(500)
-                .send(`
-                    <h1>
-                        Error interno en Mercado Libre
-                    </h1>
 
-                    <h2>
-                        Mensaje:
-                    </h2>
+                .send(
 
-                    <pre style="white-space:pre-wrap;">
-${error.message}
-                    </pre>
+                    "Error cargando Mercado Libre."
 
-                    <h2>
-                        Stack:
-                    </h2>
-
-                    <pre style="white-space:pre-wrap;">
-${error.stack}
-                    </pre>
-                `);
+                );
 
         }
 
     }
+
 );
 
 
@@ -844,53 +1646,51 @@ ${error.stack}
 // ============================================================
 
 router.get(
+
     "/conectar",
+
     isAuthenticated,
-    (req, res) => {
+
+    (
+
+        req,
+
+        res
+
+    ) => {
 
         try {
 
             const faltantes =
+
                 validarConfiguracion();
 
+
             if (
+
                 faltantes.length > 0
+
             ) {
 
-                console.error(
-                    "❌ Faltan variables:",
-                    faltantes
-                );
-
                 return res
+
                     .status(500)
+
                     .send(`
-                        <h1>
-                            Configuración Mercado Libre incompleta
-                        </h1>
+
+                        <h2>
+                            Configuración incompleta
+                        </h2>
+
+                        <p>
+                            Faltan:
+                        </p>
 
                         <pre>
 ${faltantes.join("\n")}
                         </pre>
 
-                        <a href="/panel/logistica/mercadolibre">
-                            Volver
-                        </a>
                     `);
-
-            }
-
-
-            if (
-                !req.session ||
-                !req.session.user
-            ) {
-
-                return res
-                    .status(401)
-                    .send(
-                        "Sesión de usuario no disponible."
-                    );
 
             }
 
@@ -902,95 +1702,94 @@ ${faltantes.join("\n")}
                     .substring(2, 15)}`;
 
 
-            req.session.mlState =
+            req.session.mercadolibreOAuthState =
+
                 state;
 
 
-            const url =
+            req.session.mercadolibreOAuthUserId =
+
+                req.session.user.id;
+
+
+            const authorizationURL =
+
                 new URL(
+
                     "https://auth.mercadolibre.com.ar/authorization"
+
                 );
 
 
-            url.searchParams.set(
+            authorizationURL.searchParams.set(
+
                 "response_type",
+
                 "code"
+
             );
 
 
-            url.searchParams.set(
+            authorizationURL.searchParams.set(
+
                 "client_id",
+
                 MERCADOLIBRE_CLIENT_ID
+
             );
 
 
-            url.searchParams.set(
+            authorizationURL.searchParams.set(
+
                 "redirect_uri",
+
                 MERCADOLIBRE_REDIRECT_URI
+
             );
 
 
-            url.searchParams.set(
+            authorizationURL.searchParams.set(
+
                 "state",
+
                 state
-            );
 
-
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "🔵 INICIANDO OAUTH MERCADO LIBRE"
-            );
-
-            console.log(
-                "Usuario:",
-                req.session.user.username
-            );
-
-            console.log(
-                "AppCraft User ID:",
-                req.session.user.id
-            );
-
-            console.log(
-                "Redirect URI:",
-                MERCADOLIBRE_REDIRECT_URI
-            );
-
-            console.log(
-                "=========================================="
             );
 
 
             return res.redirect(
-                url.toString()
+
+                authorizationURL.toString()
+
             );
 
-
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
-                "❌ ERROR INICIANDO OAUTH:",
+
+                "❌ Error OAuth:",
+
                 error
+
             );
 
-            return res
-                .status(500)
-                .send(`
-                    <h1>
-                        Error iniciando OAuth
-                    </h1>
 
-                    <pre style="white-space:pre-wrap;">
-${error.stack || error.message}
-                    </pre>
-                `);
+            return res
+
+                .status(500)
+
+                .send(
+
+                    "Error iniciando conexión."
+
+                );
 
         }
 
     }
+
 );
 
 
@@ -999,80 +1798,111 @@ ${error.stack || error.message}
 // ============================================================
 
 router.get(
+
     "/callback",
-    async (req, res) => {
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
 
         try {
 
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "🔵 CALLBACK MERCADO LIBRE"
-            );
-
-            console.log(
-                "=========================================="
-            );
-
-
             const {
+
                 code,
+
                 state,
+
                 error,
+
                 error_description
+
             } = req.query;
 
 
-            if (error) {
-
-                console.error(
-                    "❌ Error OAuth:",
-                    error,
-                    error_description
-                );
+            if (
+                error
+            ) {
 
                 return res
+
                     .status(400)
-                    .send(`
-                        <h2>
-                            Autorización cancelada
-                        </h2>
 
-                        <p>
-                            ${error_description || error}
-                        </p>
-
-                        <a href="/panel/logistica/mercadolibre">
-                            Volver
-                        </a>
-                    `);
-
-            }
-
-
-            if (!code) {
-
-                return res
-                    .status(400)
                     .send(
-                        "No llegó código OAuth desde Mercado Libre."
+
+                        error_description ||
+
+                        error
+
                     );
 
             }
 
 
-            // ------------------------------------------------
-            // INTERCAMBIAR CODE POR TOKEN
-            // ------------------------------------------------
+            if (
+                !code
+            ) {
 
-            console.log(
-                "🔄 Intercambiando código OAuth..."
-            );
+                return res
+
+                    .status(400)
+
+                    .send(
+
+                        "No se recibió código OAuth."
+
+                    );
+
+            }
 
 
-            const response =
+            const savedState =
+
+                req.session
+
+                    ? req.session.mercadolibreOAuthState
+
+                    : null;
+
+
+            if (
+
+                !state ||
+
+                !savedState ||
+
+                state !== savedState
+
+            ) {
+
+                return res
+
+                    .status(403)
+
+                    .send(
+
+                        "Estado OAuth inválido."
+
+                    );
+
+            }
+
+
+            const appcraftUserId =
+
+                req.session
+
+                    ? req.session.mercadolibreOAuthUserId
+
+                    : null;
+
+
+            const tokenResponse =
+
                 await axios.post(
 
                     "https://api.mercadolibre.com/oauth/token",
@@ -1080,19 +1910,27 @@ router.get(
                     new URLSearchParams({
 
                         grant_type:
+
                             "authorization_code",
 
+
                         client_id:
+
                             MERCADOLIBRE_CLIENT_ID,
 
+
                         client_secret:
+
                             MERCADOLIBRE_CLIENT_SECRET,
+
 
                         code:
 
                             code,
 
+
                         redirect_uri:
+
                             MERCADOLIBRE_REDIRECT_URI
 
                     }).toString(),
@@ -1102,6 +1940,7 @@ router.get(
                         headers: {
 
                             "Content-Type":
+
                                 "application/x-www-form-urlencoded"
 
                         }
@@ -1111,154 +1950,204 @@ router.get(
                 );
 
 
-            const data =
-                response.data;
+            const tokenData =
+
+                tokenResponse.data;
+
+
+            const accessToken =
+
+                tokenData.access_token;
+
+
+            const refreshToken =
+
+                tokenData.refresh_token;
+
+
+            const mercadoLibreUserId =
+
+                tokenData.user_id;
 
 
             if (
-                !data.access_token
+                !accessToken
             ) {
 
                 throw new Error(
-                    "Mercado Libre no devolvió access_token."
+
+                    "No se recibió Access Token."
+
                 );
 
             }
 
 
-            // ------------------------------------------------
-            // GUARDAR TOKEN
-            // ------------------------------------------------
+            let mercadoLibreUser =
+
+                null;
+
+
+            try {
+
+                const userResponse =
+
+                    await mlGet(
+
+                        "https://api.mercadolibre.com/users/me",
+
+                        accessToken
+
+                    );
+
+
+                mercadoLibreUser =
+
+                    userResponse.data;
+
+            } catch (
+                errorUser
+            ) {
+
+                console.error(
+
+                    "⚠️ Error /users/me:",
+
+                    errorUser.response
+
+                        ? errorUser.response.data
+
+                        : errorUser.message
+
+                );
+
+            }
+
+
+            // =================================================
+            // GUARDAR TOKEN PARA WEBHOOK
+            // =================================================
 
             guardarTokenUsuario(
 
-                data.user_id,
+                mercadoLibreUserId,
 
-                data.access_token,
+                accessToken,
 
-                data.refresh_token
+                refreshToken
 
             );
 
 
-            // ------------------------------------------------
-            // GUARDAR EN SESIÓN
-            // ------------------------------------------------
-
-            req.session.mercadolibreAccessToken =
-                data.access_token;
-
-            req.session.mercadolibreUserId =
-                data.user_id;
+            // =================================================
+            // GUARDAR SESIÓN
+            // =================================================
 
             req.session.mercadolibreConnected =
+
                 true;
 
 
-            console.log(
-                "=========================================="
-            );
+            req.session.mercadolibreAccessToken =
+
+                accessToken;
+
+
+            req.session.mercadolibreRefreshToken =
+
+                refreshToken;
+
+
+            req.session.mercadolibreUserId =
+
+                mercadoLibreUserId;
+
+
+            req.session.mercadolibreAccount =
+
+                mercadoLibreUser;
+
+
+            req.session.mercadolibreAppcraftUserId =
+
+                appcraftUserId;
+
+
+            delete req.session
+                .mercadolibreOAuthState;
+
+
+            delete req.session
+                .mercadolibreOAuthUserId;
+
 
             console.log(
+
+                "=========================================="
+
+            );
+
+
+            console.log(
+
                 "✅ MERCADO LIBRE CONECTADO"
+
             );
 
-            console.log(
-                "Usuario ML:",
-                data.user_id
-            );
 
             console.log(
+
+                "👤 USER ID:",
+
+                mercadoLibreUserId
+
+            );
+
+
+            console.log(
+
                 "=========================================="
+
             );
 
 
             return res.redirect(
-                "/panel/logistica/mercadolibre"
+
+                "/panel/logistica/mercadolibre?connected=1"
+
             );
 
-
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
-                "=========================================="
-            );
 
-            console.error(
-                "❌ ERROR CALLBACK MERCADO LIBRE"
-            );
+                "❌ ERROR CALLBACK:",
 
-            console.error(
-                "=========================================="
-            );
-
-            console.error(
-                "Mensaje:",
-                error.message
-            );
-
-            console.error(
-                "Stack:",
-                error.stack
-            );
-
-
-            if (
                 error.response
-            ) {
 
-                console.error(
-                    "HTTP STATUS:",
-                    error.response.status
-                );
+                    ? error.response.data
 
-                console.error(
-                    "RESPUESTA API:",
-                    error.response.data
-                );
+                    : error.message
 
-            }
+            );
 
 
             return res
+
                 .status(500)
-                .send(`
-                    <h1>
-                        Error conectando Mercado Libre
-                    </h1>
 
-                    <h2>
-                        Mensaje:
-                    </h2>
+                .send(
 
-                    <pre style="white-space:pre-wrap;">
-${error.message}
-                    </pre>
+                    "Error conectando Mercado Libre."
 
-                    <h2>
-                        Detalle:
-                    </h2>
-
-                    <pre style="white-space:pre-wrap;">
-${error.response?.data
-    ? JSON.stringify(
-        error.response.data,
-        null,
-        2
-    )
-    : error.stack}
-                    </pre>
-
-                    <br>
-
-                    <a href="/panel/logistica/mercadolibre">
-                        Volver al módulo
-                    </a>
-                `);
+                );
 
         }
 
     }
+
 );
 
 
@@ -1267,550 +2156,137 @@ ${error.response?.data
 // ============================================================
 
 router.get(
+
     "/estado",
+
     isAuthenticated,
-    (req, res) => {
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
 
         try {
+
+            const accessToken =
+
+                obtenerAccessToken(
+                    req
+                );
+
+
+            const cuenta =
+
+                req.session
+
+                    ? req.session.mercadolibreAccount
+
+                    : null;
+
 
             return res.json({
 
                 ok:
+
                     true,
+
 
                 conectado:
 
-                    !!req.session
-                        ?.mercadolibreAccessToken,
+                    !!accessToken,
 
-                user:
 
-                    req.session
-                        ?.mercadolibreUserId ||
+                cuenta:
 
-                    null
+                    cuenta
+
+                        ? {
+
+                            id:
+
+                                cuenta.id,
+
+
+                            nickname:
+
+                                cuenta.nickname,
+
+
+                            firstName:
+
+                                cuenta.first_name,
+
+
+                            lastName:
+
+                                cuenta.last_name
+
+                        }
+
+                        : null
 
             });
 
-        } catch (error) {
-
-            console.error(
-                "❌ ERROR ESTADO ML:",
-                error
-            );
+        } catch (
+            error
+        ) {
 
             return res
+
                 .status(500)
+
                 .json({
 
                     ok:
-                        false,
 
-                    error:
-                        error.message
+                        false
 
                 });
 
         }
 
     }
+
 );
 
 
 // ============================================================
-// SCANNER QR / BARCODE
-// ============================================================
-
-router.post(
-    "/scan",
-    isAuthenticated,
-    async (req, res) => {
-
-        try {
-
-            const {
-                codigo
-            } = req.body;
-
-
-            if (!codigo) {
-
-                return res
-                    .status(400)
-                    .json({
-
-                        ok:
-                            false,
-
-                        error:
-                            "Código vacío"
-
-                    });
-
-            }
-
-
-            const token =
-                obtenerAccessToken(req);
-
-
-            if (!token) {
-
-                return res
-                    .status(401)
-                    .json({
-
-                        ok:
-                            false,
-
-                        error:
-                            "Mercado Libre no conectado"
-
-                    });
-
-            }
-
-
-            console.log(
-                "🔎 Consultando shipment:",
-                codigo
-            );
-
-
-            const response =
-                await mlGet(
-
-                    `https://api.mercadolibre.com/shipments/${encodeURIComponent(codigo)}`,
-
-                    token
-
-                );
-
-
-            const paquete =
-                transformarShipment(
-                    response.data
-                );
-
-
-            if (
-                !paqueteExiste(
-                    paquete.shipment_id
-                )
-            ) {
-
-                paquetesFlexEscaneados.push(
-                    paquete
-                );
-
-            }
-
-
-            return res.json({
-
-                ok:
-                    true,
-
-                paquete
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ ERROR SCANNER ML:",
-                error.response?.data ||
-                error.message
-            );
-
-
-            return res
-                .status(
-                    error.response?.status ||
-                    500
-                )
-                .json({
-
-                    ok:
-                        false,
-
-                    error:
-                        error.response?.data ||
-                        error.message
-
-                });
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// PROCESAR FLEX HANDSHAKE
-// ============================================================
-
-async function procesarFlexHandshake(
-    data
-) {
-
-    const resource =
-        data.resource;
-
-    const userId =
-        data.user_id;
-
-    const shipmentId =
-        extraerShipmentId(
-            resource
-        );
-
-    const siteId =
-        extraerSiteId(
-            resource
-        );
-
-
-    console.log(
-        "🚚 FLEX HANDSHAKE",
-        {
-
-            userId,
-
-            shipmentId,
-
-            siteId
-
-        }
-    );
-
-
-    if (!shipmentId) {
-
-        return {
-
-            ok:
-                false,
-
-            error:
-                "No se encontró shipment_id"
-
-        };
-
-    }
-
-
-    if (
-        paqueteExiste(
-            shipmentId
-        )
-    ) {
-
-        return {
-
-            ok:
-                true,
-
-            duplicado:
-                true
-
-        };
-
-    }
-
-
-    const accessToken =
-        obtenerTokenPorUsuario(
-            userId
-        );
-
-
-    if (!accessToken) {
-
-        console.error(
-            "❌ No existe token ML para:",
-            userId
-        );
-
-        return {
-
-            ok:
-                false,
-
-            error:
-                "No existe token OAuth"
-
-        };
-
-    }
-
-
-    let assignment =
-        null;
-
-
-    // ------------------------------------------------
-    // OBTENER ASSIGNMENT FLEX
-    // ------------------------------------------------
-
-    try {
-
-        const response =
-            await mlGet(
-
-                `https://api.mercadolibre.com/flex/sites/${siteId}/shipments/${shipmentId}/assignment/v2`,
-
-                accessToken
-
-            );
-
-        assignment =
-            response.data;
-
-    } catch (error) {
-
-        console.log(
-            "⚠️ No se obtuvo assignment:",
-            error.response?.data ||
-            error.message
-        );
-
-    }
-
-
-    // ------------------------------------------------
-    // OBTENER SHIPMENT
-    // ------------------------------------------------
-
-    let shipment;
-
-
-    try {
-
-        const response =
-            await mlGet(
-
-                `https://api.mercadolibre.com/shipments/${shipmentId}`,
-
-                accessToken
-
-            );
-
-        shipment =
-            response.data;
-
-    } catch (error) {
-
-        console.error(
-            "❌ Error obteniendo shipment:",
-            error.response?.data ||
-            error.message
-        );
-
-        return {
-
-            ok:
-                false,
-
-            error:
-                "No se pudo obtener shipment"
-
-        };
-
-    }
-
-
-    const paquete =
-        transformarShipment(
-
-            shipment,
-
-            null,
-
-            assignment
-
-        );
-
-
-    paquete.webhook =
-        data;
-
-
-    if (
-        !paqueteExiste(
-            paquete.shipment_id
-        )
-    ) {
-
-        paquetesFlexEscaneados.push(
-            paquete
-        );
-
-    }
-
-
-    console.log(
-        "✅ FLEX GUARDADO:",
-        paquete.shipment_id
-    );
-
-
-    return {
-
-        ok:
-            true,
-
-        paquete
-
-    };
-
-}
-
-
-// ============================================================
-// WEBHOOK MERCADO LIBRE
+// VER PAQUETES ESCANEADOS
 //
-// POST:
-// /panel/logistica/mercadolibre/webhook
+// ESTA ES LA RUTA QUE TIENE QUE CONSULTAR EL FRONT.
 //
-// NO lleva autenticación
-// ============================================================
-
-router.post(
-    "/webhook",
-    async (req, res) => {
-
-        try {
-
-            const data =
-                req.body || {};
-
-
-            console.log(
-                "=========================================="
-            );
-
-            console.log(
-                "📡 WEBHOOK MERCADO LIBRE"
-            );
-
-            console.log(
-                "Fecha:",
-                new Date().toISOString()
-            );
-
-            console.log(
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-            );
-
-            console.log(
-                "=========================================="
-            );
-
-
-            // ------------------------------------------------
-            // RESPONDER RÁPIDO A MERCADO LIBRE
-            // ------------------------------------------------
-
-            res.sendStatus(
-                200
-            );
-
-
-            // ------------------------------------------------
-            // IGNORAR TODO LO QUE NO SEA FLEX
-            // ------------------------------------------------
-
-            if (
-                data.topic !==
-                "flex-handshakes"
-            ) {
-
-                console.log(
-                    "Webhook ignorado:",
-                    data.topic
-                );
-
-                return;
-
-            }
-
-
-            // ------------------------------------------------
-            // PROCESAR FLEX
-            // ------------------------------------------------
-
-            try {
-
-                const resultado =
-                    await procesarFlexHandshake(
-                        data
-                    );
-
-
-                console.log(
-                    "📦 Resultado procesamiento Flex:",
-                    resultado
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "❌ ERROR PROCESANDO FLEX:",
-                    error
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "❌ ERROR WEBHOOK:",
-                error
-            );
-
-
-            if (
-                !res.headersSent
-            ) {
-
-                return res
-                    .sendStatus(
-                        500
-                    );
-
-            }
-
-        }
-
-    }
-);
-
-
-// ============================================================
-// LISTAR PAQUETES ESCANEADOS
 // ============================================================
 
 router.get(
+
     "/paquetes-escaneados",
+
     isAuthenticated,
-    (req, res) => {
+
+    (
+
+        req,
+
+        res
+
+    ) => {
 
         try {
 
             return res.json({
 
                 ok:
+
                     true,
+
 
                 total:
 
                     paquetesFlexEscaneados.length,
+
 
                 paquetes:
 
@@ -1818,114 +2294,548 @@ router.get(
 
             });
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
-                "❌ ERROR LISTANDO PAQUETES:",
+
+                "❌ Error paquetes escaneados:",
+
                 error
+
             );
 
+
             return res
+
                 .status(500)
+
                 .json({
 
                     ok:
+
                         false,
 
-                    error:
-                        error.message
+
+                    mensaje:
+
+                        "Error obteniendo paquetes escaneados."
 
                 });
 
         }
 
     }
+
 );
 
 
 // ============================================================
-// TEST SHIPMENT
+// SINCRONIZAR
+//
+// AHORA CONSULTA LOS PAQUETES RECIBIDOS POR FLEX-HANDSHAKES.
+//
+// YA NO DEPENDE DE /orders/search PARA DETECTAR ESCANEOS.
+//
 // ============================================================
 
-router.get(
-    "/test-flex/:id",
+router.post(
+
+    "/sincronizar",
+
     isAuthenticated,
-    async (req, res) => {
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
 
         try {
 
-            const token =
+            return res.json({
+
+                ok:
+
+                    true,
+
+
+                conectado:
+
+                    !!obtenerAccessToken(
+                        req
+                    ),
+
+
+                mensaje:
+
+                    paquetesFlexEscaneados.length > 0
+
+                        ? `Hay ${paquetesFlexEscaneados.length} paquetes Flex escaneados.`
+
+                        : "Todavía no se recibió ningún paquete escaneado desde Mercado Envíos Flex.",
+
+
+                totalShipments:
+
+                    paquetesFlexEscaneados.length,
+
+
+                totalFlex:
+
+                    paquetesFlexEscaneados.length,
+
+
+                pendingShipments:
+
+                    paquetesFlexEscaneados.filter(
+
+                        paquete =>
+
+                            paquete.estado ===
+                                "pending" ||
+
+                            paquete.estado ===
+                                "pendiente"
+
+                    ).length,
+
+
+                envios:
+
+                    paquetesFlexEscaneados
+
+            });
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+
+                "❌ Error sincronizando:",
+
+                error
+
+            );
+
+
+            return res
+
+                .status(500)
+
+                .json({
+
+                    ok:
+
+                        false,
+
+
+                    mensaje:
+
+                        "Error sincronizando paquetes."
+
+                });
+
+        }
+
+    }
+
+);
+
+
+// ============================================================
+// DIAGNÓSTICO FLEX
+//
+// Permite probar manualmente un shipment.
+//
+// URL:
+//
+// GET
+// /panel/logistica/mercadolibre/test-flex/SHIPMENT_ID
+//
+// ============================================================
+
+router.get(
+
+    "/test-flex/:shipmentId",
+
+    isAuthenticated,
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
+
+        try {
+
+            const accessToken =
+
                 obtenerAccessToken(
                     req
                 );
 
 
-            if (!token) {
+            if (
+                !accessToken
+            ) {
 
                 return res
+
                     .status(401)
+
                     .json({
 
                         ok:
+
                             false,
 
-                        error:
-                            "Sin conexión Mercado Libre"
+
+                        mensaje:
+
+                            "No hay conexión OAuth."
 
                     });
 
             }
 
 
-            const response =
+            const shipmentId =
+
+                req.params.shipmentId;
+
+
+            const shipmentResponse =
+
                 await mlGet(
 
-                    `https://api.mercadolibre.com/shipments/${encodeURIComponent(req.params.id)}`,
+                    `https://api.mercadolibre.com/shipments/${shipmentId}`,
 
-                    token
+                    accessToken
 
                 );
+
+
+            let assignment =
+
+                null;
+
+
+            try {
+
+                const assignmentResponse =
+
+                    await mlGet(
+
+                        `https://api.mercadolibre.com/flex/sites/${MERCADOLIBRE_SITE_ID}/shipments/${shipmentId}/assignment/v2`,
+
+                        accessToken
+
+                    );
+
+
+                assignment =
+
+                    assignmentResponse.data;
+
+            } catch (
+                assignmentError
+            ) {
+
+                console.error(
+
+                    "Error assignment:",
+
+                    assignmentError.response
+
+                        ? assignmentError.response.data
+
+                        : assignmentError.message
+
+                );
+
+            }
 
 
             return res.json({
 
                 ok:
+
                     true,
 
+
                 shipment:
-                    response.data
+
+                    shipmentResponse.data,
+
+
+                assignment:
+
+                    assignment
 
             });
 
-
-        } catch (error) {
-
-            console.error(
-                "❌ ERROR TEST SHIPMENT:",
-                error.response?.data ||
-                error.message
-            );
-
+        } catch (
+            error
+        ) {
 
             return res
+
                 .status(
-                    error.response?.status ||
-                    500
+
+                    error.response
+
+                        ? error.response.status
+
+                        : 500
+
                 )
+
                 .json({
 
                     ok:
+
                         false,
 
-                    error:
-                        error.response?.data ||
-                        error.message
+
+                    mensaje:
+
+                        "Error consultando shipment.",
+
+
+                    detalle:
+
+                        error.response
+
+                            ? error.response.data
+
+                            : error.message
 
                 });
 
         }
 
     }
+
+);
+
+
+// ============================================================
+// WEBHOOK MERCADO LIBRE
+//
+// ESTA RUTA ES PÚBLICA.
+//
+// NO PUEDE TENER isAuthenticated.
+//
+// Mercado Libre debe poder acceder directamente.
+//
+// ============================================================
+
+router.post(
+
+    "/webhook",
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
+
+        try {
+
+            const body =
+
+                req.body || {};
+
+
+            console.log(
+
+                "=========================================="
+
+            );
+
+
+            console.log(
+
+                "📡 WEBHOOK MERCADO LIBRE RECIBIDO"
+
+            );
+
+
+            console.log(
+
+                "📅 Fecha:",
+
+                new Date().toISOString()
+
+            );
+
+
+            console.log(
+
+                "📌 Topic:",
+
+                body.topic
+
+            );
+
+
+            console.log(
+
+                "🔗 Resource:",
+
+                body.resource
+
+            );
+
+
+            console.log(
+
+                "👤 User ID:",
+
+                body.user_id
+
+            );
+
+
+            console.log(
+
+                "📦 Body:",
+
+                JSON.stringify(
+
+                    body,
+
+                    null,
+
+                    2
+
+                )
+
+            );
+
+
+            console.log(
+
+                "=========================================="
+
+            );
+
+
+            // =================================================
+            // RESPONDER RÁPIDO A MERCADO LIBRE
+            // =================================================
+
+            res.sendStatus(
+                200
+            );
+
+
+            // =================================================
+            // SOLO PROCESAR FLEX-HANDSHAKES
+            // =================================================
+
+            if (
+
+                body.topic !==
+                    "flex-handshakes"
+
+            ) {
+
+                console.log(
+
+                    "ℹ️ Webhook ignorado. Topic:",
+
+                    body.topic
+
+                );
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // PROCESAR ASÍNCRONAMENTE
+            // =================================================
+
+            try {
+
+                const resultado =
+
+                    await procesarFlexHandshake(
+
+                        body
+
+                    );
+
+
+                console.log(
+
+                    "📊 Resultado procesamiento:",
+
+                    JSON.stringify(
+
+                        resultado,
+
+                        null,
+
+                        2
+
+                    )
+
+                );
+
+            } catch (
+                processingError
+            ) {
+
+                console.error(
+
+                    "❌ Error procesando Flex Handshake:",
+
+                    processingError
+
+                );
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+
+                "❌ ERROR WEBHOOK:",
+
+                error
+
+            );
+
+
+            if (
+                !res.headersSent
+            ) {
+
+                return res.sendStatus(
+                    500
+                );
+
+            }
+
+        }
+
+    }
+
 );
 
 
@@ -1934,4 +2844,5 @@ router.get(
 // ============================================================
 
 module.exports =
+
     router;

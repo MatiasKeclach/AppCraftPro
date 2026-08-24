@@ -1,0 +1,4164 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Control de Reparto</title>
+
+<!-- OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<!-- Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- PDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
+    --info:#0891b2;
+    --dark:#0f172a;
+    --radius:18px;
+    --shadow:0 8px 30px rgba(15,23,42,.08);
+}
+
+body{
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:80px;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.app{
+    width:100%;
+    max-width:1600px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:#fff;
+    padding:18px 16px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.header-inner{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.brand-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.brand h1{
+    font-size:17px;
+}
+
+.brand small{
+    color:#94a3b8;
+    display:block;
+    margin-top:2px;
+}
+
+.header-date{
+    text-align:right;
+    font-size:12px;
+    color:#cbd5e1;
+}
+
+/* NAV */
+
+.nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:68px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:100;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
+}
+
+.nav button{
+    flex:1;
+    background:transparent;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    font-size:11px;
+}
+
+.nav button span{
+    font-size:21px;
+}
+
+.nav button.active{
+    color:var(--primary);
+    font-weight:700;
+}
+
+/* MAIN */
+
+main{
+    padding:16px;
+}
+
+.view{
+    display:none;
+}
+
+.view.active{
+    display:block;
+}
+
+.section-title{
+    margin-bottom:14px;
+}
+
+.section-title h2{
+    font-size:22px;
+}
+
+.section-title p{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+}
+
+/* DASHBOARD */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:15px;
+    box-shadow:var(--shadow);
+}
+
+.stat-icon{
+    font-size:21px;
+    margin-bottom:7px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.stat-value{
+    font-size:27px;
+    font-weight:800;
+    margin-top:3px;
+}
+
+.stat.flex .stat-value{
+    color:#7c3aed;
+}
+
+.stat.particular .stat-value{
+    color:#0891b2;
+}
+
+.stat.success .stat-value{
+    color:var(--success);
+}
+
+.stat.danger .stat-value{
+    color:var(--danger);
+}
+
+.stat.warning .stat-value{
+    color:var(--warning);
+}
+
+/* CARDS */
+
+.card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-top:14px;
+    box-shadow:var(--shadow);
+}
+
+.card h3{
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+/* TIME */
+
+.time-box{
+    display:grid;
+    gap:10px;
+}
+
+.time-main{
+    font-size:30px;
+    font-weight:900;
+}
+
+.time-status{
+    padding:12px;
+    border-radius:14px;
+    font-weight:700;
+    text-align:center;
+}
+
+.status-ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-warning{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-danger{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* ACTIONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.btn{
+    min-height:48px;
+    border-radius:13px;
+    padding:10px 14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-weight:700;
+    transition:.15s;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:var(--primary-dark);
+}
+
+.btn-success{
+    background:var(--success);
+    color:white;
+}
+
+.btn-danger{
+    background:var(--danger);
+    color:white;
+}
+
+.btn-warning{
+    background:#f59e0b;
+    color:#fff;
+}
+
+.btn-dark{
+    background:var(--dark);
+    color:#fff;
+}
+
+.btn-light{
+    background:#f1f5f9;
+    color:#334155;
+}
+
+.btn-outline{
+    background:#fff;
+    border:1px solid var(--border);
+    color:#334155;
+}
+
+.btn-small{
+    min-height:36px;
+    padding:7px 10px;
+    font-size:12px;
+}
+
+/* PACKAGE LIST */
+
+.package-list{
+    display:grid;
+    gap:10px;
+}
+
+.package{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px;
+}
+
+.package-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+}
+
+.package-id{
+    font-weight:800;
+}
+
+.badge{
+    display:inline-flex;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.badge-flex{
+    background:#ede9fe;
+    color:#6d28d9;
+}
+
+.badge-particular{
+    background:#cffafe;
+    color:#0e7490;
+}
+
+.badge-pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.badge-delivered{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge-failed{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.package-info{
+    margin-top:10px;
+    display:grid;
+    gap:4px;
+}
+
+.package-info strong{
+    font-size:14px;
+}
+
+.package-info span{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.package-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:12px;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    gap:12px;
+}
+
+.form-group{
+    display:grid;
+    gap:5px;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:700;
+    color:#475569;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    padding:12px;
+    outline:none;
+    background:#fff;
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.7);
+    z-index:200;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:22px 22px 0 0;
+    padding:18px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.modal-header h3{
+    font-size:18px;
+}
+
+.close{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#f1f5f9;
+    font-size:20px;
+}
+
+/* CAMERA */
+
+.camera-container{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    background:#020617;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+#cameraVideo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.camera-overlay{
+    position:absolute;
+    inset:15%;
+    border:2px solid rgba(255,255,255,.9);
+    border-radius:15px;
+    pointer-events:none;
+}
+
+.camera-controls{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.camera-controls .btn{
+    flex:1;
+}
+
+/* PHOTO */
+
+.photo-preview{
+    width:100%;
+    max-height:280px;
+    object-fit:contain;
+    background:#f8fafc;
+    border-radius:14px;
+    margin-top:10px;
+}
+
+/* FILTER */
+
+.filters{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+    margin-bottom:14px;
+}
+
+.filters input,
+.filters select{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:11px;
+    background:#fff;
+}
+
+/* WEEK */
+
+.week-summary{
+    display:grid;
+    gap:10px;
+}
+
+.week-card{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:16px;
+    padding:14px;
+}
+
+.week-header{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.week-header h3{
+    margin:0;
+}
+
+.week-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-top:12px;
+}
+
+.week-mini{
+    background:#f8fafc;
+    border-radius:10px;
+    padding:9px;
+}
+
+.week-mini small{
+    color:var(--muted);
+    display:block;
+}
+
+.week-mini strong{
+    font-size:18px;
+}
+
+/* TABLE */
+
+.table-wrap{
+    width:100%;
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+}
+
+th,
+td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:12px;
+}
+
+th{
+    background:#f8fafc;
+    font-weight:800;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    padding:35px 15px;
+    color:var(--muted);
+}
+
+.empty-icon{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:15px;
+    right:15px;
+    bottom:82px;
+    z-index:500;
+    padding:14px 16px;
+    background:#0f172a;
+    color:#fff;
+    border-radius:14px;
+    transform:translateY(150px);
+    opacity:0;
+    transition:.25s;
+    text-align:center;
+    font-size:13px;
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+/* DESKTOP */
+
+@media(min-width:600px){
+
+    main{
+        padding:24px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .form-grid.two{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .filters{
+        grid-template-columns:2fr 1fr 1fr;
+    }
+
+    .modal{
+        align-items:center;
+    }
+
+    .modal-box{
+        max-width:650px;
+        border-radius:22px;
+    }
+
+    .toast{
+        left:auto;
+        right:25px;
+        width:350px;
+        bottom:25px;
+    }
+}
+
+@media(min-width:900px){
+
+    body{
+        padding-bottom:0;
+    }
+
+    .nav{
+        position:fixed;
+        top:76px;
+        left:0;
+        bottom:0;
+        width:220px;
+        height:auto;
+        border-top:0;
+        border-right:1px solid var(--border);
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        padding:15px;
+        box-shadow:none;
+    }
+
+    .nav button{
+        flex:none;
+        height:52px;
+        flex-direction:row;
+        justify-content:flex-start;
+        padding:0 14px;
+        border-radius:12px;
+        gap:12px;
+        font-size:13px;
+    }
+
+    .nav button span{
+        font-size:19px;
+    }
+
+    main{
+        margin-left:220px;
+        max-width:1380px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .actions{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .two-columns{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:14px;
+    }
+}
+
+@media(min-width:1200px){
+
+    .stats{
+        grid-template-columns:repeat(6,1fr);
+    }
+
+    .package-list{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <div class="header-inner">
+        <div class="brand">
+            <div class="brand-icon">🚚</div>
+            <div>
+                <h1>Control de Reparto</h1>
+                <small>Depósito · Repartidor</small>
+            </div>
+        </div>
+
+        <div class="header-date" id="headerDate"></div>
+    </div>
+</header>
+
+<main>
+
+<!-- DASHBOARD -->
+<section id="view-dashboard" class="view active">
+
+    <div class="section-title">
+        <h2>Dashboard</h2>
+        <p id="dashboardDate"></p>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total</div>
+            <div class="stat-value" id="statTotal">0</div>
+        </div>
+
+        <div class="stat flex">
+            <div class="stat-icon">🟣</div>
+            <div class="stat-label">Flex</div>
+            <div class="stat-value" id="statFlex">0</div>
+        </div>
+
+        <div class="stat particular">
+            <div class="stat-icon">🔵</div>
+            <div class="stat-label">Particulares</div>
+            <div class="stat-value" id="statParticular">0</div>
+        </div>
+
+        <div class="stat success">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Entregados</div>
+            <div class="stat-value" id="statDelivered">0</div>
+        </div>
+
+        <div class="stat danger">
+            <div class="stat-icon">❌</div>
+            <div class="stat-label">No entregados</div>
+            <div class="stat-value" id="statFailed">0</div>
+        </div>
+
+        <div class="stat warning">
+            <div class="stat-icon">🟡</div>
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value" id="statPending">0</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>⏱️ Estimación del reparto</h3>
+
+        <div class="time-box">
+            <div>
+                <span class="stat-label">Tiempo estimado</span>
+                <div class="time-main" id="estimatedTime">0 min</div>
+            </div>
+
+            <div>
+                <span class="stat-label">Finalización estimada</span>
+                <div class="time-main" id="estimatedFinish">--:--</div>
+            </div>
+
+            <div id="timeStatus" class="time-status status-ok">
+                Sin paquetes cargados
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Acciones rápidas</h3>
+
+        <div class="actions">
+
+            <button class="btn btn-primary" onclick="openScanner()">
+                📷 Escanear
+            </button>
+
+            <button class="btn btn-dark" onclick="openManual()">
+                ✍️ Manual
+            </button>
+
+            <button class="btn btn-success" onclick="showView('packages')">
+                📦 Ver paquetes
+            </button>
+
+            <button class="btn btn-warning" onclick="closeDay()">
+                🔒 Cerrar día
+            </button>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📊 Estado de la jornada</h3>
+
+        <div id="dayProgress"></div>
+    </div>
+
+</section>
+
+
+<!-- PAQUETES -->
+<section id="view-packages" class="view">
+
+    <div class="section-title">
+        <h2>📦 Paquetes</h2>
+        <p>Todos los paquetes de la jornada actual.</p>
+    </div>
+
+    <div class="filters">
+
+        <input
+            type="search"
+            id="searchPackages"
+            placeholder="🔎 Buscar destinatario, dirección..."
+            oninput="renderPackages()"
+        >
+
+        <select id="filterType" onchange="renderPackages()">
+            <option value="all">Todos</option>
+            <option value="flex">Flex</option>
+            <option value="particular">Particular</option>
+        </select>
+
+        <select id="filterStatus" onchange="renderPackages()">
+            <option value="all">Todos los estados</option>
+            <option value="pending">Pendientes</option>
+            <option value="delivered">Entregados</option>
+            <option value="failed">No entregados</option>
+        </select>
+
+    </div>
+
+    <div id="packageList" class="package-list"></div>
+
+</section>
+
+
+<!-- HISTORIAL -->
+<section id="view-history" class="view">
+
+    <div class="section-title">
+        <h2>📅 Historial diario</h2>
+        <p>Jornadas registradas en el sistema.</p>
+    </div>
+
+    <div id="historyList"></div>
+
+</section>
+
+
+<!-- SEMANAS -->
+<section id="view-weeks" class="view">
+
+    <div class="section-title">
+        <h2>📆 Semanas</h2>
+        <p>Resumen automático por semanas completas.</p>
+    </div>
+
+    <div id="weeksList" class="week-summary"></div>
+
+</section>
+
+
+<!-- ESTADISTICAS -->
+<section id="view-stats" class="view">
+
+    <div class="section-title">
+        <h2>📈 Estadísticas</h2>
+        <p>Resumen histórico de toda la actividad.</p>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total histórico</div>
+            <div class="stat-value" id="historyTotal">0</div>
+        </div>
+
+        <div class="stat flex">
+            <div class="stat-icon">🟣</div>
+            <div class="stat-label">Flex</div>
+            <div class="stat-value" id="historyFlex">0</div>
+        </div>
+
+        <div class="stat particular">
+            <div class="stat-icon">🔵</div>
+            <div class="stat-label">Particulares</div>
+            <div class="stat-value" id="historyParticular">0</div>
+        </div>
+
+        <div class="stat success">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Entregados</div>
+            <div class="stat-value" id="historyDelivered">0</div>
+        </div>
+
+        <div class="stat danger">
+            <div class="stat-icon">❌</div>
+            <div class="stat-label">No entregados</div>
+            <div class="stat-value" id="historyFailed">0</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>📊 Exportaciones</h3>
+
+        <div class="actions">
+
+            <button class="btn btn-success" onclick="exportExcel()">
+                📊 Excel
+            </button>
+
+            <button class="btn btn-danger" onclick="exportPDF()">
+                📄 PDF
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- NAV -->
+
+<nav class="nav">
+
+    <button class="active" data-view="dashboard" onclick="showView('dashboard')">
+        <span>🏠</span>
+        Inicio
+    </button>
+
+    <button data-view="packages" onclick="showView('packages')">
+        <span>📦</span>
+        Paquetes
+    </button>
+
+    <button data-view="history" onclick="showView('history')">
+        <span>📅</span>
+        Historial
+    </button>
+
+    <button data-view="weeks" onclick="showView('weeks')">
+        <span>📆</span>
+        Semanas
+    </button>
+
+    <button data-view="stats" onclick="showView('stats')">
+        <span>📈</span>
+        Estadísticas
+    </button>
+
+</nav>
+
+
+<!-- MODAL MANUAL -->
+
+<div class="modal" id="manualModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3>📦 Cargar paquete</h3>
+            <button class="close" onclick="closeModal('manualModal')">×</button>
+        </div>
+
+        <form id="packageForm">
+
+            <div class="form-grid two">
+
+                <div class="form-group">
+                    <label>Tipo de paquete</label>
+
+                    <select id="packageType" required>
+                        <option value="flex">Flex</option>
+                        <option value="particular">Particular</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Número / ID</label>
+
+                    <input
+                        id="packageCode"
+                        placeholder="Ej: FLEX123456"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Destinatario</label>
+
+                    <input
+                        id="recipient"
+                        placeholder="Nombre y apellido"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Dirección</label>
+
+                    <input
+                        id="address"
+                        placeholder="Calle y altura"
+                        required
+                    >
+                </div>
+
+                <div class="form-grid two">
+
+                    <div class="form-group">
+                        <label>Barrio</label>
+
+                        <input
+                            id="neighborhood"
+                            placeholder="Ej: Caballito"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zona</label>
+
+                        <input
+                            id="zone"
+                            placeholder="Ej: CABA"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-grid two">
+
+                    <div class="form-group">
+                        <label>Localidad</label>
+
+                        <input
+                            id="city"
+                            placeholder="Ej: CABA"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Código postal</label>
+
+                        <input
+                            id="postalCode"
+                            placeholder="Ej: 1405"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+
+                    <input
+                        id="phone"
+                        type="tel"
+                        placeholder="Opcional"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones</label>
+
+                    <textarea
+                        id="notes"
+                        placeholder="Información adicional..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto del paquete</label>
+
+                    <input
+                        id="packagePhoto"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                    >
+                </div>
+
+            </div>
+
+            <div style="margin-top:15px">
+
+                <button class="btn btn-primary" style="width:100%">
+                    💾 Guardar paquete
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- SCANNER -->
+
+<div class="modal" id="scannerModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>📷 Capturar paquete</h3>
+
+            <button
+                class="close"
+                onclick="closeScanner()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="camera-container">
+
+            <video
+                id="cameraVideo"
+                autoplay
+                playsinline
+            ></video>
+
+            <div class="camera-overlay"></div>
+
+        </div>
+
+        <div class="camera-controls">
+
+            <button
+                class="btn btn-primary"
+                onclick="capturePhoto()"
+            >
+                📸 Capturar
+            </button>
+
+            <button
+                class="btn btn-light"
+                onclick="switchCamera()"
+            >
+                🔄 Cámara
+            </button>
+
+        </div>
+
+        <canvas
+            id="cameraCanvas"
+            style="display:none"
+        ></canvas>
+
+        <img
+            id="capturedImage"
+            class="photo-preview"
+            style="display:none"
+        >
+
+        <div
+            id="ocrStatus"
+            style="margin-top:12px;color:#64748b;font-size:13px"
+        ></div>
+
+        <button
+            id="processPhotoButton"
+            class="btn btn-success"
+            style="width:100%;margin-top:12px;display:none"
+            onclick="processCapturedPhoto()"
+        >
+            🔎 Leer paquete
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ENTREGA -->
+
+<div class="modal" id="deliveryModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>✅ Confirmar entrega</h3>
+
+            <button class="close" onclick="closeModal('deliveryModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="deliveryPackageInfo"></div>
+
+        <div class="form-grid" style="margin-top:15px">
+
+            <div class="form-group">
+                <label>Quién recibió</label>
+
+                <input
+                    id="receivedBy"
+                    placeholder="Nombre y apellido"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>DNI</label>
+
+                <input
+                    id="receivedDni"
+                    inputmode="numeric"
+                    placeholder="DNI"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Observaciones</label>
+
+                <textarea id="deliveryNotes"></textarea>
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-success"
+            style="width:100%;margin-top:15px"
+            onclick="confirmDelivery()"
+        >
+            ✅ Confirmar entrega
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- NO ENTREGADO -->
+
+<div class="modal" id="failedModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>❌ Registrar no entrega</h3>
+
+            <button class="close" onclick="closeModal('failedModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="failedPackageInfo"></div>
+
+        <div class="form-grid" style="margin-top:15px">
+
+            <div class="form-group">
+
+                <label>Motivo</label>
+
+                <select id="failedReason">
+
+                    <option value="Destinatario ausente">
+                        Destinatario ausente
+                    </option>
+
+                    <option value="Dirección incorrecta">
+                        Dirección incorrecta
+                    </option>
+
+                    <option value="No se pudo acceder">
+                        No se pudo acceder
+                    </option>
+
+                    <option value="Otro">
+                        Otro
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Foto de evidencia</label>
+
+                <input
+                    id="evidencePhoto"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    required
+                >
+
+                <small style="color:#64748b">
+                    Recomendado: foto donde se vea la dirección/numeración.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Observaciones</label>
+
+                <textarea id="failedNotes"></textarea>
+
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-danger"
+            style="width:100%;margin-top:15px"
+            onclick="confirmFailed()"
+        >
+            ❌ Registrar no entrega
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- DETALLE -->
+
+<div class="modal" id="detailModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>📦 Detalle del paquete</h3>
+
+            <button class="close" onclick="closeModal('detailModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="detailContent"></div>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN
+========================================================= */
+
+const STORAGE_KEY = "control_reparto_mvp_v1";
+
+const CONFIG = {
+
+    horaLimite: 19,
+
+    /* minutos estimados por paquete */
+    minutosPorPaquete: 7,
+
+    /* minutos extra iniciales */
+    minutosPreparacion: 10
+
+};
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let database = loadDatabase();
+
+let currentPackageId = null;
+
+let cameraStream = null;
+
+let facingMode = "environment";
+
+let capturedDataUrl = null;
+
+
+/* =========================================================
+   BASE DE DATOS LOCAL
+========================================================= */
+
+function loadDatabase(){
+
+    try{
+
+        const data = localStorage.getItem(STORAGE_KEY);
+
+        if(data){
+
+            return JSON.parse(data);
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    return {
+
+        packages: [],
+
+        days: [],
+
+        closedDays: []
+
+    };
+
+}
+
+
+function saveDatabase(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(database)
+    );
+
+}
+
+
+/* =========================================================
+   FECHAS
+========================================================= */
+
+function todayKey(){
+
+    const d = new Date();
+
+    const y = d.getFullYear();
+
+    const m = String(d.getMonth()+1).padStart(2,"0");
+
+    const day = String(d.getDate()).padStart(2,"0");
+
+    return `${y}-${m}-${day}`;
+
+}
+
+
+function formatDate(dateString){
+
+    const d = new Date(dateString + "T12:00:00");
+
+    return d.toLocaleDateString(
+        "es-AR",
+        {
+            weekday:"long",
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function formatDateShort(dateString){
+
+    const d = new Date(dateString + "T12:00:00");
+
+    return d.toLocaleDateString(
+        "es-AR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function nowTime(){
+
+    return new Date().toLocaleTimeString(
+        "es-AR",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+function updateHeader(){
+
+    const today = todayKey();
+
+    document.getElementById("headerDate").textContent =
+        formatDateShort(today);
+
+    document.getElementById("dashboardDate").textContent =
+        formatDate(today);
+
+}
+
+updateHeader();
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+function showView(view){
+
+    document
+        .querySelectorAll(".view")
+        .forEach(v => v.classList.remove("active"));
+
+    document
+        .getElementById("view-"+view)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(btn => {
+
+            btn.classList.toggle(
+                "active",
+                btn.dataset.view === view
+            );
+
+        });
+
+    if(view === "dashboard"){
+        renderDashboard();
+    }
+
+    if(view === "packages"){
+        renderPackages();
+    }
+
+    if(view === "history"){
+        renderHistory();
+    }
+
+    if(view === "weeks"){
+        renderWeeks();
+    }
+
+    if(view === "stats"){
+        renderStats();
+    }
+
+}
+
+
+/* =========================================================
+   PAQUETES DEL DÍA
+========================================================= */
+
+function todayPackages(){
+
+    return database.packages.filter(
+        p => p.date === todayKey()
+    );
+
+}
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+function generateId(){
+
+    return "PKG-" +
+        Date.now().toString(36).toUpperCase() +
+        "-" +
+        Math.random()
+            .toString(36)
+            .substring(2,6)
+            .toUpperCase();
+
+}
+
+
+/* =========================================================
+   CREAR PAQUETE
+========================================================= */
+
+function createPackage(data){
+
+    const pkg = {
+
+        id: generateId(),
+
+        date: todayKey(),
+
+        createdAt: new Date().toISOString(),
+
+        timeCreated: nowTime(),
+
+        type: data.type || "particular",
+
+        code: data.code || "",
+
+        recipient: data.recipient || "",
+
+        address: data.address || "",
+
+        neighborhood: data.neighborhood || "",
+
+        zone: data.zone || "",
+
+        city: data.city || "",
+
+        postalCode: data.postalCode || "",
+
+        phone: data.phone || "",
+
+        notes: data.notes || "",
+
+        photo: data.photo || null,
+
+        status:"pending",
+
+        delivery:null,
+
+        evidence:null
+
+    };
+
+    database.packages.push(pkg);
+
+    saveDatabase();
+
+    renderDashboard();
+
+    return pkg;
+
+}
+
+
+/* =========================================================
+   FORMULARIO MANUAL
+========================================================= */
+
+function openManual(){
+
+    document.getElementById("packageForm").reset();
+
+    document.getElementById("manualModal")
+        .classList.add("show");
+
+}
+
+
+document
+.getElementById("packageForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const file =
+        document.getElementById("packagePhoto").files[0];
+
+    let photo = null;
+
+    if(file){
+
+        photo = await fileToDataURL(file);
+
+    }
+
+    createPackage({
+
+        type:
+            document.getElementById("packageType").value,
+
+        code:
+            document.getElementById("packageCode").value.trim(),
+
+        recipient:
+            document.getElementById("recipient").value.trim(),
+
+        address:
+            document.getElementById("address").value.trim(),
+
+        neighborhood:
+            document.getElementById("neighborhood").value.trim(),
+
+        zone:
+            document.getElementById("zone").value.trim(),
+
+        city:
+            document.getElementById("city").value.trim(),
+
+        postalCode:
+            document.getElementById("postalCode").value.trim(),
+
+        phone:
+            document.getElementById("phone").value.trim(),
+
+        notes:
+            document.getElementById("notes").value.trim(),
+
+        photo
+
+    });
+
+    closeModal("manualModal");
+
+    showToast("📦 Paquete cargado correctamente");
+
+    renderPackages();
+
+});
+
+
+/* =========================================================
+   FILE -> DATA URL
+========================================================= */
+
+function fileToDataURL(file){
+
+    return new Promise((resolve,reject)=>{
+
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+/* =========================================================
+   CÁMARA
+========================================================= */
+
+async function openScanner(){
+
+    document
+        .getElementById("scannerModal")
+        .classList.add("show");
+
+    await startCamera();
+
+}
+
+
+async function startCamera(){
+
+    try{
+
+        if(cameraStream){
+
+            cameraStream
+                .getTracks()
+                .forEach(track => track.stop());
+
+        }
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video:{
+                    facingMode:facingMode,
+                    width:{ideal:1280},
+                    height:{ideal:720}
+                },
+
+                audio:false
+
+            });
+
+        const video =
+            document.getElementById("cameraVideo");
+
+        video.srcObject = cameraStream;
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("ocrStatus").textContent =
+            "No se pudo acceder a la cámara. Usá el botón de carga manual.";
+
+    }
+
+}
+
+
+async function switchCamera(){
+
+    facingMode =
+        facingMode === "environment"
+            ? "user"
+            : "environment";
+
+    await startCamera();
+
+}
+
+
+function capturePhoto(){
+
+    const video =
+        document.getElementById("cameraVideo");
+
+    const canvas =
+        document.getElementById("cameraCanvas");
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    capturedDataUrl =
+        canvas.toDataURL(
+            "image/jpeg",
+            .82
+        );
+
+    const img =
+        document.getElementById("capturedImage");
+
+    img.src = capturedDataUrl;
+
+    img.style.display = "block";
+
+    document
+        .getElementById("processPhotoButton")
+        .style.display = "flex";
+
+    document
+        .getElementById("ocrStatus")
+        .textContent =
+        "Foto capturada. Presioná «Leer paquete».";
+
+}
+
+
+async function processCapturedPhoto(){
+
+    if(!capturedDataUrl) return;
+
+    const status =
+        document.getElementById("ocrStatus");
+
+    status.textContent =
+        "🔎 Analizando imagen... Esto puede tardar unos segundos.";
+
+    try{
+
+        const result =
+            await Tesseract.recognize(
+                capturedDataUrl,
+                "spa",
+                {
+                    logger: m => {
+
+                        if(m.status){
+
+                            status.textContent =
+                                "🔎 " +
+                                m.status +
+                                " " +
+                                Math.round(
+                                    (m.progress || 0) * 100
+                                ) +
+                                "%";
+
+                        }
+
+                    }
+                }
+            );
+
+        const text =
+            result.data.text || "";
+
+        status.textContent =
+            "✅ Lectura terminada. Revisá y completá los datos.";
+
+        closeScanner();
+
+        openManual();
+
+        parseOCR(text);
+
+        document.getElementById("packagePhoto")
+            .dataset.cameraPhoto = capturedDataUrl;
+
+        capturedDataUrl = null;
+
+    }catch(error){
+
+        console.error(error);
+
+        status.textContent =
+            "❌ No se pudo leer automáticamente. Cargá los datos manualmente.";
+
+    }
+
+}
+
+
+function parseOCR(text){
+
+    const lines =
+        text
+            .split("\n")
+            .map(x => x.trim())
+            .filter(Boolean);
+
+    if(!lines.length) return;
+
+    let address = "";
+
+    let code = "";
+
+    const addressRegex =
+        /(.+?)\s+(\d{2,5})/;
+
+    for(const line of lines){
+
+        if(addressRegex.test(line)){
+
+            address = line;
+
+            break;
+
+        }
+
+    }
+
+    const numbers =
+        text.match(/\b\d{6,14}\b/g);
+
+    if(numbers && numbers.length){
+
+        code = numbers[0];
+
+    }
+
+    document.getElementById("packageCode").value =
+        code;
+
+    document.getElementById("address").value =
+        address;
+
+    /* Heurística simple para detectar Flex */
+
+    const upper =
+        text.toUpperCase();
+
+    if(
+        upper.includes("FLEX") ||
+        upper.includes("MERCADO ENVIOS") ||
+        upper.includes("MERCADO ENVÍOS")
+    ){
+
+        document.getElementById("packageType").value =
+            "flex";
+
+    }else{
+
+        document.getElementById("packageType").value =
+            "particular";
+
+    }
+
+    /* Intento de detectar teléfono */
+
+    const phone =
+        text.match(
+            /\b(?:11|15)?[\s-]?\d{4}[\s-]?\d{4}\b/
+        );
+
+    if(phone){
+
+        document.getElementById("phone").value =
+            phone[0];
+
+    }
+
+}
+
+
+/* =========================================================
+   CERRAR SCANNER
+========================================================= */
+
+function closeScanner(){
+
+    if(cameraStream){
+
+        cameraStream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        cameraStream = null;
+
+    }
+
+    document
+        .getElementById("scannerModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   MODALES
+========================================================= */
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   RENDER DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+    const packages =
+        todayPackages();
+
+    const total =
+        packages.length;
+
+    const flex =
+        packages.filter(p => p.type === "flex").length;
+
+    const particular =
+        packages.filter(p => p.type === "particular").length;
+
+    const delivered =
+        packages.filter(p => p.status === "delivered").length;
+
+    const failed =
+        packages.filter(p => p.status === "failed").length;
+
+    const pending =
+        packages.filter(p => p.status === "pending").length;
+
+    document.getElementById("statTotal").textContent =
+        total;
+
+    document.getElementById("statFlex").textContent =
+        flex;
+
+    document.getElementById("statParticular").textContent =
+        particular;
+
+    document.getElementById("statDelivered").textContent =
+        delivered;
+
+    document.getElementById("statFailed").textContent =
+        failed;
+
+    document.getElementById("statPending").textContent =
+        pending;
+
+    calculateTime(total);
+
+    renderProgress(
+        total,
+        delivered,
+        failed,
+        pending
+    );
+
+}
+
+
+/* =========================================================
+   ESTIMACIÓN
+========================================================= */
+
+function calculateTime(total){
+
+    if(total === 0){
+
+        document.getElementById("estimatedTime")
+            .textContent = "0 min";
+
+        document.getElementById("estimatedFinish")
+            .textContent = "--:--";
+
+        const status =
+            document.getElementById("timeStatus");
+
+        status.className =
+            "time-status status-ok";
+
+        status.textContent =
+            "Sin paquetes cargados";
+
+        return;
+
+    }
+
+    const minutes =
+        CONFIG.minutosPreparacion +
+        total * CONFIG.minutosPorPaquete;
+
+    const now =
+        new Date();
+
+    const finish =
+        new Date(
+            now.getTime() +
+            minutes * 60000
+        );
+
+    const finishHour =
+        finish.toLocaleTimeString(
+            "es-AR",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    document.getElementById("estimatedTime")
+        .textContent =
+        formatMinutes(minutes);
+
+    document.getElementById("estimatedFinish")
+        .textContent =
+        finishHour;
+
+    const limit =
+        new Date();
+
+    limit.setHours(
+        CONFIG.horaLimite,
+        0,
+        0,
+        0
+    );
+
+    const status =
+        document.getElementById("timeStatus");
+
+    const difference =
+        Math.round(
+            (limit - finish) / 60000
+        );
+
+    if(difference >= 30){
+
+        status.className =
+            "time-status status-ok";
+
+        status.textContent =
+            `🟢 Llega cómodo · margen aproximado ${difference} min`;
+
+    }else if(difference >= 0){
+
+        status.className =
+            "time-status status-warning";
+
+        status.textContent =
+            `🟡 Llega justo · margen aproximado ${difference} min`;
+
+    }else{
+
+        status.className =
+            "time-status status-danger";
+
+        status.textContent =
+            `🔴 No llega · estaría terminando ${Math.abs(difference)} min después`;
+
+    }
+
+}
+
+
+function formatMinutes(minutes){
+
+    const h =
+        Math.floor(minutes / 60);
+
+    const m =
+        minutes % 60;
+
+    if(h === 0){
+
+        return `${m} min`;
+
+    }
+
+    return `${h} h ${m} min`;
+
+}
+
+
+/* =========================================================
+   PROGRESO
+========================================================= */
+
+function renderProgress(
+    total,
+    delivered,
+    failed,
+    pending
+){
+
+    const container =
+        document.getElementById("dayProgress");
+
+    if(total === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">📦</div>
+                Todavía no hay paquetes cargados.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    const completed =
+        delivered + failed;
+
+    const percentage =
+        Math.round(
+            completed / total * 100
+        );
+
+    container.innerHTML = `
+
+        <div style="
+            height:14px;
+            background:#e2e8f0;
+            border-radius:999px;
+            overflow:hidden;
+        ">
+
+            <div style="
+                width:${percentage}%;
+                height:100%;
+                background:#16a34a;
+                transition:.3s;
+            "></div>
+
+        </div>
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            margin-top:8px;
+            font-size:12px;
+            color:#64748b;
+        ">
+
+            <span>${completed} completados</span>
+
+            <strong>${percentage}%</strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   RENDER PAQUETES
+========================================================= */
+
+function renderPackages(){
+
+    const container =
+        document.getElementById("packageList");
+
+    let packages =
+        todayPackages();
+
+    const search =
+        document.getElementById("searchPackages")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const type =
+        document.getElementById("filterType").value;
+
+    const status =
+        document.getElementById("filterStatus").value;
+
+    if(search){
+
+        packages =
+            packages.filter(p =>
+
+                `${p.recipient} ${p.address} ${p.code} ${p.zone} ${p.neighborhood}`
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+    }
+
+    if(type !== "all"){
+
+        packages =
+            packages.filter(p => p.type === type);
+
+    }
+
+    if(status !== "all"){
+
+        packages =
+            packages.filter(p => p.status === status);
+
+    }
+
+    packages =
+        packages.sort(
+            (a,b) =>
+                new Date(b.createdAt) -
+                new Date(a.createdAt)
+        );
+
+    if(!packages.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📦</div>
+                No hay paquetes para mostrar.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        packages
+            .map(packageHTML)
+            .join("");
+
+}
+
+
+function packageHTML(p){
+
+    const typeBadge =
+        p.type === "flex"
+            ? `<span class="badge badge-flex">FLEX</span>`
+            : `<span class="badge badge-particular">PARTICULAR</span>`;
+
+    let statusBadge = "";
+
+    if(p.status === "pending"){
+
+        statusBadge =
+            `<span class="badge badge-pending">PENDIENTE</span>`;
+
+    }
+
+    if(p.status === "delivered"){
+
+        statusBadge =
+            `<span class="badge badge-delivered">ENTREGADO</span>`;
+
+    }
+
+    if(p.status === "failed"){
+
+        statusBadge =
+            `<span class="badge badge-failed">NO ENTREGADO</span>`;
+
+    }
+
+    return `
+
+        <article class="package">
+
+            <div class="package-top">
+
+                <div>
+
+                    <div class="package-id">
+                        ${escapeHTML(p.code || p.id)}
+                    </div>
+
+                    <div style="margin-top:5px">
+                        ${typeBadge}
+                        ${statusBadge}
+                    </div>
+
+                </div>
+
+                <div style="
+                    font-size:11px;
+                    color:#64748b;
+                ">
+                    ${p.timeCreated}
+                </div>
+
+            </div>
+
+            <div class="package-info">
+
+                <strong>
+                    ${escapeHTML(p.recipient || "Sin destinatario")}
+                </strong>
+
+                <span>
+                    📍 ${escapeHTML(p.address || "Sin dirección")}
+                </span>
+
+                <span>
+                    ${escapeHTML(p.neighborhood || "")}
+                    ${p.zone ? " · " + escapeHTML(p.zone) : ""}
+                </span>
+
+            </div>
+
+            <div class="package-actions">
+
+                <button
+                    class="btn btn-light btn-small"
+                    onclick="showDetail('${p.id}')"
+                >
+                    👁️ Ver
+                </button>
+
+                ${
+                    p.status === "pending" && p.type === "particular"
+                    ?
+                    `
+                    <button
+                        class="btn btn-success btn-small"
+                        onclick="openDelivery('${p.id}')"
+                    >
+                        ✅ Entregado
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="openFailed('${p.id}')"
+                    >
+                        ❌ No entregado
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+                ${
+                    p.status === "pending" && p.type === "flex"
+                    ?
+                    `
+                    <button
+                        class="btn btn-success btn-small"
+                        onclick="markFlexDelivered('${p.id}')"
+                    >
+                        ✅ Entregado
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+                <button
+                    class="btn btn-outline btn-small"
+                    onclick="deletePackage('${p.id}')"
+                >
+                    🗑️
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   DETALLE
+========================================================= */
+
+function showDetail(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    let html = `
+
+        <div class="package-info">
+
+            <strong>${escapeHTML(p.recipient)}</strong>
+
+            <span>
+                📦 ${escapeHTML(p.code || p.id)}
+            </span>
+
+            <span>
+                📍 ${escapeHTML(p.address)}
+            </span>
+
+            <span>
+                🏘️ ${escapeHTML(p.neighborhood)}
+            </span>
+
+            <span>
+                🗺️ ${escapeHTML(p.zone)}
+            </span>
+
+            <span>
+                🏙️ ${escapeHTML(p.city)}
+            </span>
+
+            <span>
+                📞 ${escapeHTML(p.phone)}
+            </span>
+
+            <span>
+                🕐 Cargado: ${p.timeCreated}
+            </span>
+
+        </div>
+
+    `;
+
+    if(p.photo){
+
+        html += `
+            <img
+                src="${p.photo}"
+                class="photo-preview"
+                alt="Foto del paquete"
+            >
+        `;
+
+    }
+
+    if(p.delivery){
+
+        html += `
+
+            <div class="card" style="margin-top:15px">
+
+                <h3>✅ Datos de entrega</h3>
+
+                <p>
+                    <strong>Recibió:</strong>
+                    ${escapeHTML(p.delivery.receivedBy)}
+                </p>
+
+                <p>
+                    <strong>DNI:</strong>
+                    ${escapeHTML(p.delivery.dni)}
+                </p>
+
+                <p>
+                    <strong>Hora:</strong>
+                    ${escapeHTML(p.delivery.time)}
+                </p>
+
+                <p>
+                    <strong>Observaciones:</strong>
+                    ${escapeHTML(p.delivery.notes)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+    if(p.evidence){
+
+        html += `
+
+            <div class="card" style="margin-top:15px">
+
+                <h3>❌ Constancia de no entrega</h3>
+
+                <p>
+                    <strong>Motivo:</strong>
+                    ${escapeHTML(p.evidence.reason)}
+                </p>
+
+                <p>
+                    <strong>Hora:</strong>
+                    ${escapeHTML(p.evidence.time)}
+                </p>
+
+                <p>
+                    <strong>Observaciones:</strong>
+                    ${escapeHTML(p.evidence.notes)}
+                </p>
+
+                ${
+                    p.evidence.photo
+                    ?
+                    `
+                    <img
+                        src="${p.evidence.photo}"
+                        class="photo-preview"
+                    >
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+        `;
+
+    }
+
+    document.getElementById("detailContent").innerHTML =
+        html;
+
+    document
+        .getElementById("detailModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   ENTREGA PARTICULAR
+========================================================= */
+
+function openDelivery(id){
+
+    currentPackageId = id;
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    document.getElementById("deliveryPackageInfo")
+        .innerHTML = `
+
+            <div class="card" style="margin:0">
+
+                <strong>
+                    ${escapeHTML(p.recipient)}
+                </strong>
+
+                <div style="
+                    margin-top:5px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    📍 ${escapeHTML(p.address)}
+                </div>
+
+            </div>
+
+        `;
+
+    document.getElementById("receivedBy").value = "";
+
+    document.getElementById("receivedDni").value = "";
+
+    document.getElementById("deliveryNotes").value = "";
+
+    document
+        .getElementById("deliveryModal")
+        .classList.add("show");
+
+}
+
+
+function confirmDelivery(){
+
+    const p =
+        database.packages.find(
+            x => x.id === currentPackageId
+        );
+
+    if(!p) return;
+
+    const receivedBy =
+        document.getElementById("receivedBy")
+            .value
+            .trim();
+
+    const dni =
+        document.getElementById("receivedDni")
+            .value
+            .trim();
+
+    if(!receivedBy){
+
+        showToast("⚠️ Ingresá quién recibió el paquete.");
+
+        return;
+
+    }
+
+    if(!dni){
+
+        showToast("⚠️ Ingresá el DNI.");
+
+        return;
+
+    }
+
+    p.status = "delivered";
+
+    p.delivery = {
+
+        receivedBy,
+
+        dni,
+
+        notes:
+            document.getElementById("deliveryNotes")
+                .value
+                .trim(),
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    closeModal("deliveryModal");
+
+    showToast("✅ Entrega registrada.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   FLEX ENTREGADO
+========================================================= */
+
+function markFlexDelivered(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    p.status = "delivered";
+
+    p.delivery = {
+
+        receivedBy:"",
+
+        dni:"",
+
+        notes:"Entrega Flex",
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    showToast("✅ Flex marcado como entregado.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   NO ENTREGADO
+========================================================= */
+
+function openFailed(id){
+
+    currentPackageId = id;
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    document.getElementById("failedPackageInfo")
+        .innerHTML = `
+
+            <div class="card" style="margin:0">
+
+                <strong>
+                    ${escapeHTML(p.recipient)}
+                </strong>
+
+                <div style="
+                    margin-top:5px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    📍 ${escapeHTML(p.address)}
+                </div>
+
+            </div>
+
+        `;
+
+    document.getElementById("evidencePhoto").value = "";
+
+    document.getElementById("failedNotes").value = "";
+
+    document
+        .getElementById("failedModal")
+        .classList.add("show");
+
+}
+
+
+async function confirmFailed(){
+
+    const p =
+        database.packages.find(
+            x => x.id === currentPackageId
+        );
+
+    if(!p) return;
+
+    const file =
+        document.getElementById("evidencePhoto")
+            .files[0];
+
+    if(!file){
+
+        showToast(
+            "⚠️ Para una no entrega tenés que cargar la foto de evidencia."
+        );
+
+        return;
+
+    }
+
+    const photo =
+        await fileToDataURL(file);
+
+    p.status = "failed";
+
+    p.evidence = {
+
+        reason:
+            document.getElementById("failedReason")
+                .value,
+
+        notes:
+            document.getElementById("failedNotes")
+                .value
+                .trim(),
+
+        photo,
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    closeModal("failedModal");
+
+    showToast("❌ No entrega registrada con evidencia.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   ELIMINAR
+========================================================= */
+
+function deletePackage(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    if(
+        !confirm(
+            `¿Eliminar el paquete ${p.code || p.id}?`
+        )
+    ){
+
+        return;
+
+    }
+
+    database.packages =
+        database.packages.filter(
+            x => x.id !== id
+        );
+
+    saveDatabase();
+
+    showToast("🗑️ Paquete eliminado.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+function getDaySummary(date){
+
+    const packages =
+        database.packages.filter(
+            p => p.date === date
+        );
+
+    return {
+
+        date,
+
+        total:packages.length,
+
+        flex:
+            packages.filter(
+                p => p.type === "flex"
+            ).length,
+
+        particular:
+            packages.filter(
+                p => p.type === "particular"
+            ).length,
+
+        delivered:
+            packages.filter(
+                p => p.status === "delivered"
+            ).length,
+
+        failed:
+            packages.filter(
+                p => p.status === "failed"
+            ).length,
+
+        pending:
+            packages.filter(
+                p => p.status === "pending"
+            ).length
+
+    };
+
+}
+
+
+function getAllDates(){
+
+    const dates =
+        [...new Set(
+            database.packages.map(
+                p => p.date
+            )
+        )];
+
+    return dates.sort(
+        (a,b) =>
+            new Date(b) -
+            new Date(a)
+    );
+
+}
+
+
+function renderHistory(){
+
+    const container =
+        document.getElementById("historyList");
+
+    const dates =
+        getAllDates();
+
+    if(!dates.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📅</div>
+                Todavía no hay jornadas registradas.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        dates.map(date => {
+
+            const s =
+                getDaySummary(date);
+
+            return `
+
+                <div class="card">
+
+                    <div class="week-header">
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(
+                                    formatDate(date)
+                                )}
+                            </h3>
+
+                            <small style="color:#64748b">
+                                ${s.total} paquetes
+                            </small>
+
+                        </div>
+
+                        ${
+                            database.closedDays.includes(date)
+                            ?
+                            `<span class="badge badge-delivered">
+                                CERRADA
+                            </span>`
+                            :
+                            `<span class="badge badge-pending">
+                                ABIERTA
+                            </span>`
+                        }
+
+                    </div>
+
+                    <div class="week-grid">
+
+                        <div class="week-mini">
+                            <small>Flex</small>
+                            <strong>${s.flex}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Particulares</small>
+                            <strong>${s.particular}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Entregados</small>
+                            <strong>${s.delivered}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>No entregados</small>
+                            <strong>${s.failed}</strong>
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn btn-light"
+                        style="width:100%;margin-top:12px"
+                        onclick="showDayDetail('${date}')"
+                    >
+                        👁️ Ver detalle del día
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   DETALLE DÍA
+========================================================= */
+
+function showDayDetail(date){
+
+    const packages =
+        database.packages.filter(
+            p => p.date === date
+        );
+
+    const s =
+        getDaySummary(date);
+
+    let rows =
+        packages.map(p => `
+
+            <tr>
+
+                <td>${escapeHTML(p.timeCreated)}</td>
+
+                <td>
+                    ${p.type === "flex" ? "FLEX" : "PARTICULAR"}
+                </td>
+
+                <td>${escapeHTML(p.recipient)}</td>
+
+                <td>${escapeHTML(p.address)}</td>
+
+                <td>${escapeHTML(p.zone)}</td>
+
+                <td>
+                    ${
+                        p.status === "delivered"
+                        ? "ENTREGADO"
+                        : p.status === "failed"
+                        ? "NO ENTREGADO"
+                        : "PENDIENTE"
+                    }
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    document.getElementById("detailContent").innerHTML = `
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">Total</div>
+                <div class="stat-value">${s.total}</div>
+            </div>
+
+            <div class="stat flex">
+                <div class="stat-label">Flex</div>
+                <div class="stat-value">${s.flex}</div>
+            </div>
+
+            <div class="stat particular">
+                <div class="stat-label">Particulares</div>
+                <div class="stat-value">${s.particular}</div>
+            </div>
+
+        </div>
+
+        <div class="table-wrap" style="margin-top:15px">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Hora</th>
+                        <th>Tipo</th>
+                        <th>Destinatario</th>
+                        <th>Dirección</th>
+                        <th>Zona</th>
+                        <th>Estado</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+    document
+        .getElementById("detailModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   SEMANAS
+========================================================= */
+
+function getWeekRange(date){
+
+    const d =
+        new Date(date + "T12:00:00");
+
+    const day =
+        d.getDay();
+
+    const diff =
+        day === 0 ? -6 : 1 - day;
+
+    const monday =
+        new Date(d);
+
+    monday.setDate(
+        d.getDate() + diff
+    );
+
+    const sunday =
+        new Date(monday);
+
+    sunday.setDate(
+        monday.getDate() + 6
+    );
+
+    const toKey = d => {
+
+        const y = d.getFullYear();
+
+        const m =
+            String(d.getMonth()+1)
+                .padStart(2,"0");
+
+        const day =
+            String(d.getDate())
+                .padStart(2,"0");
+
+        return `${y}-${m}-${day}`;
+
+    };
+
+    return {
+        start:toKey(monday),
+        end:toKey(sunday)
+    };
+
+}
+
+
+function renderWeeks(){
+
+    const container =
+        document.getElementById("weeksList");
+
+    const dates =
+        getAllDates();
+
+    const ranges = {};
+
+    dates.forEach(date => {
+
+        const range =
+            getWeekRange(date);
+
+        const key =
+            `${range.start}_${range.end}`;
+
+        ranges[key] = range;
+
+    });
+
+    const weeks =
+        Object.values(ranges)
+            .sort(
+                (a,b) =>
+                    new Date(b.start) -
+                    new Date(a.start)
+            );
+
+    if(!weeks.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📆</div>
+                No hay semanas registradas todavía.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        weeks.map(range => {
+
+            const packages =
+                database.packages.filter(
+                    p =>
+                        p.date >= range.start &&
+                        p.date <= range.end
+                );
+
+            const total =
+                packages.length;
+
+            const flex =
+                packages.filter(
+                    p => p.type === "flex"
+                ).length;
+
+            const particular =
+                packages.filter(
+                    p => p.type === "particular"
+                ).length;
+
+            const delivered =
+                packages.filter(
+                    p => p.status === "delivered"
+                ).length;
+
+            const failed =
+                packages.filter(
+                    p => p.status === "failed"
+                ).length;
+
+            const pending =
+                packages.filter(
+                    p => p.status === "pending"
+                ).length;
+
+            return `
+
+                <div class="week-card">
+
+                    <div class="week-header">
+
+                        <div>
+
+                            <h3>
+                                Semana
+                            </h3>
+
+                            <div style="
+                                margin-top:4px;
+                                color:#64748b;
+                                font-size:13px;
+                            ">
+
+                                ${formatDateShort(range.start)}
+                                →
+                                ${formatDateShort(range.end)}
+
+                            </div>
+
+                        </div>
+
+                        <strong style="font-size:25px">
+                            ${total}
+                        </strong>
+
+                    </div>
+
+                    <div class="week-grid">
+
+                        <div class="week-mini">
+                            <small>Flex</small>
+                            <strong>${flex}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Particulares</small>
+                            <strong>${particular}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Entregados</small>
+                            <strong>${delivered}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>No entregados</small>
+                            <strong>${failed}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Pendientes</small>
+                            <strong>${pending}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+========================================================= */
+
+function renderStats(){
+
+    const packages =
+        database.packages;
+
+    document.getElementById("historyTotal")
+        .textContent =
+        packages.length;
+
+    document.getElementById("historyFlex")
+        .textContent =
+        packages.filter(
+            p => p.type === "flex"
+        ).length;
+
+    document.getElementById("historyParticular")
+        .textContent =
+        packages.filter(
+            p => p.type === "particular"
+        ).length;
+
+    document.getElementById("historyDelivered")
+        .textContent =
+        packages.filter(
+            p => p.status === "delivered"
+        ).length;
+
+    document.getElementById("historyFailed")
+        .textContent =
+        packages.filter(
+            p => p.status === "failed"
+        ).length;
+
+}
+
+
+/* =========================================================
+   CIERRE DEL DÍA
+========================================================= */
+
+function closeDay(){
+
+    const today =
+        todayKey();
+
+    const packages =
+        todayPackages();
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay paquetes cargados."
+        );
+
+        return;
+
+    }
+
+    const pending =
+        packages.filter(
+            p => p.status === "pending"
+        ).length;
+
+    if(pending > 0){
+
+        const confirmPending =
+            confirm(
+                `Hay ${pending} paquetes pendientes.\n\n¿Querés cerrar igualmente la jornada?`
+            );
+
+        if(!confirmPending){
+
+            return;
+
+        }
+
+    }else{
+
+        if(
+            !confirm(
+                "¿Cerrar la jornada de hoy?"
+            )
+        ){
+
+            return;
+
+        }
+
+    }
+
+    if(
+        !database.closedDays.includes(today)
+    ){
+
+        database.closedDays.push(today);
+
+    }
+
+    saveDatabase();
+
+    showToast(
+        "🔒 Jornada cerrada correctamente."
+    );
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   EXCEL
+========================================================= */
+
+function exportExcel(){
+
+    if(typeof XLSX === "undefined"){
+
+        showToast(
+            "❌ No se pudo cargar el módulo Excel."
+        );
+
+        return;
+
+    }
+
+    const packages =
+        database.packages;
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay datos para exportar."
+        );
+
+        return;
+
+    }
+
+    const rows =
+        packages.map(p => ({
+
+            Fecha:p.date,
+
+            Hora_Carga:p.timeCreated,
+
+            ID:p.id,
+
+            Codigo:p.code,
+
+            Tipo:
+                p.type === "flex"
+                    ? "Flex"
+                    : "Particular",
+
+            Destinatario:p.recipient,
+
+            Direccion:p.address,
+
+            Barrio:p.neighborhood,
+
+            Zona:p.zone,
+
+            Localidad:p.city,
+
+            CP:p.postalCode,
+
+            Telefono:p.phone,
+
+            Estado:
+                p.status === "delivered"
+                    ? "Entregado"
+                    : p.status === "failed"
+                    ? "No entregado"
+                    : "Pendiente",
+
+            Recibio:
+                p.delivery?.receivedBy || "",
+
+            DNI:
+                p.delivery?.dni || "",
+
+            Hora_Entrega:
+                p.delivery?.time || "",
+
+            Motivo_No_Entrega:
+                p.evidence?.reason || "",
+
+            Hora_No_Entrega:
+                p.evidence?.time || "",
+
+            Observaciones:
+                p.delivery?.notes ||
+                p.evidence?.notes ||
+                p.notes ||
+                ""
+
+        }));
+
+    const worksheet =
+        XLSX.utils.json_to_sheet(rows);
+
+    const workbook =
+        XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Paquetes"
+    );
+
+    const summary =
+        getAllDates().map(date => {
+
+            const s =
+                getDaySummary(date);
+
+            return {
+
+                Fecha:date,
+
+                Total:s.total,
+
+                Flex:s.flex,
+
+                Particulares:s.particular,
+
+                Entregados:s.delivered,
+
+                No_Entregados:s.failed,
+
+                Pendientes:s.pending
+
+            };
+
+        });
+
+    const summarySheet =
+        XLSX.utils.json_to_sheet(summary);
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        summarySheet,
+        "Resumen diario"
+    );
+
+    const filename =
+        `control-reparto-${todayKey()}.xlsx`;
+
+    XLSX.writeFile(
+        workbook,
+        filename
+    );
+
+    showToast(
+        "📊 Excel generado correctamente."
+    );
+
+}
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function exportPDF(){
+
+    if(
+        !window.jspdf ||
+        !window.jspdf.jsPDF
+    ){
+
+        showToast(
+            "❌ No se pudo cargar el módulo PDF."
+        );
+
+        return;
+
+    }
+
+    const packages =
+        database.packages;
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay datos para exportar."
+        );
+
+        return;
+
+    }
+
+    const {jsPDF} =
+        window.jspdf;
+
+    const doc =
+        new jsPDF({
+            orientation:"landscape"
+        });
+
+    const today =
+        todayKey();
+
+    const s =
+        getDaySummary(today);
+
+    doc.setFontSize(20);
+
+    doc.text(
+        "CONTROL DE REPARTO",
+        14,
+        18
+    );
+
+    doc.setFontSize(11);
+
+    doc.text(
+        `Generado: ${formatDate(today)}`,
+        14,
+        26
+    );
+
+    doc.text(
+        `Total: ${s.total} | Flex: ${s.flex} | Particulares: ${s.particular} | Entregados: ${s.delivered} | No entregados: ${s.failed} | Pendientes: ${s.pending}`,
+        14,
+        34
+    );
+
+    const rows =
+        packages.map(p => [
+
+            p.timeCreated,
+
+            p.type === "flex"
+                ? "FLEX"
+                : "PARTICULAR",
+
+            p.recipient,
+
+            p.address,
+
+            p.zone,
+
+            p.status === "delivered"
+                ? "ENTREGADO"
+                : p.status === "failed"
+                ? "NO ENTREGADO"
+                : "PENDIENTE",
+
+            p.delivery?.receivedBy || "",
+
+            p.delivery?.dni || ""
+
+        ]);
+
+    doc.autoTable({
+
+        startY:42,
+
+        head:[[
+            "Hora",
+            "Tipo",
+            "Destinatario",
+            "Dirección",
+            "Zona",
+            "Estado",
+            "Recibió",
+            "DNI"
+        ]],
+
+        body:rows,
+
+        styles:{
+            fontSize:7
+        },
+
+        headStyles:{
+            fontSize:8
+        }
+
+    });
+
+    doc.save(
+        `control-reparto-${today}.pdf`
+    );
+
+    showToast(
+        "📄 PDF generado correctamente."
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(
+            () => toast.classList.remove("show"),
+            3000
+        );
+
+}
+
+
+/* =========================================================
+   RENDER GENERAL
+========================================================= */
+
+function renderAll(){
+
+    renderDashboard();
+
+    renderPackages();
+
+    renderHistory();
+
+    renderWeeks();
+
+    renderStats();
+
+}
+
+
+/* =========================================================
+   IMPORTANTE:
+   Si se captura una foto desde cámara,
+   usarla automáticamente en el formulario.
+========================================================= */
+
+document
+.getElementById("packagePhoto")
+.addEventListener("change", function(){
+
+    if(
+        this.files.length === 0 &&
+        this.dataset.cameraPhoto
+    ){
+
+        return;
+
+    }
+
+});
+
+
+/* =========================================================
+   PERMITIR FOTO DE CÁMARA EN FORMULARIO
+========================================================= */
+
+const originalSubmit =
+    document.getElementById("packageForm")
+        .onsubmit;
+
+
+/*
+   Sobrescribimos la captura de formulario
+   para utilizar la imagen tomada por cámara.
+*/
+
+document
+.getElementById("packageForm")
+.addEventListener("submit", async function(){
+
+    const input =
+        document.getElementById("packagePhoto");
+
+    if(
+        !input.files.length &&
+        input.dataset.cameraPhoto
+    ){
+
+        const dataURL =
+            input.dataset.cameraPhoto;
+
+        const response =
+            await fetch(dataURL);
+
+        const blob =
+            await response.blob();
+
+        const file =
+            new File(
+                [blob],
+                "captura-paquete.jpg",
+                {
+                    type:"image/jpeg"
+                }
+            );
+
+        const dt =
+            new DataTransfer();
+
+        dt.items.add(file);
+
+        input.files =
+            dt.files;
+
+    }
+
+});
+
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
+
+renderAll();
+
+setInterval(
+    () => {
+
+        updateHeader();
+
+        renderDashboard();
+
+    },
+    30000
+);
+
+
+/* =========================================================
+   CERRAR MODAL HACIENDO CLICK AFUERA
+========================================================= */
+
+document
+.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("modal")){
+
+        e.target.classList.remove("show");
+
+    }
+
+});
+
+
+/* =========================================================
+   ATAJOS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Escape"){
+
+            document
+                .querySelectorAll(".modal.show")
+                .forEach(modal => {
+
+                    modal.classList.remove("show");
+
+                });
+
+            closeScanner();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

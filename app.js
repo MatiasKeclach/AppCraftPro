@@ -20,7 +20,7 @@ const isAuthenticated = require("./middleware/authMiddleware");
 
 const db = require("./models/db");
 
-require("./models/initDB");
+require("./models/initDB-funciona.JS");
 
 
 // ==================================================
@@ -139,7 +139,7 @@ app.use(
 // ------------------------------
 
 const logisticaRoutes =
-    require("./routes/logistica-fijo");
+    require("./routes/logistica-fijo-funciona.js");
 
 
 app.use(
@@ -521,7 +521,27 @@ app.use(
 );
 
 
+const logisticaClientesRouter =
+    require("./routes/logisticaClientes");
 
+app.use(
+    "/panel/logistica-clientes",
+    logisticaClientesRouter
+);
+
+// ==================================================
+// POTENCIALES CLIENTES
+// ==================================================
+
+const potencialesClientesRoutes =
+    require("./routes/potencialesClientes");
+
+
+app.use(
+    "/panel/potenciales-clientes",
+    isAuthenticated,
+    potencialesClientesRoutes
+);
 // ==================================================
 // INICIAR SERVIDOR
 // ==================================================

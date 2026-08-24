@@ -1,0 +1,6619 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Control de Reparto</title>
+
+<!-- OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<!-- Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- PDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
+    --info:#0891b2;
+    --dark:#0f172a;
+    --radius:18px;
+    --shadow:0 8px 30px rgba(15,23,42,.08);
+}
+
+body{
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:80px;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.app{
+    width:100%;
+    max-width:1600px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:#fff;
+    padding:18px 16px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.header-inner{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.brand-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.brand h1{
+    font-size:17px;
+}
+
+.brand small{
+    color:#94a3b8;
+    display:block;
+    margin-top:2px;
+}
+
+.header-date{
+    text-align:right;
+    font-size:12px;
+    color:#cbd5e1;
+}
+
+/* NAV */
+
+.nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:68px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:100;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
+}
+
+.nav button{
+    flex:1;
+    background:transparent;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    font-size:11px;
+}
+
+.nav button span{
+    font-size:21px;
+}
+
+.nav button.active{
+    color:var(--primary);
+    font-weight:700;
+}
+
+/* MAIN */
+
+main{
+    padding:16px;
+}
+
+.view{
+    display:none;
+}
+
+.view.active{
+    display:block;
+}
+
+.section-title{
+    margin-bottom:14px;
+}
+
+.section-title h2{
+    font-size:22px;
+}
+
+.section-title p{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+}
+
+/* DASHBOARD */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:15px;
+    box-shadow:var(--shadow);
+}
+
+.stat-icon{
+    font-size:21px;
+    margin-bottom:7px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.stat-value{
+    font-size:27px;
+    font-weight:800;
+    margin-top:3px;
+}
+
+.stat.flex .stat-value{
+    color:#7c3aed;
+}
+
+.stat.particular .stat-value{
+    color:#0891b2;
+}
+
+.stat.success .stat-value{
+    color:var(--success);
+}
+
+.stat.danger .stat-value{
+    color:var(--danger);
+}
+
+.stat.warning .stat-value{
+    color:var(--warning);
+}
+
+/* CARDS */
+
+.card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-top:14px;
+    box-shadow:var(--shadow);
+}
+
+.card h3{
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+/* TIME */
+
+.time-box{
+    display:grid;
+    gap:10px;
+}
+
+.time-main{
+    font-size:30px;
+    font-weight:900;
+}
+
+.time-status{
+    padding:12px;
+    border-radius:14px;
+    font-weight:700;
+    text-align:center;
+}
+
+.status-ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-warning{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-danger{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* ACTIONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.btn{
+    min-height:48px;
+    border-radius:13px;
+    padding:10px 14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-weight:700;
+    transition:.15s;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:var(--primary-dark);
+}
+
+.btn-success{
+    background:var(--success);
+    color:white;
+}
+
+.btn-danger{
+    background:var(--danger);
+    color:white;
+}
+
+.btn-warning{
+    background:#f59e0b;
+    color:#fff;
+}
+
+.btn-dark{
+    background:var(--dark);
+    color:#fff;
+}
+
+.btn-light{
+    background:#f1f5f9;
+    color:#334155;
+}
+
+.btn-outline{
+    background:#fff;
+    border:1px solid var(--border);
+    color:#334155;
+}
+
+.btn-small{
+    min-height:36px;
+    padding:7px 10px;
+    font-size:12px;
+}
+
+/* PACKAGE LIST */
+
+.package-list{
+    display:grid;
+    gap:10px;
+}
+
+.package{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px;
+}
+
+.package-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+}
+
+.package-id{
+    font-weight:800;
+}
+
+.badge{
+    display:inline-flex;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.badge-flex{
+    background:#ede9fe;
+    color:#6d28d9;
+}
+
+.badge-particular{
+    background:#cffafe;
+    color:#0e7490;
+}
+
+.badge-pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.badge-delivered{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge-failed{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.package-info{
+    margin-top:10px;
+    display:grid;
+    gap:4px;
+}
+
+.package-info strong{
+    font-size:14px;
+}
+
+.package-info span{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.package-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:12px;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    gap:12px;
+}
+
+.form-group{
+    display:grid;
+    gap:5px;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:700;
+    color:#475569;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    padding:12px;
+    outline:none;
+    background:#fff;
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.7);
+    z-index:200;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:22px 22px 0 0;
+    padding:18px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.modal-header h3{
+    font-size:18px;
+}
+
+.close{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#f1f5f9;
+    font-size:20px;
+}
+
+/* CAMERA */
+
+.camera-container{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    background:#020617;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+#cameraVideo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.camera-overlay{
+    position:absolute;
+    inset:15%;
+    border:2px solid rgba(255,255,255,.9);
+    border-radius:15px;
+    pointer-events:none;
+}
+
+.camera-controls{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.camera-controls .btn{
+    flex:1;
+}
+
+/* PHOTO */
+
+.photo-preview{
+    width:100%;
+    max-height:280px;
+    object-fit:contain;
+    background:#f8fafc;
+    border-radius:14px;
+    margin-top:10px;
+}
+
+/* FILTER */
+
+.filters{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+    margin-bottom:14px;
+}
+
+.filters input,
+.filters select{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:11px;
+    background:#fff;
+}
+
+/* WEEK */
+
+.week-summary{
+    display:grid;
+    gap:10px;
+}
+
+.week-card{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:16px;
+    padding:14px;
+}
+
+.week-header{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.week-header h3{
+    margin:0;
+}
+
+.week-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-top:12px;
+}
+
+.week-mini{
+    background:#f8fafc;
+    border-radius:10px;
+    padding:9px;
+}
+
+.week-mini small{
+    color:var(--muted);
+    display:block;
+}
+
+.week-mini strong{
+    font-size:18px;
+}
+
+/* TABLE */
+
+.table-wrap{
+    width:100%;
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+}
+
+th,
+td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:12px;
+}
+
+th{
+    background:#f8fafc;
+    font-weight:800;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    padding:35px 15px;
+    color:var(--muted);
+}
+
+.empty-icon{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:15px;
+    right:15px;
+    bottom:82px;
+    z-index:500;
+    padding:14px 16px;
+    background:#0f172a;
+    color:#fff;
+    border-radius:14px;
+    transform:translateY(150px);
+    opacity:0;
+    transition:.25s;
+    text-align:center;
+    font-size:13px;
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+/* DESKTOP */
+
+.gallery-thumb{
+    width:58px;height:58px;object-fit:cover;border-radius:10px;
+    border:1px solid var(--border);background:#f8fafc;
+}
+.gallery-item{
+    display:flex;align-items:center;gap:10px;padding:8px;
+    border:1px solid var(--border);border-radius:12px;background:#f8fafc;
+}
+.gallery-item small{color:var(--muted);display:block;margin-top:2px}
+.photo-evidence-note{
+    background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;
+    border-radius:10px;padding:9px;font-size:12px;margin-top:8px;
+}
+
+@media(min-width:600px){
+
+    main{
+        padding:24px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .form-grid.two{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .filters{
+        grid-template-columns:2fr 1fr 1fr;
+    }
+
+    .modal{
+        align-items:center;
+    }
+
+    .modal-box{
+        max-width:650px;
+        border-radius:22px;
+    }
+
+    .toast{
+        left:auto;
+        right:25px;
+        width:350px;
+        bottom:25px;
+    }
+}
+
+@media(min-width:900px){
+
+    body{
+        padding-bottom:0;
+    }
+
+    .nav{
+        position:fixed;
+        top:76px;
+        left:0;
+        bottom:0;
+        width:220px;
+        height:auto;
+        border-top:0;
+        border-right:1px solid var(--border);
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        padding:15px;
+        box-shadow:none;
+    }
+
+    .nav button{
+        flex:none;
+        height:52px;
+        flex-direction:row;
+        justify-content:flex-start;
+        padding:0 14px;
+        border-radius:12px;
+        gap:12px;
+        font-size:13px;
+    }
+
+    .nav button span{
+        font-size:19px;
+    }
+
+    main{
+        margin-left:220px;
+        max-width:1380px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .actions{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .two-columns{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:14px;
+    }
+}
+
+@media(min-width:1200px){
+
+    .stats{
+        grid-template-columns:repeat(6,1fr);
+    }
+
+    .package-list{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <div class="header-inner">
+        <div class="brand">
+            <div class="brand-icon">🚚</div>
+            <div>
+                <h1>Control de Reparto</h1>
+                <small>Depósito · Repartidor</small>
+            </div>
+        </div>
+
+        <div class="header-date" id="headerDate"></div>
+    </div>
+</header>
+
+<main>
+
+<!-- DASHBOARD -->
+<section id="view-dashboard" class="view active">
+
+    <div class="section-title">
+        <h2>Dashboard</h2>
+        <p id="dashboardDate"></p>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total</div>
+            <div class="stat-value" id="statTotal">0</div>
+        </div>
+
+        <div class="stat flex">
+            <div class="stat-icon">🟣</div>
+            <div class="stat-label">Flex</div>
+            <div class="stat-value" id="statFlex">0</div>
+        </div>
+
+        <div class="stat particular">
+            <div class="stat-icon">🔵</div>
+            <div class="stat-label">Particulares</div>
+            <div class="stat-value" id="statParticular">0</div>
+        </div>
+
+        <div class="stat success">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Entregados</div>
+            <div class="stat-value" id="statDelivered">0</div>
+        </div>
+
+        <div class="stat danger">
+            <div class="stat-icon">❌</div>
+            <div class="stat-label">No entregados</div>
+            <div class="stat-value" id="statFailed">0</div>
+        </div>
+
+        <div class="stat warning">
+            <div class="stat-icon">🟡</div>
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value" id="statPending">0</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>⏱️ Estimación del reparto</h3>
+
+        <div class="time-box">
+            <div>
+                <span class="stat-label">Tiempo estimado</span>
+                <div class="time-main" id="estimatedTime">0 min</div>
+            </div>
+
+            <div>
+                <span class="stat-label">Finalización estimada</span>
+                <div class="time-main" id="estimatedFinish">--:--</div>
+            </div>
+
+            <div id="timeStatus" class="time-status status-ok">
+                Sin paquetes cargados
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Acciones rápidas</h3>
+
+        <div class="actions">
+
+            <button class="btn btn-primary" onclick="openScanner()">
+                📷 Escanear
+            </button>
+
+            <button class="btn btn-dark" onclick="openManual()">
+                ✍️ Manual
+            </button>
+
+            <button class="btn btn-light" onclick="openGallery()">
+                🖼️ Fotos
+            </button>
+
+            <button class="btn btn-success" onclick="showView('packages')">
+                📦 Ver paquetes
+            </button>
+
+            <button class="btn btn-warning" onclick="closeDay()">
+                🔒 Cerrar día
+            </button>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📊 Estado de la jornada</h3>
+
+        <div id="dayProgress"></div>
+    </div>
+
+</section>
+
+
+<!-- PAQUETES -->
+<section id="view-packages" class="view">
+
+    <div class="section-title">
+        <h2>📦 Paquetes</h2>
+        <p>Todos los paquetes de la jornada actual.</p>
+    </div>
+
+    <div class="filters">
+
+        <input
+            type="search"
+            id="searchPackages"
+            placeholder="🔎 Buscar destinatario, dirección..."
+            oninput="renderPackages()"
+        >
+
+        <select id="filterType" onchange="renderPackages()">
+            <option value="all">Todos</option>
+            <option value="flex">Flex</option>
+            <option value="particular">Particular</option>
+        </select>
+
+        <select id="filterStatus" onchange="renderPackages()">
+            <option value="all">Todos los estados</option>
+            <option value="pending">Pendientes</option>
+            <option value="delivered">Entregados</option>
+            <option value="failed">No entregados</option>
+        </select>
+
+    </div>
+
+    <div id="packageList" class="package-list"></div>
+
+</section>
+
+
+<!-- HISTORIAL -->
+<section id="view-history" class="view">
+
+    <div class="section-title">
+        <h2>📅 Historial diario</h2>
+        <p>Jornadas registradas en el sistema.</p>
+    </div>
+
+    <div id="historyList"></div>
+
+</section>
+
+
+<!-- SEMANAS -->
+<section id="view-weeks" class="view">
+
+    <div class="section-title">
+        <h2>📆 Semanas</h2>
+        <p>Resumen automático por semanas completas.</p>
+    </div>
+
+    <div id="weeksList" class="week-summary"></div>
+
+</section>
+
+
+<!-- ESTADISTICAS -->
+<section id="view-stats" class="view">
+
+    <div class="section-title">
+        <h2>📈 Estadísticas</h2>
+        <p>Resumen histórico de toda la actividad.</p>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total histórico</div>
+            <div class="stat-value" id="historyTotal">0</div>
+        </div>
+
+        <div class="stat flex">
+            <div class="stat-icon">🟣</div>
+            <div class="stat-label">Flex</div>
+            <div class="stat-value" id="historyFlex">0</div>
+        </div>
+
+        <div class="stat particular">
+            <div class="stat-icon">🔵</div>
+            <div class="stat-label">Particulares</div>
+            <div class="stat-value" id="historyParticular">0</div>
+        </div>
+
+        <div class="stat success">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Entregados</div>
+            <div class="stat-value" id="historyDelivered">0</div>
+        </div>
+
+        <div class="stat danger">
+            <div class="stat-icon">❌</div>
+            <div class="stat-label">No entregados</div>
+            <div class="stat-value" id="historyFailed">0</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>📊 Exportaciones</h3>
+
+        <div class="actions">
+
+            <button class="btn btn-success" onclick="exportExcel()">
+                📊 Excel
+            </button>
+
+            <button class="btn btn-danger" onclick="exportPDF()">
+                📄 PDF
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- NAV -->
+
+<nav class="nav">
+
+    <button class="active" data-view="dashboard" onclick="showView('dashboard')">
+        <span>🏠</span>
+        Inicio
+    </button>
+
+    <button data-view="packages" onclick="showView('packages')">
+        <span>📦</span>
+        Paquetes
+    </button>
+
+    <button data-view="history" onclick="showView('history')">
+        <span>📅</span>
+        Historial
+    </button>
+
+    <button data-view="weeks" onclick="showView('weeks')">
+        <span>📆</span>
+        Semanas
+    </button>
+
+    <button data-view="stats" onclick="showView('stats')">
+        <span>📈</span>
+        Estadísticas
+    </button>
+
+</nav>
+
+
+<!-- MODAL MANUAL -->
+
+<div class="modal" id="manualModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3>📦 Cargar paquete</h3>
+            <button class="close" onclick="closeModal('manualModal')">×</button>
+        </div>
+
+        <form id="packageForm">
+
+            <div class="form-grid two">
+
+                <div class="form-group">
+                    <label>Tipo de paquete</label>
+
+                    <select id="packageType" required>
+                        <option value="flex">Flex</option>
+                        <option value="particular">Particular</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Número / ID</label>
+
+                    <input
+                        id="packageCode"
+                        placeholder="Ej: FLEX123456"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Destinatario</label>
+
+                    <input
+                        id="recipient"
+                        placeholder="Nombre y apellido"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Dirección</label>
+
+                    <input
+                        id="address"
+                        placeholder="Calle y altura"
+                        required
+                    >
+                </div>
+
+                <div class="form-grid two">
+
+                    <div class="form-group">
+                        <label>Barrio</label>
+
+                        <input
+                            id="neighborhood"
+                            placeholder="Ej: Caballito"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zona</label>
+
+                        <input
+                            id="zone"
+                            placeholder="Ej: CABA"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-grid two">
+
+                    <div class="form-group">
+                        <label>Localidad</label>
+
+                        <input
+                            id="city"
+                            placeholder="Ej: CABA"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Código postal</label>
+
+                        <input
+                            id="postalCode"
+                            placeholder="Ej: 1405"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+
+                    <input
+                        id="phone"
+                        type="tel"
+                        placeholder="Opcional"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones</label>
+
+                    <textarea
+                        id="notes"
+                        placeholder="Información adicional..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto del paquete</label>
+
+                    <input
+                        id="packagePhoto"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                    >
+                </div>
+
+            </div>
+
+            <div style="margin-top:15px">
+
+                <button class="btn btn-primary" style="width:100%">
+                    💾 Guardar paquete
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- SCANNER -->
+
+<div class="modal" id="scannerModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>📷 Capturar paquete</h3>
+
+            <button
+                class="close"
+                onclick="closeScanner()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="camera-container">
+
+            <video
+                id="cameraVideo"
+                autoplay
+                playsinline
+            ></video>
+
+            <div class="camera-overlay"></div>
+
+        </div>
+
+        <div class="camera-controls">
+
+            <button
+                class="btn btn-primary"
+                onclick="capturePhoto()"
+            >
+                📸 Capturar
+            </button>
+
+            <button
+                class="btn btn-light"
+                onclick="switchCamera()"
+            >
+                🔄 Cámara
+            </button>
+
+        </div>
+
+        <canvas
+            id="cameraCanvas"
+            style="display:none"
+        ></canvas>
+
+        <img
+            id="capturedImage"
+            class="photo-preview"
+            style="display:none"
+        >
+
+        <div
+            id="ocrStatus"
+            style="margin-top:12px;color:#64748b;font-size:13px"
+        ></div>
+
+        <button
+            id="processPhotoButton"
+            class="btn btn-success"
+            style="width:100%;margin-top:12px;display:none"
+            onclick="processCapturedPhoto()"
+        >
+            🔎 Leer paquete
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ENTREGA -->
+
+<div class="modal" id="deliveryModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>✅ Confirmar entrega</h3>
+
+            <button class="close" onclick="closeModal('deliveryModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="deliveryPackageInfo"></div>
+
+        <div class="form-grid" style="margin-top:15px">
+
+            <div class="form-group">
+                <label>Quién recibió</label>
+
+                <input
+                    id="receivedBy"
+                    placeholder="Nombre y apellido"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>DNI</label>
+
+                <input
+                    id="receivedDni"
+                    inputmode="numeric"
+                    placeholder="DNI"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Observaciones</label>
+
+                <textarea id="deliveryNotes"></textarea>
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-success"
+            style="width:100%;margin-top:15px"
+            onclick="confirmDelivery()"
+        >
+            ✅ Confirmar entrega
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- NO ENTREGADO -->
+
+<div class="modal" id="failedModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>❌ Registrar no entrega</h3>
+
+            <button class="close" onclick="closeModal('failedModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="failedPackageInfo"></div>
+
+        <div class="form-grid" style="margin-top:15px">
+
+            <div class="form-group">
+
+                <label>Motivo</label>
+
+                <select id="failedReason">
+
+                    <option value="Destinatario ausente">
+                        Destinatario ausente
+                    </option>
+
+                    <option value="Dirección incorrecta">
+                        Dirección incorrecta
+                    </option>
+
+                    <option value="No se pudo acceder">
+                        No se pudo acceder
+                    </option>
+
+                    <option value="Otro">
+                        Otro
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Foto de evidencia</label>
+
+                <input
+                    id="evidencePhoto"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    required
+                >
+
+                <small style="color:#64748b">
+                    Recomendado: foto donde se vea la dirección/numeración.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Observaciones</label>
+
+                <textarea id="failedNotes"></textarea>
+
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-danger"
+            style="width:100%;margin-top:15px"
+            onclick="confirmFailed()"
+        >
+            ❌ Registrar no entrega
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- DETALLE -->
+
+<div class="modal" id="detailModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>📦 Detalle del paquete</h3>
+
+            <button class="close" onclick="closeModal('detailModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div id="detailContent"></div>
+
+    </div>
+
+</div>
+
+
+<!-- GALERÍA MÚLTIPLE -->
+<input
+    id="galleryInput"
+    type="file"
+    accept="image/*"
+    multiple
+    style="display:none"
+>
+
+<div class="modal" id="galleryModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>🖼️ Cargar fotografías</h3>
+            <button class="close" onclick="closeModal('galleryModal')">×</button>
+        </div>
+        <div id="galleryStatus" style="font-size:13px;color:#64748b;margin-bottom:12px">
+            Seleccioná varias fotos. Se procesarán una por una y cada foto quedará asociada a su paquete.
+        </div>
+        <div id="galleryQueue" style="display:grid;gap:8px"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="selectGalleryFiles()">
+            🖼️ Seleccionar fotos
+        </button>
+    </div>
+</div>
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN
+========================================================= */
+
+const STORAGE_KEY = "control_reparto_mvp_v1";
+
+const CONFIG = {
+
+    horaLimite: 19,
+
+    /* minutos estimados por paquete */
+    minutosPorPaquete: 7,
+
+    /* minutos extra iniciales */
+    minutosPreparacion: 10
+
+};
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let database = loadDatabase();
+
+let currentPackageId = null;
+
+let cameraStream = null;
+
+let facingMode = "environment";
+
+let capturedDataUrl = null;
+
+
+/* =========================================================
+   BASE DE DATOS LOCAL
+========================================================= */
+
+function loadDatabase(){
+
+    try{
+
+        const data = localStorage.getItem(STORAGE_KEY);
+
+        if(data){
+
+            return JSON.parse(data);
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    return {
+
+        packages: [],
+
+        days: [],
+
+        closedDays: []
+
+    };
+
+}
+
+
+function saveDatabase(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(database)
+    );
+
+}
+
+
+/* =========================================================
+   FECHAS
+========================================================= */
+
+function todayKey(){
+
+    const d = new Date();
+
+    const y = d.getFullYear();
+
+    const m = String(d.getMonth()+1).padStart(2,"0");
+
+    const day = String(d.getDate()).padStart(2,"0");
+
+    return `${y}-${m}-${day}`;
+
+}
+
+
+function formatDate(dateString){
+
+    const d = new Date(dateString + "T12:00:00");
+
+    return d.toLocaleDateString(
+        "es-AR",
+        {
+            weekday:"long",
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function formatDateShort(dateString){
+
+    const d = new Date(dateString + "T12:00:00");
+
+    return d.toLocaleDateString(
+        "es-AR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function nowTime(){
+
+    return new Date().toLocaleTimeString(
+        "es-AR",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+function updateHeader(){
+
+    const today = todayKey();
+
+    document.getElementById("headerDate").textContent =
+        formatDateShort(today);
+
+    document.getElementById("dashboardDate").textContent =
+        formatDate(today);
+
+}
+
+updateHeader();
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+function showView(view){
+
+    document
+        .querySelectorAll(".view")
+        .forEach(v => v.classList.remove("active"));
+
+    document
+        .getElementById("view-"+view)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(btn => {
+
+            btn.classList.toggle(
+                "active",
+                btn.dataset.view === view
+            );
+
+        });
+
+    if(view === "dashboard"){
+        renderDashboard();
+    }
+
+    if(view === "packages"){
+        renderPackages();
+    }
+
+    if(view === "history"){
+        renderHistory();
+    }
+
+    if(view === "weeks"){
+        renderWeeks();
+    }
+
+    if(view === "stats"){
+        renderStats();
+    }
+
+}
+
+
+/* =========================================================
+   PAQUETES DEL DÍA
+========================================================= */
+
+function todayPackages(){
+
+    return database.packages.filter(
+        p => p.date === todayKey()
+    );
+
+}
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+function generateId(){
+
+    return "PKG-" +
+        Date.now().toString(36).toUpperCase() +
+        "-" +
+        Math.random()
+            .toString(36)
+            .substring(2,6)
+            .toUpperCase();
+
+}
+
+
+/* =========================================================
+   CREAR PAQUETE
+========================================================= */
+
+function createPackage(data){
+
+    const pkg = {
+
+        id: generateId(),
+
+        date: todayKey(),
+
+        createdAt: new Date().toISOString(),
+
+        timeCreated: nowTime(),
+
+        type: data.type || "particular",
+
+        code: data.code || "",
+
+        recipient: data.recipient || "",
+
+        address: data.address || "",
+
+        neighborhood: data.neighborhood || "",
+
+        zone: data.zone || "",
+
+        city: data.city || "",
+
+        postalCode: data.postalCode || "",
+
+        phone: data.phone || "",
+
+        notes: data.notes || "",
+
+        photo: data.photo || null,
+
+        status:"pending",
+
+        delivery:null,
+
+        evidence:null
+
+    };
+
+    database.packages.push(pkg);
+
+    saveDatabase();
+
+    renderDashboard();
+
+    return pkg;
+
+}
+
+
+/* =========================================================
+   FORMULARIO MANUAL
+========================================================= */
+
+function openManual(){
+
+    document.getElementById("packageForm").reset();
+
+    document.getElementById("manualModal")
+        .classList.add("show");
+
+}
+
+
+document
+.getElementById("packageForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const file =
+        document.getElementById("packagePhoto").files[0];
+
+    let photo = null;
+
+    if(file){
+
+        photo = await fileToDataURL(file);
+
+    }
+
+    createPackage({
+
+        type:
+            document.getElementById("packageType").value,
+
+        code:
+            document.getElementById("packageCode").value.trim(),
+
+        recipient:
+            document.getElementById("recipient").value.trim(),
+
+        address:
+            document.getElementById("address").value.trim(),
+
+        neighborhood:
+            document.getElementById("neighborhood").value.trim(),
+
+        zone:
+            document.getElementById("zone").value.trim(),
+
+        city:
+            document.getElementById("city").value.trim(),
+
+        postalCode:
+            document.getElementById("postalCode").value.trim(),
+
+        phone:
+            document.getElementById("phone").value.trim(),
+
+        notes:
+            document.getElementById("notes").value.trim(),
+
+        photo
+
+    });
+
+    closeModal("manualModal");
+
+    showToast("📦 Paquete cargado correctamente");
+
+    renderPackages();
+
+});
+
+
+/* =========================================================
+   FILE -> DATA URL
+========================================================= */
+
+function fileToDataURL(file){
+
+    return new Promise((resolve,reject)=>{
+
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+/* =========================================================
+   CÁMARA
+========================================================= */
+
+async function openScanner(){
+
+    document
+        .getElementById("scannerModal")
+        .classList.add("show");
+
+    await startCamera();
+
+}
+
+
+async function startCamera(){
+
+    try{
+
+        if(cameraStream){
+
+            cameraStream
+                .getTracks()
+                .forEach(track => track.stop());
+
+        }
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video:{
+                    facingMode:facingMode,
+                    width:{ideal:1280},
+                    height:{ideal:720}
+                },
+
+                audio:false
+
+            });
+
+        const video =
+            document.getElementById("cameraVideo");
+
+        video.srcObject = cameraStream;
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("ocrStatus").textContent =
+            "No se pudo acceder a la cámara. Usá el botón de carga manual.";
+
+    }
+
+}
+
+
+async function switchCamera(){
+
+    facingMode =
+        facingMode === "environment"
+            ? "user"
+            : "environment";
+
+    await startCamera();
+
+}
+
+
+function capturePhoto(){
+
+    const video =
+        document.getElementById("cameraVideo");
+
+    const canvas =
+        document.getElementById("cameraCanvas");
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    capturedDataUrl =
+        canvas.toDataURL(
+            "image/jpeg",
+            .82
+        );
+
+    const img =
+        document.getElementById("capturedImage");
+
+    img.src = capturedDataUrl;
+
+    img.style.display = "block";
+
+    document
+        .getElementById("processPhotoButton")
+        .style.display = "flex";
+
+    document
+        .getElementById("ocrStatus")
+        .textContent =
+        "Foto capturada. Presioná «Leer paquete».";
+
+}
+
+
+async function processCapturedPhoto(){
+
+    if(!capturedDataUrl) return;
+
+    const status =
+        document.getElementById("ocrStatus");
+
+    status.textContent =
+        "🔎 Analizando imagen... Esto puede tardar unos segundos.";
+
+    try{
+
+        const result =
+            await Tesseract.recognize(
+                capturedDataUrl,
+                "spa",
+                {
+                    logger: m => {
+
+                        if(m.status){
+
+                            status.textContent =
+                                "🔎 " +
+                                m.status +
+                                " " +
+                                Math.round(
+                                    (m.progress || 0) * 100
+                                ) +
+                                "%";
+
+                        }
+
+                    }
+                }
+            );
+
+        const text =
+            result.data.text || "";
+
+        status.textContent =
+            "✅ Lectura terminada. Revisá y completá los datos.";
+
+        closeScanner();
+
+        openManual();
+
+        parseOCR(text);
+
+        document.getElementById("packagePhoto")
+            .dataset.cameraPhoto = capturedDataUrl;
+
+        capturedDataUrl = null;
+
+    }catch(error){
+
+        console.error(error);
+
+        status.textContent =
+            "❌ No se pudo leer automáticamente. Cargá los datos manualmente.";
+
+    }
+
+}
+
+
+function parseOCR(text){
+
+    const lines =
+        text
+            .split("\n")
+            .map(x => x.trim())
+            .filter(Boolean);
+
+    if(!lines.length) return;
+
+    let address = "";
+
+    let code = "";
+
+    const addressRegex =
+        /(.+?)\s+(\d{2,5})/;
+
+    for(const line of lines){
+
+        if(addressRegex.test(line)){
+
+            address = line;
+
+            break;
+
+        }
+
+    }
+
+    const numbers =
+        text.match(/\b\d{6,14}\b/g);
+
+    if(numbers && numbers.length){
+
+        code = numbers[0];
+
+    }
+
+    document.getElementById("packageCode").value =
+        code;
+
+    document.getElementById("address").value =
+        address;
+
+    /* Heurística simple para detectar Flex */
+
+    const upper =
+        text.toUpperCase();
+
+    if(
+        upper.includes("FLEX") ||
+        upper.includes("MERCADO ENVIOS") ||
+        upper.includes("MERCADO ENVÍOS")
+    ){
+
+        document.getElementById("packageType").value =
+            "flex";
+
+    }else{
+
+        document.getElementById("packageType").value =
+            "particular";
+
+    }
+
+    /* Intento de detectar teléfono */
+
+    const phone =
+        text.match(
+            /\b(?:11|15)?[\s-]?\d{4}[\s-]?\d{4}\b/
+        );
+
+    if(phone){
+
+        document.getElementById("phone").value =
+            phone[0];
+
+    }
+
+}
+
+
+/* =========================================================
+   CERRAR SCANNER
+========================================================= */
+
+function closeScanner(){
+
+    if(cameraStream){
+
+        cameraStream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        cameraStream = null;
+
+    }
+
+    document
+        .getElementById("scannerModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   MODALES
+========================================================= */
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   RENDER DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+    const packages =
+        todayPackages();
+
+    const total =
+        packages.length;
+
+    const flex =
+        packages.filter(p => p.type === "flex").length;
+
+    const particular =
+        packages.filter(p => p.type === "particular").length;
+
+    const delivered =
+        packages.filter(p => p.status === "delivered").length;
+
+    const failed =
+        packages.filter(p => p.status === "failed").length;
+
+    const pending =
+        packages.filter(p => p.status === "pending").length;
+
+    document.getElementById("statTotal").textContent =
+        total;
+
+    document.getElementById("statFlex").textContent =
+        flex;
+
+    document.getElementById("statParticular").textContent =
+        particular;
+
+    document.getElementById("statDelivered").textContent =
+        delivered;
+
+    document.getElementById("statFailed").textContent =
+        failed;
+
+    document.getElementById("statPending").textContent =
+        pending;
+
+    calculateTime(total);
+
+    renderProgress(
+        total,
+        delivered,
+        failed,
+        pending
+    );
+
+}
+
+
+/* =========================================================
+   ESTIMACIÓN
+========================================================= */
+
+function calculateTime(total){
+
+    if(total === 0){
+
+        document.getElementById("estimatedTime")
+            .textContent = "0 min";
+
+        document.getElementById("estimatedFinish")
+            .textContent = "--:--";
+
+        const status =
+            document.getElementById("timeStatus");
+
+        status.className =
+            "time-status status-ok";
+
+        status.textContent =
+            "Sin paquetes cargados";
+
+        return;
+
+    }
+
+    const minutes =
+        CONFIG.minutosPreparacion +
+        total * CONFIG.minutosPorPaquete;
+
+    const now =
+        new Date();
+
+    const finish =
+        new Date(
+            now.getTime() +
+            minutes * 60000
+        );
+
+    const finishHour =
+        finish.toLocaleTimeString(
+            "es-AR",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    document.getElementById("estimatedTime")
+        .textContent =
+        formatMinutes(minutes);
+
+    document.getElementById("estimatedFinish")
+        .textContent =
+        finishHour;
+
+    const limit =
+        new Date();
+
+    limit.setHours(
+        CONFIG.horaLimite,
+        0,
+        0,
+        0
+    );
+
+    const status =
+        document.getElementById("timeStatus");
+
+    const difference =
+        Math.round(
+            (limit - finish) / 60000
+        );
+
+    if(difference >= 30){
+
+        status.className =
+            "time-status status-ok";
+
+        status.textContent =
+            `🟢 Llega cómodo · margen aproximado ${difference} min`;
+
+    }else if(difference >= 0){
+
+        status.className =
+            "time-status status-warning";
+
+        status.textContent =
+            `🟡 Llega justo · margen aproximado ${difference} min`;
+
+    }else{
+
+        status.className =
+            "time-status status-danger";
+
+        status.textContent =
+            `🔴 No llega · estaría terminando ${Math.abs(difference)} min después`;
+
+    }
+
+}
+
+
+function formatMinutes(minutes){
+
+    const h =
+        Math.floor(minutes / 60);
+
+    const m =
+        minutes % 60;
+
+    if(h === 0){
+
+        return `${m} min`;
+
+    }
+
+    return `${h} h ${m} min`;
+
+}
+
+
+/* =========================================================
+   PROGRESO
+========================================================= */
+
+function renderProgress(
+    total,
+    delivered,
+    failed,
+    pending
+){
+
+    const container =
+        document.getElementById("dayProgress");
+
+    if(total === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">📦</div>
+                Todavía no hay paquetes cargados.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    const completed =
+        delivered + failed;
+
+    const percentage =
+        Math.round(
+            completed / total * 100
+        );
+
+    container.innerHTML = `
+
+        <div style="
+            height:14px;
+            background:#e2e8f0;
+            border-radius:999px;
+            overflow:hidden;
+        ">
+
+            <div style="
+                width:${percentage}%;
+                height:100%;
+                background:#16a34a;
+                transition:.3s;
+            "></div>
+
+        </div>
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            margin-top:8px;
+            font-size:12px;
+            color:#64748b;
+        ">
+
+            <span>${completed} completados</span>
+
+            <strong>${percentage}%</strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   RENDER PAQUETES
+========================================================= */
+
+function renderPackages(){
+
+    const container =
+        document.getElementById("packageList");
+
+    let packages =
+        todayPackages();
+
+    const search =
+        document.getElementById("searchPackages")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const type =
+        document.getElementById("filterType").value;
+
+    const status =
+        document.getElementById("filterStatus").value;
+
+    if(search){
+
+        packages =
+            packages.filter(p =>
+
+                `${p.recipient} ${p.address} ${p.code} ${p.zone} ${p.neighborhood}`
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+    }
+
+    if(type !== "all"){
+
+        packages =
+            packages.filter(p => p.type === type);
+
+    }
+
+    if(status !== "all"){
+
+        packages =
+            packages.filter(p => p.status === status);
+
+    }
+
+    packages =
+        packages.sort(
+            (a,b) =>
+                new Date(b.createdAt) -
+                new Date(a.createdAt)
+        );
+
+    if(!packages.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📦</div>
+                No hay paquetes para mostrar.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        packages
+            .map(packageHTML)
+            .join("");
+
+}
+
+
+function packageHTML(p){
+
+    const typeBadge =
+        p.type === "flex"
+            ? `<span class="badge badge-flex">FLEX</span>`
+            : `<span class="badge badge-particular">PARTICULAR</span>`;
+
+    let statusBadge = "";
+
+    if(p.status === "pending"){
+
+        statusBadge =
+            `<span class="badge badge-pending">PENDIENTE</span>`;
+
+    }
+
+    if(p.status === "delivered"){
+
+        statusBadge =
+            `<span class="badge badge-delivered">ENTREGADO</span>`;
+
+    }
+
+    if(p.status === "failed"){
+
+        statusBadge =
+            `<span class="badge badge-failed">NO ENTREGADO</span>`;
+
+    }
+
+    return `
+
+        <article class="package">
+
+            <div class="package-top">
+
+                <div>
+
+                    <div class="package-id">
+                        ${escapeHTML(p.code || p.id)}
+                    </div>
+
+                    <div style="margin-top:5px">
+                        ${typeBadge}
+                        ${statusBadge}
+                    </div>
+
+                </div>
+
+                <div style="
+                    font-size:11px;
+                    color:#64748b;
+                ">
+                    ${p.timeCreated}
+                </div>
+
+            </div>
+
+            <div class="package-info">
+
+                <strong>
+                    ${escapeHTML(p.recipient || "Sin destinatario")}
+                </strong>
+
+                <span>
+                    📍 ${escapeHTML(p.address || "Sin dirección")}
+                </span>
+
+                <span>
+                    ${escapeHTML(p.neighborhood || "")}
+                    ${p.zone ? " · " + escapeHTML(p.zone) : ""}
+                </span>
+
+            </div>
+
+            <div class="package-actions">
+
+                <button
+                    class="btn btn-light btn-small"
+                    onclick="showDetail('${p.id}')"
+                >
+                    👁️ Ver
+                </button>
+
+                ${
+                    p.status === "pending" && p.type === "particular"
+                    ?
+                    `
+                    <button
+                        class="btn btn-success btn-small"
+                        onclick="openDelivery('${p.id}')"
+                    >
+                        ✅ Entregado
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="openFailed('${p.id}')"
+                    >
+                        ❌ No entregado
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+                ${
+                    p.status === "pending" && p.type === "flex"
+                    ?
+                    `
+                    <button
+                        class="btn btn-success btn-small"
+                        onclick="markFlexDelivered('${p.id}')"
+                    >
+                        ✅ Entregado
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+                <button
+                    class="btn btn-outline btn-small"
+                    onclick="deletePackage('${p.id}')"
+                >
+                    🗑️
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   DETALLE
+========================================================= */
+
+function showDetail(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    let html = `
+
+        <div class="package-info">
+
+            <strong>${escapeHTML(p.recipient)}</strong>
+
+            <span>
+                📦 ${escapeHTML(p.code || p.id)}
+            </span>
+
+            <span>
+                📍 ${escapeHTML(p.address)}
+            </span>
+
+            <span>
+                🏘️ ${escapeHTML(p.neighborhood)}
+            </span>
+
+            <span>
+                🗺️ ${escapeHTML(p.zone)}
+            </span>
+
+            <span>
+                🏙️ ${escapeHTML(p.city)}
+            </span>
+
+            <span>
+                📞 ${escapeHTML(p.phone)}
+            </span>
+
+            <span>
+                🕐 Cargado: ${p.timeCreated}
+            </span>
+
+        </div>
+
+    `;
+
+    if(p.photo){
+
+        html += `
+            <img
+                src="${p.photo}"
+                class="photo-preview"
+                alt="Foto del paquete"
+            >
+        `;
+
+    }
+
+    if(p.delivery){
+
+        html += `
+
+            <div class="card" style="margin-top:15px">
+
+                <h3>✅ Datos de entrega</h3>
+
+                <p>
+                    <strong>Recibió:</strong>
+                    ${escapeHTML(p.delivery.receivedBy)}
+                </p>
+
+                <p>
+                    <strong>DNI:</strong>
+                    ${escapeHTML(p.delivery.dni)}
+                </p>
+
+                <p>
+                    <strong>Hora:</strong>
+                    ${escapeHTML(p.delivery.time)}
+                </p>
+
+                <p>
+                    <strong>Observaciones:</strong>
+                    ${escapeHTML(p.delivery.notes)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+    if(p.evidence){
+
+        html += `
+
+            <div class="card" style="margin-top:15px">
+
+                <h3>❌ Constancia de no entrega</h3>
+
+                <p>
+                    <strong>Motivo:</strong>
+                    ${escapeHTML(p.evidence.reason)}
+                </p>
+
+                <p>
+                    <strong>Hora:</strong>
+                    ${escapeHTML(p.evidence.time)}
+                </p>
+
+                <p>
+                    <strong>Observaciones:</strong>
+                    ${escapeHTML(p.evidence.notes)}
+                </p>
+
+                ${
+                    p.evidence.photo
+                    ?
+                    `
+                    <img
+                        src="${p.evidence.photo}"
+                        class="photo-preview"
+                    >
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+        `;
+
+    }
+
+    document.getElementById("detailContent").innerHTML =
+        html;
+
+    document
+        .getElementById("detailModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   ENTREGA PARTICULAR
+========================================================= */
+
+function openDelivery(id){
+
+    currentPackageId = id;
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    document.getElementById("deliveryPackageInfo")
+        .innerHTML = `
+
+            <div class="card" style="margin:0">
+
+                <strong>
+                    ${escapeHTML(p.recipient)}
+                </strong>
+
+                <div style="
+                    margin-top:5px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    📍 ${escapeHTML(p.address)}
+                </div>
+
+            </div>
+
+        `;
+
+    document.getElementById("receivedBy").value = "";
+
+    document.getElementById("receivedDni").value = "";
+
+    document.getElementById("deliveryNotes").value = "";
+
+    document
+        .getElementById("deliveryModal")
+        .classList.add("show");
+
+}
+
+
+function confirmDelivery(){
+
+    const p =
+        database.packages.find(
+            x => x.id === currentPackageId
+        );
+
+    if(!p) return;
+
+    const receivedBy =
+        document.getElementById("receivedBy")
+            .value
+            .trim();
+
+    const dni =
+        document.getElementById("receivedDni")
+            .value
+            .trim();
+
+    if(!receivedBy){
+
+        showToast("⚠️ Ingresá quién recibió el paquete.");
+
+        return;
+
+    }
+
+    if(!dni){
+
+        showToast("⚠️ Ingresá el DNI.");
+
+        return;
+
+    }
+
+    p.status = "delivered";
+
+    p.delivery = {
+
+        receivedBy,
+
+        dni,
+
+        notes:
+            document.getElementById("deliveryNotes")
+                .value
+                .trim(),
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    closeModal("deliveryModal");
+
+    showToast("✅ Entrega registrada.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   FLEX ENTREGADO
+========================================================= */
+
+function markFlexDelivered(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    p.status = "delivered";
+
+    p.delivery = {
+
+        receivedBy:"",
+
+        dni:"",
+
+        notes:"Entrega Flex",
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    showToast("✅ Flex marcado como entregado.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   NO ENTREGADO
+========================================================= */
+
+function openFailed(id){
+
+    currentPackageId = id;
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    document.getElementById("failedPackageInfo")
+        .innerHTML = `
+
+            <div class="card" style="margin:0">
+
+                <strong>
+                    ${escapeHTML(p.recipient)}
+                </strong>
+
+                <div style="
+                    margin-top:5px;
+                    color:#64748b;
+                    font-size:13px;
+                ">
+                    📍 ${escapeHTML(p.address)}
+                </div>
+
+            </div>
+
+        `;
+
+    document.getElementById("evidencePhoto").value = "";
+
+    document.getElementById("failedNotes").value = "";
+
+    document
+        .getElementById("failedModal")
+        .classList.add("show");
+
+}
+
+
+async function confirmFailed(){
+
+    const p =
+        database.packages.find(
+            x => x.id === currentPackageId
+        );
+
+    if(!p) return;
+
+    const file =
+        document.getElementById("evidencePhoto")
+            .files[0];
+
+    if(!file){
+
+        showToast(
+            "⚠️ Para una no entrega tenés que cargar la foto de evidencia."
+        );
+
+        return;
+
+    }
+
+    const photo =
+        await fileToDataURL(file);
+
+    p.status = "failed";
+
+    p.evidence = {
+
+        reason:
+            document.getElementById("failedReason")
+                .value,
+
+        notes:
+            document.getElementById("failedNotes")
+                .value
+                .trim(),
+
+        photo,
+
+        date:todayKey(),
+
+        time:nowTime()
+
+    };
+
+    saveDatabase();
+
+    closeModal("failedModal");
+
+    showToast("❌ No entrega registrada con evidencia.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   ELIMINAR
+========================================================= */
+
+function deletePackage(id){
+
+    const p =
+        database.packages.find(
+            x => x.id === id
+        );
+
+    if(!p) return;
+
+    if(
+        !confirm(
+            `¿Eliminar el paquete ${p.code || p.id}?`
+        )
+    ){
+
+        return;
+
+    }
+
+    database.packages =
+        database.packages.filter(
+            x => x.id !== id
+        );
+
+    saveDatabase();
+
+    showToast("🗑️ Paquete eliminado.");
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+function getDaySummary(date){
+
+    const packages =
+        database.packages.filter(
+            p => p.date === date
+        );
+
+    return {
+
+        date,
+
+        total:packages.length,
+
+        flex:
+            packages.filter(
+                p => p.type === "flex"
+            ).length,
+
+        particular:
+            packages.filter(
+                p => p.type === "particular"
+            ).length,
+
+        delivered:
+            packages.filter(
+                p => p.status === "delivered"
+            ).length,
+
+        failed:
+            packages.filter(
+                p => p.status === "failed"
+            ).length,
+
+        pending:
+            packages.filter(
+                p => p.status === "pending"
+            ).length
+
+    };
+
+}
+
+
+function getAllDates(){
+
+    const dates =
+        [...new Set(
+            database.packages.map(
+                p => p.date
+            )
+        )];
+
+    return dates.sort(
+        (a,b) =>
+            new Date(b) -
+            new Date(a)
+    );
+
+}
+
+
+function renderHistory(){
+
+    const container =
+        document.getElementById("historyList");
+
+    const dates =
+        getAllDates();
+
+    if(!dates.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📅</div>
+                Todavía no hay jornadas registradas.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        dates.map(date => {
+
+            const s =
+                getDaySummary(date);
+
+            return `
+
+                <div class="card">
+
+                    <div class="week-header">
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(
+                                    formatDate(date)
+                                )}
+                            </h3>
+
+                            <small style="color:#64748b">
+                                ${s.total} paquetes
+                            </small>
+
+                        </div>
+
+                        ${
+                            database.closedDays.includes(date)
+                            ?
+                            `<span class="badge badge-delivered">
+                                CERRADA
+                            </span>`
+                            :
+                            `<span class="badge badge-pending">
+                                ABIERTA
+                            </span>`
+                        }
+
+                    </div>
+
+                    <div class="week-grid">
+
+                        <div class="week-mini">
+                            <small>Flex</small>
+                            <strong>${s.flex}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Particulares</small>
+                            <strong>${s.particular}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Entregados</small>
+                            <strong>${s.delivered}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>No entregados</small>
+                            <strong>${s.failed}</strong>
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn btn-light"
+                        style="width:100%;margin-top:12px"
+                        onclick="showDayDetail('${date}')"
+                    >
+                        👁️ Ver detalle del día
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   DETALLE DÍA
+========================================================= */
+
+function showDayDetail(date){
+
+    const packages =
+        database.packages.filter(
+            p => p.date === date
+        );
+
+    const s =
+        getDaySummary(date);
+
+    let rows =
+        packages.map(p => `
+
+            <tr>
+
+                <td>${escapeHTML(p.timeCreated)}</td>
+
+                <td>
+                    ${p.type === "flex" ? "FLEX" : "PARTICULAR"}
+                </td>
+
+                <td>${escapeHTML(p.recipient)}</td>
+
+                <td>${escapeHTML(p.address)}</td>
+
+                <td>${escapeHTML(p.zone)}</td>
+
+                <td>
+                    ${
+                        p.status === "delivered"
+                        ? "ENTREGADO"
+                        : p.status === "failed"
+                        ? "NO ENTREGADO"
+                        : "PENDIENTE"
+                    }
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    document.getElementById("detailContent").innerHTML = `
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">Total</div>
+                <div class="stat-value">${s.total}</div>
+            </div>
+
+            <div class="stat flex">
+                <div class="stat-label">Flex</div>
+                <div class="stat-value">${s.flex}</div>
+            </div>
+
+            <div class="stat particular">
+                <div class="stat-label">Particulares</div>
+                <div class="stat-value">${s.particular}</div>
+            </div>
+
+        </div>
+
+        <div class="table-wrap" style="margin-top:15px">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Hora</th>
+                        <th>Tipo</th>
+                        <th>Destinatario</th>
+                        <th>Dirección</th>
+                        <th>Zona</th>
+                        <th>Estado</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+    document
+        .getElementById("detailModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   SEMANAS
+========================================================= */
+
+function getWeekRange(date){
+
+    const d =
+        new Date(date + "T12:00:00");
+
+    const day =
+        d.getDay();
+
+    const diff =
+        day === 0 ? -6 : 1 - day;
+
+    const monday =
+        new Date(d);
+
+    monday.setDate(
+        d.getDate() + diff
+    );
+
+    const sunday =
+        new Date(monday);
+
+    sunday.setDate(
+        monday.getDate() + 6
+    );
+
+    const toKey = d => {
+
+        const y = d.getFullYear();
+
+        const m =
+            String(d.getMonth()+1)
+                .padStart(2,"0");
+
+        const day =
+            String(d.getDate())
+                .padStart(2,"0");
+
+        return `${y}-${m}-${day}`;
+
+    };
+
+    return {
+        start:toKey(monday),
+        end:toKey(sunday)
+    };
+
+}
+
+
+function renderWeeks(){
+
+    const container =
+        document.getElementById("weeksList");
+
+    const dates =
+        getAllDates();
+
+    const ranges = {};
+
+    dates.forEach(date => {
+
+        const range =
+            getWeekRange(date);
+
+        const key =
+            `${range.start}_${range.end}`;
+
+        ranges[key] = range;
+
+    });
+
+    const weeks =
+        Object.values(ranges)
+            .sort(
+                (a,b) =>
+                    new Date(b.start) -
+                    new Date(a.start)
+            );
+
+    if(!weeks.length){
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">📆</div>
+                No hay semanas registradas todavía.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        weeks.map(range => {
+
+            const packages =
+                database.packages.filter(
+                    p =>
+                        p.date >= range.start &&
+                        p.date <= range.end
+                );
+
+            const total =
+                packages.length;
+
+            const flex =
+                packages.filter(
+                    p => p.type === "flex"
+                ).length;
+
+            const particular =
+                packages.filter(
+                    p => p.type === "particular"
+                ).length;
+
+            const delivered =
+                packages.filter(
+                    p => p.status === "delivered"
+                ).length;
+
+            const failed =
+                packages.filter(
+                    p => p.status === "failed"
+                ).length;
+
+            const pending =
+                packages.filter(
+                    p => p.status === "pending"
+                ).length;
+
+            return `
+
+                <div class="week-card">
+
+                    <div class="week-header">
+
+                        <div>
+
+                            <h3>
+                                Semana
+                            </h3>
+
+                            <div style="
+                                margin-top:4px;
+                                color:#64748b;
+                                font-size:13px;
+                            ">
+
+                                ${formatDateShort(range.start)}
+                                →
+                                ${formatDateShort(range.end)}
+
+                            </div>
+
+                        </div>
+
+                        <strong style="font-size:25px">
+                            ${total}
+                        </strong>
+
+                    </div>
+
+                    <div class="week-grid">
+
+                        <div class="week-mini">
+                            <small>Flex</small>
+                            <strong>${flex}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Particulares</small>
+                            <strong>${particular}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Entregados</small>
+                            <strong>${delivered}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>No entregados</small>
+                            <strong>${failed}</strong>
+                        </div>
+
+                        <div class="week-mini">
+                            <small>Pendientes</small>
+                            <strong>${pending}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+========================================================= */
+
+function renderStats(){
+
+    const packages =
+        database.packages;
+
+    document.getElementById("historyTotal")
+        .textContent =
+        packages.length;
+
+    document.getElementById("historyFlex")
+        .textContent =
+        packages.filter(
+            p => p.type === "flex"
+        ).length;
+
+    document.getElementById("historyParticular")
+        .textContent =
+        packages.filter(
+            p => p.type === "particular"
+        ).length;
+
+    document.getElementById("historyDelivered")
+        .textContent =
+        packages.filter(
+            p => p.status === "delivered"
+        ).length;
+
+    document.getElementById("historyFailed")
+        .textContent =
+        packages.filter(
+            p => p.status === "failed"
+        ).length;
+
+}
+
+
+/* =========================================================
+   CIERRE DEL DÍA
+========================================================= */
+
+function closeDay(){
+
+    const today =
+        todayKey();
+
+    const packages =
+        todayPackages();
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay paquetes cargados."
+        );
+
+        return;
+
+    }
+
+    const pending =
+        packages.filter(
+            p => p.status === "pending"
+        ).length;
+
+    if(pending > 0){
+
+        const confirmPending =
+            confirm(
+                `Hay ${pending} paquetes pendientes.\n\n¿Querés cerrar igualmente la jornada?`
+            );
+
+        if(!confirmPending){
+
+            return;
+
+        }
+
+    }else{
+
+        if(
+            !confirm(
+                "¿Cerrar la jornada de hoy?"
+            )
+        ){
+
+            return;
+
+        }
+
+    }
+
+    if(
+        !database.closedDays.includes(today)
+    ){
+
+        database.closedDays.push(today);
+
+    }
+
+    saveDatabase();
+
+    showToast(
+        "🔒 Jornada cerrada correctamente."
+    );
+
+    renderAll();
+
+}
+
+
+/* =========================================================
+   EXCEL
+========================================================= */
+
+function exportExcel(){
+
+    if(typeof XLSX === "undefined"){
+
+        showToast(
+            "❌ No se pudo cargar el módulo Excel."
+        );
+
+        return;
+
+    }
+
+    const packages =
+        database.packages;
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay datos para exportar."
+        );
+
+        return;
+
+    }
+
+    const rows =
+        packages.map(p => ({
+
+            Fecha:p.date,
+
+            Hora_Carga:p.timeCreated,
+
+            ID:p.id,
+
+            Codigo:p.code,
+
+            Tipo:
+                p.type === "flex"
+                    ? "Flex"
+                    : "Particular",
+
+            Destinatario:p.recipient,
+
+            Direccion:p.address,
+
+            Barrio:p.neighborhood,
+
+            Zona:p.zone,
+
+            Localidad:p.city,
+
+            CP:p.postalCode,
+
+            Telefono:p.phone,
+
+            Estado:
+                p.status === "delivered"
+                    ? "Entregado"
+                    : p.status === "failed"
+                    ? "No entregado"
+                    : "Pendiente",
+
+            Recibio:
+                p.delivery?.receivedBy || "",
+
+            DNI:
+                p.delivery?.dni || "",
+
+            Hora_Entrega:
+                p.delivery?.time || "",
+
+            Motivo_No_Entrega:
+                p.evidence?.reason || "",
+
+            Hora_No_Entrega:
+                p.evidence?.time || "",
+
+            Observaciones:
+                p.delivery?.notes ||
+                p.evidence?.notes ||
+                p.notes ||
+                ""
+
+        }));
+
+    const worksheet =
+        XLSX.utils.json_to_sheet(rows);
+
+    const workbook =
+        XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Paquetes"
+    );
+
+    const summary =
+        getAllDates().map(date => {
+
+            const s =
+                getDaySummary(date);
+
+            return {
+
+                Fecha:date,
+
+                Total:s.total,
+
+                Flex:s.flex,
+
+                Particulares:s.particular,
+
+                Entregados:s.delivered,
+
+                No_Entregados:s.failed,
+
+                Pendientes:s.pending
+
+            };
+
+        });
+
+    const summarySheet =
+        XLSX.utils.json_to_sheet(summary);
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        summarySheet,
+        "Resumen diario"
+    );
+
+    const filename =
+        `control-reparto-${todayKey()}.xlsx`;
+
+    XLSX.writeFile(
+        workbook,
+        filename
+    );
+
+    showToast(
+        "📊 Excel generado correctamente."
+    );
+
+}
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function exportPDF(){
+
+    if(
+        !window.jspdf ||
+        !window.jspdf.jsPDF
+    ){
+
+        showToast(
+            "❌ No se pudo cargar el módulo PDF."
+        );
+
+        return;
+
+    }
+
+    const packages =
+        database.packages;
+
+    if(!packages.length){
+
+        showToast(
+            "⚠️ No hay datos para exportar."
+        );
+
+        return;
+
+    }
+
+    const {jsPDF} =
+        window.jspdf;
+
+    const doc =
+        new jsPDF({
+            orientation:"landscape"
+        });
+
+    const today =
+        todayKey();
+
+    const s =
+        getDaySummary(today);
+
+    doc.setFontSize(20);
+
+    doc.text(
+        "CONTROL DE REPARTO",
+        14,
+        18
+    );
+
+    doc.setFontSize(11);
+
+    doc.text(
+        `Generado: ${formatDate(today)}`,
+        14,
+        26
+    );
+
+    doc.text(
+        `Total: ${s.total} | Flex: ${s.flex} | Particulares: ${s.particular} | Entregados: ${s.delivered} | No entregados: ${s.failed} | Pendientes: ${s.pending}`,
+        14,
+        34
+    );
+
+    const rows =
+        packages.map(p => [
+
+            p.timeCreated,
+
+            p.type === "flex"
+                ? "FLEX"
+                : "PARTICULAR",
+
+            p.recipient,
+
+            p.address,
+
+            p.zone,
+
+            p.status === "delivered"
+                ? "ENTREGADO"
+                : p.status === "failed"
+                ? "NO ENTREGADO"
+                : "PENDIENTE",
+
+            p.delivery?.receivedBy || "",
+
+            p.delivery?.dni || ""
+
+        ]);
+
+    doc.autoTable({
+
+        startY:42,
+
+        head:[[
+            "Hora",
+            "Tipo",
+            "Destinatario",
+            "Dirección",
+            "Zona",
+            "Estado",
+            "Recibió",
+            "DNI"
+        ]],
+
+        body:rows,
+
+        styles:{
+            fontSize:7
+        },
+
+        headStyles:{
+            fontSize:8
+        }
+
+    });
+
+    doc.save(
+        `control-reparto-${today}.pdf`
+    );
+
+    showToast(
+        "📄 PDF generado correctamente."
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(
+            () => toast.classList.remove("show"),
+            3000
+        );
+
+}
+
+
+/* =========================================================
+   RENDER GENERAL
+========================================================= */
+
+function renderAll(){
+
+    renderDashboard();
+
+    renderPackages();
+
+    renderHistory();
+
+    renderWeeks();
+
+    renderStats();
+
+}
+
+
+/* =========================================================
+   IMPORTANTE:
+   Si se captura una foto desde cámara,
+   usarla automáticamente en el formulario.
+========================================================= */
+
+document
+.getElementById("packagePhoto")
+.addEventListener("change", function(){
+
+    if(
+        this.files.length === 0 &&
+        this.dataset.cameraPhoto
+    ){
+
+        return;
+
+    }
+
+});
+
+
+/* =========================================================
+   PERMITIR FOTO DE CÁMARA EN FORMULARIO
+========================================================= */
+
+const originalSubmit =
+    document.getElementById("packageForm")
+        .onsubmit;
+
+
+/*
+   Sobrescribimos la captura de formulario
+   para utilizar la imagen tomada por cámara.
+*/
+
+document
+.getElementById("packageForm")
+.addEventListener("submit", async function(){
+
+    const input =
+        document.getElementById("packagePhoto");
+
+    if(
+        !input.files.length &&
+        input.dataset.cameraPhoto
+    ){
+
+        const dataURL =
+            input.dataset.cameraPhoto;
+
+        const response =
+            await fetch(dataURL);
+
+        const blob =
+            await response.blob();
+
+        const file =
+            new File(
+                [blob],
+                "captura-paquete.jpg",
+                {
+                    type:"image/jpeg"
+                }
+            );
+
+        const dt =
+            new DataTransfer();
+
+        dt.items.add(file);
+
+        input.files =
+            dt.files;
+
+    }
+
+});
+
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
+
+renderAll();
+
+setInterval(
+    () => {
+
+        updateHeader();
+
+        renderDashboard();
+
+    },
+    30000
+);
+
+
+/* =========================================================
+   CERRAR MODAL HACIENDO CLICK AFUERA
+========================================================= */
+
+document
+.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("modal")){
+
+        e.target.classList.remove("show");
+
+    }
+
+});
+
+
+/* =========================================================
+   ATAJOS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Escape"){
+
+            document
+                .querySelectorAll(".modal.show")
+                .forEach(modal => {
+
+                    modal.classList.remove("show");
+
+                });
+
+            closeScanner();
+
+        }
+
+    }
+);
+
+</script>
+
+<<script>
+/* =========================================================
+   OPTIMIZACIONES PRO V3
+   ---------------------------------------------------------
+   - Compresión de fotografías
+   - Galería múltiple
+   - Cola robusta de fotografías
+   - Estados: Pendiente / Procesando / En formulario / Procesada / Error
+   - Preview
+   - OCR mejorado
+   - Cámara segura
+   - Evidencia desde cámara o galería
+   - Liberación de ObjectURL
+   - Evita procesamiento duplicado
+   - Manejo de errores
+   - Estimación basada SOLO en pendientes
+========================================================= */
+
+
+/* =========================================================
+   VARIABLES GLOBALES
+========================================================= */
+
+let galleryFiles = [];
+let galleryIndex = 0;
+let galleryBusy = false;
+let galleryWaitingSave = false;
+let pendingPhotoForForm = null;
+
+let galleryProcessingToken = 0;
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+function safeElement(id){
+    return document.getElementById(id);
+}
+
+function safeText(id, text){
+    const el = safeElement(id);
+    if(el) el.textContent = text;
+}
+
+function escapeHTML(value){
+    if(typeof value !== 'string') return '';
+    
+    return value
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+}
+
+
+/* =========================================================
+   COMPRESIÓN DE IMÁGENES
+========================================================= */
+
+function compressImage(source, maxSize = 1500, quality = 0.78){
+
+    return new Promise((resolve, reject) => {
+
+        const img = new Image();
+
+        let objectUrl = null;
+
+        img.onload = () => {
+
+            try{
+
+                const originalWidth =
+                    img.naturalWidth || img.width;
+
+                const originalHeight =
+                    img.naturalHeight || img.height;
+
+                if(!originalWidth || !originalHeight){
+                    throw new Error('Dimensiones inválidas');
+                }
+
+                const scale = Math.min(
+                    1,
+                    maxSize / Math.max(
+                        originalWidth,
+                        originalHeight
+                    )
+                );
+
+                const width = Math.max(
+                    1,
+                    Math.round(originalWidth * scale)
+                );
+
+                const height = Math.max(
+                    1,
+                    Math.round(originalHeight * scale)
+                );
+
+                const canvas = document.createElement('canvas');
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d', {
+                    alpha:false,
+                    willReadFrequently:false
+                });
+
+                if(!ctx){
+                    throw new Error('No se pudo crear Canvas');
+                }
+
+                ctx.drawImage(
+                    img,
+                    0,
+                    0,
+                    width,
+                    height
+                );
+
+                const result =
+                    canvas.toDataURL(
+                        'image/jpeg',
+                        quality
+                    );
+
+                if(objectUrl){
+                    try{
+                        URL.revokeObjectURL(objectUrl);
+                    }catch(_){}
+                }
+
+                resolve(result);
+
+            }catch(error){
+
+                if(objectUrl){
+                    try{
+                        URL.revokeObjectURL(objectUrl);
+                    }catch(_){}
+                }
+
+                reject(error);
+            }
+        };
+
+        img.onerror = error => {
+
+            if(objectUrl){
+                try{
+                    URL.revokeObjectURL(objectUrl);
+                }catch(_){}
+            }
+
+            reject(error);
+        };
+
+
+        if(typeof source === 'string'){
+
+            img.src = source;
+
+        }else{
+
+            objectUrl = URL.createObjectURL(source);
+            img.src = objectUrl;
+
+        }
+
+    });
+}
+
+
+async function prepareImage(fileOrDataUrl){
+
+    try{
+
+        return await compressImage(
+            fileOrDataUrl,
+            1500,
+            0.78
+        );
+
+    }catch(error){
+
+        console.warn(
+            'No se pudo comprimir la imagen:',
+            error
+        );
+
+        if(typeof fileOrDataUrl === 'string'){
+            return fileOrDataUrl;
+        }
+
+        return await fileToDataURL(fileOrDataUrl);
+    }
+}
+
+
+/* =========================================================
+   CONVERSIÓN FILE -> DATA URL
+========================================================= */
+
+function fileToDataURL(file){
+
+    return new Promise((resolve,reject) => {
+
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+    });
+}
+
+
+/* =========================================================
+   ESTADO DE LA GALERÍA
+========================================================= */
+
+function getGalleryStatus(item, index){
+
+    if(!item){
+        return '⏳ Pendiente';
+    }
+
+    switch(item.status){
+
+        case 'processing':
+            return '🔵 Procesando...';
+
+        case 'form':
+            return '🟡 En formulario';
+
+        case 'processed':
+            return '✅ Procesada';
+
+        case 'error':
+            return '❌ Error';
+
+        default:
+
+            if(index < galleryIndex){
+                return '✅ Procesada';
+            }
+
+            return '⏳ Pendiente';
+    }
+}
+
+
+/* =========================================================
+   ABRIR GALERÍA
+========================================================= */
+
+function openGallery(){
+
+    const modal = safeElement('galleryModal');
+
+    if(modal){
+        modal.classList.add('show');
+    }
+
+    updateGalleryStatus();
+
+    renderGalleryQueue();
+}
+
+
+/* =========================================================
+   ACTUALIZAR ESTADO
+========================================================= */
+
+function updateGalleryStatus(customText = null){
+
+    if(customText){
+
+        safeText(
+            'galleryStatus',
+            customText
+        );
+
+        return;
+    }
+
+    const total = galleryFiles.length;
+
+    if(!total){
+
+        safeText(
+            'galleryStatus',
+            'Seleccioná varias fotos.'
+        );
+
+        return;
+    }
+
+    const processed =
+        galleryFiles.filter(
+            item => item.status === 'processed'
+        ).length;
+
+    const errors =
+        galleryFiles.filter(
+            item => item.status === 'error'
+        ).length;
+
+    const current =
+        galleryFiles[galleryIndex];
+
+    if(galleryWaitingSave && current){
+
+        safeText(
+            'galleryStatus',
+            `🟡 Foto ${galleryIndex + 1} de ${total} en formulario. Guardá el paquete para continuar.`
+        );
+
+        return;
+    }
+
+    if(galleryBusy && current){
+
+        safeText(
+            'galleryStatus',
+            `🔵 Procesando foto ${galleryIndex + 1} de ${total}...`
+        );
+
+        return;
+    }
+
+    if(processed === total){
+
+        safeText(
+            'galleryStatus',
+            `✅ Todas las fotografías fueron procesadas (${total}/${total}).`
+        );
+
+        return;
+    }
+
+    if(errors){
+
+        safeText(
+            'galleryStatus',
+            `📸 ${processed}/${total} procesadas · ${errors} con error`
+        );
+
+        return;
+    }
+
+    safeText(
+        'galleryStatus',
+        `📸 ${processed}/${total} procesadas · ${total - processed} pendientes`
+    );
+}
+
+
+/* =========================================================
+   SELECCIONAR FOTOS
+========================================================= */
+
+function selectGalleryFiles(){
+
+    const input =
+        safeElement('galleryInput');
+
+    if(input){
+        input.click();
+    }
+}
+
+
+/* =========================================================
+   RENDER COLA
+========================================================= */
+
+function renderGalleryQueue(){
+
+    const box =
+        safeElement('galleryQueue');
+
+    if(!box) return;
+
+
+    if(!galleryFiles.length){
+
+        box.innerHTML = `
+            <div class="empty" style="padding:20px">
+                📷 No hay fotos seleccionadas.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    box.innerHTML =
+        galleryFiles.map((item,index) => {
+
+            const status =
+                getGalleryStatus(item,index);
+
+            const active =
+                index === galleryIndex &&
+                !['processed','error'].includes(item.status);
+
+            return `
+
+                <div
+                    class="gallery-item"
+                    data-gallery-index="${index}"
+                    style="
+                        position:relative;
+                        display:flex;
+                        align-items:center;
+                        gap:12px;
+                        padding:10px;
+                        margin-bottom:8px;
+                        border-radius:12px;
+                         border:1px solid rgba(0,0,0,.08);
+            " ${active ? 'box-shadow:0 0 0 2px rgba(59,130,246,.20);' : ''}
+        "
+    >
+
+                    <img
+                        class="gallery-thumb"
+                        src="${item.preview}"
+                        alt="foto ${index + 1}"
+                        style="
+                            width:70px;
+                            height:70px;
+                            object-fit:cover;
+                            border-radius:10px;
+                            flex-shrink:0;
+                        "
+                    >
+
+                    <div
+                        style="
+                            flex:1;
+                            min-width:0;
+                        "
+                    >
+
+                        <strong>
+                            Foto ${index + 1}
+                        </strong>
+
+                        <small
+                            style="
+                                display:block;
+                                overflow:hidden;
+                                text-overflow:ellipsis;
+                                white-space:nowrap;
+                                margin-top:3px;
+                            "
+                        >
+                            ${escapeHTML(
+                                item.file?.name || 'imagen'
+                            )}
+                        </small>
+
+                        <small
+                            style="
+                                display:block;
+                                margin-top:5px;
+                            "
+                        >
+                            ${status}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join('');
+}
+
+
+/* =========================================================
+   PROCESAR ARCHIVOS
+========================================================= */
+
+async function processGalleryFiles(files){
+
+    if(!files || !files.length){
+        return;
+    }
+
+
+    /*
+       Si ya existe una cola activa,
+       no reemplazamos accidentalmente las fotos.
+    */
+
+    if(galleryFiles.length){
+
+        const confirmed =
+            confirm(
+                'Ya hay fotografías en la cola. ¿Querés reemplazarlas por las nuevas?'
+            );
+
+        if(!confirmed){
+            return;
+        }
+
+        clearGalleryQueue();
+    }
+
+
+    galleryFiles =
+        files.map(file => ({
+
+            file:file,
+
+            preview:
+                URL.createObjectURL(file),
+
+            status:'pending',
+
+            prepared:null,
+
+            error:null
+
+        }));
+
+
+    galleryIndex = 0;
+
+    galleryBusy = false;
+
+    galleryWaitingSave = false;
+
+    pendingPhotoForForm = null;
+
+
+    openGallery();
+
+    showToast(
+        `🖼️ ${files.length} foto(s) cargadas.`
+    );
+
+
+    await processNextGalleryItem();
+}
+
+
+/* =========================================================
+   PROCESAR SIGUIENTE FOTO
+========================================================= */
+
+async function processNextGalleryItem(){
+
+    if(galleryBusy){
+        return;
+    }
+
+    if(galleryWaitingSave){
+        return;
+    }
+
+    if(
+        galleryIndex >=
+        galleryFiles.length
+    ){
+
+        finishGallery();
+
+        return;
+    }
+
+
+    const item =
+        galleryFiles[galleryIndex];
+
+    if(!item){
+        finishGallery();
+        return;
+    }
+
+
+    /*
+       Evita procesar nuevamente
+       una fotografía ya terminada.
+    */
+
+    if(item.status === 'processed'){
+
+        galleryIndex++;
+
+        return processNextGalleryItem();
+    }
+
+
+    galleryBusy = true;
+
+    item.status = 'processing';
+
+    item.error = null;
+
+    renderGalleryQueue();
+
+    updateGalleryStatus();
+
+
+    const token =
+        ++galleryProcessingToken;
+
+
+    try{
+
+        const photo =
+            await prepareImage(
+                item.file
+            );
+
+
+        /*
+           Si durante el procesamiento
+           la cola cambió, abortamos.
+        */
+
+        if(token !== galleryProcessingToken){
+            return;
+        }
+
+
+        item.prepared = photo;
+
+        pendingPhotoForForm = photo;
+
+        item.status = 'form';
+
+        galleryBusy = false;
+
+        galleryWaitingSave = true;
+
+
+        updateGalleryStatus();
+
+        renderGalleryQueue();
+
+
+        const form =
+            safeElement('packageForm');
+
+        if(form){
+
+            form.dataset.galleryMode = '1';
+
+            form.dataset.galleryIndex =
+                String(galleryIndex);
+
+            form.dataset.galleryPhotoReady =
+                '1';
+        }
+
+
+        /*
+           Abrimos el formulario.
+        */
+
+        openManual();
+
+
+        const input =
+            safeElement('packagePhoto');
+
+        if(input){
+
+            input.dataset.cameraPhoto =
+                photo;
+
+            input.value = '';
+        }
+
+
+        /*
+           Volvemos a actualizar porque
+           openManual puede modificar la interfaz.
+        */
+
+        updateGalleryStatus();
+
+        renderGalleryQueue();
+
+
+    }catch(error){
+
+        console.error(
+            'Error procesando fotografía:',
+            error
+        );
+
+
+        item.status = 'error';
+
+        item.error =
+            error?.message ||
+            'No se pudo preparar la fotografía';
+
+
+        galleryBusy = false;
+
+        galleryWaitingSave = false;
+
+
+        showToast(
+            '❌ No se pudo preparar una de las fotografías.'
+        );
+
+
+        renderGalleryQueue();
+
+        updateGalleryStatus();
+
+
+        /*
+           Pasamos a la siguiente
+           sin bloquear toda la cola.
+        */
+
+        galleryIndex++;
+
+
+        setTimeout(
+            processNextGalleryItem,
+            100
+        );
+    }
+}
+
+
+/* =========================================================
+   FINALIZAR GALERÍA
+========================================================= */
+
+function finishGallery(){
+
+    galleryBusy = false;
+
+    galleryWaitingSave = false;
+
+    pendingPhotoForForm = null;
+
+
+    galleryFiles.forEach(item => {
+
+        if(item.preview){
+
+            try{
+                URL.revokeObjectURL(
+                    item.preview
+                );
+            }catch(_){}
+
+        }
+
+    });
+
+
+    renderGalleryQueue();
+
+
+    updateGalleryStatus(
+        `✅ Todas las fotografías fueron procesadas (${galleryFiles.length}/${galleryFiles.length}).`
+    );
+
+
+    setTimeout(() => {
+
+        closeModal('galleryModal');
+
+        showToast(
+            '✅ Todas las fotografías fueron procesadas.'
+        );
+
+        galleryFiles = [];
+
+        galleryIndex = 0;
+
+        renderGalleryQueue();
+
+    },800);
+}
+
+
+/* =========================================================
+   LIMPIAR COLA
+========================================================= */
+
+function clearGalleryQueue(){
+
+    galleryProcessingToken++;
+
+
+    galleryFiles.forEach(item => {
+
+        if(item.preview){
+
+            try{
+                URL.revokeObjectURL(
+                    item.preview
+                );
+            }catch(_){}
+
+        }
+
+    });
+
+
+    galleryFiles = [];
+
+    galleryIndex = 0;
+
+    galleryBusy = false;
+
+    galleryWaitingSave = false;
+
+    pendingPhotoForForm = null;
+}
+
+
+/* =========================================================
+   INPUT DE GALERÍA
+========================================================= */
+
+(function setupGalleryInput(){
+
+    const galleryInput =
+        safeElement('galleryInput');
+
+    if(!galleryInput){
+        return;
+    }
+
+
+    /*
+       Evitamos instalar el listener
+       dos veces.
+    */
+
+    if(galleryInput.dataset.optimizedV3 === '1'){
+        return;
+    }
+
+    galleryInput.dataset.optimizedV3 = '1';
+
+
+    galleryInput.addEventListener(
+        'change',
+        async event => {
+
+            const files =
+                Array.from(
+                    event.target.files || []
+                );
+
+
+            /*
+               Permite volver a seleccionar
+               exactamente el mismo archivo.
+            */
+
+            event.target.value = '';
+
+
+            if(!files.length){
+                return;
+            }
+
+
+            /*
+               Solo imágenes.
+            */
+
+            const validFiles =
+                files.filter(
+                    file =>
+                        file.type &&
+                        file.type.startsWith('image/')
+                );
+
+
+            if(!validFiles.length){
+
+                showToast(
+                    '❌ No se seleccionaron imágenes válidas.'
+                );
+
+                return;
+            }
+
+
+            await processGalleryFiles(
+                validFiles
+            );
+
+        }
+    );
+
+})();
+
+
+/* =========================================================
+   OPEN MANUAL ORIGINAL
+========================================================= */
+
+const _openManualOriginal =
+    window.openManual;
+
+
+/*
+   Solo reemplazamos openManual
+   si existe una función original.
+*/
+
+if(typeof _openManualOriginal === 'function'){
+
+    window.openManual = function(){
+
+        _openManualOriginal();
+
+
+        const input =
+            safeElement('packagePhoto');
+
+
+        if(
+            input &&
+            pendingPhotoForForm
+        ){
+
+            input.dataset.cameraPhoto =
+                pendingPhotoForForm;
+
+            input.value = '';
+
+        }
+
+
+        /*
+           Si estamos procesando una foto
+           de la galería, reforzamos el estado.
+        */
+
+        if(
+            galleryWaitingSave &&
+            galleryFiles[galleryIndex]
+        ){
+
+            galleryFiles[galleryIndex].status =
+                'form';
+
+            renderGalleryQueue();
+
+            updateGalleryStatus();
+        }
+
+    };
+
+}
+
+
+/* =========================================================
+   AVANZAR GALERÍA DESPUÉS DEL SUBMIT
+========================================================= */
+
+(function setupGallerySubmit(){
+
+    const form =
+        safeElement('packageForm');
+
+    if(!form){
+        return;
+    }
+
+
+    if(form.dataset.gallerySubmitV3 === '1'){
+        return;
+    }
+
+    form.dataset.gallerySubmitV3 = '1';
+
+
+    form.addEventListener(
+        'submit',
+        () => {
+
+            /*
+               Si no estamos en modo galería,
+               no hacemos absolutamente nada.
+            */
+
+            if(
+                form.dataset.galleryMode !== '1'
+            ){
+
+                return;
+            }
+
+
+            /*
+               HTML5 validation ya pasó,
+               por lo tanto el submit realmente
+               fue disparado.
+            */
+
+            const savedIndex =
+                parseInt(
+                    form.dataset.galleryIndex || galleryIndex,
+                    10
+                );
+
+
+            const item =
+                galleryFiles[savedIndex];
+
+
+            if(item){
+
+                item.status =
+                    'processed';
+            }
+
+
+            /*
+               Sacamos inmediatamente el estado
+               "en formulario".
+            */
+
+            galleryWaitingSave = false;
+
+            galleryBusy = false;
+
+
+            renderGalleryQueue();
+
+
+            updateGalleryStatus(
+                `✅ Foto ${savedIndex + 1} guardada. Preparando la siguiente...`
+            );
+
+
+            /*
+               Esperamos un poco para que el
+               código original del formulario
+               termine su guardado.
+            */
+
+            setTimeout(
+                () => {
+
+                    /*
+                       Si el usuario cambió
+                       la cola mientras tanto,
+                       no hacemos nada.
+                    */
+
+                    if(
+                        galleryFiles.length === 0
+                    ){
+                        return;
+                    }
+
+
+                    /*
+                       Solo avanzamos si seguimos
+                       en la misma foto.
+                    */
+
+                    if(
+                        galleryIndex === savedIndex
+                    ){
+
+                        galleryIndex =
+                            savedIndex + 1;
+
+                    }
+
+
+                    pendingPhotoForForm = null;
+
+                    form.dataset.galleryMode = '';
+
+                    form.dataset.galleryIndex = '';
+
+                    form.dataset.galleryPhotoReady = '';
+
+
+                    /*
+                       Si quedan fotos:
+                       procesamos la siguiente.
+                    */
+
+                    if(
+                        galleryIndex <
+                        galleryFiles.length
+                    ){
+
+                        galleryBusy = false;
+
+                        galleryWaitingSave = false;
+
+                        renderGalleryQueue();
+
+                        updateGalleryStatus();
+
+                        processNextGalleryItem();
+
+                    }else{
+
+                        finishGallery();
+
+                    }
+
+                },
+                700
+            );
+
+        }
+    );
+
+})();
+
+
+/* =========================================================
+   OCR MEJORADO
+========================================================= */
+
+window.processCapturedPhoto =
+async function(){
+
+    if(!capturedDataUrl){
+
+        showToast(
+            '❌ No hay fotografía capturada.'
+        );
+
+        return;
+    }
+
+
+    const status =
+        safeElement('ocrStatus');
+
+    const button =
+        safeElement('processPhotoButton');
+
+
+    if(button){
+        button.disabled = true;
+    }
+
+
+    try{
+
+        if(status){
+            status.textContent =
+                '🖼️ Optimizando fotografía...';
+        }
+
+
+        const optimized =
+            await prepareImage(
+                capturedDataUrl
+            );
+
+
+        capturedDataUrl =
+            optimized;
+
+
+        if(status){
+            status.textContent =
+                '🔎 Analizando texto...';
+        }
+
+
+        const result =
+            await Tesseract.recognize(
+                optimized,
+                'spa',
+                {
+
+                    logger: message => {
+
+                        if(
+                            !status ||
+                            !message
+                        ){
+                            return;
+                        }
+
+
+                        if(message.status){
+
+                            const progress =
+                                Math.round(
+                                    (message.progress || 0) *
+                                    100
+                                );
+
+
+                            status.textContent =
+                                `🔎 ${message.status} ${progress}%`;
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+        const text =
+            result?.data?.text || '';
+
+
+        try{
+            closeScanner();
+        }catch(_){}
+
+
+        pendingPhotoForForm =
+            optimized;
+
+
+        openManual();
+
+
+        const input =
+            safeElement('packagePhoto');
+
+
+        if(input){
+
+            input.dataset.cameraPhoto =
+                optimized;
+
+        }
+
+
+        parseOCREnhanced(text);
+
+
+        if(status){
+            status.textContent = '';
+        }
+
+
+        capturedDataUrl = null;
+
+
+    }catch(error){
+
+        console.error(
+            'OCR error:',
+            error
+        );
+
+
+        try{
+            closeScanner();
+        }catch(_){}
+
+
+        try{
+
+            pendingPhotoForForm =
+                await prepareImage(
+                    capturedDataUrl
+                );
+
+        }catch(_){
+
+            pendingPhotoForForm =
+                capturedDataUrl;
+
+        }
+
+
+        openManual();
+
+
+        const input =
+            safeElement('packagePhoto');
+
+
+        if(input){
+
+            input.dataset.cameraPhoto =
+                pendingPhotoForForm;
+
+        }
+
+
+        const notes =
+            safeElement('notes');
+
+
+        if(notes){
+
+            notes.value =
+                'OCR no concluyente. Revisar manualmente los datos.';
+
+        }
+
+
+        showToast(
+            '⚠️ OCR no concluyente. La foto quedó guardada; completá los datos.'
+        );
+
+
+        capturedDataUrl = null;
+
+
+    }finally{
+
+        if(button){
+            button.disabled = false;
+        }
+
+    }
+
+};
+
+
+/* =========================================================
+   PARSER OCR
+========================================================= */
+
+function parseOCREnhanced(text){
+
+    if(typeof parseOCR === 'function'){
+
+        try{
+            parseOCR(text || '');
+        }catch(error){
+            console.warn(
+                'parseOCR falló:',
+                error
+            );
+        }
+
+    }
+
+
+    const source =
+        text || '';
+
+
+    const upper =
+        source.toUpperCase();
+
+
+    const lines =
+        source
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(Boolean);
+
+
+    /*
+       CÓDIGO
+    */
+
+    const candidates = [
+
+        ...(source.match(
+            /\b\d{8,16}\b/g
+        ) || []),
+
+        ...(source.match(
+            /\b[A-Z]{2,8}[- ]?\d{5,14}\b/gi
+        ) || [])
+
+    ];
+
+
+    const code =
+        safeElement('packageCode');
+
+
+    if(
+        candidates[0] &&
+        code &&
+        !code.value.trim()
+    ){
+
+        code.value =
+            candidates[0];
+
+    }
+
+
+    /*
+       DIRECCIÓN
+    */
+
+    const address =
+        lines.find(
+            line =>
+                /\b\d{1,5}\b/.test(line) &&
+                /(?:av\.?|avenida|calle|pasaje|ruta|boulevard|bvd\.?|diag\.?|diagonal|n[°ºo]?)/i.test(line)
+        )
+        ||
+        lines.find(
+            line =>
+                /\b\d{2,5}\b/.test(line)
+        );
+
+
+    const addressInput =
+        safeElement('address');
+
+
+    if(
+        address &&
+        addressInput &&
+        !addressInput.value.trim()
+    ){
+
+        addressInput.value =
+            address;
+
+    }
+
+
+    /*
+       FLEX
+    */
+
+    const isFlex =
+        /\bFLEX\b|
+        MERCADO\s*ENV[IÍ]OS|
+        MELI|
+        MERCADOLIBRE|
+        ENVIOS\s*FLEX/i.test(
+            upper
+        );
+
+
+    const packageType =
+        safeElement('packageType');
+
+
+    if(packageType){
+
+        packageType.value =
+            isFlex
+                ? 'flex'
+                : 'particular';
+
+    }
+
+
+    /*
+       TELÉFONO
+    */
+
+    const phone =
+        source.match(
+            /(?:\+54\s?9?\s?)?(?:11|15)?[\s.-]?\d{4}[\s.-]?\d{4}\b/
+        );
+
+
+    const phoneInput =
+        safeElement('phone');
+
+
+    if(
+        phone &&
+        phoneInput &&
+        !phoneInput.value.trim()
+    ){
+
+        phoneInput.value =
+            phone[0];
+
+    }
+
+
+    /*
+       CÓDIGO POSTAL
+    */
+
+    const cp =
+        source.match(
+            /\b\d{4}\b/
+        );
+
+
+    const postalCode =
+        safeElement('postalCode');
+
+
+    if(
+        cp &&
+        postalCode &&
+        !postalCode.value.trim()
+    ){
+
+        postalCode.value =
+            cp[0];
+
+    }
+
+
+    /*
+       DESTINATARIO
+    */
+
+    const recipient =
+        safeElement('recipient');
+
+
+    if(
+        recipient &&
+        !recipient.value.trim()
+    ){
+
+        const possibleName =
+            lines.find(
+                line =>
+                    /^[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ]+){1,3}$/.test(line)
+            );
+
+
+        if(possibleName){
+
+            recipient.value =
+                possibleName;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   CAPTURA DE CÁMARA
+========================================================= */
+
+const _capturePhotoOriginal =
+    window.capturePhoto;
+
+
+if(typeof _capturePhotoOriginal === 'function'){
+
+    window.capturePhoto =
+    async function(){
+
+        const video =
+            safeElement('cameraVideo');
+
+
+        if(
+            !video ||
+            video.readyState < 2 ||
+            !video.videoWidth
+        ){
+
+            showToast(
+                '📷 Esperá un segundo a que la cámara enfoque.'
+            );
+
+            return;
+        }
+
+
+        try{
+
+            await _capturePhotoOriginal();
+
+        }catch(error){
+
+            console.error(
+                'Error capturando fotografía:',
+                error
+            );
+
+            showToast(
+                '❌ No se pudo capturar la fotografía.'
+            );
+
+            return;
+        }
+
+
+        if(capturedDataUrl){
+
+            try{
+
+                capturedDataUrl =
+                    await prepareImage(
+                        capturedDataUrl
+                    );
+
+
+                const capturedImage =
+                    safeElement('capturedImage');
+
+
+                if(capturedImage){
+
+                    capturedImage.src =
+                        capturedDataUrl;
+
+                }
+
+            }catch(error){
+
+                console.warn(
+                    'No se pudo optimizar captura:',
+                    error
+                );
+
+            }
+
+        }
+
+    };
+
+}
+
+
+/* =========================================================
+   EVIDENCIA
+========================================================= */
+
+(function enhanceEvidenceUI(){
+
+    const input =
+        safeElement('evidencePhoto');
+
+
+    if(
+        !input ||
+        input.dataset.enhancedV3 === '1'
+    ){
+
+        return;
+    }
+
+
+    input.dataset.enhancedV3 = '1';
+
+
+    const wrap =
+        input.parentElement;
+
+
+    if(!wrap){
+        return;
+    }
+
+
+    const row =
+        document.createElement('div');
+
+
+    row.style.cssText =
+        `
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+        margin-top:8px;
+        `;
+
+
+    row.innerHTML = `
+
+        <button
+            type="button"
+            class="btn btn-light"
+            onclick="captureEvidenceFromCamera()"
+        >
+            📷 Cámara
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-light"
+            onclick="document.getElementById('evidencePhoto').click()"
+        >
+            🖼️ Galería
+        </button>
+
+    `;
+
+
+    wrap.appendChild(row);
+
+})();
+
+
+/* =========================================================
+   CÁMARA DE EVIDENCIA
+========================================================= */
+
+async function captureEvidenceFromCamera(){
+
+    if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ){
+
+        showToast(
+            '❌ Tu navegador no permite acceder a la cámara.'
+        );
+
+        return;
+    }
+
+
+    const stream =
+        await navigator.mediaDevices
+            .getUserMedia({
+                video:{
+                    facingMode:{
+                        ideal:'environment'
+                    }
+                },
+                audio:false
+            })
+            .catch(
+                error => {
+
+                    console.error(
+                        error
+                    );
+
+                    return null;
+
+                }
+            );
+
+
+    if(!stream){
+
+        showToast(
+            '❌ No se pudo abrir la cámara.'
+        );
+
+        return;
+    }
+
+
+    const overlay =
+        document.createElement('div');
+
+
+    overlay.className =
+        'modal show';
+
+
+    overlay.innerHTML = `
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+
+                <h3>
+                    📷 Evidencia
+                </h3>
+
+                <button
+                    class="close"
+                    id="closeEvidenceCam"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <video
+                id="evidenceVideo"
+                autoplay
+                playsinline
+                style="
+                    width:100%;
+                    border-radius:14px;
+                    background:#000;
+                "
+            ></video>
+
+            <canvas
+                id="evidenceCanvas"
+                style="display:none"
+            ></canvas>
+
+            <button
+                class="btn btn-danger"
+                id="captureEvidenceBtn"
+                type="button"
+                style="
+                    width:100%;
+                    margin-top:12px;
+                "
+            >
+                📸 Tomar evidencia
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    const video =
+        overlay.querySelector(
+            '#evidenceVideo'
+        );
+
+
+    video.srcObject =
+        stream;
+
+
+    let closed = false;
+
+
+    const stop = () => {
+
+        if(closed){
+            return;
+        }
+
+
+        closed = true;
+
+
+        try{
+
+            stream
+                .getTracks()
+                .forEach(
+                    track =>
+                        track.stop()
+                );
+
+        }catch(_){}
+
+
+        try{
+            video.srcObject = null;
+        }catch(_){}
+
+
+        overlay.remove();
+
+    };
+
+
+    overlay
+        .querySelector(
+            '#closeEvidenceCam'
+        )
+        .onclick = stop;
+
+
+    overlay
+        .querySelector(
+            '#captureEvidenceBtn'
+        )
+        .onclick = async () => {
+
+            if(
+                !video.videoWidth ||
+                !video.videoHeight
+            ){
+
+                showToast(
+                    'Esperá a que la cámara esté lista.'
+                );
+
+                return;
+            }
+
+
+            const canvas =
+                overlay.querySelector(
+                    '#evidenceCanvas'
+                );
+
+
+            canvas.width =
+                video.videoWidth;
+
+
+            canvas.height =
+                video.videoHeight;
+
+
+            const ctx =
+                canvas.getContext('2d');
+
+
+            ctx.drawImage(
+                video,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            try{
+
+                const photo =
+                    await prepareImage(
+                        canvas.toDataURL(
+                            'image/jpeg',
+                            0.82
+                        )
+                    );
+
+
+                const response =
+                    await fetch(photo);
+
+
+                const blob =
+                    await response.blob();
+
+
+                const file =
+                    new File(
+                        [blob],
+                        'evidencia.jpg',
+                        {
+                            type:'image/jpeg'
+                        }
+                    );
+
+
+                const dt =
+                    new DataTransfer();
+
+
+                dt.items.add(file);
+
+
+                const input =
+                    safeElement(
+                        'evidencePhoto'
+                    );
+
+
+                if(input){
+
+                    input.files =
+                        dt.files;
+
+                }
+
+
+                stop();
+
+
+                showToast(
+                    '✅ Foto de evidencia cargada.'
+                );
+
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+                showToast(
+                    '❌ No se pudo preparar la evidencia.'
+                );
+
+            }
+
+        };
+
+
+    /*
+       Cerrar tocando fuera.
+    */
+
+    overlay.addEventListener(
+        'click',
+        event => {
+
+            if(
+                event.target === overlay
+            ){
+
+                stop();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   COMPRESIÓN DE EVIDENCIA
+========================================================= */
+
+const _confirmFailedOriginal =
+    window.confirmFailed;
+
+
+if(typeof _confirmFailedOriginal === 'function'){
+
+    window.confirmFailed =
+    async function(){
+
+        const input =
+            safeElement('evidencePhoto');
+
+
+        if(
+            input?.files?.[0]
+        ){
+
+            try{
+
+                const optimized =
+                    await prepareImage(
+                        input.files[0]
+                    );
+
+
+                const response =
+                    await fetch(
+                        optimized
+                    );
+
+
+                const blob =
+                    await response.blob();
+
+
+                const file =
+                    new File(
+                        [blob],
+                        'evidencia-optimizada.jpg',
+                        {
+                            type:'image/jpeg'
+                        }
+                    );
+
+
+                const dt =
+                    new DataTransfer();
+
+
+                dt.items.add(file);
+
+
+                input.files =
+                    dt.files;
+
+
+            }catch(error){
+
+                console.warn(
+                    'No se pudo optimizar evidencia:',
+                    error
+                );
+
+            }
+
+        }
+
+
+        return _confirmFailedOriginal();
+
+    };
+
+}
+
+
+/* =========================================================
+   ESTIMACIÓN DE TIEMPO
+========================================================= */
+
+window.calculateTime =
+function(){
+
+    if(
+        typeof todayPackages !== 'function'
+    ){
+
+        console.warn(
+            'todayPackages() no está disponible.'
+        );
+
+        return;
+    }
+
+
+    const list =
+        todayPackages();
+
+
+    const pending =
+        list.filter(
+            packageItem =>
+                packageItem.status === 'pending'
+        );
+
+
+    const flex =
+        pending.filter(
+            packageItem =>
+                packageItem.type === 'flex'
+        ).length;
+
+
+    const particular =
+        pending.filter(
+            packageItem =>
+                packageItem.type === 'particular'
+        ).length;
+
+
+    const minutes =
+        CONFIG.minutosPreparacion +
+        flex * 6 +
+        particular * 10;
+
+
+    const now =
+        new Date();
+
+
+    const finish =
+        new Date(
+            now.getTime() +
+            minutes * 60000
+        );
+
+
+    const finishText =
+        finish.toLocaleTimeString(
+            'es-AR',
+            {
+                hour:'2-digit',
+                minute:'2-digit'
+            }
+        );
+
+
+    const estimatedTime =
+        safeElement(
+            'estimatedTime'
+        );
+
+
+    const estimatedFinish =
+        safeElement(
+            'estimatedFinish'
+        );
+
+
+    if(estimatedTime){
+
+        estimatedTime.textContent =
+            formatMinutes(minutes);
+
+    }
+
+
+    if(estimatedFinish){
+
+        estimatedFinish.textContent =
+            finishText;
+
+    }
+
+
+    const limit =
+        new Date();
+
+
+    limit.setHours(
+        CONFIG.horaLimite,
+        0,
+        0,
+        0
+    );
+
+
+    const margin =
+        Math.round(
+            (limit - finish) /
+            60000
+        );
+
+
+    const status =
+        safeElement(
+            'timeStatus'
+        );
+
+
+    if(!status){
+        return;
+    }
+
+
+    if(!pending.length){
+
+        status.className =
+            'time-status status-ok';
+
+
+        status.textContent =
+            list.length
+                ? '🟢 Jornada completada'
+                : 'Sin paquetes cargados';
+
+
+        return;
+    }
+
+
+    if(margin >= 30){
+
+        status.className =
+            'time-status status-ok';
+
+
+        status.textContent =
+            `🟢 Llega cómodo · margen ${margin} min`;
+
+    }else if(margin >= 0){
+
+        status.className =
+            'time-status status-warning';
+
+
+        status.textContent =
+            `🟡 Llega justo · margen ${margin} min`;
+
+    }else{
+
+        status.className =
+            'time-status status-danger';
+
+
+        status.textContent =
+            `🔴 No llega · ${Math.abs(margin)} min después de las 19:00`;
+
+    }
+
+};
+
+
+/* =========================================================
+   CERRAR SCANNER AL HACER CLICK AFUERA
+========================================================= */
+
+document.addEventListener(
+    'click',
+    event => {
+
+        if(
+            event.target.classList.contains('modal') &&
+            event.target.id === 'scannerModal'
+        ){
+
+            try{
+                closeScanner();
+            }catch(_){}
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LIMPIEZA AL SALIR
+========================================================= */
+
+window.addEventListener(
+    'beforeunload',
+    () => {
+
+        try{
+
+            if(
+                typeof cameraStream !== 'undefined' &&
+                cameraStream
+            ){
+
+                cameraStream
+                    .getTracks()
+                    .forEach(
+                        track =>
+                            track.stop()
+                    );
+
+            }
+
+        }catch(_){}
+
+
+        galleryFiles.forEach(
+            item => {
+
+                try{
+
+                    if(item.preview){
+
+                        URL.revokeObjectURL(
+                            item.preview
+                        );
+
+                    }
+
+                }catch(_){}
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   ESC
+========================================================= */
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        if(
+            event.key !== 'Escape'
+        ){
+            return;
+        }
+
+
+        try{
+
+            if(
+                typeof cameraStream !== 'undefined' &&
+                cameraStream
+            ){
+
+                closeScanner();
+
+            }
+
+        }catch(_){}
+
+
+        /*
+           También cerramos cámaras de evidencia
+           abiertas dinámicamente.
+        */
+
+        document
+            .querySelectorAll(
+                '#evidenceVideo'
+            )
+            .forEach(
+                video => {
+
+                    const modal =
+                        video.closest('.modal');
+
+
+                    if(modal){
+
+                        modal
+                            .querySelector(
+                                '#closeEvidenceCam'
+                            )
+                            ?.click();
+
+                    }
+
+                }
+            );
+
+    }
+);
+
+
+/* =========================================================
+   FIN V3
+========================================================= */
+</script>
+
+</body>
+</html>

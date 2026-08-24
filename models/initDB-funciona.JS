@@ -774,5 +774,134 @@ console.log(
     "🔄 Control de envíos duplicados habilitado"
 );
 
+// ==========================================
+// MÓDULO POTENCIALES CLIENTES
+// ==========================================
+
+db.exec(`
+
+CREATE TABLE IF NOT EXISTS potenciales_clientes (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    tipo TEXT DEFAULT 'ambos',
+    -- logistica | programacion | ambos
+
+    nombre TEXT NOT NULL,
+
+    empresa TEXT,
+
+    mercadolibre_nickname TEXT,
+
+    mercadolibre_seller_id TEXT,
+
+    mercadolibre_url TEXT,
+
+    categoria TEXT,
+
+    ventas INTEGER DEFAULT 0,
+
+    nivel_mercadolider TEXT,
+
+    reputacion TEXT,
+
+    publicaciones INTEGER DEFAULT 0,
+
+    web TEXT,
+
+    instagram TEXT,
+
+    facebook TEXT,
+
+    whatsapp TEXT,
+
+    email TEXT,
+
+    telefono TEXT,
+
+    direccion TEXT,
+
+    localidad TEXT,
+
+    provincia TEXT,
+
+    estado TEXT DEFAULT 'potencial',
+    -- potencial
+    -- contactado
+    -- interesado
+    -- cliente
+    -- no_interesado
+
+    observaciones TEXT,
+
+    created_by INTEGER,
+
+    updated_by INTEGER,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(created_by)
+        REFERENCES users(id),
+
+    FOREIGN KEY(updated_by)
+        REFERENCES users(id)
+
+);
+
+
+CREATE TABLE IF NOT EXISTS potenciales_busquedas (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    tipo TEXT NOT NULL,
+
+    categoria TEXT,
+
+    criterio_ventas INTEGER,
+
+    criterio_mercadolider INTEGER DEFAULT 0,
+
+    cantidad_solicitada INTEGER DEFAULT 100,
+
+    resultados_encontrados INTEGER DEFAULT 0,
+
+    usuario_id INTEGER,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(usuario_id)
+        REFERENCES users(id)
+
+);
+
+
+CREATE TABLE IF NOT EXISTS potenciales_contactos (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    potencial_id INTEGER NOT NULL,
+
+    tipo TEXT,
+
+    detalle TEXT,
+
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    usuario_id INTEGER,
+
+    FOREIGN KEY(potencial_id)
+        REFERENCES potenciales_clientes(id),
+
+    FOREIGN KEY(usuario_id)
+        REFERENCES users(id)
+
+);
+
+`);
+
+console.log("🎯 Módulo Potenciales Clientes inicializado");
+
 console.log(
     "==========================================");

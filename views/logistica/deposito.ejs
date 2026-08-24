@@ -1,0 +1,5063 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Control de Depósito - AppCraft Pro</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --dark: #111827;
+      --dark2: #1e293b;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+      --green: #16a34a;
+      --red: #dc2626;
+      --orange: #ea580c;
+      --yellow: #ca8a04;
+      --teal: #0f766e;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+      background: linear-gradient(135deg, #111827, #1e293b);
+      color: white;
+      padding: 22px 28px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .15);
+    }
+
+    .header-inner {
+      max-width: 1600px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header h1 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      opacity: .75;
+      font-size: 13px;
+    }
+
+    .header-user {
+      background: rgba(255, 255, 255, .08);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    /* =========================
+       NAV
+    ========================= */
+
+    .nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+    }
+
+    .nav-inner {
+      max-width: 1600px;
+      margin: auto;
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: #475569;
+      padding: 11px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .nav button:hover {
+      background: #f1f5f9;
+    }
+
+    .nav button.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .container {
+      max-width: 1600px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, .05);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .card-title h2 {
+      font-size: 19px;
+    }
+
+    .card-title p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: .15s ease;
+    }
+
+    .btn:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: white;
+    }
+
+    .btn-gray {
+      background: #64748b;
+      color: white;
+    }
+
+    .btn-teal {
+      background: var(--teal);
+      color: white;
+    }
+
+    .btn-light {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .04);
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eff6ff;
+      color: var(--primary);
+      margin-bottom: 14px;
+    }
+
+    .stat-number {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .stat.flex-stat .stat-icon {
+      background: #dcfce7;
+      color: var(--green);
+    }
+
+    .stat.particular-stat .stat-icon {
+      background: #fee2e2;
+      color: var(--red);
+    }
+
+    .stat.review-stat .stat-icon {
+      background: #ffedd5;
+      color: var(--orange);
+    }
+
+    /* =========================
+       FILTERS
+    ========================= */
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #475569;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    /* =========================
+       TABLES
+    ========================= */
+
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
+
+    thead th {
+      background: #111827;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    /* =========================
+       BADGES
+    ========================= */
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .badge-flex {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-particular {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-review {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .badge-pendiente {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-entregado {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-recibida {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* =========================
+       COLECTAS
+    ========================= */
+
+    .colectas-grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .colecta-card {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .colecta-header {
+      padding: 17px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .colecta-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .colecta-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .colecta-body {
+      padding: 17px;
+    }
+
+    .colecta-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .mini-stat {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 9px;
+    }
+
+    .mini-stat small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .mini-stat strong {
+      font-size: 18px;
+    }
+
+    .colecta-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    /* =========================
+       PACKAGES
+    ========================= */
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
+    }
+
+    .package-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+    }
+
+    .package-photo {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: #e2e8f0;
+      cursor: pointer;
+      display: block;
+    }
+
+    .no-photo {
+      height: 210px;
+      background: #e2e8f0;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .no-photo i {
+      font-size: 38px;
+    }
+
+    .package-body {
+      padding: 16px;
+    }
+
+    .package-code {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 9px;
+      word-break: break-word;
+    }
+
+    .package-data {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .package-data div {
+      font-size: 12px;
+      color: #64748b;
+      word-break: break-word;
+    }
+
+    .package-data strong {
+      color: #1e293b;
+    }
+
+    .package-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 15px;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .72);
+      z-index: 1000;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      width: min(1000px, 100%);
+      max-height: 95vh;
+      overflow: auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+    }
+
+    .modal-header {
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 2;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+    }
+
+    .modal-close {
+      border: 0;
+      background: #f1f5f9;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    /* =========================
+       EDITOR
+    ========================= */
+
+    .package-editor {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(300px, 1fr);
+      gap: 20px;
+    }
+
+    .editor-photo {
+      width: 100%;
+      max-height: 550px;
+      object-fit: contain;
+      background: #f1f5f9;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .editor-fields {
+      display: grid;
+      gap: 10px;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    /* =========================
+       PROGRESS
+    ========================= */
+
+    .progress-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 15px;
+    }
+
+    .progress-track {
+      height: 11px;
+      background: #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 9px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width .2s ease;
+    }
+
+    /* =========================
+       EMPTY / LOADING
+    ========================= */
+
+    .empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .empty i {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .loading {
+      padding: 35px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .loading i {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 800px) {
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .package-editor {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        position: static;
+      }
+
+      .nav-inner {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .nav button {
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .header {
+        padding: 18px;
+      }
+
+      .header h1 {
+        font-size: 21px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+
+      .card {
+        padding: 15px;
+        border-radius: 12px;
+      }
+
+      .package-actions .btn {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
+  <header class="header">
+    <div class="header-inner">
+
+      <div>
+        <h1>📦 Control de Depósito</h1>
+
+        <p>
+          Gestión integral de colectas, paquetes, clientes y choferes
+        </p>
+      </div>
+
+      <div class="header-user">
+        <i class="fas fa-user"></i>
+        <%= username || 'Usuario' %>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- =========================
+       NAV
+  ========================= -->
+
+  <nav class="nav">
+    <div class="nav-inner">
+
+      <button
+        type="button"
+        class="active"
+        onclick="mostrarSeccion('dashboard', this)"
+      >
+        <i class="fas fa-chart-line"></i>
+        Dashboard
+      </button>
+
+      <button
+        type="button"
+        onclick="mostrarSeccion('colectas', this)"
+      >
+        <i class="fas fa-truck-loading"></i>
+        Colectas
+      </button>
+
+      <button
+        type="button"
+        onclick="mostrarSeccion('paquetes', this)"
+      >
+        <i class="fas fa-box"></i>
+        Paquetes
+      </button>
+
+      <button
+        type="button"
+        onclick="mostrarSeccion('clientes', this)"
+      >
+        <i class="fas fa-building"></i>
+        Clientes
+      </button>
+
+      <button
+        type="button"
+        onclick="mostrarSeccion('choferes', this)"
+      >
+        <i class="fas fa-motorcycle"></i>
+        Choferes
+      </button>
+
+      <button
+        type="button"
+        onclick="mostrarSeccion('consultas', this)"
+      >
+        <i class="fas fa-search"></i>
+        Consultas
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="container">
+
+    <!-- =========================
+         DASHBOARD
+    ========================= -->
+
+    <section id="dashboard" class="section active">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>Resumen operativo</h2>
+            <p>Estado actual del depósito</p>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="cargarTodo()"
+          >
+            <i class="fas fa-sync"></i>
+            Actualizar
+          </button>
+
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-box"></i>
+            </div>
+
+            <div class="stat-number" id="statTotal">0</div>
+
+            <div class="stat-label">
+              Total paquetes
+            </div>
+          </div>
+
+
+          <div class="stat flex-stat">
+            <div class="stat-icon">
+              <i class="fas fa-qrcode"></i>
+            </div>
+
+            <div class="stat-number" id="statFlex">0</div>
+
+            <div class="stat-label">
+              Flex
+            </div>
+          </div>
+
+
+          <div class="stat particular-stat">
+            <div class="stat-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+
+            <div class="stat-number" id="statParticular">0</div>
+
+            <div class="stat-label">
+              Particulares
+            </div>
+          </div>
+
+
+          <div class="stat review-stat">
+            <div class="stat-icon">
+              <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="stat-number" id="statRevision">0</div>
+
+            <div class="stat-label">
+              Para revisar
+            </div>
+          </div>
+
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+
+            <div class="stat-number" id="statColectas">0</div>
+
+            <div class="stat-label">
+              Colectas
+            </div>
+          </div>
+
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-motorcycle"></i>
+            </div>
+
+            <div class="stat-number" id="statPendientes">0</div>
+
+            <div class="stat-label">
+              Pendientes
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>Últimas colectas</h2>
+            <p>Actividad reciente del depósito</p>
+          </div>
+
+        </div>
+
+        <div id="dashboardColectas">
+          <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando información...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         COLECTAS
+    ========================= -->
+
+    <section id="colectas" class="section">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>📥 Nueva colecta</h2>
+            <p>Cargar y procesar paquetes recibidos</p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+            <label for="nuevaFecha">
+              Fecha
+            </label>
+
+            <input
+              type="date"
+              id="nuevaFecha"
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="nuevoCliente">
+              Cliente
+            </label>
+
+            <select id="nuevoCliente">
+              <option value="">
+                Seleccionar cliente
+              </option>
+            </select>
+          </div>
+
+
+          <div class="field">
+            <label for="nuevasFotos">
+              Fotografías
+            </label>
+
+            <input
+              type="file"
+              id="nuevasFotos"
+              multiple
+              accept="image/*"
+            >
+          </div>
+
+        </div>
+
+
+        <div style="margin-top:15px">
+
+          <p style="font-size:12px;color:#64748b">
+
+            <i class="fas fa-info-circle"></i>
+
+            El sistema intentará identificar automáticamente los paquetes.
+            Los casos que no puedan confirmarse quedarán como
+            <strong>REVISAR</strong> para clasificación manual.
+
+          </p>
+
+        </div>
+
+
+        <div style="margin-top:15px">
+
+          <button
+            type="button"
+            class="btn btn-green"
+            id="btnProcesar"
+            onclick="procesarColecta()"
+          >
+
+            <i class="fas fa-camera"></i>
+
+            Procesar colecta
+
+          </button>
+
+        </div>
+
+
+        <div
+          id="progressBox"
+          class="progress-box"
+          style="display:none"
+        >
+
+          <div id="progressText">
+            Preparando...
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              id="progressBar"
+              class="progress-bar"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>Colectas registradas</h2>
+            <p>Buscar y administrar colectas</p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="buscarColecta">
+              Buscar
+            </label>
+
+            <input
+              id="buscarColecta"
+              placeholder="Cliente, ID..."
+              oninput="listarColectas()"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="fechaFiltro">
+              Fecha
+            </label>
+
+            <input
+              type="date"
+              id="fechaFiltro"
+              onchange="listarColectas()"
+            >
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="listaColectas"
+        class="colectas-grid"
+      >
+
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Cargando colectas...</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PAQUETES
+    ========================= -->
+
+    <section id="paquetes" class="section">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>📦 Paquetes</h2>
+            <p>Todos los paquetes registrados en el depósito</p>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="listarPaquetes()"
+          >
+
+            <i class="fas fa-sync"></i>
+            Actualizar
+
+          </button>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="buscarPaquete">
+              Buscar
+            </label>
+
+            <input
+              id="buscarPaquete"
+              placeholder="Código, dirección, DNI, teléfono, destinatario..."
+              oninput="listarPaquetes()"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="filtroTipo">
+              Tipo
+            </label>
+
+            <select
+              id="filtroTipo"
+              onchange="listarPaquetes()"
+            >
+
+              <option value="">
+                Todos
+              </option>
+
+              <option value="FLEX">
+                🟢 Flex
+              </option>
+
+              <option value="PARTICULAR">
+                🔴 Particular
+              </option>
+
+              <option value="REVISAR">
+                🟠 Revisar
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="filtroEstado">
+              Estado
+            </label>
+
+            <select
+              id="filtroEstado"
+              onchange="listarPaquetes()"
+            >
+
+              <option value="">
+                Todos
+              </option>
+
+              <option value="Pendiente">
+                Pendiente
+              </option>
+
+              <option value="En depósito">
+                En depósito
+              </option>
+
+              <option value="Asignado">
+                Asignado
+              </option>
+
+              <option value="Entregado">
+                Entregado
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="listaPaquetes"
+        class="packages-grid"
+      >
+
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Cargando paquetes...</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CLIENTES
+    ========================= -->
+
+    <section id="clientes" class="section">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>🏢 Nuevo cliente</h2>
+            <p>Crear un cliente directamente desde el depósito</p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+            <label for="clienteNombre">
+              Nombre
+            </label>
+
+            <input
+              id="clienteNombre"
+              placeholder="Nombre del cliente"
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="clienteEmpresa">
+              Empresa
+            </label>
+
+            <input
+              id="clienteEmpresa"
+              placeholder="Empresa"
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="clienteTelefono">
+              Teléfono
+            </label>
+
+            <input
+              id="clienteTelefono"
+              placeholder="Teléfono"
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="clienteDireccion">
+              Dirección
+            </label>
+
+            <input
+              id="clienteDireccion"
+              placeholder="Dirección"
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="clienteZona">
+              Zona
+            </label>
+
+            <input
+              id="clienteZona"
+              placeholder="Zona"
+            >
+          </div>
+
+        </div>
+
+
+        <div style="margin-top:15px">
+
+          <button
+            type="button"
+            class="btn btn-green"
+            onclick="crearCliente()"
+          >
+
+            <i class="fas fa-plus"></i>
+            Crear cliente
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          <h2>Clientes registrados</h2>
+        </div>
+
+        <div id="listaClientes">
+
+          <div class="loading">
+            Cargando clientes...
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CHOFERES
+    ========================= -->
+
+    <section id="choferes" class="section">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>🏍️ Nuevo chofer</h2>
+            <p>Registrar un nuevo chofer</p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="choferNombre">
+              Nombre
+            </label>
+
+            <input
+              id="choferNombre"
+              placeholder="Nombre y apellido"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="choferVehiculo">
+              Vehículo
+            </label>
+
+            <input
+              id="choferVehiculo"
+              placeholder="Moto / camioneta"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="choferTelefono">
+              Teléfono
+            </label>
+
+            <input
+              id="choferTelefono"
+              placeholder="Teléfono"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="choferZona">
+              Zona
+            </label>
+
+            <input
+              id="choferZona"
+              placeholder="Zona"
+            >
+
+          </div>
+
+        </div>
+
+
+        <div style="margin-top:15px">
+
+          <button
+            type="button"
+            class="btn btn-green"
+            onclick="crearChofer()"
+          >
+
+            <i class="fas fa-plus"></i>
+            Crear chofer
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          <h2>Choferes registrados</h2>
+        </div>
+
+        <div id="listaChoferes">
+
+          <div class="loading">
+            Cargando choferes...
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CONSULTAS
+    ========================= -->
+
+    <section id="consultas" class="section">
+
+      <div class="card">
+
+        <div class="card-title">
+
+          <div>
+            <h2>🔎 Consultas avanzadas</h2>
+            <p>Buscar información sin salir del módulo</p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="consultaTexto">
+              Texto general
+            </label>
+
+            <input
+              id="consultaTexto"
+              placeholder="Código, dirección, DNI..."
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="consultaCliente">
+              Cliente
+            </label>
+
+            <select id="consultaCliente">
+
+              <option value="">
+                Todos
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="consultaTipo">
+              Tipo
+            </label>
+
+            <select id="consultaTipo">
+
+              <option value="">
+                Todos
+              </option>
+
+              <option value="FLEX">
+                Flex
+              </option>
+
+              <option value="PARTICULAR">
+                Particular
+              </option>
+
+              <option value="REVISAR">
+                Revisar
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="consultaChofer">
+              Chofer
+            </label>
+
+            <select id="consultaChofer">
+
+              <option value="">
+                Todos
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="consultaFecha">
+              Fecha
+            </label>
+
+            <input
+              type="date"
+              id="consultaFecha"
+            >
+
+          </div>
+
+        </div>
+
+
+        <div style="margin-top:15px">
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="ejecutarConsulta()"
+          >
+
+            <i class="fas fa-search"></i>
+            Buscar
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          <h2>Resultados</h2>
+        </div>
+
+        <div id="resultadosConsulta">
+
+          <div class="empty">
+            <i class="fas fa-search"></i>
+            <p>Realizá una búsqueda.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       MODAL PAQUETE
+  ========================= -->
+
+  <div
+    id="modalPaquete"
+    class="modal"
+  >
+
+    <div class="modal-box">
+
+      <div class="modal-header">
+
+        <h3>
+          📦 Editar paquete
+        </h3>
+
+        <button
+          type="button"
+          class="modal-close"
+          onclick="cerrarModal('modalPaquete')"
+          aria-label="Cerrar"
+        >
+
+          <i class="fas fa-times"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="package-editor">
+
+          <div>
+
+            <div id="fotoEditor">
+
+              <div class="no-photo">
+
+                <i class="fas fa-image"></i>
+
+                Sin fotografía
+
+              </div>
+
+            </div>
+
+
+            <div style="margin-top:10px">
+
+              <button
+                type="button"
+                class="btn btn-light"
+                onclick="abrirFotoActual()"
+              >
+
+                <i class="fas fa-expand"></i>
+
+                Abrir fotografía
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <input
+              type="hidden"
+              id="editId"
+            >
+
+
+            <div class="editor-fields">
+
+              <div class="field">
+
+                <label for="editTipo">
+                  Tipo
+                </label>
+
+                <select id="editTipo">
+
+                  <option value="FLEX">
+                    FLEX
+                  </option>
+
+                  <option value="PARTICULAR">
+                    PARTICULAR
+                  </option>
+
+                  <option value="REVISAR">
+                    REVISAR
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editCodigo">
+                  Código
+                </label>
+
+                <input id="editCodigo">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editDestinatario">
+                  Destinatario
+                </label>
+
+                <input id="editDestinatario">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editDni">
+                  DNI
+                </label>
+
+                <input id="editDni">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editTelefono">
+                  Teléfono
+                </label>
+
+                <input id="editTelefono">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editDireccion">
+                  Dirección
+                </label>
+
+                <input id="editDireccion">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editBarrio">
+                  Barrio
+                </label>
+
+                <input id="editBarrio">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editLocalidad">
+                  Localidad
+                </label>
+
+                <input id="editLocalidad">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editZona">
+                  Zona
+                </label>
+
+                <input id="editZona">
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editReferencia">
+                  Referencia
+                </label>
+
+                <textarea id="editReferencia"></textarea>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editChofer">
+                  Chofer asignado
+                </label>
+
+                <select id="editChofer">
+
+                  <option value="">
+                    Sin asignar
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="editEstado">
+                  Estado
+                </label>
+
+                <select id="editEstado">
+
+                  <option value="Pendiente">
+                    Pendiente
+                  </option>
+
+                  <option value="En depósito">
+                    En depósito
+                  </option>
+
+                  <option value="Asignado">
+                    Asignado
+                  </option>
+
+                  <option value="Entregado">
+                    Entregado
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <div class="editor-actions">
+
+              <button
+                type="button"
+                class="btn btn-green"
+                onclick="guardarPaquete()"
+              >
+
+                <i class="fas fa-save"></i>
+
+                Guardar cambios
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn btn-gray"
+                onclick="cerrarModal('modalPaquete')"
+              >
+
+                Cancelar
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       MODAL FOTO
+  ========================= -->
+
+  <div
+    id="modalFoto"
+    class="modal"
+    onclick="cerrarModal('modalFoto')"
+  >
+
+    <div
+      style="max-width:1200px;width:100%;text-align:center"
+      onclick="event.stopPropagation()"
+    >
+
+      <img
+        id="fotoGrande"
+        src=""
+        alt="Fotografía del paquete"
+        style="
+          max-width:100%;
+          max-height:90vh;
+          border-radius:12px;
+        "
+      >
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================================
+       ESTADO GLOBAL
+    ========================================================= */
+
+    let paquetes = [];
+    let colectas = [];
+    let clientes = [];
+    let choferes = [];
+
+    let fotoActual = "";
+
+    let cargandoDatos = false;
+
+
+    /* =========================================================
+       UTILIDADES
+    ========================================================= */
+
+    function escapar(valor) {
+
+      if (
+        valor === null ||
+        valor === undefined
+      ) {
+        return "";
+      }
+
+      return String(valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function escaparJS(valor) {
+
+      return String(valor || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "");
+    }
+
+
+    function valorSeguro(valor, defecto = "") {
+
+      if (
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+      ) {
+        return defecto;
+      }
+
+      return valor;
+    }
+
+
+    function obtenerFechaCampo(objeto) {
+
+      if (!objeto) {
+        return "";
+      }
+
+      return String(
+        objeto.fecha ||
+        objeto.fecha_recepcion ||
+        objeto.fecha_importacion ||
+        objeto.created_at ||
+        ""
+      ).substring(0, 10);
+    }
+
+
+    function obtenerNombreCliente(cliente) {
+
+      if (!cliente) {
+        return "Sin cliente";
+      }
+
+      return (
+        cliente.nombre ||
+        cliente.empresa ||
+        cliente.razon_social ||
+        "Cliente"
+      );
+    }
+
+
+    function obtenerNombreChofer(chofer) {
+
+      if (!chofer) {
+        return "Sin asignar";
+      }
+
+      return (
+        chofer.nombre ||
+        chofer.apellido ||
+        "Chofer"
+      );
+    }
+
+
+    /* =========================================================
+       API
+    ========================================================= */
+
+    async function api(url, options = {}) {
+
+      const configuracion = {
+        ...options,
+        headers: {
+          ...(options.headers || {})
+        }
+      };
+
+
+      /*
+       * IMPORTANTE:
+       *
+       * No agregar Content-Type automáticamente.
+       *
+       * Si usamos FormData, el navegador necesita
+       * establecer automáticamente multipart/form-data
+       * con su boundary.
+       */
+
+      if (
+        configuracion.body &&
+        !(configuracion.body instanceof FormData)
+      ) {
+
+        configuracion.headers["Content-Type"] =
+          "application/json";
+      }
+
+
+      const respuesta =
+        await fetch(url, configuracion);
+
+
+      const texto =
+        await respuesta.text();
+
+
+      let datos = {};
+
+
+      if (texto) {
+
+        try {
+
+          datos = JSON.parse(texto);
+
+        }
+        catch (error) {
+
+          console.error(
+            "Respuesta no JSON:",
+            texto
+          );
+
+          throw new Error(
+            "El servidor no devolvió JSON válido."
+          );
+        }
+      }
+
+
+      if (
+        !respuesta.ok ||
+        datos.ok === false
+      ) {
+
+        throw new Error(
+          datos.mensaje ||
+          datos.error ||
+          datos.message ||
+          `Error HTTP ${respuesta.status}`
+        );
+      }
+
+
+      return datos;
+    }
+
+
+    /* =========================================================
+       NAVEGACIÓN
+    ========================================================= */
+
+    function mostrarSeccion(id, boton = null) {
+
+      document
+        .querySelectorAll(".section")
+        .forEach(section => {
+
+          section.classList.remove("active");
+
+        });
+
+
+      document
+        .querySelectorAll(".nav button")
+        .forEach(btn => {
+
+          btn.classList.remove("active");
+
+        });
+
+
+      const section =
+        document.getElementById(id);
+
+
+      if (!section) {
+        return;
+      }
+
+
+      section.classList.add("active");
+
+
+      if (boton) {
+
+        boton.classList.add("active");
+
+      }
+
+
+      switch (id) {
+
+        case "dashboard":
+
+          actualizarDashboard();
+
+          break;
+
+
+        case "colectas":
+
+          listarColectas();
+
+          break;
+
+
+        case "paquetes":
+
+          listarPaquetes();
+
+          break;
+
+
+        case "clientes":
+
+          listarClientes();
+
+          break;
+
+
+        case "choferes":
+
+          listarChoferes();
+
+          break;
+
+
+        case "consultas":
+
+          prepararConsultas();
+
+          break;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CARGAR TODO
+    ========================================================= */
+
+    async function cargarTodo() {
+
+      if (cargandoDatos) {
+        return;
+      }
+
+
+      cargandoDatos = true;
+
+
+      try {
+
+        const datos =
+          await api(
+            "/panel/logistica/deposito/api/datos"
+          );
+
+
+        paquetes =
+          Array.isArray(datos.paquetes)
+            ? datos.paquetes
+            : [];
+
+
+        colectas =
+          Array.isArray(datos.colectas)
+            ? datos.colectas
+            : [];
+
+
+        clientes =
+          Array.isArray(datos.clientes)
+            ? datos.clientes
+            : [];
+
+
+        choferes =
+          Array.isArray(datos.choferes)
+            ? datos.choferes
+            : [];
+
+
+        actualizarDashboard();
+
+        cargarClientesSelect();
+
+        cargarChoferesSelect();
+
+        prepararConsultas();
+
+        listarColectas();
+
+        listarPaquetes();
+
+        listarClientes();
+
+        listarChoferes();
+
+      }
+      catch (error) {
+
+        console.error(
+          "Error cargando datos:",
+          error
+        );
+
+
+        mostrarErrorDashboard(
+          error.message
+        );
+
+      }
+      finally {
+
+        cargandoDatos = false;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       DASHBOARD
+    ========================================================= */
+
+    function actualizarDashboard() {
+
+      const total =
+        paquetes.length;
+
+
+      const flex =
+        paquetes.filter(
+          p => String(p.tipo).toUpperCase() === "FLEX"
+        ).length;
+
+
+      const particular =
+        paquetes.filter(
+          p => String(p.tipo).toUpperCase() === "PARTICULAR"
+        ).length;
+
+
+      const revisar =
+        paquetes.filter(
+          p => String(p.tipo).toUpperCase() === "REVISAR"
+        ).length;
+
+
+      const pendientes =
+        paquetes.filter(p => {
+
+          const estado =
+            String(
+              p.estado || "Pendiente"
+            ).toLowerCase();
+
+
+          return (
+            estado === "pendiente" ||
+            estado === "en depósito".toLowerCase()
+          );
+
+        }).length;
+
+
+      actualizarTexto(
+        "statTotal",
+        total
+      );
+
+      actualizarTexto(
+        "statFlex",
+        flex
+      );
+
+      actualizarTexto(
+        "statParticular",
+        particular
+      );
+
+      actualizarTexto(
+        "statRevision",
+        revisar
+      );
+
+      actualizarTexto(
+        "statColectas",
+        colectas.length
+      );
+
+      actualizarTexto(
+        "statPendientes",
+        pendientes
+      );
+
+
+      renderDashboardColectas();
+
+    }
+
+
+    function actualizarTexto(id, valor) {
+
+      const elemento =
+        document.getElementById(id);
+
+
+      if (elemento) {
+
+        elemento.textContent =
+          String(valor);
+
+      }
+
+    }
+
+
+    function mostrarErrorDashboard(mensaje) {
+
+      const div =
+        document.getElementById(
+          "dashboardColectas"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      div.innerHTML = `
+
+        <div class="empty">
+
+          <i class="fas fa-triangle-exclamation"></i>
+
+          <p>
+            No se pudieron cargar los datos.
+          </p>
+
+          <small>
+            ${escapar(mensaje)}
+          </small>
+
+        </div>
+
+      `;
+
+    }
+
+
+    function renderDashboardColectas() {
+
+      const div =
+        document.getElementById(
+          "dashboardColectas"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      if (!colectas.length) {
+
+        div.innerHTML = `
+
+          <div class="empty">
+
+            <i class="fas fa-truck-loading"></i>
+
+            <p>
+              No hay colectas registradas.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      const ultimas =
+        colectas
+          .slice()
+          .sort((a, b) => {
+
+            const da =
+              new Date(
+                a.created_at ||
+                a.fecha_recepcion ||
+                a.fecha ||
+                0
+              ).getTime();
+
+
+            const db =
+              new Date(
+                b.created_at ||
+                b.fecha_recepcion ||
+                b.fecha ||
+                0
+              ).getTime();
+
+
+            return db - da;
+
+          })
+          .slice(0, 8);
+
+
+      div.innerHTML =
+        ultimas.map(c => {
+
+          const cliente =
+            c.cliente_nombre ||
+            c.cliente ||
+            obtenerNombreCliente(
+              clientes.find(
+                x =>
+                  String(x.id) ===
+                  String(c.cliente_id)
+              )
+            );
+
+
+          return `
+
+            <div style="
+              padding:13px;
+              border-bottom:1px solid #e2e8f0;
+            ">
+
+              <strong>
+                Colecta #${escapar(c.id)}
+              </strong>
+
+              <br>
+
+              <span style="
+                color:#64748b;
+                font-size:12px;
+              ">
+
+                ${escapar(cliente)}
+
+                &nbsp; · &nbsp;
+
+                ${escapar(
+                  obtenerFechaCampo(c)
+                )}
+
+              </span>
+
+              <br>
+
+              <span
+                class="badge badge-recibida"
+                style="margin-top:6px;"
+              >
+
+                ${escapar(
+                  c.estado || "Recibida"
+                )}
+
+              </span>
+
+            </div>
+
+          `;
+
+        }).join("");
+
+    }
+
+
+    /* =========================================================
+       COLECTAS
+    ========================================================= */
+
+    function listarColectas() {
+
+      const div =
+        document.getElementById(
+          "listaColectas"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      const input =
+        document.getElementById(
+          "buscarColecta"
+        );
+
+
+      const fechaInput =
+        document.getElementById(
+          "fechaFiltro"
+        );
+
+
+      const texto =
+        String(
+          input?.value || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+      const fecha =
+        fechaInput?.value || "";
+
+
+      const lista =
+        colectas.filter(c => {
+
+          const cliente =
+            String(
+              c.cliente_nombre ||
+              c.cliente ||
+              obtenerNombreCliente(
+                clientes.find(
+                  x =>
+                    String(x.id) ===
+                    String(c.cliente_id)
+                )
+              ) ||
+              ""
+            ).toLowerCase();
+
+
+          const id =
+            String(c.id || "")
+              .toLowerCase();
+
+
+          const coincideTexto =
+            !texto ||
+            cliente.includes(texto) ||
+            id.includes(texto);
+
+
+          const coincideFecha =
+            !fecha ||
+            obtenerFechaCampo(c) === fecha;
+
+
+          return (
+            coincideTexto &&
+            coincideFecha
+          );
+
+        });
+
+
+      if (!lista.length) {
+
+        div.innerHTML = `
+
+          <div class="card empty">
+
+            <i class="fas fa-inbox"></i>
+
+            <p>
+              No se encontraron colectas.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const ordenadas =
+        lista
+          .slice()
+          .reverse();
+
+
+      div.innerHTML =
+        ordenadas
+          .map(crearTarjetaColecta)
+          .join("");
+
+    }
+
+
+    function crearTarjetaColecta(c) {
+
+      const cantidad =
+        Number(
+          c.cantidad_paquetes ??
+          c.cantidad ??
+          c.paquetes_declarados ??
+          0
+        );
+
+
+      const registrados =
+        Number(
+          c.paquetes_reales ??
+          c.paquetes_registrados ??
+          c.total_paquetes ??
+          0
+        );
+
+
+      const cliente =
+        c.cliente_nombre ||
+        c.cliente ||
+        obtenerNombreCliente(
+          clientes.find(
+            x =>
+              String(x.id) ===
+              String(c.cliente_id)
+          )
+        );
+
+
+      const chofer =
+        c.chofer_nombre ||
+        c.chofer ||
+        obtenerNombreChofer(
+          choferes.find(
+            x =>
+              String(x.id) ===
+              String(c.chofer_id)
+          )
+        );
+
+
+      return `
+
+        <div class="colecta-card">
+
+          <div class="colecta-header">
+
+            <div>
+
+              <div class="colecta-title">
+                📦 Colecta #${escapar(c.id)}
+              </div>
+
+              <div class="colecta-meta">
+
+                <span>
+                  <i class="fas fa-building"></i>
+                  ${escapar(cliente)}
+                </span>
+
+                <span>
+                  <i class="fas fa-calendar"></i>
+                  ${escapar(obtenerFechaCampo(c))}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <span class="badge badge-recibida">
+
+              ${escapar(
+                c.estado || "Recibida"
+              )}
+
+            </span>
+
+          </div>
+
+
+          <div class="colecta-body">
+
+            <div class="colecta-stats">
+
+              <div class="mini-stat">
+
+                <small>
+                  Declarados
+                </small>
+
+                <strong>
+                  ${cantidad}
+                </strong>
+
+              </div>
+
+
+              <div class="mini-stat">
+
+                <small>
+                  Registrados
+                </small>
+
+                <strong>
+                  ${registrados}
+                </strong>
+
+              </div>
+
+
+              <div class="mini-stat">
+
+                <small>
+                  Chofer
+                </small>
+
+                <strong>
+                  ${escapar(chofer)}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="colecta-actions">
+
+              <button
+                type="button"
+                class="btn btn-teal"
+                onclick="verColecta(${Number(c.id) || 0})"
+              >
+
+                <i class="fas fa-box-open"></i>
+
+                Ver paquetes
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =========================================================
+       VER COLECTA
+    ========================================================= */
+
+    function verColecta(id) {
+
+      const boton =
+        document.querySelector(
+          '.nav button[onclick*="paquetes"]'
+        );
+
+
+      mostrarSeccion(
+        "paquetes",
+        boton
+      );
+
+
+      const paqueteColecta =
+        paquetes.filter(p => {
+
+          const paqueteId =
+            p.colecta_id ??
+            p.colectaId ??
+            p.colecta;
+
+
+          return (
+            String(paqueteId) ===
+            String(id)
+          );
+
+        });
+
+
+      const div =
+        document.getElementById(
+          "listaPaquetes"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      if (!paqueteColecta.length) {
+
+        div.innerHTML = `
+
+          <div class="card empty">
+
+            <i class="fas fa-box-open"></i>
+
+            <p>
+              Esta colecta no tiene paquetes registrados.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      div.innerHTML =
+        paqueteColecta
+          .map(crearTarjetaPaquete)
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       PAQUETES
+    ========================================================= */
+
+    function listarPaquetes() {
+
+      const div =
+        document.getElementById(
+          "listaPaquetes"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      const texto =
+        String(
+          document.getElementById(
+            "buscarPaquete"
+          )?.value || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+      const tipo =
+        document.getElementById(
+          "filtroTipo"
+        )?.value || "";
+
+
+      const estado =
+        document.getElementById(
+          "filtroEstado"
+        )?.value || "";
+
+
+      const lista =
+        paquetes.filter(p => {
+
+          const contenido = [
+
+            p.codigo,
+            p.codigo_interno,
+            p.codigo_externo,
+            p.tracking_number,
+            p.destinatario,
+            p.dni,
+            p.telefono,
+            p.direccion,
+            p.barrio,
+            p.localidad,
+            p.zona,
+            p.cliente_nombre,
+            p.remitente,
+            p.referencia
+
+          ]
+          .filter(
+            valor =>
+              valor !== null &&
+              valor !== undefined
+          )
+          .join(" ")
+          .toLowerCase();
+
+
+          const coincideTexto =
+            !texto ||
+            contenido.includes(texto);
+
+
+          const coincideTipo =
+            !tipo ||
+            String(p.tipo || "").toUpperCase() ===
+            String(tipo).toUpperCase();
+
+
+          const coincideEstado =
+            !estado ||
+            String(p.estado || "") ===
+            String(estado);
+
+
+          return (
+            coincideTexto &&
+            coincideTipo &&
+            coincideEstado
+          );
+
+        });
+
+
+      if (!lista.length) {
+
+        div.innerHTML = `
+
+          <div class="card empty">
+
+            <i class="fas fa-box-open"></i>
+
+            <p>
+              No se encontraron paquetes.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      div.innerHTML =
+        lista
+          .slice()
+          .reverse()
+          .map(crearTarjetaPaquete)
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       TARJETA PAQUETE
+    ========================================================= */
+
+    function crearTarjetaPaquete(p) {
+
+      const tipo =
+        String(
+          p.tipo || "REVISAR"
+        ).toUpperCase();
+
+
+      let badge = "";
+
+
+      if (tipo === "FLEX") {
+
+        badge = `
+          <span class="badge badge-flex">
+            🟢 FLEX
+          </span>
+        `;
+
+      }
+      else if (tipo === "PARTICULAR") {
+
+        badge = `
+          <span class="badge badge-particular">
+            🔴 PARTICULAR
+          </span>
+        `;
+
+      }
+      else {
+
+        badge = `
+          <span class="badge badge-review">
+            🟠 REVISAR
+          </span>
+        `;
+
+      }
+
+
+      const foto =
+        p.foto ||
+        p.fotografia ||
+        p.imagen ||
+        "";
+
+
+      const codigo =
+        p.codigo_interno ||
+        p.codigo ||
+        p.tracking_number ||
+        "Sin código";
+
+
+      const chofer =
+        p.chofer_nombre ||
+        p.chofer ||
+        obtenerNombreChofer(
+          choferes.find(
+            c =>
+              String(c.id) ===
+              String(p.chofer_id)
+          )
+        );
+
+
+      return `
+
+        <div class="package-card">
+
+          ${
+            foto
+              ? `
+
+                <img
+                  src="${escapar(foto)}"
+                  class="package-photo"
+                  alt="Fotografía del paquete"
+                  loading="lazy"
+                  onclick="abrirFoto('${escaparJS(foto)}')"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                >
+
+                <div
+                  class="no-photo"
+                  style="display:none"
+                >
+
+                  <i class="fas fa-image"></i>
+                  No se pudo cargar la fotografía
+
+                </div>
+
+              `
+              : `
+
+                <div class="no-photo">
+
+                  <i class="fas fa-image"></i>
+
+                  Sin fotografía
+
+                </div>
+
+              `
+          }
+
+
+          <div class="package-body">
+
+            <div class="package-code">
+
+              📦
+
+              ${escapar(codigo)}
+
+            </div>
+
+
+            ${badge}
+
+
+            <div class="package-data">
+
+              <div>
+
+                <strong>
+                  Destinatario:
+                </strong>
+
+                ${escapar(
+                  p.destinatario ||
+                  "No cargado"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Dirección:
+                </strong>
+
+                ${escapar(
+                  p.direccion ||
+                  "No cargada"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Barrio:
+                </strong>
+
+                ${escapar(
+                  p.barrio ||
+                  "No cargado"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Localidad:
+                </strong>
+
+                ${escapar(
+                  p.localidad ||
+                  "No cargada"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Zona:
+                </strong>
+
+                ${escapar(
+                  p.zona ||
+                  "No cargada"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Teléfono:
+                </strong>
+
+                ${escapar(
+                  p.telefono ||
+                  "No cargado"
+                )}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Chofer:
+                </strong>
+
+                ${escapar(chofer)}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Estado:
+                </strong>
+
+                ${escapar(
+                  p.estado ||
+                  "Pendiente"
+                )}
+
+              </div>
+
+            </div>
+
+
+            <div class="package-actions">
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="editarPaquete(${Number(p.id) || 0})"
+              >
+
+                <i class="fas fa-pen"></i>
+
+                Editar
+
+              </button>
+
+
+              ${
+                tipo !== "FLEX"
+                  ? `
+
+                    <button
+                      type="button"
+                      class="btn btn-green"
+                      onclick="cambiarTipo(${Number(p.id) || 0}, 'FLEX')"
+                    >
+
+                      <i class="fas fa-check"></i>
+
+                      FLEX
+
+                    </button>
+
+                  `
+                  : ""
+              }
+
+
+              ${
+                tipo !== "PARTICULAR"
+                  ? `
+
+                    <button
+                      type="button"
+                      class="btn btn-red"
+                      onclick="cambiarTipo(${Number(p.id) || 0}, 'PARTICULAR')"
+                    >
+
+                      PARTICULAR
+
+                    </button>
+
+                  `
+                  : ""
+              }
+
+
+              ${
+                tipo !== "REVISAR"
+                  ? `
+
+                    <button
+                      type="button"
+                      class="btn btn-orange"
+                      onclick="cambiarTipo(${Number(p.id) || 0}, 'REVISAR')"
+                    >
+
+                      REVISAR
+
+                    </button>
+
+                  `
+                  : ""
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =========================================================
+       EDITAR PAQUETE
+    ========================================================= */
+
+    function editarPaquete(id) {
+
+      const paquete =
+        paquetes.find(
+          p =>
+            String(p.id) ===
+            String(id)
+        );
+
+
+      if (!paquete) {
+
+        alert(
+          "No se encontró el paquete."
+        );
+
+        return;
+
+      }
+
+
+      document.getElementById(
+        "editId"
+      ).value =
+        paquete.id;
+
+
+      document.getElementById(
+        "editTipo"
+      ).value =
+        paquete.tipo || "REVISAR";
+
+
+      document.getElementById(
+        "editCodigo"
+      ).value =
+        paquete.codigo_interno ||
+        paquete.codigo ||
+        paquete.tracking_number ||
+        "";
+
+
+      document.getElementById(
+        "editDestinatario"
+      ).value =
+        paquete.destinatario || "";
+
+
+      document.getElementById(
+        "editDni"
+      ).value =
+        paquete.dni || "";
+
+
+      document.getElementById(
+        "editTelefono"
+      ).value =
+        paquete.telefono || "";
+
+
+      document.getElementById(
+        "editDireccion"
+      ).value =
+        paquete.direccion || "";
+
+
+      document.getElementById(
+        "editBarrio"
+      ).value =
+        paquete.barrio || "";
+
+
+      document.getElementById(
+        "editLocalidad"
+      ).value =
+        paquete.localidad || "";
+
+
+      document.getElementById(
+        "editZona"
+      ).value =
+        paquete.zona || "";
+
+
+      document.getElementById(
+        "editReferencia"
+      ).value =
+        paquete.referencia || "";
+
+
+      document.getElementById(
+        "editEstado"
+      ).value =
+        paquete.estado || "Pendiente";
+
+
+      cargarChoferesSelect(
+        "editChofer",
+        paquete.chofer_id || ""
+      );
+
+
+      fotoActual =
+        paquete.foto ||
+        paquete.fotografia ||
+        paquete.imagen ||
+        "";
+
+
+      const fotoDiv =
+        document.getElementById(
+          "fotoEditor"
+        );
+
+
+      if (fotoActual) {
+
+        fotoDiv.innerHTML = `
+
+          <img
+            src="${escapar(fotoActual)}"
+            class="editor-photo"
+            alt="Fotografía del paquete"
+            onclick="abrirFotoActual()"
+          >
+
+        `;
+
+      }
+      else {
+
+        fotoDiv.innerHTML = `
+
+          <div class="no-photo">
+
+            <i class="fas fa-image"></i>
+
+            Sin fotografía
+
+          </div>
+
+        `;
+
+      }
+
+
+      document
+        .getElementById(
+          "modalPaquete"
+        )
+        .classList.add("show");
+
+    }
+
+
+    /* =========================================================
+       GUARDAR PAQUETE
+    ========================================================= */
+
+    async function guardarPaquete() {
+
+      const id =
+        document.getElementById(
+          "editId"
+        ).value;
+
+
+      if (!id) {
+
+        alert(
+          "No se encontró el ID del paquete."
+        );
+
+        return;
+
+      }
+
+
+      const datos = {
+
+        tipo:
+          document.getElementById(
+            "editTipo"
+          ).value,
+
+        codigo:
+          document.getElementById(
+            "editCodigo"
+          ).value.trim(),
+
+        destinatario:
+          document.getElementById(
+            "editDestinatario"
+          ).value.trim(),
+
+        dni:
+          document.getElementById(
+            "editDni"
+          ).value.trim(),
+
+        telefono:
+          document.getElementById(
+            "editTelefono"
+          ).value.trim(),
+
+        direccion:
+          document.getElementById(
+            "editDireccion"
+          ).value.trim(),
+
+        barrio:
+          document.getElementById(
+            "editBarrio"
+          ).value.trim(),
+
+        localidad:
+          document.getElementById(
+            "editLocalidad"
+          ).value.trim(),
+
+        zona:
+          document.getElementById(
+            "editZona"
+          ).value.trim(),
+
+        referencia:
+          document.getElementById(
+            "editReferencia"
+          ).value.trim(),
+
+        chofer_id:
+          document.getElementById(
+            "editChofer"
+          ).value || null,
+
+        estado:
+          document.getElementById(
+            "editEstado"
+          ).value
+
+      };
+
+
+      try {
+
+        await api(
+          `/panel/logistica/deposito/api/paquetes/${encodeURIComponent(id)}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(datos)
+          }
+        );
+
+
+        cerrarModal(
+          "modalPaquete"
+        );
+
+
+        await cargarTodo();
+
+
+        alert(
+          "✅ Paquete actualizado correctamente."
+        );
+
+      }
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ No se pudo guardar:\n\n" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CAMBIAR TIPO
+    ========================================================= */
+
+    async function cambiarTipo(id, tipo) {
+
+      if (!id) {
+
+        alert(
+          "ID de paquete inválido."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !confirm(
+          `¿Marcar este paquete como ${tipo}?`
+        )
+      ) {
+        return;
+      }
+
+
+      try {
+
+        await api(
+          `/panel/logistica/deposito/api/paquetes/${encodeURIComponent(id)}/tipo`,
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              tipo
+            })
+          }
+        );
+
+
+        await cargarTodo();
+
+      }
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ Error:\n\n" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       FOTOS
+    ========================================================= */
+
+    function abrirFoto(url) {
+
+      if (!url) {
+        return;
+      }
+
+
+      const imagen =
+        document.getElementById(
+          "fotoGrande"
+        );
+
+
+      const modal =
+        document.getElementById(
+          "modalFoto"
+        );
+
+
+      if (!imagen || !modal) {
+        return;
+      }
+
+
+      imagen.src = url;
+
+      modal.classList.add("show");
+
+    }
+
+
+    function abrirFotoActual() {
+
+      if (fotoActual) {
+
+        abrirFoto(
+          fotoActual
+        );
+
+      }
+
+    }
+
+
+    function cerrarModal(id) {
+
+      const modal =
+        document.getElementById(id);
+
+
+      if (!modal) {
+        return;
+      }
+
+
+      modal.classList.remove(
+        "show"
+      );
+
+
+      if (id === "modalFoto") {
+
+        const imagen =
+          document.getElementById(
+            "fotoGrande"
+          );
+
+
+        if (imagen) {
+          imagen.src = "";
+        }
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CLIENTES - SELECT
+    ========================================================= */
+
+    function cargarClientesSelect() {
+
+      const select =
+        document.getElementById(
+          "nuevoCliente"
+        );
+
+
+      if (!select) {
+        return;
+      }
+
+
+      const valorActual =
+        select.value;
+
+
+      select.innerHTML = `
+
+        <option value="">
+          Seleccionar cliente
+        </option>
+
+      `;
+
+
+      clientes.forEach(c => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          c.id;
+
+
+        option.textContent =
+          obtenerNombreCliente(c);
+
+
+        select.appendChild(
+          option
+        );
+
+      });
+
+
+      if (
+        valorActual &&
+        clientes.some(
+          c =>
+            String(c.id) ===
+            String(valorActual)
+        )
+      ) {
+
+        select.value =
+          valorActual;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CREAR CLIENTE
+    ========================================================= */
+
+    async function crearCliente() {
+
+      const nombre =
+        document.getElementById(
+          "clienteNombre"
+        ).value.trim();
+
+
+      if (!nombre) {
+
+        alert(
+          "Ingresá el nombre del cliente."
+        );
+
+        return;
+
+      }
+
+
+      const datos = {
+
+        nombre,
+
+        empresa:
+          document.getElementById(
+            "clienteEmpresa"
+          ).value.trim(),
+
+        telefono:
+          document.getElementById(
+            "clienteTelefono"
+          ).value.trim(),
+
+        direccion:
+          document.getElementById(
+            "clienteDireccion"
+          ).value.trim(),
+
+        zona:
+          document.getElementById(
+            "clienteZona"
+          ).value.trim()
+
+      };
+
+
+      try {
+
+        await api(
+          "/panel/logistica/deposito/api/clientes",
+          {
+            method: "POST",
+            body: JSON.stringify(datos)
+          }
+        );
+
+
+        limpiarFormularioCliente();
+
+
+        await cargarTodo();
+
+
+        alert(
+          "✅ Cliente creado correctamente."
+        );
+
+      }
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ Error creando cliente:\n\n" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    function limpiarFormularioCliente() {
+
+      [
+        "clienteNombre",
+        "clienteEmpresa",
+        "clienteTelefono",
+        "clienteDireccion",
+        "clienteZona"
+
+      ].forEach(id => {
+
+        const elemento =
+          document.getElementById(id);
+
+
+        if (elemento) {
+          elemento.value = "";
+        }
+
+      });
+
+    }
+
+
+    /* =========================================================
+       LISTAR CLIENTES
+    ========================================================= */
+
+    function listarClientes() {
+
+      const div =
+        document.getElementById(
+          "listaClientes"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      if (!clientes.length) {
+
+        div.innerHTML = `
+
+          <div class="empty">
+
+            <i class="fas fa-building"></i>
+
+            <p>
+              No hay clientes registrados.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      div.innerHTML = `
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Empresa</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Zona</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              ${
+
+                clientes
+                  .map(c => `
+
+                    <tr>
+
+                      <td>
+                        ${escapar(c.id)}
+                      </td>
+
+                      <td>
+                        <strong>
+                          ${escapar(
+                            c.nombre || "-"
+                          )}
+                        </strong>
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.empresa || "-"
+                        )}
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.telefono || "-"
+                        )}
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.direccion || "-"
+                        )}
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.zona || "-"
+                        )}
+                      </td>
+
+                    </tr>
+
+                  `)
+                  .join("")
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =========================================================
+       CHOFERES - SELECT
+    ========================================================= */
+
+    function cargarChoferesSelect(
+      selectId = "editChofer",
+      selectedId = ""
+    ) {
+
+      const select =
+        document.getElementById(
+          selectId
+        );
+
+
+      if (!select) {
+        return;
+      }
+
+
+      select.innerHTML = `
+
+        <option value="">
+          Sin asignar
+        </option>
+
+      `;
+
+
+      choferes.forEach(c => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          c.id;
+
+
+        option.textContent =
+          obtenerNombreChofer(c);
+
+
+        if (
+          String(c.id) ===
+          String(selectedId)
+        ) {
+
+          option.selected = true;
+
+        }
+
+
+        select.appendChild(
+          option
+        );
+
+      });
+
+    }
+
+
+    /* =========================================================
+       CREAR CHOFER
+    ========================================================= */
+
+    async function crearChofer() {
+
+      const nombre =
+        document.getElementById(
+          "choferNombre"
+        ).value.trim();
+
+
+      if (!nombre) {
+
+        alert(
+          "Ingresá el nombre del chofer."
+        );
+
+        return;
+
+      }
+
+
+      const datos = {
+
+        nombre,
+
+        vehiculo:
+          document.getElementById(
+            "choferVehiculo"
+          ).value.trim(),
+
+        telefono:
+          document.getElementById(
+            "choferTelefono"
+          ).value.trim(),
+
+        zona:
+          document.getElementById(
+            "choferZona"
+          ).value.trim()
+
+      };
+
+
+      try {
+
+        await api(
+          "/panel/logistica/deposito/api/choferes",
+          {
+            method: "POST",
+            body: JSON.stringify(datos)
+          }
+        );
+
+
+        limpiarFormularioChofer();
+
+
+        await cargarTodo();
+
+
+        alert(
+          "✅ Chofer creado correctamente."
+        );
+
+      }
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ Error creando chofer:\n\n" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    function limpiarFormularioChofer() {
+
+      [
+        "choferNombre",
+        "choferVehiculo",
+        "choferTelefono",
+        "choferZona"
+
+      ].forEach(id => {
+
+        const elemento =
+          document.getElementById(id);
+
+
+        if (elemento) {
+          elemento.value = "";
+        }
+
+      });
+
+    }
+
+
+    /* =========================================================
+       LISTAR CHOFERES
+    ========================================================= */
+
+    function listarChoferes() {
+
+      const div =
+        document.getElementById(
+          "listaChoferes"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      if (!choferes.length) {
+
+        div.innerHTML = `
+
+          <div class="empty">
+
+            <i class="fas fa-motorcycle"></i>
+
+            <p>
+              No hay choferes registrados.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      div.innerHTML = `
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Vehículo</th>
+                <th>Teléfono</th>
+                <th>Zona</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              ${
+
+                choferes
+                  .map(c => `
+
+                    <tr>
+
+                      <td>
+                        ${escapar(c.id)}
+                      </td>
+
+                      <td>
+                        <strong>
+                          ${escapar(
+                            c.nombre || "-"
+                          )}
+                        </strong>
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.vehiculo || "-"
+                        )}
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.telefono || "-"
+                        )}
+                      </td>
+
+                      <td>
+                        ${escapar(
+                          c.zona || "-"
+                        )}
+                      </td>
+
+                    </tr>
+
+                  `)
+                  .join("")
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =========================================================
+       CONSULTAS
+    ========================================================= */
+
+    function prepararConsultas() {
+
+      const clientesSelect =
+        document.getElementById(
+          "consultaCliente"
+        );
+
+
+      const choferSelect =
+        document.getElementById(
+          "consultaChofer"
+        );
+
+
+      const clienteActual =
+        clientesSelect?.value || "";
+
+
+      const choferActual =
+        choferSelect?.value || "";
+
+
+      if (clientesSelect) {
+
+        clientesSelect.innerHTML = `
+
+          <option value="">
+            Todos
+          </option>
+
+        `;
+
+
+        clientes.forEach(c => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            c.id;
+
+
+          option.textContent =
+            obtenerNombreCliente(c);
+
+
+          clientesSelect.appendChild(
+            option
+          );
+
+        });
+
+
+        if (
+          clienteActual &&
+          clientes.some(
+            c =>
+              String(c.id) ===
+              String(clienteActual)
+          )
+        ) {
+
+          clientesSelect.value =
+            clienteActual;
+
+        }
+
+      }
+
+
+      if (choferSelect) {
+
+        choferSelect.innerHTML = `
+
+          <option value="">
+            Todos
+          </option>
+
+        `;
+
+
+        choferes.forEach(c => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            c.id;
+
+
+          option.textContent =
+            obtenerNombreChofer(c);
+
+
+          choferSelect.appendChild(
+            option
+          );
+
+        });
+
+
+        if (
+          choferActual &&
+          choferes.some(
+            c =>
+              String(c.id) ===
+              String(choferActual)
+          )
+        ) {
+
+          choferSelect.value =
+            choferActual;
+
+        }
+
+      }
+
+    }
+
+
+    function ejecutarConsulta() {
+
+      const texto =
+        String(
+          document.getElementById(
+            "consultaTexto"
+          )?.value || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+      const tipo =
+        document.getElementById(
+          "consultaTipo"
+        )?.value || "";
+
+
+      const cliente =
+        document.getElementById(
+          "consultaCliente"
+        )?.value || "";
+
+
+      const chofer =
+        document.getElementById(
+          "consultaChofer"
+        )?.value || "";
+
+
+      const fecha =
+        document.getElementById(
+          "consultaFecha"
+        )?.value || "";
+
+
+      const resultado =
+        paquetes.filter(p => {
+
+          const contenido = [
+
+            p.codigo,
+            p.codigo_interno,
+            p.codigo_externo,
+            p.tracking_number,
+            p.destinatario,
+            p.dni,
+            p.telefono,
+            p.direccion,
+            p.barrio,
+            p.localidad,
+            p.zona,
+            p.referencia,
+            p.remitente
+
+          ]
+          .filter(
+            valor =>
+              valor !== null &&
+              valor !== undefined
+          )
+          .join(" ")
+          .toLowerCase();
+
+
+          const coincideTexto =
+            !texto ||
+            contenido.includes(texto);
+
+
+          const coincideTipo =
+            !tipo ||
+            String(p.tipo || "").toUpperCase() ===
+            String(tipo).toUpperCase();
+
+
+          const coincideCliente =
+            !cliente ||
+            String(
+              p.cliente_id ?? ""
+            ) === String(cliente);
+
+
+          const coincideChofer =
+            !chofer ||
+            String(
+              p.chofer_id ?? ""
+            ) === String(chofer);
+
+
+          const coincideFecha =
+            !fecha ||
+            obtenerFechaCampo(p) === fecha;
+
+
+          return (
+            coincideTexto &&
+            coincideTipo &&
+            coincideCliente &&
+            coincideChofer &&
+            coincideFecha
+          );
+
+        });
+
+
+      const div =
+        document.getElementById(
+          "resultadosConsulta"
+        );
+
+
+      if (!div) {
+        return;
+      }
+
+
+      if (!resultado.length) {
+
+        div.innerHTML = `
+
+          <div class="empty">
+
+            <i class="fas fa-search"></i>
+
+            <p>
+              No se encontraron resultados.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      div.innerHTML =
+        resultado
+          .map(crearTarjetaPaquete)
+          .join("");
+
+    }
+
+
+    /* =========================================================
+       PROCESAR COLECTA
+    ========================================================= */
+
+    async function procesarColecta() {
+
+      const fecha =
+        document.getElementById(
+          "nuevaFecha"
+        ).value;
+
+
+      const cliente =
+        document.getElementById(
+          "nuevoCliente"
+        ).value;
+
+
+      const inputFotos =
+        document.getElementById(
+          "nuevasFotos"
+        );
+
+
+      const archivos =
+        inputFotos?.files || [];
+
+
+      if (!fecha) {
+
+        alert(
+          "Seleccioná la fecha."
+        );
+
+        return;
+
+      }
+
+
+      if (!cliente) {
+
+        alert(
+          "Seleccioná un cliente."
+        );
+
+        return;
+
+      }
+
+
+      if (!archivos.length) {
+
+        alert(
+          "Seleccioná al menos una fotografía."
+        );
+
+        return;
+
+      }
+
+
+      const boton =
+        document.getElementById(
+          "btnProcesar"
+        );
+
+
+      const progress =
+        document.getElementById(
+          "progressBox"
+        );
+
+
+      const text =
+        document.getElementById(
+          "progressText"
+        );
+
+
+      const bar =
+        document.getElementById(
+          "progressBar"
+        );
+
+
+      boton.disabled = true;
+
+      progress.style.display =
+        "block";
+
+
+      try {
+
+        text.textContent =
+          `Preparando ${archivos.length} fotografía(s)...`;
+
+        bar.style.width =
+          "5%";
+
+
+        const formData =
+          new FormData();
+
+
+        formData.append(
+          "fecha",
+          fecha
+        );
+
+
+        formData.append(
+          "cliente_id",
+          cliente
+        );
+
+
+        for (
+          let i = 0;
+          i < archivos.length;
+          i++
+        ) {
+
+          text.textContent =
+            `Preparando ${i + 1} de ${archivos.length}: ${archivos[i].name}`;
+
+
+          bar.style.width =
+            `${Math.round(
+              ((i + 1) /
+                archivos.length) *
+              40
+            )}%`;
+
+
+          formData.append(
+            "fotos",
+            archivos[i]
+          );
+
+        }
+
+
+        text.textContent =
+          "Enviando fotografías al servidor...";
+
+
+        bar.style.width =
+          "50%";
+
+
+        const respuesta =
+          await fetch(
+            "/panel/logistica/deposito/api/colectas",
+            {
+              method: "POST",
+              body: formData
+            }
+          );
+
+
+        const texto =
+          await respuesta.text();
+
+
+        let datos = {};
+
+
+        try {
+
+          datos =
+            texto
+              ? JSON.parse(texto)
+              : {};
+
+        }
+        catch (error) {
+
+          console.error(
+            "Respuesta del servidor:",
+            texto
+          );
+
+          throw new Error(
+            "El servidor no devolvió JSON válido."
+          );
+
+        }
+
+
+        if (
+          !respuesta.ok ||
+          datos.ok === false
+        ) {
+
+          throw new Error(
+            datos.mensaje ||
+            datos.error ||
+            `Error HTTP ${respuesta.status}`
+          );
+
+        }
+
+
+        bar.style.width =
+          "90%";
+
+
+        text.textContent =
+          "Actualizando información del depósito...";
+
+
+        await cargarTodo();
+
+
+        bar.style.width =
+          "100%";
+
+
+        text.textContent =
+          "Colecta procesada correctamente.";
+
+
+        inputFotos.value =
+          "";
+
+
+        alert(
+          "✅ Colecta cargada correctamente."
+        );
+
+      }
+      catch (error) {
+
+        console.error(
+          "Error procesando colecta:",
+          error
+        );
+
+
+        text.textContent =
+          "Error durante el procesamiento.";
+
+
+        alert(
+          "❌ Error procesando colecta:\n\n" +
+          error.message
+        );
+
+      }
+      finally {
+
+        boton.disabled = false;
+
+
+        setTimeout(() => {
+
+          progress.style.display =
+            "none";
+
+
+          bar.style.width =
+            "0%";
+
+
+          text.textContent =
+            "Preparando...";
+
+        }, 1200);
+
+      }
+
+    }
+
+
+    /* =========================================================
+       TECLADO / MODALES
+    ========================================================= */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key !== "Escape"
+        ) {
+
+          return;
+
+        }
+
+
+        cerrarModal(
+          "modalPaquete"
+        );
+
+
+        cerrarModal(
+          "modalFoto"
+        );
+
+      }
+    );
+
+
+    /* =========================================================
+       INICIO
+    ========================================================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      async () => {
+
+        const hoy =
+          new Date()
+            .toISOString()
+            .substring(0, 10);
+
+
+        const fecha =
+          document.getElementById(
+            "nuevaFecha"
+          );
+
+
+        if (fecha) {
+
+          fecha.value =
+            hoy;
+
+        }
+
+
+        await cargarTodo();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>

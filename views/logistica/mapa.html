@@ -1,0 +1,1133 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mapa de Cobertura - Control Logística</title>
+
+    <!-- ==============================
+         LEAFLET
+    =============================== -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <style>
+
+        /* =========================================
+           RESET
+        ========================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: #0f172a;
+            color: #e2e8f0;
+
+            overflow: hidden;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+            height: 70px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #111827
+                );
+
+            border-bottom:
+                1px solid #1e293b;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 24px;
+
+            position: relative;
+            z-index: 1000;
+        }
+
+
+        .titulo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        .icono-mapa {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 10px;
+
+            background: #16a34a;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+
+            box-shadow:
+                0 0 20px rgba(22,163,74,.25);
+        }
+
+
+        .titulo h1 {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+
+        .titulo span {
+            display: block;
+
+            font-size: 12px;
+
+            color: #64748b;
+
+            margin-top: 2px;
+        }
+
+
+        /* =========================================
+           ESTADO
+        ========================================= */
+
+        .estado-general {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 8px 13px;
+
+            border-radius: 20px;
+
+            background: rgba(22,163,74,.10);
+
+            border:
+                1px solid rgba(34,197,94,.25);
+
+            color: #86efac;
+
+            font-size: 13px;
+        }
+
+
+        .estado-punto {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 10px #22c55e;
+        }
+
+
+        /* =========================================
+           CONTENEDOR
+        ========================================= */
+
+        .contenedor {
+            height: calc(100vh - 70px);
+
+            display: flex;
+        }
+
+
+        /* =========================================
+           PANEL LATERAL
+        ========================================= */
+
+        .panel {
+            width: 310px;
+
+            background: #111827;
+
+            border-right:
+                1px solid #1e293b;
+
+            display: flex;
+            flex-direction: column;
+
+            z-index: 900;
+        }
+
+
+        .panel-header {
+            padding: 20px;
+
+            border-bottom:
+                1px solid #1e293b;
+        }
+
+
+        .panel-header h2 {
+            font-size: 16px;
+            color: #f8fafc;
+        }
+
+
+        .panel-header p {
+            font-size: 12px;
+
+            color: #64748b;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================================
+           ESTADÍSTICAS
+        ========================================= */
+
+        .estadisticas {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 8px;
+
+            padding: 15px;
+        }
+
+
+        .stat {
+            background: #0f172a;
+
+            border:
+                1px solid #1e293b;
+
+            border-radius: 9px;
+
+            padding: 12px;
+        }
+
+
+        .stat-numero {
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: #4ade80;
+        }
+
+
+        .stat-label {
+            font-size: 10px;
+
+            color: #64748b;
+
+            margin-top: 3px;
+        }
+
+
+        /* =========================================
+           LISTA
+        ========================================= */
+
+        .lista-titulo {
+            padding:
+                5px 15px 10px;
+
+            font-size: 11px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: .8px;
+        }
+
+
+        #listaZonas {
+            overflow-y: auto;
+
+            padding:
+                0 10px 15px;
+        }
+
+
+        .zona-item {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 11px 10px;
+
+            margin-bottom: 3px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+
+        .zona-item:hover {
+            background: #1e293b;
+        }
+
+
+        .zona-item.activa {
+            background:
+                rgba(34,197,94,.07);
+        }
+
+
+        .zona-info {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+        }
+
+
+        .zona-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 7px rgba(34,197,94,.6);
+        }
+
+
+        .zona-nombre {
+            font-size: 13px;
+
+            color: #cbd5e1;
+        }
+
+
+        .zona-tipo {
+            font-size: 9px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================
+           MAPA
+        ========================================= */
+
+        #mapa {
+            flex: 1;
+
+            height: 100%;
+        }
+
+
+        /* =========================================
+           LEYENDA
+        ========================================= */
+
+        .leyenda {
+            position: absolute;
+
+            right: 25px;
+            bottom: 25px;
+
+            z-index: 800;
+
+            background:
+                rgba(15,23,42,.94);
+
+            backdrop-filter:
+                blur(10px);
+
+            border:
+                1px solid #334155;
+
+            border-radius: 10px;
+
+            padding: 14px 16px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,.25);
+        }
+
+
+        .leyenda-titulo {
+            font-size: 11px;
+
+            color: #94a3b8;
+
+            margin-bottom: 10px;
+        }
+
+
+        .leyenda-item {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+
+            color: #cbd5e1;
+
+            margin: 6px 0;
+        }
+
+
+        .leyenda-color {
+            width: 16px;
+            height: 12px;
+
+            border-radius: 3px;
+        }
+
+
+        .verde {
+            background:
+                rgba(34,197,94,.55);
+
+            border:
+                1px solid #22c55e;
+        }
+
+
+        .gris {
+            background:
+                rgba(148,163,184,.15);
+
+            border:
+                1px solid #64748b;
+        }
+
+
+        /* =========================================
+           LEAFLET
+        ========================================= */
+
+        .leaflet-container {
+            background: #cbd5e1;
+        }
+
+
+        .leaflet-popup-content-wrapper {
+            background: #111827;
+            color: #e2e8f0;
+
+            border-radius: 10px;
+        }
+
+
+        .leaflet-popup-tip {
+            background: #111827;
+        }
+
+
+        .popup-titulo {
+            font-size: 15px;
+
+            font-weight: 700;
+
+            margin-bottom: 6px;
+        }
+
+
+        .popup-estado {
+            color: #4ade80;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            .panel {
+                width: 220px;
+            }
+
+            .titulo h1 {
+                font-size: 15px;
+            }
+
+            .estado-general {
+                display: none;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header>
+
+    <div class="titulo">
+
+        <div class="icono-mapa">
+            🗺️
+        </div>
+
+        <div>
+
+            <h1>
+                Mapa de Cobertura
+            </h1>
+
+            <span>
+                Control Logística
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="estado-general">
+
+        <span class="estado-punto"></span>
+
+        Servicio activo
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     CONTENEDOR
+========================================= -->
+
+<div class="contenedor">
+
+
+    <!-- =====================================
+         PANEL
+    ====================================== -->
+
+    <aside class="panel">
+
+
+        <div class="panel-header">
+
+            <h2>
+                Zonas de cobertura
+            </h2>
+
+            <p>
+                Áreas habilitadas para distribución
+            </p>
+
+        </div>
+
+
+        <!-- ESTADÍSTICAS -->
+
+        <div class="estadisticas">
+
+            <div class="stat">
+
+                <div
+                    class="stat-numero"
+                    id="totalZonas"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Zonas activas
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div
+                    class="stat-numero"
+                    id="totalCaba"
+                >
+                    1
+                </div>
+
+                <div class="stat-label">
+                    CABA
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="lista-titulo">
+            Cobertura actual
+        </div>
+
+
+        <div id="listaZonas"></div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================
+         MAPA
+    ====================================== -->
+
+    <div id="mapa"></div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     LEYENDA
+========================================= -->
+
+<div class="leyenda">
+
+    <div class="leyenda-titulo">
+        REFERENCIA
+    </div>
+
+
+    <div class="leyenda-item">
+
+        <span
+            class="leyenda-color verde"
+        ></span>
+
+        Zona cubierta
+
+    </div>
+
+
+    <div class="leyenda-item">
+
+        <span
+            class="leyenda-color gris"
+        ></span>
+
+        Sin cobertura
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     LEAFLET
+========================================= -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+
+<script>
+
+/* =====================================================
+   CONFIGURACIÓN JSON
+===================================================== */
+
+const CONFIGURACION = {
+
+    "zonas": [
+
+        {
+            "id": "caba",
+            "nombre": "CABA",
+            "tipo": "Ciudad Autónoma",
+            "habilitada": true
+        },
+
+        {
+            "id": "lanus",
+            "nombre": "Lanús",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "avellaneda",
+            "nombre": "Avellaneda",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "lomas",
+            "nombre": "Lomas de Zamora",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "ezeiza",
+            "nombre": "Ezeiza",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "echeverria",
+            "nombre": "Esteban Echeverría",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "wilde",
+            "nombre": "Wilde",
+            "tipo": "Localidad",
+            "habilitada": true
+        },
+
+        {
+            "id": "pilar",
+            "nombre": "Pilar",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "escobar",
+            "nombre": "Escobar",
+            "tipo": "Partido",
+            "habilitada": true
+        },
+
+        {
+            "id": "zarate",
+            "nombre": "Zárate",
+            "tipo": "Partido",
+            "habilitada": true
+        }
+
+    ]
+
+};
+
+
+/* =====================================================
+   CREAR MAPA
+===================================================== */
+
+const mapa = L.map("mapa", {
+
+    zoomControl: true,
+
+    minZoom: 8,
+
+    maxZoom: 16
+
+}).setView(
+    [-34.65, -58.65],
+    9
+);
+
+
+
+/* =====================================================
+   OPEN STREET MAP
+===================================================== */
+
+L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+        maxZoom: 19,
+
+        attribution:
+            '&copy; OpenStreetMap contributors'
+
+    }
+
+).addTo(mapa);
+
+
+
+/* =====================================================
+   ESTILOS
+===================================================== */
+
+const estiloZona = {
+
+    color: "#15803d",
+
+    weight: 2,
+
+    fillColor: "#22c55e",
+
+    fillOpacity: .45
+
+};
+
+
+
+/* =====================================================
+   POLÍGONOS APROXIMADOS PARA LA PRUEBA
+===================================================== */
+
+/*
+    IMPORTANTE:
+
+    Estos polígonos son solamente para
+    comprobar visualmente el concepto.
+
+    Después los reemplazamos por los
+    límites geográficos reales mediante GeoJSON.
+*/
+
+
+const poligonos = {
+
+
+    caba: [
+
+        [-34.526, -58.449],
+        [-34.526, -58.350],
+        [-34.570, -58.340],
+        [-34.650, -58.350],
+        [-34.705, -58.380],
+        [-34.705, -58.520],
+        [-34.650, -58.540],
+        [-34.580, -58.520]
+
+    ],
+
+
+    lanus: [
+
+        [-34.660, -58.450],
+        [-34.660, -58.350],
+        [-34.730, -58.350],
+        [-34.750, -58.430],
+        [-34.720, -58.480]
+
+    ],
+
+
+    avellaneda: [
+
+        [-34.610, -58.420],
+        [-34.610, -58.330],
+        [-34.680, -58.330],
+        [-34.700, -58.400]
+
+    ],
+
+
+    lomas: [
+
+        [-34.700, -58.500],
+        [-34.700, -58.400],
+        [-34.770, -58.390],
+        [-34.820, -58.450],
+        [-34.800, -58.550]
+
+    ],
+
+
+    ezeiza: [
+
+        [-34.780, -58.620],
+        [-34.780, -58.500],
+        [-34.900, -58.500],
+        [-34.950, -58.620],
+        [-34.880, -58.700]
+
+    ],
+
+
+    echeverria: [
+
+        [-34.720, -58.620],
+        [-34.720, -58.500],
+        [-34.800, -58.480],
+        [-34.850, -58.570],
+        [-34.820, -58.680]
+
+    ],
+
+
+    wilde: [
+
+        [-34.650, -58.380],
+        [-34.650, -58.330],
+        [-34.700, -58.330],
+        [-34.700, -58.390]
+
+    ],
+
+
+    pilar: [
+
+        [-34.380, -58.950],
+        [-34.380, -58.800],
+        [-34.470, -58.780],
+        [-34.500, -58.950]
+
+    ],
+
+
+    escobar: [
+
+        [-34.300, -58.900],
+        [-34.300, -58.700],
+        [-34.400, -58.680],
+        [-34.450, -58.820]
+
+    ],
+
+
+    zarate: [
+
+        [-34.100, -59.150],
+        [-34.100, -58.850],
+        [-34.250, -58.820],
+        [-34.300, -59.100]
+
+    ]
+
+};
+
+
+
+/* =====================================================
+   DIBUJAR ZONAS
+===================================================== */
+
+const capasZonas = {};
+
+
+
+CONFIGURACION.zonas.forEach(zona => {
+
+
+    if (!zona.habilitada) {
+        return;
+    }
+
+
+    const coordenadas =
+        poligonos[zona.id];
+
+
+    if (!coordenadas) {
+        return;
+    }
+
+
+    const poligono =
+        L.polygon(
+
+            coordenadas,
+
+            estiloZona
+
+        ).addTo(mapa);
+
+
+    poligono.bindPopup(`
+
+        <div class="popup-titulo">
+
+            ${zona.nombre}
+
+        </div>
+
+        <div class="popup-estado">
+
+            🟢 Zona cubierta
+
+        </div>
+
+        <div style="
+            margin-top:5px;
+            font-size:11px;
+            color:#94a3b8;
+        ">
+
+            ${zona.tipo}
+
+        </div>
+
+    `);
+
+
+    capasZonas[zona.id] =
+        poligono;
+
+
+});
+
+
+
+/* =====================================================
+   LISTA LATERAL
+===================================================== */
+
+const lista =
+    document.getElementById("listaZonas");
+
+
+const zonasActivas =
+    CONFIGURACION.zonas.filter(
+        zona => zona.habilitada
+    );
+
+
+document.getElementById(
+    "totalZonas"
+).textContent =
+    zonasActivas.length;
+
+
+
+zonasActivas.forEach(zona => {
+
+
+    const item =
+        document.createElement("div");
+
+
+    item.className =
+        "zona-item activa";
+
+
+    item.innerHTML = `
+
+        <div class="zona-info">
+
+            <span class="zona-dot"></span>
+
+            <div>
+
+                <div class="zona-nombre">
+                    ${zona.nombre}
+                </div>
+
+                <div class="zona-tipo">
+                    ${zona.tipo}
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    item.addEventListener(
+        "click",
+        () => {
+
+            const capa =
+                capasZonas[zona.id];
+
+
+            if (!capa) return;
+
+
+            mapa.fitBounds(
+                capa.getBounds(),
+                {
+                    padding: [40, 40]
+                }
+            );
+
+
+            capa.openPopup();
+
+        }
+    );
+
+
+    lista.appendChild(item);
+
+});
+
+
+
+/* =====================================================
+   CONTROL DE ESCALA
+===================================================== */
+
+L.control.scale({
+
+    imperial: false
+
+}).addTo(mapa);
+
+
+
+/* =====================================================
+   MENSAJE INICIAL
+===================================================== */
+
+console.log(
+    "Mapa de cobertura iniciado."
+);
+
+console.log(
+    "Zonas activas:",
+    zonasActivas
+);
+
+</script>
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -10,11 +11,9 @@
 
 <link rel="stylesheet" href="/css/panel.css">
 
-
 <style>
 
 :root{
-
     --primary:#2563eb;
     --success:#16a34a;
     --danger:#dc2626;
@@ -24,667 +23,541 @@
     --border:#e2e8f0;
     --text:#334155;
     --shadow:0 10px 25px rgba(15,23,42,.08);
-
 }
-
 
 *{
-
     box-sizing:border-box;
-
 }
-
-
 
 body{
-
     margin:0;
-
     background:var(--bg);
-
-    font-family:
-    Inter,
-    Arial,
-    Helvetica,
-    sans-serif;
-
+    font-family:Inter,Arial,Helvetica,sans-serif;
     color:var(--text);
-
 }
-
-
-
-/* HEADER */
 
 .header{
-
-    background:
-    linear-gradient(135deg,#0f172a,#2563eb);
-
+    background:linear-gradient(135deg,#0f172a,#2563eb);
     color:white;
-
     padding:25px;
-
     box-shadow:var(--shadow);
-
 }
-
 
 .header h2{
-
     margin:0;
-
     font-size:25px;
-
 }
-
 
 .header p{
-
     margin:8px 0 0;
-
     opacity:.8;
-
 }
-
-
-
-
-
-/* CONTENEDOR */
 
 .container{
-
     width:100%;
-
     max-width:1200px;
-
     margin:auto;
-
     padding:20px;
-
 }
-
-
-
-
-/* CARDS */
 
 .box{
-
     background:white;
-
     border-radius:18px;
-
     padding:25px;
-
     margin-bottom:25px;
-
     box-shadow:var(--shadow);
-
     border:1px solid var(--border);
-
 }
-
 
 .box h3{
-
     margin-top:0;
-
     color:var(--dark);
-
 }
-
-
-
-
-
-/* FORMULARIO */
 
 .form-grid{
-
     display:grid;
-
     grid-template-columns:1fr;
-
     gap:14px;
-
 }
-
-
 
 input{
-
     width:100%;
-
     padding:14px;
-
     border-radius:12px;
-
     border:1px solid #cbd5e1;
-
     font-size:15px;
-
 }
-
-
 
 input:focus{
-
     outline:none;
-
     border-color:var(--primary);
-
     box-shadow:0 0 0 3px rgba(37,99,235,.15);
-
 }
-
-
-
 
 .btn-primary{
-
     background:var(--primary);
-
     color:white;
-
     border:none;
-
     padding:14px;
-
     border-radius:12px;
-
     font-size:16px;
-
     font-weight:bold;
-
     cursor:pointer;
-
+    transition:.2s;
 }
 
+.btn-primary:hover{
+    opacity:.9;
+}
 
-
-
-
-/* TABLA */
+.btn-primary:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
 
 .table-container{
-
     width:100%;
-
     overflow-x:auto;
-
 }
-
-
 
 table{
-
     width:100%;
-
     min-width:950px;
-
     border-collapse:collapse;
-
 }
-
-
 
 thead{
-
     background:#f8fafc;
-
 }
-
-
 
 th{
-
     color:#475569;
-
     text-align:left;
-
 }
-
-
 
 th,
 td{
-
     padding:14px;
-
     border-bottom:1px solid var(--border);
-
 }
-
-
 
 tbody tr:hover{
-
     background:#f8fafc;
-
 }
-
-
-
-
-/* BOTONES ACCIONES */
 
 .btn-edit,
 .btn-delete{
-
     color:white;
-
     text-decoration:none;
-
     padding:8px 12px;
-
     border-radius:8px;
-
     font-size:14px;
-
     display:inline-block;
-
     margin:2px;
-
 }
-
-
 
 .btn-edit{
-
     background:var(--success);
-
 }
-
-
 
 .btn-delete{
-
     background:var(--danger);
-
 }
 
+.mensaje{
+    display:none;
+    padding:14px 16px;
+    border-radius:12px;
+    margin-bottom:20px;
+    font-weight:600;
+}
 
+.mensaje.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #86efac;
+}
 
+.mensaje.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+    border:1px solid #fca5a5;
+}
 
-
-
-/* TABLET */
+.estado-vacio{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+}
 
 @media(min-width:768px){
 
+    .form-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-.form-grid{
-
-    grid-template-columns:repeat(2,1fr);
-
-}
-
-
-.btn-primary{
-
-    grid-column:span 2;
+    .btn-primary{
+        grid-column:span 2;
+    }
 
 }
-
-
-}
-
-
-
-
-
-/* PC */
 
 @media(min-width:1100px){
 
-
-.container{
-
-    padding:35px;
-
-}
-
+    .container{
+        padding:35px;
+    }
 
 }
-
-
 
 </style>
 
-
 </head>
-
 
 <body>
 
-
-
 <div class="header">
 
-
+```
 <h2>
-
-👥 Clientes Logística
-
+    👥 Clientes Logística
 </h2>
 
-
 <p>
-
-Usuario: <%= username %>
-
+    Usuario: <%= username %>
 </p>
-
+```
 
 </div>
-
-
-
-
-
 
 <div class="container">
 
+```
+<!-- MENSAJES -->
+
+<div id="mensaje" class="mensaje"></div>
 
 
-
+<!-- NUEVO CLIENTE -->
 
 <div class="box">
 
+    <h3>
+        ➕ Nuevo cliente
+    </h3>
 
-<h3>
+    <form
+        id="formCliente"
+        method="POST"
+        action="/panel/logistica/clientes"
+    >
 
-➕ Nuevo cliente
+        <div class="form-grid">
 
-</h3>
+            <input
+                name="nombre"
+                placeholder="Nombre del cliente"
+                required
+                autocomplete="off"
+            >
 
+            <input
+                name="empresa"
+                placeholder="Empresa"
+                autocomplete="organization"
+            >
 
+            <input
+                name="telefono"
+                placeholder="Teléfono"
+                autocomplete="tel"
+            >
 
+            <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                autocomplete="email"
+            >
 
-<form 
-method="POST"
-action="/panel/logistica/clientes"
->
+            <input
+                name="direccion"
+                placeholder="Dirección"
+                autocomplete="street-address"
+            >
 
+            <button
+                id="btnGuardar"
+                class="btn-primary"
+                type="submit"
+            >
+                💾 Guardar cliente
+            </button>
 
-<div class="form-grid">
+        </div>
 
-
-
-<input
-
-name="nombre"
-
-placeholder="Nombre del cliente"
-
-required
-
->
-
-
-
-
-<input
-
-name="empresa"
-
-placeholder="Empresa"
-
->
-
-
-
-
-<input
-
-name="telefono"
-
-placeholder="Teléfono"
-
->
-
-
-
-
-<input
-
-name="email"
-
-type="email"
-
-placeholder="Email"
-
->
-
-
-
-
-<input
-
-name="direccion"
-
-placeholder="Dirección"
-
->
-
-
-
-
-<button 
-class="btn-primary"
-type="submit"
->
-
-💾 Guardar cliente
-
-</button>
-
-
+    </form>
 
 </div>
 
 
-</form>
-
-
-
-</div>
-
-
-
-
-
-
+<!-- CLIENTES -->
 
 <div class="box">
 
+    <h3>
+        📋 Clientes registrados
+    </h3>
 
-<h3>
+    <div class="table-container">
 
-📋 Clientes registrados
+        <table>
 
-</h3>
+            <thead>
 
+                <tr>
 
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Empresa</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
 
+                </tr>
 
-<div class="table-container">
+            </thead>
 
+            <tbody>
 
-<table>
+                <% if (clientes && clientes.length > 0) { %>
 
+                    <% clientes.forEach(cliente => { %>
 
+                        <tr>
 
-<thead>
+                            <td>
+                                <%= cliente.id %>
+                            </td>
 
+                            <td>
+                                <%= cliente.nombre %>
+                            </td>
 
-<tr>
+                            <td>
+                                <%= cliente.empresa || "-" %>
+                            </td>
 
-<th>ID</th>
+                            <td>
+                                <%= cliente.telefono || "-" %>
+                            </td>
 
-<th>Nombre</th>
+                            <td>
+                                <%= cliente.email || "-" %>
+                            </td>
 
-<th>Empresa</th>
+                            <td>
+                                <%= cliente.direccion || "-" %>
+                            </td>
 
-<th>Teléfono</th>
+                            <td>
 
-<th>Email</th>
+                                <a
+                                    class="btn-edit"
+                                    href="/panel/logistica/clientes/editar/<%= cliente.id %>"
+                                >
+                                    ✏️ Editar
+                                </a>
 
-<th>Dirección</th>
+                                <a
+                                    class="btn-delete"
+                                    href="/panel/logistica/clientes/eliminar/<%= cliente.id %>"
+                                    onclick="return confirm('¿Seguro que desea eliminar este cliente?')"
+                                >
+                                    🗑️ Borrar
+                                </a>
 
-<th>Acciones</th>
+                            </td>
 
-</tr>
+                        </tr>
 
+                    <% }) %>
 
-</thead>
+                <% } else { %>
 
+                    <tr>
 
+                        <td
+                            colspan="7"
+                            class="estado-vacio"
+                        >
+                            📭 No hay clientes registrados todavía.
+                        </td>
 
+                    </tr>
 
+                <% } %>
 
-<tbody>
+            </tbody>
 
+        </table>
 
-<% clientes.forEach(cliente => { %>
+    </div>
 
-
-
-<tr>
-
-
-
-<td>
-
-<%= cliente.id %>
-
-</td>
-
-
-
-
-<td>
-
-<%= cliente.nombre %>
-
-</td>
-
-
-
-
-<td>
-
-<%= cliente.empresa || "-" %>
-
-</td>
-
-
-
-
-<td>
-
-<%= cliente.telefono || "-" %>
-
-</td>
-
-
-
-
-<td>
-
-<%= cliente.email || "-" %>
-
-</td>
-
-
-
-
-<td>
-
-<%= cliente.direccion || "-" %>
-
-</td>
-
-
-
-
-
-<td>
-
-
-
-<a
-
-class="btn-edit"
-
-href="/panel/logistica/clientes/editar/<%= cliente.id %>"
-
->
-
-✏️ Editar
-
-</a>
-
-
-
-
-
-<a
-
-class="btn-delete"
-
-href="/panel/logistica/clientes/eliminar/<%= cliente.id %>"
-
-onclick="return confirm('¿Seguro que desea eliminar este cliente?')"
-
->
-
-🗑️ Borrar
-
-</a>
-
-
-
-
-</td>
-
-
-
-
-</tr>
-
-
-
-<% }) %>
-
-
-
-</tbody>
-
-
-
-
-</table>
-
+</div>
+```
 
 </div>
 
+<script>
+
+/*
+====================================================
+CREAR CLIENTE
+====================================================
+*/
+
+const formCliente = document.getElementById("formCliente");
+const mensaje = document.getElementById("mensaje");
+const btnGuardar = document.getElementById("btnGuardar");
 
 
-</div>
+function mostrarMensaje(texto, tipo){
+
+    mensaje.textContent = texto;
+
+    mensaje.className = "mensaje " + tipo;
+
+}
 
 
+formCliente.addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+    btnGuardar.disabled = true;
+    btnGuardar.textContent = "⏳ Guardando...";
+
+    mensaje.className = "mensaje";
+    mensaje.textContent = "";
+
+    try {
+
+        const formData = new FormData(formCliente);
+
+        const response = await fetch(
+            formCliente.action,
+            {
+                method:"POST",
+                body:formData,
+                headers:{
+                    "Accept":"application/json"
+                }
+            }
+        );
 
 
+        /*
+        ==============================================
+        VERIFICAR RESPUESTA HTTP
+        ==============================================
+        */
+
+        if(!response.ok){
+
+            const texto = await response.text();
+
+            console.error(
+                "Respuesta del servidor:",
+                texto
+            );
+
+            throw new Error(
+                "El servidor respondió con error HTTP " +
+                response.status
+            );
+
+        }
 
 
-</div>
+        /*
+        ==============================================
+        LEER JSON
+        ==============================================
+        */
+
+        const data = await response.json();
 
 
+        if(!data.ok){
+
+            throw new Error(
+                data.mensaje ||
+                "No se pudo crear el cliente."
+            );
+
+        }
 
 
+        /*
+        ==============================================
+        ÉXITO
+        ==============================================
+        */
+
+        mostrarMensaje(
+            data.mensaje || "Cliente creado correctamente.",
+            "success"
+        );
+
+
+        formCliente.reset();
+
+
+        /*
+        ==============================================
+        RECARGAR LISTADO
+        ==============================================
+        */
+
+        setTimeout(function(){
+
+            window.location.href =
+                "/panel/logistica/clientes";
+
+        }, 700);
+
+
+    } catch(error){
+
+        console.error(
+            "❌ Error creando cliente:",
+            error
+        );
+
+
+        mostrarMensaje(
+            error.message ||
+            "Error creando cliente.",
+            "error"
+        );
+
+
+    } finally {
+
+        btnGuardar.disabled = false;
+
+        btnGuardar.textContent =
+            "💾 Guardar cliente";
+
+    }
+
+});
+
+</script>
 
 </body>
 

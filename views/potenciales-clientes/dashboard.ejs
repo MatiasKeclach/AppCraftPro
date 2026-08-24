@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Potenciales Clientes - AppCraft</title>
+
+    <!-- FontAwesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+            color: #1e293b;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .topbar {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #312e81
+                );
+
+            color: white;
+
+            padding:
+                18px 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,.15);
+
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .back-btn {
+
+            text-decoration: none;
+
+            color: white;
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,.12);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: .2s;
+
+        }
+
+
+        .back-btn:hover {
+
+            background:
+                rgba(255,255,255,.22);
+
+            transform:
+                translateX(-2px);
+
+        }
+
+
+        .title-area h1 {
+
+            font-size: 22px;
+
+            margin-bottom: 3px;
+
+        }
+
+
+        .title-area span {
+
+            font-size: 13px;
+
+            opacity: .75;
+
+        }
+
+
+        .user-info {
+
+            font-size: 14px;
+
+            opacity: .9;
+
+        }
+
+
+        /* ==================================================
+           CONTENEDOR
+        ================================================== */
+
+        .container {
+
+            width: min(
+                1400px,
+                94%
+            );
+
+            margin:
+                30px auto;
+
+        }
+
+
+        /* ==================================================
+           STATS
+        ================================================== */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .stat-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,.07);
+
+            border:
+                1px solid
+                rgba(0,0,0,.05);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 80px;
+
+            height: 80px;
+
+            border-radius: 50%;
+
+            right: -25px;
+
+            top: -25px;
+
+            background:
+                rgba(99,102,241,.08);
+
+        }
+
+
+        .stat-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 12px;
+
+            font-size: 19px;
+
+        }
+
+
+        .stat-total .stat-icon {
+
+            background: #ede9fe;
+
+            color: #7c3aed;
+
+        }
+
+
+        .stat-logistica .stat-icon {
+
+            background: #dbeafe;
+
+            color: #2563eb;
+
+        }
+
+
+        .stat-programacion .stat-icon {
+
+            background: #dcfce7;
+
+            color: #16a34a;
+
+        }
+
+
+        .stat-clientes .stat-icon {
+
+            background: #fef3c7;
+
+            color: #d97706;
+
+        }
+
+
+        .stat-number {
+
+            font-size: 32px;
+
+            font-weight: 800;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .stat-label {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           TITULO SECCION
+        ================================================== */
+
+        .section-title {
+
+            margin:
+                30px 0 15px;
+
+        }
+
+
+        .section-title h2 {
+
+            font-size: 20px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .section-title p {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           DOS TIPOS DE CLIENTE
+        ================================================== */
+
+        .search-types {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    1fr
+                );
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .type-card {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 25px;
+
+            border:
+                2px solid
+                transparent;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,.07);
+
+            cursor: pointer;
+
+            transition: .25s;
+
+        }
+
+
+        .type-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(15,23,42,.12);
+
+        }
+
+
+        .type-card.active {
+
+            border-color:
+                #6366f1;
+
+        }
+
+
+        .type-icon {
+
+            width: 58px;
+
+            height: 58px;
+
+            border-radius: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 25px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .logistica-type
+        .type-icon {
+
+            background:
+                #dbeafe;
+
+            color:
+                #2563eb;
+
+        }
+
+
+        .programacion-type
+        .type-icon {
+
+            background:
+                #dcfce7;
+
+            color:
+                #16a34a;
+
+        }
+
+
+        .type-card h3 {
+
+            font-size: 19px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .type-card p {
+
+            color: #64748b;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           BUSCADOR
+        ================================================== */
+
+        .search-panel {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,.07);
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .search-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .search-header h3 {
+
+            font-size: 18px;
+
+        }
+
+
+        .mode-badge {
+
+            background:
+                #ede9fe;
+
+            color:
+                #6d28d9;
+
+            padding:
+                7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap: 15px;
+
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .form-group label {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #475569;
+
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding:
+                12px 13px;
+
+            border:
+                1px solid
+                #cbd5e1;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: white;
+
+            font-size: 14px;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color:
+                #6366f1;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(99,102,241,.1);
+
+        }
+
+
+        .checkbox-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 10px;
+
+        }
+
+
+        .checkbox-area input {
+
+            width: 17px;
+
+            height: 17px;
+
+        }
+
+
+        .checkbox-area label {
+
+            font-size: 14px;
+
+            color: #475569;
+
+        }
+
+
+        .search-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            margin-top: 20px;
+
+        }
+
+
+        .btn {
+
+            border: none;
+
+            padding:
+                12px 20px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition: .2s;
+
+        }
+
+
+        .btn-primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #7c3aed
+                );
+
+            color: white;
+
+        }
+
+
+        .btn-primary:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 7px 20px
+                rgba(99,102,241,.25);
+
+        }
+
+
+        .btn-secondary {
+
+            background:
+                #f1f5f9;
+
+            color:
+                #475569;
+
+        }
+
+
+        /* ==================================================
+           TABLA
+        ================================================== */
+
+        .prospects-panel {
+
+            background: white;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,.07);
+
+            overflow: hidden;
+
+        }
+
+
+        .prospects-header {
+
+            padding:
+                20px 22px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                #e2e8f0;
+
+        }
+
+
+        .prospects-header h3 {
+
+            font-size: 18px;
+
+        }
+
+
+        .table-wrapper {
+
+            overflow-x: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+
+            min-width:
+                900px;
+
+        }
+
+
+        th {
+
+            background:
+                #f8fafc;
+
+            color:
+                #64748b;
+
+            text-align: left;
+
+            font-size: 12px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .04em;
+
+            padding:
+                13px 15px;
+
+        }
+
+
+        td {
+
+            padding:
+                14px 15px;
+
+            border-top:
+                1px solid
+                #f1f5f9;
+
+            font-size: 14px;
+
+        }
+
+
+        tr:hover td {
+
+            background:
+                #fafafa;
+
+        }
+
+
+        .badge-type {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding:
+                5px 9px;
+
+            border-radius:
+                20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        .badge-logistica {
+
+            background:
+                #dbeafe;
+
+            color:
+                #1d4ed8;
+
+        }
+
+
+        .badge-programacion {
+
+            background:
+                #dcfce7;
+
+            color:
+                #15803d;
+
+        }
+
+
+        .badge-ambos {
+
+            background:
+                #ede9fe;
+
+            color:
+                #6d28d9;
+
+        }
+
+
+        .badge-estado {
+
+            background:
+                #f1f5f9;
+
+            color:
+                #475569;
+
+            padding:
+                5px 9px;
+
+            border-radius:
+                20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        .ml-link {
+
+            color:
+                #2563eb;
+
+            text-decoration:
+                none;
+
+            font-weight: 600;
+
+        }
+
+
+        .ml-link:hover {
+
+            text-decoration:
+                underline;
+
+        }
+
+
+        .empty {
+
+            text-align: center;
+
+            padding:
+                50px 20px;
+
+            color:
+                #94a3b8;
+
+        }
+
+
+        .empty i {
+
+            font-size: 40px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media(max-width: 1000px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+
+            }
+
+        }
+
+
+        @media(max-width: 700px) {
+
+            .topbar {
+
+                padding:
+                    15px;
+
+            }
+
+
+            .user-info {
+
+                display: none;
+
+            }
+
+
+            .container {
+
+                width: 94%;
+
+                margin-top: 20px;
+
+            }
+
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .search-types {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .search-panel {
+
+                padding: 18px;
+
+            }
+
+
+            .prospects-header {
+
+                align-items:
+                    flex-start;
+
+                gap: 10px;
+
+                flex-direction:
+                    column;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <a
+            href="/panel"
+            class="back-btn"
+            title="Volver al panel"
+        >
+            <i class="fas fa-arrow-left"></i>
+        </a>
+
+        <div class="title-area">
+
+            <h1>
+                <i class="fas fa-magnifying-glass-chart"></i>
+                Potenciales Clientes
+            </h1>
+
+            <span>
+                Prospección comercial de Mercado Libre y empresas
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="user-info">
+
+        <i class="fas fa-user"></i>
+
+        <%= usuario ? usuario.username : "" %>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     CONTENIDO
+================================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         ESTADISTICAS
+    ================================================== -->
+
+    <section class="stats">
+
+
+        <div class="stat-card stat-total">
+
+            <div class="stat-icon">
+
+                <i class="fas fa-users"></i>
+
+            </div>
+
+            <div class="stat-number">
+                <%= total %>
+            </div>
+
+            <div class="stat-label">
+                Prospectos totales
+            </div>
+
+        </div>
+
+
+        <div class="stat-card stat-logistica">
+
+            <div class="stat-icon">
+
+                <i class="fas fa-truck"></i>
+
+            </div>
+
+            <div class="stat-number">
+                <%= logistica %>
+            </div>
+
+            <div class="stat-label">
+                Oportunidades de logística
+            </div>
+
+        </div>
+
+
+        <div class="stat-card stat-programacion">
+
+            <div class="stat-icon">
+
+                <i class="fas fa-code"></i>
+
+            </div>
+
+            <div class="stat-number">
+                <%= programacion %>
+            </div>
+
+            <div class="stat-label">
+                Oportunidades de programación
+            </div>
+
+        </div>
+
+
+        <div class="stat-card stat-clientes">
+
+            <div class="stat-icon">
+
+                <i class="fas fa-handshake"></i>
+
+            </div>
+
+            <div class="stat-number">
+                <%= clientes %>
+            </div>
+
+            <div class="stat-label">
+                Clientes concretados
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         TIPOS DE CLIENTES
+    ================================================== -->
+
+    <div class="section-title">
+
+        <h2>
+            ¿Qué tipo de cliente estás buscando?
+        </h2>
+
+        <p>
+            Elegí el objetivo de la búsqueda.
+        </p>
+
+    </div>
+
+
+    <section class="search-types">
+
+
+        <div
+            class="type-card logistica-type active"
+            data-type="logistica"
+        >
+
+            <div class="type-icon">
+
+                <i class="fas fa-truck-fast"></i>
+
+            </div>
+
+            <h3>
+                Clientes de Logística
+            </h3>
+
+            <p>
+                Vendedores de Mercado Libre con alto volumen
+                de ventas que puedan necesitar depósito,
+                colectas, Mercado Envíos Flex y distribución.
+            </p>
+
+        </div>
+
+
+        <div
+            class="type-card programacion-type"
+            data-type="programacion"
+        >
+
+            <div class="type-icon">
+
+                <i class="fas fa-laptop-code"></i>
+
+            </div>
+
+            <h3>
+                Clientes de Programación
+            </h3>
+
+            <p>
+                Empresas y vendedores que puedan necesitar
+                páginas web, sistemas, tiendas online,
+                automatizaciones o soluciones personalizadas.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         BUSCADOR
+    ================================================== -->
+
+    <section class="search-panel">
+
+
+        <div class="search-header">
+
+            <h3>
+
+                <i class="fas fa-filter"></i>
+
+                Configurar búsqueda
+
+            </h3>
+
+
+            <span
+                class="mode-badge"
+                id="modeBadge"
+            >
+                LOGÍSTICA
+            </span>
+
+        </div>
+
+
+        <form
+            id="searchForm"
+        >
+
+
+            <input
+                type="hidden"
+                name="tipo"
+                id="tipo"
+                value="logistica"
+            >
+
+
+            <div class="form-grid">
+
+
+                <!-- RUBRO -->
+
+                <div class="form-group">
+
+                    <label>
+                        Rubro / categoría
+                    </label>
+
+                    <input
+                        type="text"
+                        name="categoria"
+                        id="categoria"
+                        placeholder="Ej: electrónica"
+                    >
+
+                </div>
+
+
+                <!-- VENTAS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Ventas mínimas
+                    </label>
+
+                    <select
+                        name="ventas"
+                        id="ventas"
+                    >
+
+                        <option value="0">
+                            Cualquier cantidad
+                        </option>
+
+                        <option value="1000">
+                            +1.000 ventas
+                        </option>
+
+                        <option value="5000">
+                            +5.000 ventas
+                        </option>
+
+                        <option value="10000">
+                            +10.000 ventas
+                        </option>
+
+                        <option value="50000">
+                            +50.000 ventas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CANTIDAD -->
+
+                <div class="form-group">
+
+                    <label>
+                        Cantidad de resultados
+                    </label>
+
+                    <select
+                        name="cantidad"
+                        id="cantidad"
+                    >
+
+                        <option value="25">
+                            25
+                        </option>
+
+                        <option value="50">
+                            50
+                        </option>
+
+                        <option value="100"
+                                selected>
+                            100
+                        </option>
+
+                        <option value="250">
+                            250
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- FUENTE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Fuente
+                    </label>
+
+                    <select
+                        name="fuente"
+                        id="fuente"
+                    >
+
+                        <option value="mercadolibre">
+                            Mercado Libre
+                        </option>
+
+                        <option value="google">
+                            Google / Web
+                        </option>
+
+                        <option value="ambas">
+                            Ambas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- MERCADO LIDER -->
+
+            <div class="checkbox-area">
+
+                <input
+                    type="checkbox"
+                    id="mercadoLider"
+                    name="mercado_lider"
+                    value="1"
+                >
+
+                <label
+                    for="mercadoLider"
+                >
+
+                    Buscar preferentemente
+                    vendedores Mercado Líder
+
+                </label>
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <div class="search-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="limpiarBtn"
+                >
+
+                    <i class="fas fa-eraser"></i>
+
+                    Limpiar
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    <i class="fas fa-search"></i>
+
+                    Buscar vendedores
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         PROSPECTOS
+    ================================================== -->
+
+    <section class="prospects-panel">
+
+
+        <div class="prospects-header">
+
+            <h3>
+
+                <i class="fas fa-address-book"></i>
+
+                Prospectos registrados
+
+            </h3>
+
+
+            <span>
+
+                <%= prospectos.length %>
+                registros
+
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+
+            <% if(prospectos.length > 0) { %>
+
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Prospecto
+                            </th>
+
+                            <th>
+                                Rubro
+                            </th>
+
+                            <th>
+                                Tipo
+                            </th>
+
+                            <th>
+                                Mercado Libre
+                            </th>
+
+                            <th>
+                                Ventas
+                            </th>
+
+                            <th>
+                                Contacto
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        <% prospectos.forEach(p => { %>
+
+
+                            <tr>
+
+
+                                <td>
+
+                                    <strong>
+                                        <%= p.nombre %>
+                                    </strong>
+
+                                    <% if(p.empresa) { %>
+
+                                        <br>
+
+                                        <small
+                                            style="color:#94a3b8;"
+                                        >
+                                            <%= p.empresa %>
+                                        </small>
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <td>
+
+                                    <%= p.categoria || "-" %>
+
+                                </td>
+
+
+                                <td>
+
+
+                                    <% if(p.tipo === "logistica") { %>
+
+                                        <span
+                                            class="badge-type badge-logistica"
+                                        >
+                                            🚚 Logística
+                                        </span>
+
+                                    <% } else if(p.tipo === "programacion") { %>
+
+                                        <span
+                                            class="badge-type badge-programacion"
+                                        >
+                                            💻 Programación
+                                        </span>
+
+                                    <% } else { %>
+
+                                        <span
+                                            class="badge-type badge-ambos"
+                                        >
+                                            🔥 Ambos
+                                        </span>
+
+                                    <% } %>
+
+
+                                </td>
+
+
+                                <td>
+
+                                    <% if(p.mercadolibre_url) { %>
+
+                                        <a
+                                            href="<%= p.mercadolibre_url %>"
+                                            target="_blank"
+                                            class="ml-link"
+                                        >
+
+                                            <i
+                                                class="fas fa-external-link-alt"
+                                            ></i>
+
+                                            Ver vendedor
+
+                                        </a>
+
+                                    <% } else if(p.mercadolibre_nickname) { %>
+
+                                        <%= p.mercadolibre_nickname %>
+
+                                    <% } else { %>
+
+                                        -
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <td>
+
+                                    <%= p.ventas || "-" %>
+
+                                </td>
+
+
+                                <td>
+
+                                    <% if(p.whatsapp) { %>
+
+                                        <span
+                                            title="WhatsApp"
+                                        >
+                                            <i
+                                                class="fab fa-whatsapp"
+                                            ></i>
+                                        </span>
+
+                                    <% } %>
+
+
+                                    <% if(p.email) { %>
+
+                                        <span
+                                            title="Email"
+                                        >
+                                            <i
+                                                class="fas fa-envelope"
+                                            ></i>
+                                        </span>
+
+                                    <% } %>
+
+
+                                    <% if(!p.whatsapp && !p.email) { %>
+
+                                        -
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="badge-estado"
+                                    >
+                                        <%= p.estado %>
+                                    </span>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        <% }) %>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            <% } else { %>
+
+
+                <div class="empty">
+
+                    <i
+                        class="fas fa-users-slash"
+                    ></i>
+
+                    <h3>
+                        Todavía no hay prospectos
+                    </h3>
+
+                    <p>
+                        Configurá una búsqueda para comenzar
+                        a encontrar potenciales clientes.
+                    </p>
+
+                </div>
+
+
+            <% } %>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+    // =========================================================
+    // ELEMENTOS
+    // =========================================================
+
+    const typeCards =
+        document.querySelectorAll(".type-card");
+
+    const tipoInput =
+        document.getElementById("tipo");
+
+    const modeBadge =
+        document.getElementById("modeBadge");
+
+    const searchForm =
+        document.getElementById("searchForm");
+
+    const limpiarBtn =
+        document.getElementById("limpiarBtn");
+
+
+    // =========================================================
+    // SELECCIÓN DEL TIPO DE CLIENTE
+    // =========================================================
+
+    typeCards.forEach(card => {
+
+        card.addEventListener("click", () => {
+
+            // Quitar activo
+            typeCards.forEach(c => {
+                c.classList.remove("active");
+            });
+
+            // Activar seleccionado
+            card.classList.add("active");
+
+            // Obtener tipo
+            const tipo =
+                card.dataset.type;
+
+            // Guardar tipo
+            tipoInput.value =
+                tipo;
+
+            // Cambiar badge
+            if (tipo === "logistica") {
+
+                modeBadge.textContent =
+                    "LOGÍSTICA";
+
+            } else {
+
+                modeBadge.textContent =
+                    "PROGRAMACIÓN";
+
+            }
+
+        });
+
+    });
+
+
+    // =========================================================
+    // LIMPIAR FORMULARIO
+    // =========================================================
+
+    limpiarBtn.addEventListener("click", () => {
+
+        searchForm.reset();
+
+        // Volver a logística
+        tipoInput.value =
+            "logistica";
+
+        modeBadge.textContent =
+            "LOGÍSTICA";
+
+        // Resetear tarjetas
+        typeCards.forEach(card => {
+
+            card.classList.remove("active");
+
+        });
+
+        document
+            .querySelector(".logistica-type")
+            .classList.add("active");
+
+    });
+
+
+    // =========================================================
+    // BUSCAR POTENCIALES CLIENTES
+    // =========================================================
+
+    searchForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            // -------------------------------------------------
+            // BOTÓN
+            // -------------------------------------------------
+
+            const button =
+                searchForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+            const textoOriginal =
+                button.innerHTML;
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+
+
+            // -------------------------------------------------
+            // OBTENER DATOS
+            // -------------------------------------------------
+
+            const data =
+                new FormData(searchForm);
+
+
+            const config = {
+
+                tipo:
+                    data.get("tipo"),
+
+                categoria:
+                    data.get("categoria"),
+
+                ventas:
+                    Number(
+                        data.get("ventas") || 0
+                    ),
+
+                cantidad:
+                    Number(
+                        data.get("cantidad") || 100
+                    ),
+
+                fuente:
+                    data.get("fuente"),
+
+                mercado_lider:
+                    data.get("mercado_lider")
+                        ? 1
+                        : 0
+
+            };
+
+
+            console.log(
+                "🔎 Configuración:",
+                config
+            );
+
+
+            // -------------------------------------------------
+            // VALIDACIÓN
+            // -------------------------------------------------
+
+            if (!config.tipo) {
+
+                alert(
+                    "Seleccioná el tipo de cliente."
+                );
+
+                button.disabled = false;
+
+                button.innerHTML =
+                    textoOriginal;
+
+                return;
+
+            }
+
+
+            // -------------------------------------------------
+            // PETICIÓN AL BACKEND
+            // -------------------------------------------------
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        "/panel/potenciales-clientes/api/buscar",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(config)
+
+                        }
+                    );
+
+
+                // -------------------------------------------------
+                // COMPROBAR HTTP
+                // -------------------------------------------------
+
+                if (!respuesta.ok) {
+
+                    throw new Error(
+                        "El servidor respondió con HTTP " +
+                        respuesta.status
+                    );
+
+                }
+
+
+                // -------------------------------------------------
+                // JSON
+                // -------------------------------------------------
+
+                const resultado =
+                    await respuesta.json();
+
+
+                console.log(
+                    "📥 Respuesta backend:",
+                    resultado
+                );
+
+
+                // -------------------------------------------------
+                // ERROR DEL BACKEND
+                // -------------------------------------------------
+
+                if (!resultado.success) {
+
+                    throw new Error(
+                        resultado.error ||
+                        "El backend rechazó la búsqueda."
+                    );
+
+                }
+
+
+                // -------------------------------------------------
+                // ÉXITO
+                // -------------------------------------------------
+
+                let mensaje =
+                    "🔎 BÚSQUEDA INICIADA\n\n";
+
+
+                mensaje +=
+                    "Tipo: " +
+                    (
+                        config.tipo === "logistica"
+                            ? "Logística"
+                            : "Programación"
+                    );
+
+
+                mensaje +=
+                    "\nCategoría: " +
+                    (
+                        config.categoria ||
+                        "Todas"
+                    );
+
+
+                mensaje +=
+                    "\nVentas mínimas: " +
+                    config.ventas;
+
+
+                mensaje +=
+                    "\nCantidad: " +
+                    config.cantidad;
+
+
+                mensaje +=
+                    "\nFuente: " +
+                    config.fuente;
+
+
+                if (
+                    config.mercado_lider
+                ) {
+
+                    mensaje +=
+                        "\nMercado Líder: Sí";
+
+                }
+
+
+                if (
+                    resultado.busqueda_id
+                ) {
+
+                    mensaje +=
+                        "\n\nID de búsqueda: " +
+                        resultado.busqueda_id;
+
+                }
+
+
+                alert(mensaje);
+
+
+                // -------------------------------------------------
+                // RECARGAR DATOS
+                // -------------------------------------------------
+
+                /*
+                 * Si el backend guarda los prospectos
+                 * directamente en la base de datos,
+                 * recargamos la página para mostrar
+                 * los nuevos registros.
+                 */
+
+                if (
+                    resultado.recargar ||
+                    resultado.completada
+                ) {
+
+                    window.location.reload();
+
+                }
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "❌ Error buscando prospectos:",
+                    error
+                );
+
+
+                alert(
+                    "❌ No se pudo iniciar la búsqueda.\n\n" +
+                    error.message
+                );
+
+            }
+            finally {
+
+                button.disabled =
+                    false;
+
+                button.innerHTML =
+                    textoOriginal;
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
