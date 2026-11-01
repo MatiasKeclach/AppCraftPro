@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nueva visita | Servicios Técnicos</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #f4f6fa;
+    color: #202938;
+    font-family: Inter, sans-serif;
+}
+
+.container {
+    max-width: 1050px;
+    margin: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header p {
+    color: #7b8494;
+    margin: 8px 0 0;
+    font-size: 13px;
+}
+
+.back {
+    text-decoration: none;
+    color: #586174;
+    font-weight: 600;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e7eaf0;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(20,30,50,.035);
+}
+
+.card h2 {
+    font-size: 16px;
+    margin: 0 0 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #566174;
+}
+
+input, select, textarea {
+    width: 100%;
+    border: 1px solid #dfe4ec;
+    border-radius: 9px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    background: white;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #0f9d9a;
+    box-shadow: 0 0 0 3px rgba(15,157,154,.10);
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 9px;
+    padding: 12px 19px;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #edf0f5;
+    color: #536071;
+}
+
+.btn-save {
+    background: #0f9d9a;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #0b827f;
+}
+
+@media(max-width:650px) {
+    body {
+        padding: 15px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .actions .btn {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1><i class="fa-solid fa-calendar-check" style="color:#0f9d9a"></i> Nueva visita</h1>
+            <p>Registrá una solicitud de servicio y programá la visita técnica.</p>
+        </div>
+
+        <a class="back" href="/panel/servicios-tecnicos">
+            <i class="fa-solid fa-arrow-left"></i> Volver al panel
+        </a>
+    </div>
+
+    <form action="/panel/servicios-tecnicos/visitas/nueva" method="POST">
+
+        <div class="card">
+            <h2><i class="fa-solid fa-user"></i> Información del cliente</h2>
+
+            <div class="grid">
+
+                <div class="field full">
+                    <label>Cliente *</label>
+
+                    <select name="cliente_id" id="cliente" required>
+                        <option value="">Seleccionar cliente</option>
+
+                        <% clientes.forEach(cliente => { %>
+                            <option value="<%= cliente.id %>">
+                                <%= cliente.nombre %> - <%= cliente.telefono || "Sin teléfono" %>
+                            </option>
+                        <% }) %>
+
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label>Domicilio registrado</label>
+
+                    <select name="domicilio_id" id="domicilio">
+                        <option value="">Seleccionar domicilio (opcional)</option>
+
+                        <% domicilios.forEach(d => { %>
+                            <option
+                                value="<%= d.id %>"
+                                data-cliente="<%= d.cliente_id %>"
+                                data-direccion="<%= d.direccion || '' %>"
+                                data-localidad="<%= d.localidad || '' %>">
+
+                                <%= d.alias || d.direccion %> - <%= d.localidad || "" %>
+
+                            </option>
+                        <% }) %>
+
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Dirección del servicio</label>
+                    <input type="text" name="direccion_servicio" id="direccion">
+                </div>
+
+                <div class="field">
+                    <label>Localidad</label>
+                    <input type="text" name="localidad_servicio" id="localidad">
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <h2><i class="fa-solid fa-screwdriver-wrench"></i> Datos del servicio</h2>
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>Tipo de servicio *</label>
+
+                    <select name="tipo_servicio" required>
+                        <option value="">Seleccionar</option>
+                        <option value="Aire acondicionado">Aire acondicionado</option>
+                        <option value="Electricidad">Electricidad</option>
+                        <option value="Plomería">Plomería</option>
+                        <option value="Gas">Gas</option>
+                        <option value="Refrigeración">Refrigeración</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Prioridad</label>
+
+                    <select name="prioridad">
+                        <option value="normal">Normal</option>
+                        <option value="alta">Alta</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Fecha y hora de visita</label>
+                    <input type="datetime-local" name="fecha_programada" id="fecha">
+                </div>
+
+                <div class="field full">
+                    <label>Problema informado por el cliente *</label>
+
+                    <textarea
+                        name="problema_reportado"
+                        placeholder="Describí qué necesita el cliente..."
+                        required></textarea>
+                </div>
+
+                <div class="field full">
+                    <label>Observaciones</label>
+
+                    <textarea
+                        name="observaciones"
+                        placeholder="Referencias, horarios, indicaciones, detalles adicionales..."></textarea>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="actions">
+
+            <a href="/panel/servicios-tecnicos" class="btn btn-cancel">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn btn-save">
+                <i class="fa-solid fa-check"></i>
+                Crear visita
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+const cliente = document.getElementById("cliente");
+const domicilio = document.getElementById("domicilio");
+
+cliente.addEventListener("change", () => {
+    domicilio.value = "";
+
+    Array.from(domicilio.options).forEach(option => {
+        if (!option.value) return;
+
+        option.hidden = option.dataset.cliente !== cliente.value;
+    });
+
+    document.getElementById("direccion").value = "";
+    document.getElementById("localidad").value = "";
+});
+
+domicilio.addEventListener("change", () => {
+    const option = domicilio.selectedOptions[0];
+
+    if (!option || !option.value) return;
+
+    document.getElementById("direccion").value =
+        option.dataset.direccion || "";
+
+    document.getElementById("localidad").value =
+        option.dataset.localidad || "";
+});
+
+// Fecha actual por defecto
+const ahora = new Date();
+ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+
+document.getElementById("fecha").value =
+    ahora.toISOString().slice(0, 16);
+</script>
+
+</body>
+</html>

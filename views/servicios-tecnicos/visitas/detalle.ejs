@@ -1,0 +1,2084 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101827">
+
+    <title>Detalle de visita | Servicios Técnicos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0b1120;
+            --surface: #111c2e;
+            --surface-2: #172338;
+            --surface-3: #1d2b42;
+            --border: rgba(148, 163, 184, .15);
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #a78bfa;
+            --shadow: 0 12px 35px rgba(0, 0, 0, .22);
+            --radius: 16px;
+        }
+
+        [data-theme="light"] {
+            color-scheme: light;
+            --bg: #f3f6fb;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --surface-3: #eef2f7;
+            --border: #e2e8f0;
+            --text: #172033;
+            --muted: #64748b;
+            --shadow: 0 10px 30px rgba(15, 23, 42, .06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: background .2s, color .2s;
+        }
+
+        button, input, select, textarea {
+            font: inherit;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1450px, 100%);
+            margin: auto;
+            padding: 28px;
+        }
+
+        /* HEADER */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            flex: 0 0 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+            overflow: hidden;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-info {
+            color: var(--muted);
+            font-size: 12px;
+            padding: 10px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        /* BUTTONS */
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 15px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: .2s;
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.12);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-success {
+            background: rgba(34, 197, 94, .13);
+            border-color: rgba(34, 197, 94, .3);
+            color: var(--success);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, .12);
+            border-color: rgba(239, 68, 68, .3);
+            color: var(--danger);
+        }
+
+        .btn-warning {
+            background: rgba(245, 158, 11, .12);
+            border-color: rgba(245, 158, 11, .3);
+            color: var(--warning);
+        }
+
+        .theme-btn {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        /* PAGE TITLE */
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-heading h2 {
+            font-size: clamp(23px, 3vw, 30px);
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            margin-top: 7px;
+            line-height: 1.6;
+        }
+
+        .heading-actions {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            white-space: nowrap;
+        }
+
+        .status::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-programada {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, .13);
+        }
+
+        .status-realizada {
+            color: #4ade80;
+            background: rgba(34, 197, 94, .13);
+        }
+
+        .status-seguimiento {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, .13);
+        }
+
+        .status-cancelada {
+            color: #f87171;
+            background: rgba(239, 68, 68, .13);
+        }
+
+        /* SUMMARY */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 19px;
+            box-shadow: var(--shadow);
+            min-width: 0;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+            margin-top: 10px;
+        }
+
+        .stat-detail {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .stat-blue .stat-value { color: #60a5fa; }
+        .stat-green .stat-value { color: var(--success); }
+        .stat-yellow .stat-value { color: var(--warning); }
+        .stat-purple .stat-value { color: var(--purple); }
+
+        /* LAYOUT */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(280px, .9fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .column {
+            display: grid;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        /* CARDS */
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .card-header {
+            padding: 19px 21px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .card-header small {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .card-body {
+            padding: 21px;
+        }
+
+        /* INFORMATION GRID */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            min-width: 0;
+        }
+
+        .info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            line-height: 1.65;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .info-value.empty {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .separator {
+            height: 1px;
+            background: var(--border);
+            margin: 20px 0;
+        }
+
+        /* CLIENT */
+
+        .client-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .client-avatar {
+            width: 53px;
+            height: 53px;
+            border-radius: 16px;
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .client-name {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .client-contact {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+
+        /* MONEY */
+
+        .money-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .money-row:last-child {
+            border-bottom: 0;
+        }
+
+        .money-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .money-value {
+            font-weight: 800;
+            font-size: 13px;
+            text-align: right;
+        }
+
+        .money-total {
+            color: var(--success);
+            font-size: 19px;
+        }
+
+        .money-pending {
+            color: var(--warning);
+        }
+
+        /* STATUS FORM */
+
+        .status-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .status-form label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .status-form select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-2);
+            color: var(--text);
+            outline: none;
+        }
+
+        .status-form select:focus {
+            border-color: var(--primary);
+        }
+
+        /* REGISTRO TÉCNICO */
+
+        .technical-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .technical-field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .technical-field label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .technical-field textarea {
+            width: 100%;
+            min-height: 110px;
+            resize: vertical;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            line-height: 1.6;
+            outline: none;
+            transition: border .2s, box-shadow .2s;
+        }
+
+        .technical-field textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .10);
+        }
+
+        .technical-field textarea::placeholder {
+            color: var(--muted);
+            opacity: .7;
+        }
+
+        .technical-help {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 12px;
+            background: rgba(59, 130, 246, .08);
+            border: 1px solid rgba(59, 130, 246, .18);
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .technical-submit {
+            width: 100%;
+            padding: 14px;
+            font-size: 13px;
+        }
+
+        /* VISIT SUMMARY */
+
+        .visit-summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .visit-summary-item {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .visit-summary-item strong {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .visit-summary-item span {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* =====================================
+           TRABAJOS DE LA VISITA
+        ===================================== */
+
+        .trabajos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .trabajos-header p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .btn-nuevo-trabajo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .btn-nuevo-trabajo:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .trabajos-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .trabajo-stat {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 13px;
+            min-width: 0;
+        }
+
+        .trabajo-stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .trabajo-stat strong {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .trabajo-card {
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 17px;
+            margin-top: 12px;
+            background: var(--surface-2);
+            transition: border-color .2s;
+        }
+
+        .trabajo-card:hover {
+            border-color: rgba(59, 130, 246, .45);
+        }
+
+        .trabajo-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .trabajo-card h4 {
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .trabajo-identificador {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .trabajo-rubro {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            margin-top: 9px;
+            border-radius: 7px;
+            background: rgba(59, 130, 246, .10);
+            color: #60a5fa;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .trabajo-estado {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            white-space: nowrap;
+            background: rgba(148, 163, 184, .12);
+            color: var(--muted);
+        }
+
+        .trabajo-estado.estado-pendiente {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, .13);
+        }
+
+        .trabajo-estado.estado-en_proceso {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, .13);
+        }
+
+        .trabajo-estado.estado-pausado {
+            color: #c4b5fd;
+            background: rgba(167, 139, 250, .13);
+        }
+
+        .trabajo-estado.estado-terminado {
+            color: #4ade80;
+            background: rgba(34, 197, 94, .13);
+        }
+
+        .trabajo-estado.estado-cancelado {
+            color: #f87171;
+            background: rgba(239, 68, 68, .13);
+        }
+
+        .trabajo-descripcion {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 13px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .trabajo-datos {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .trabajo-dato {
+            padding: 11px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            min-width: 0;
+        }
+
+        .trabajo-dato span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .trabajo-dato strong {
+            display: block;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .trabajo-acciones {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            margin-top: 15px;
+            padding-top: 13px;
+        }
+
+        .trabajo-acciones a {
+            color: #60a5fa;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .trabajo-acciones a:hover {
+            text-decoration: underline;
+        }
+
+        .trabajos-vacios {
+            padding: 27px 18px;
+            margin-top: 17px;
+            text-align: center;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            background: var(--surface-2);
+        }
+
+        .trabajos-vacios .vacio-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .trabajos-vacios h4 {
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .trabajos-vacios p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .trabajos-disponibles {
+            margin-top: 22px;
+            padding-top: 19px;
+            border-top: 1px solid var(--border);
+        }
+
+        .trabajos-disponibles h4 {
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .trabajos-disponibles > p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .trabajo-vincular {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .trabajo-vincular:last-child {
+            border-bottom: 0;
+        }
+
+        .trabajo-vincular-info {
+            min-width: 0;
+        }
+
+        .trabajo-vincular-info strong {
+            display: block;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .trabajo-vincular-info small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .trabajo-vincular form {
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-vincular {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(59, 130, 246, .3);
+            border-radius: 8px;
+            padding: 9px 11px;
+            cursor: pointer;
+            background: rgba(59, 130, 246, .12);
+            color: #60a5fa;
+            font-size: 10px;
+            font-weight: 800;
+            transition: .2s;
+        }
+
+        .btn-vincular:hover {
+            background: rgba(59, 130, 246, .22);
+        }
+
+        .trabajo-vincular-total {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            padding: 25px 0 5px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 950px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .top-actions {
+                width: 100%;
+            }
+
+            .user-info {
+                flex: 1;
+            }
+
+            .page-heading {
+                display: block;
+            }
+
+            .heading-actions {
+                margin-top: 16px;
+            }
+
+            .heading-actions .btn {
+                flex: 1;
+            }
+
+            .stats {
+                gap: 9px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .card-header {
+                padding: 16px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .info-item.full {
+                grid-column: auto;
+            }
+
+            .client-name {
+                font-size: 15px;
+            }
+
+            .technical-field textarea {
+                min-height: 100px;
+            }
+
+            .trabajos-header {
+                align-items: flex-start;
+            }
+
+            .btn-nuevo-trabajo {
+                width: 100%;
+            }
+
+            .trabajos-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .trabajo-card-top {
+                flex-direction: column;
+            }
+
+            .trabajo-datos {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .trabajo-vincular {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .trabajo-vincular form,
+            .btn-vincular {
+                width: 100%;
+            }
+        }
+
+        /* PRINT */
+
+        @media print {
+            :root {
+                color-scheme: light;
+                --bg: white;
+                --surface: white;
+                --surface-2: #f5f5f5;
+                --surface-3: #eee;
+                --border: #ddd;
+                --text: #111;
+                --muted: #555;
+                --shadow: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .top-actions,
+            .heading-actions,
+            .status-form,
+            .technical-submit,
+            .technical-help,
+            .footer,
+            .btn-nuevo-trabajo,
+            .trabajos-disponibles,
+            .trabajo-acciones {
+                display: none !important;
+            }
+
+            .main-grid {
+                grid-template-columns: 1.5fr 1fr;
+            }
+
+            .card,
+            .stat-card {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .card {
+                border: 1px solid #ddd;
+            }
+
+            .technical-field textarea {
+                color: black;
+                background: white;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<%
+const v = visita || {};
+
+const listaTrabajos = Array.isArray(trabajos) ? trabajos : [];
+const listaTrabajosDisponibles = Array.isArray(trabajosDisponibles)
+    ? trabajosDisponibles
+    : [];
+
+const rt = resumenTrabajos || {
+    total: listaTrabajos.length,
+    pendientes: 0,
+    enProceso: 0,
+    pausados: 0,
+    terminados: 0,
+    cancelados: 0,
+    importe: 0
+};
+
+const estadoActual = v.estado || "programada";
+
+const estados = {
+    programada: "Programada",
+    en_curso: "En curso",
+    realizada: "Realizada",
+    seguimiento: "Seguimiento",
+    cancelada: "Cancelada"
+};
+
+const estadoClase = {
+    programada: "status-programada",
+    en_curso: "status-seguimiento",
+    realizada: "status-realizada",
+    seguimiento: "status-seguimiento",
+    cancelada: "status-cancelada"
+};
+
+const formatoFecha = (fecha) => {
+    if (!fecha) return "No registrada";
+
+    const d = new Date(
+        String(fecha).includes("T")
+            ? fecha
+            : String(fecha).replace(" ", "T")
+    );
+
+    if (Number.isNaN(d.getTime())) return fecha;
+
+    return d.toLocaleString("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+};
+
+const formatoDinero = (valor) => {
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        maximumFractionDigits: 2
+    }).format(Number(valor) || 0);
+};
+
+const texto = (valor) => {
+    return valor !== null &&
+           valor !== undefined &&
+           String(valor).trim() !== ""
+        ? valor
+        : "No registrado";
+};
+
+const iniciales = String(v.cliente_nombre || "C")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(p => p.charAt(0).toUpperCase())
+    .join("");
+
+const total = Number(v.total) || 0;
+const cobrado = Number(v.monto_cobrado) || 0;
+const pendiente = Math.max(total - cobrado, 0);
+
+const duracion = Number(v.duracion_minutos) || 0;
+
+const duracionTexto = duracion > 0
+    ? `${Math.floor(duracion / 60)} h ${duracion % 60} min`
+    : "No registrada";
+
+const direccion = v.direccion_servicio || "No registrada";
+const localidad = v.localidad_servicio || "";
+
+%>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">ST</div>
+
+            <div>
+                <h1>Servicios Técnicos</h1>
+                <p>Gestión profesional de servicios y visitas</p>
+            </div>
+        </div>
+
+        <div class="top-actions">
+
+            <div class="user-info">
+                Usuario: <strong><%= username || "Usuario" %></strong>
+                · <%= role || "usuario" %>
+            </div>
+
+            <button
+                class="btn theme-btn"
+                type="button"
+                id="themeToggle"
+                title="Cambiar tema"
+            >
+                ☀️
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- TITULO -->
+
+    <section class="page-heading">
+
+        <div>
+
+            <h2>Detalle de visita</h2>
+
+            <p>
+                Orden #<%= v.orden_id %>
+                · Visita #<%= v.numero_visita || 1 %>
+            </p>
+
+            <div style="margin-top:12px">
+                <span class="status <%= estadoClase[estadoActual] || 'status-programada' %>">
+                    <%= estados[estadoActual] || estadoActual %>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="heading-actions">
+
+            <a href="/panel/servicios-tecnicos/visitas" class="btn">
+                ← Volver a agenda
+            </a>
+
+            <a
+                href="/panel/servicios-tecnicos/visitas/<%= v.id %>/editar"
+                class="btn btn-primary"
+            >
+                ✎ Editar visita
+            </a>
+
+            <button type="button" class="btn" onclick="window.print()">
+                Imprimir
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- INDICADORES -->
+
+    <section class="stats">
+
+        <div class="stat-card stat-blue">
+            <div class="stat-label">Visitas de la orden</div>
+            <div class="stat-value"><%= resumen?.total || 0 %></div>
+            <div class="stat-detail">Historial completo</div>
+        </div>
+
+        <div class="stat-card stat-green">
+            <div class="stat-label">Realizadas</div>
+            <div class="stat-value"><%= resumen?.realizadas || 0 %></div>
+            <div class="stat-detail">Visitas completadas</div>
+        </div>
+
+        <div class="stat-card stat-yellow">
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value">
+                <%= (resumen?.programadas || 0) + (resumen?.seguimiento || 0) %>
+            </div>
+            <div class="stat-detail">Programadas y seguimiento</div>
+        </div>
+
+        <div class="stat-card stat-purple">
+            <div class="stat-label">Duración</div>
+            <div class="stat-value" style="font-size:21px">
+                <%= duracionTexto %>
+            </div>
+            <div class="stat-detail">Tiempo registrado</div>
+        </div>
+
+    </section>
+
+    <!-- CONTENIDO -->
+
+    <main class="main-grid">
+
+        <!-- COLUMNA PRINCIPAL -->
+
+        <div class="column">
+
+            <!-- CLIENTE -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>👤 Información del cliente</h3>
+                    <small>Datos de contacto</small>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="client-box">
+
+                        <div class="client-avatar">
+                            <%= iniciales %>
+                        </div>
+
+                        <div>
+
+                            <div class="client-name">
+                                <%= texto(v.cliente_nombre) %>
+                            </div>
+
+                            <div class="client-contact">
+
+                                <%= texto(v.cliente_telefono) %>
+
+                                <% if (v.cliente_email) { %>
+                                    <br>
+                                    <%= v.cliente_email %>
+                                <% } %>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <span class="info-label">Domicilio</span>
+                            <div class="info-value"><%= direccion %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Localidad</span>
+                            <div class="info-value"><%= texto(localidad) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Alias del domicilio</span>
+                            <div class="info-value"><%= texto(v.domicilio_alias) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Referencia</span>
+                            <div class="info-value"><%= texto(v.domicilio_referencia) %></div>
+                        </div>
+
+                        <div class="info-item full">
+                            <span class="info-label">Entre calles</span>
+                            <div class="info-value"><%= texto(v.entre_calles) %></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- INFORMACION DEL SERVICIO -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>🔧 Información del servicio</h3>
+                    <small>Orden de trabajo #<%= v.orden_id %></small>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <span class="info-label">Tipo de servicio</span>
+                            <div class="info-value"><%= texto(v.tipo_servicio) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Tipo de trabajo</span>
+                            <div class="info-value"><%= texto(v.tipo_trabajo) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Prioridad</span>
+                            <div class="info-value"><%= texto(v.prioridad) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Estado de la orden</span>
+                            <div class="info-value"><%= texto(v.estado_orden) %></div>
+                        </div>
+
+                        <div class="info-item full">
+                            <span class="info-label">Problema informado</span>
+                            <div class="info-value"><%= texto(v.problema_reportado) %></div>
+                        </div>
+
+                        <div class="info-item full">
+                            <span class="info-label">Diagnóstico de esta visita</span>
+                            <div class="info-value <%= v.diagnostico ? '' : 'empty' %>">
+                                <%= texto(v.diagnostico) %>
+                            </div>
+                        </div>
+
+                        <div class="info-item full">
+                            <span class="info-label">Trabajo realizado en esta visita</span>
+                            <div class="info-value <%= v.trabajo_realizado ? '' : 'empty' %>">
+                                <%= texto(v.trabajo_realizado) %>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =====================================
+                 TRABAJOS DE ESTA VISITA
+            ====================================== -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="trabajos-header">
+
+                        <div>
+                            <h3>🛠️ Trabajos de esta visita</h3>
+                            <p>Reparaciones, tareas e intervenciones asociadas.</p>
+                        </div>
+
+                        <a
+                            class="btn-nuevo-trabajo"
+                            href="/panel/servicios-tecnicos/trabajos/nuevo?orden_id=<%= v.orden_id %>&visita_id=<%= v.id %>"
+                        >
+                            + Nuevo trabajo
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    <!-- RESUMEN DE TRABAJOS -->
+
+                    <div class="trabajos-stats">
+
+                        <div class="trabajo-stat">
+                            <span>Total</span>
+                            <strong><%= rt.total || 0 %></strong>
+                        </div>
+
+                        <div class="trabajo-stat">
+                            <span>Pendientes</span>
+                            <strong><%= rt.pendientes || 0 %></strong>
+                        </div>
+
+                        <div class="trabajo-stat">
+                            <span>En proceso</span>
+                            <strong><%= rt.enProceso || 0 %></strong>
+                        </div>
+
+                        <div class="trabajo-stat">
+                            <span>Terminados</span>
+                            <strong><%= rt.terminados || 0 %></strong>
+                        </div>
+
+                    </div>
+
+                    <!-- LISTADO DE TRABAJOS -->
+
+                    <% if (listaTrabajos.length > 0) { %>
+
+                        <% listaTrabajos.forEach(trabajo => { %>
+
+                            <article class="trabajo-card">
+
+                                <div class="trabajo-card-top">
+
+                                    <div>
+
+                                        <h4><%= trabajo.titulo %></h4>
+
+                                        <div class="trabajo-identificador">
+                                            Trabajo #<%= trabajo.id %>
+                                            · Orden #<%= trabajo.orden_id %>
+                                        </div>
+
+                                        <span class="trabajo-rubro">
+                                            <%= trabajo.rubro %>
+                                        </span>
+
+                                    </div>
+
+                                    <span class="trabajo-estado estado-<%= trabajo.estado || 'pendiente' %>">
+                                        <%= (trabajo.estado || "pendiente").replace(/_/g, " ") %>
+                                    </span>
+
+                                </div>
+
+                                <% if (trabajo.descripcion) { %>
+
+                                    <div class="trabajo-descripcion">
+                                        <%= trabajo.descripcion %>
+                                    </div>
+
+                                <% } %>
+
+                                <div class="trabajo-datos">
+
+                                    <div class="trabajo-dato">
+                                        <span>Mano de obra</span>
+                                        <strong>
+                                            <%= formatoDinero(trabajo.mano_obra) %>
+                                        </strong>
+                                    </div>
+
+                                    <div class="trabajo-dato">
+                                        <span>Repuestos</span>
+                                        <strong>
+                                            <%= formatoDinero(trabajo.costo_repuestos) %>
+                                        </strong>
+                                    </div>
+
+                                    <div class="trabajo-dato">
+                                        <span>Total</span>
+                                        <strong>
+                                            <%= formatoDinero(trabajo.total) %>
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="trabajo-acciones">
+
+                                    <a href="/panel/servicios-tecnicos/trabajos/<%= trabajo.id %>">
+                                        Ver ficha completa →
+                                    </a>
+
+                                    <a href="/panel/servicios-tecnicos/trabajos/<%= trabajo.id %>/editar">
+                                        Editar trabajo
+                                    </a>
+
+                                    <span class="trabajo-identificador">
+                                        Vinculado a <%= trabajo.cantidad_visitas || 1 %>
+                                        visita(s)
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                        <% }) %>
+
+                    <% } else { %>
+
+                        <div class="trabajos-vacios">
+
+                            <div class="vacio-icon">🔧</div>
+
+                            <h4>Todavía no hay trabajos registrados</h4>
+
+                            <p>
+                                Creá el primer trabajo de esta visita.
+                                Podrás registrar reparaciones diferentes,
+                                asignar técnicos y controlar sus importes.
+                            </p>
+
+                        </div>
+
+                    <% } %>
+
+                    <!-- TRABAJOS EXISTENTES DE LA ORDEN -->
+
+                    <% if (listaTrabajosDisponibles.length > 0) { %>
+
+                        <div class="trabajos-disponibles">
+
+                            <h4>↗ Trabajos existentes de esta orden</h4>
+
+                            <p>
+                                Estos trabajos ya están registrados en la orden,
+                                pero todavía no están vinculados a esta visita.
+                                Podés incorporarlos sin duplicarlos.
+                            </p>
+
+                            <% listaTrabajosDisponibles.forEach(trabajo => { %>
+
+                                <div class="trabajo-vincular">
+
+                                    <div class="trabajo-vincular-info">
+
+                                        <strong>
+                                            <%= trabajo.titulo %>
+                                        </strong>
+
+                                        <small>
+                                            <%= trabajo.rubro %>
+                                            · <%= (trabajo.estado || "pendiente").replace(/_/g, " ") %>
+                                        </small>
+
+                                        <div class="trabajo-vincular-total">
+                                            Total: <%= formatoDinero(trabajo.total) %>
+                                        </div>
+
+                                    </div>
+
+                                    <form
+                                        method="POST"
+                                        action="/panel/servicios-tecnicos/trabajos/<%= trabajo.id %>/vincular-visita"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="visita_id"
+                                            value="<%= v.id %>"
+                                        >
+
+                                        <button type="submit" class="btn-vincular">
+                                            + Vincular
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </section>
+
+            <!-- FECHAS -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>🕒 Fechas y tiempos</h3>
+                    <small>Registro de la visita</small>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <span class="info-label">Fecha programada</span>
+                            <div class="info-value"><%= formatoFecha(v.fecha_programada) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Inicio de visita</span>
+                            <div class="info-value"><%= formatoFecha(v.fecha_inicio) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Finalización</span>
+                            <div class="info-value"><%= formatoFecha(v.fecha_fin) %></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Duración total</span>
+                            <div class="info-value"><%= duracionTexto %></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- REGISTRO TÉCNICO DE LA VISITA -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>🔧 Registro técnico de la visita</h3>
+                        <small>Diagnóstico y trabajos realizados en el domicilio</small>
+                    </div>
+
+                    <span style="color:var(--success);font-size:11px;font-weight:800">
+                        REGISTRO OPERATIVO
+                    </span>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form
+                        action="/panel/servicios-tecnicos/visitas/<%= v.id %>/registro"
+                        method="POST"
+                        class="technical-form"
+                        id="registroTecnicoForm"
+                    >
+
+                        <div class="technical-field">
+                            <label for="diagnostico">Diagnóstico técnico</label>
+
+                            <textarea
+                                name="diagnostico"
+                                id="diagnostico"
+                                placeholder="Describí qué problema encontraste, cuál es la falla y cuál es su posible causa..."
+                            ><%= v.diagnostico || "" %></textarea>
+                        </div>
+
+                        <div class="technical-field">
+                            <label for="trabajo_realizado">Trabajo realizado</label>
+
+                            <textarea
+                                name="trabajo_realizado"
+                                id="trabajo_realizado"
+                                placeholder="Detallá las tareas que realizaste durante esta visita..."
+                            ><%= v.trabajo_realizado || "" %></textarea>
+                        </div>
+
+                        <div class="technical-field">
+                            <label for="trabajos_adicionales">
+                                Trabajos adicionales / Problemas encontrados
+                            </label>
+
+                            <textarea
+                                name="trabajos_adicionales"
+                                id="trabajos_adicionales"
+                                placeholder="Registrá problemas nuevos, reparaciones adicionales necesarias o trabajos que no estaban contemplados originalmente..."
+                            ><%= v.trabajos_adicionales || "" %></textarea>
+                        </div>
+
+                        <div class="technical-field">
+                            <label for="tareas_pendientes">Tareas pendientes</label>
+
+                            <textarea
+                                name="tareas_pendientes"
+                                id="tareas_pendientes"
+                                placeholder="Indicá qué falta hacer, qué materiales se necesitan o qué deberá realizarse en una próxima visita..."
+                            ><%= v.tareas_pendientes || "" %></textarea>
+                        </div>
+
+                        <div class="technical-field">
+                            <label for="observaciones">Observaciones generales</label>
+
+                            <textarea
+                                name="observaciones"
+                                id="observaciones"
+                                placeholder="Agregá cualquier otra información importante sobre esta visita..."
+                            ><%= v.observaciones || "" %></textarea>
+                        </div>
+
+                        <div class="technical-help">
+                            <span>ℹ️</span>
+                            <span>
+                                Los datos quedan asociados exclusivamente a esta visita.
+                                Podés volver a ingresar y modificar el registro cuando sea necesario.
+                            </span>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary technical-submit"
+                        >
+                            💾 Guardar registro técnico
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- COLUMNA LATERAL -->
+
+        <aside class="column">
+
+            <!-- ESTADO -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>Estado de la visita</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <div style="margin-bottom:18px">
+                        <span class="status <%= estadoClase[estadoActual] || 'status-programada' %>">
+                            <%= estados[estadoActual] || estadoActual %>
+                        </span>
+                    </div>
+
+                    <form
+                        action="/panel/servicios-tecnicos/visitas/<%= v.id %>/estado"
+                        method="POST"
+                        class="status-form"
+                        id="estadoForm"
+                    >
+
+                        <label for="estado">Cambiar estado</label>
+
+                        <select name="estado" id="estado" required>
+
+                            <option value="programada" <%= estadoActual === "programada" ? "selected" : "" %>>
+                                Programada
+                            </option>
+
+                            <option value="en_curso" <%= estadoActual === "en_curso" ? "selected" : "" %>>
+                                En curso
+                            </option>
+
+                            <option value="realizada" <%= estadoActual === "realizada" ? "selected" : "" %>>
+                                Realizada
+                            </option>
+
+                            <option value="seguimiento" <%= estadoActual === "seguimiento" ? "selected" : "" %>>
+                                Seguimiento
+                            </option>
+
+                            <option value="cancelada" <%= estadoActual === "cancelada" ? "selected" : "" %>>
+                                Cancelada
+                            </option>
+
+                        </select>
+
+                        <button type="submit" class="btn btn-primary">
+                            Actualizar estado
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- RESUMEN DE VISITAS -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>📊 Historial de la orden</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="visit-summary">
+
+                        <div class="visit-summary-item">
+                            <strong><%= resumen?.total || 0 %></strong>
+                            <span>Total</span>
+                        </div>
+
+                        <div class="visit-summary-item">
+                            <strong style="color:var(--success)">
+                                <%= resumen?.realizadas || 0 %>
+                            </strong>
+                            <span>Realizadas</span>
+                        </div>
+
+                        <div class="visit-summary-item">
+                            <strong style="color:var(--warning)">
+                                <%= resumen?.seguimiento || 0 %>
+                            </strong>
+                            <span>Seguimiento</span>
+                        </div>
+
+                        <div class="visit-summary-item">
+                            <strong style="color:var(--danger)">
+                                <%= resumen?.canceladas || 0 %>
+                            </strong>
+                            <span>Canceladas</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ECONOMIA -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>💰 Resumen económico</h3>
+                    <small>Orden completa</small>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="money-row">
+                        <span class="money-label">Total de la orden</span>
+                        <span class="money-value"><%= formatoDinero(total) %></span>
+                    </div>
+
+                    <div class="money-row">
+                        <span class="money-label">Monto cobrado</span>
+                        <span class="money-value" style="color:var(--success)">
+                            <%= formatoDinero(cobrado) %>
+                        </span>
+                    </div>
+
+                    <div class="money-row">
+                        <span class="money-label">Saldo pendiente</span>
+                        <span class="money-value money-pending">
+                            <%= formatoDinero(pendiente) %>
+                        </span>
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div class="money-row">
+
+                        <span class="money-label">Estado de cobro</span>
+
+                        <span class="money-value">
+
+                            <% if (total > 0 && pendiente <= 0) { %>
+
+                                <span style="color:var(--success)">Cobrado</span>
+
+                            <% } else if (cobrado > 0) { %>
+
+                                <span style="color:var(--warning)">Parcial</span>
+
+                            <% } else { %>
+
+                                <span style="color:var(--muted)">Sin cobrar</span>
+
+                            <% } %>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ACCIONES -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>Acciones rápidas</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="column">
+
+                        <a
+                            href="/panel/servicios-tecnicos/visitas/<%= v.id %>/editar"
+                            class="btn btn-primary"
+                        >
+                            ✎ Editar visita
+                        </a>
+
+                        <a
+                            href="/panel/servicios-tecnicos/visitas"
+                            class="btn"
+                        >
+                            ☰ Ver agenda completa
+                        </a>
+
+                        <a
+                            href="/panel/servicios-tecnicos/ordenes/<%= v.orden_id %>"
+                            class="btn"
+                        >
+                            📁 Ver orden completa
+                        </a>
+
+                        <a
+                            href="/panel/servicios-tecnicos"
+                            class="btn"
+                        >
+                            ← Panel de Servicios Técnicos
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </main>
+
+    <footer class="footer">
+        Servicios Técnicos · AppCraft Pro
+        <br>
+        Gestión y seguimiento de órdenes de trabajo
+    </footer>
+
+</div>
+
+<script>
+    // =========================================
+    // MODO OSCURO / CLARO
+    // =========================================
+
+    const themeToggle = document.getElementById("themeToggle");
+
+    function aplicarTema(tema) {
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            tema
+        );
+
+        localStorage.setItem("serviciosTema", tema);
+
+        themeToggle.textContent =
+            tema === "dark" ? "☀️" : "🌙";
+    }
+
+    const temaGuardado =
+        localStorage.getItem("serviciosTema") || "dark";
+
+    aplicarTema(temaGuardado);
+
+    themeToggle.addEventListener("click", () => {
+
+        const actual =
+            document.documentElement.getAttribute("data-theme");
+
+        aplicarTema(
+            actual === "dark" ? "light" : "dark"
+        );
+
+    });
+
+
+    // =========================================
+    // CONFIRMAR CAMBIO DE ESTADO
+    // =========================================
+
+    document
+        .getElementById("estadoForm")
+        .addEventListener("submit", function(e) {
+
+            const estado = document.getElementById("estado").value;
+
+            const nombres = {
+                programada: "Programada",
+                en_curso: "En curso",
+                realizada: "Realizada",
+                seguimiento: "Seguimiento",
+                cancelada: "Cancelada"
+            };
+
+            const confirmar = window.confirm(
+                "¿Querés cambiar el estado de esta visita a " +
+                nombres[estado] + "?"
+            );
+
+            if (!confirmar) {
+                e.preventDefault();
+            }
+
+        });
+
+</script>
+
+</body>
+</html>

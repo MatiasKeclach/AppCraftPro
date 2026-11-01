@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= modo === "nuevo" ? "Nuevo domicilio" : "Editar domicilio" %></title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f5fa;font-family:Inter,sans-serif;color:#24243a}
+.container{max-width:900px;margin:35px auto;padding:0 18px}
+.panel{background:white;border:1px solid #e8e8ef;border-radius:15px;padding:27px}
+h1{font-size:24px;margin:0 0 8px}
+.subtitle{font-size:13px;color:#858597;margin-bottom:25px}
+.section{font-size:13px;font-weight:800;color:#6558df;margin:25px 0 15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;color:#55566a}
+input,select,textarea{width:100%;padding:12px;border:1px solid #e1e2ea;border-radius:9px;font:inherit;font-size:13px;background:white}
+textarea{min-height:85px;resize:vertical}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:25px}
+.btn{padding:12px 17px;border-radius:9px;border:0;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+.primary{background:#6558df;color:white}
+.secondary{background:#eeeef4;color:#45455b}
+.error{background:#fff0f0;color:#b52b35;padding:12px;border-radius:9px;font-size:13px;margin-bottom:15px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:19px}.actions{flex-direction:column}.btn{text-align:center}}
+</style>
+</head>
+
+<body>
+<div class="container">
+<div class="panel">
+
+<h1><%= modo === "nuevo" ? "Registrar domicilio" : "Editar domicilio" %></h1>
+<div class="subtitle">Datos del inmueble y persona asociada.</div>
+
+<% if (error) { %>
+    <div class="error"><%= error %></div>
+<% } %>
+
+<form method="POST">
+
+<div class="section">CLIENTE</div>
+
+<div class="grid">
+
+    <div class="field full">
+        <label>Seleccionar cliente *</label>
+        <select name="cliente_id" required>
+            <option value="">Seleccionar...</option>
+            <% clientes.forEach(c => { %>
+                <option
+                    value="<%= c.id %>"
+                    <%= String(domicilio.cliente_id) === String(c.id) ? "selected" : "" %>
+                >
+                    <%= c.nombre %> <%= c.telefono ? " — " + c.telefono : "" %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+</div>
+
+<div class="section">IDENTIFICACIÓN DEL INMUEBLE</div>
+
+<div class="grid">
+
+    <div class="field">
+        <label>Tipo de inmueble</label>
+        <select name="tipo_inmueble">
+            <% ["casa","departamento","local","oficina","galpón","otro"].forEach(tipo => { %>
+                <option value="<%= tipo %>" <%= (domicilio.tipo_inmueble || "casa") === tipo ? "selected" : "" %>>
+                    <%= tipo.charAt(0).toUpperCase() + tipo.slice(1) %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Alias del domicilio</label>
+        <input name="alias" value="<%= domicilio.alias || "" %>" placeholder="Casa principal, sucursal...">
+    </div>
+
+    <div class="field">
+        <label>Calle / Dirección *</label>
+        <input name="direccion" required value="<%= domicilio.direccion || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Altura</label>
+        <input name="altura" value="<%= domicilio.altura || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Torre</label>
+        <input name="torre" value="<%= domicilio.torre || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Piso</label>
+        <input name="piso" value="<%= domicilio.piso || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Departamento</label>
+        <input name="departamento" value="<%= domicilio.departamento || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Local / Unidad</label>
+        <input name="unidad" value="<%= domicilio.unidad || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Localidad</label>
+        <input name="localidad" value="<%= domicilio.localidad || "" %>">
+    </div>
+
+    <div class="field">
+        <label>Provincia</label>
+        <input name="provincia" value="<%= domicilio.provincia || "" %>">
+    </div>
+
+    <div class="field full">
+        <label>Entre calles</label>
+        <input name="entre_calles" value="<%= domicilio.entre_calles || "" %>">
+    </div>
+
+    <div class="field full">
+        <label>Referencias para llegar</label>
+        <textarea name="referencia"><%= domicilio.referencia || "" %></textarea>
+    </div>
+
+    <div class="field full">
+        <label>Observaciones</label>
+        <textarea name="observaciones"><%= domicilio.observaciones || "" %></textarea>
+    </div>
+
+</div>
+
+<div class="actions">
+    <a class="btn secondary" href="/panel/servicios-tecnicos/domicilios">Cancelar</a>
+
+    <button class="btn primary" type="submit">
+        <%= modo === "nuevo" ? "Guardar domicilio" : "Guardar cambios" %>
+    </button>
+</div>
+
+</form>
+</div>
+</div>
+</body>
+</html>

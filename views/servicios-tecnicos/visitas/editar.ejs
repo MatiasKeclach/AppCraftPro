@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar visita | AppCraft Pro</title>
+
+    <style>
+        :root {
+            --bg: #0b1120;
+            --card: #151e30;
+            --card2: #1c2940;
+            --text: #e8edf7;
+            --muted: #94a3b8;
+            --border: rgba(148,163,184,.18);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --input: #0e1728;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow: 0 15px 40px rgba(0,0,0,.18);
+        }
+
+        body.light {
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --card2: #f8fafc;
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --input: #ffffff;
+            --shadow: 0 12px 30px rgba(15,23,42,.06);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            transition: background .2s, color .2s;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 30px 0 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            font-size: 17px;
+            font-weight: 900;
+            box-shadow: 0 7px 20px rgba(99,102,241,.25);
+        }
+
+        .brand-name {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .theme-button {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(23px, 4vw, 30px);
+            letter-spacing: -.8px;
+        }
+
+        .page-description {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 30px;
+            background: rgba(99,102,241,.13);
+            color: #a5b4fc;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 23px;
+            box-shadow: var(--shadow);
+            min-width: 0;
+        }
+
+        .card.full {
+            grid-column: 1 / -1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 21px;
+        }
+
+        .card-icon {
+            width: 39px;
+            height: 39px;
+            display: grid;
+            place-items: center;
+            background: rgba(99,102,241,.13);
+            border-radius: 11px;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 650;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #f87171;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background: var(--input);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 13px;
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border .2s, box-shadow .2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.13);
+        }
+
+        input[readonly] {
+            opacity: .8;
+            cursor: default;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .help {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 7px;
+            line-height: 1.5;
+        }
+
+        .info-box {
+            padding: 14px;
+            border-radius: 11px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            margin-bottom: 17px;
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 650;
+            overflow-wrap: anywhere;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .alert {
+            padding: 13px 15px;
+            border-radius: 11px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .alert-danger {
+            color: #fecaca;
+            background: rgba(239,68,68,.12);
+            border: 1px solid rgba(239,68,68,.25);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 19px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 750;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--card);
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card2);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 28px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                width: min(100% - 22px, 600px);
+                padding-top: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card.full {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .actions {
+                flex-direction: column-reverse;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<%
+    const fechaFormulario = visita.fecha_programada
+        ? String(visita.fecha_programada).replace(" ", "T").slice(0, 16)
+        : "";
+
+    const domiciliosCliente = domicilios.filter(d =>
+        Number(d.cliente_id) === Number(visita.cliente_id)
+    );
+
+    const estadoActual = visita.estado || "programada";
+
+    const estados = {
+        programada: "Programada",
+        en_curso: "En curso",
+        realizada: "Realizada",
+        seguimiento: "Seguimiento",
+        cancelada: "Cancelada"
+    };
+%>
+
+<div class="container">
+
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon">ST</div>
+
+            <div>
+                <div class="brand-name">AppCraft Pro</div>
+                <div class="brand-subtitle">Gestión de Servicios Técnicos</div>
+            </div>
+        </div>
+
+        <div class="user-info">
+
+            <button
+                type="button"
+                class="theme-button"
+                id="themeButton"
+                title="Cambiar tema"
+            >☀</button>
+
+            <span>
+                <strong><%= username %></strong>
+                · <%= role %>
+            </span>
+
+        </div>
+
+    </header>
+
+    <div class="breadcrumb">
+        <a href="/panel/servicios-tecnicos">Servicios Técnicos</a>
+        /
+        <a href="/panel/servicios-tecnicos/visitas">Visitas</a>
+        /
+        <a href="/panel/servicios-tecnicos/visitas/<%= visita.id %>">
+            Visita #<%= visita.id %>
+        </a>
+        / Editar
+    </div>
+
+    <div class="page-heading">
+
+        <div>
+            <h1>Editar visita</h1>
+
+            <div class="page-description">
+                Modificá la programación, el domicilio y las observaciones
+                de esta intervención.
+            </div>
+        </div>
+
+        <span class="badge">
+            VISITA #<%= visita.numero_visita %>
+        </span>
+
+    </div>
+
+    <% if (error) { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <form
+        method="POST"
+        action="/panel/servicios-tecnicos/visitas/<%= visita.id %>/editar"
+    >
+
+        <div class="grid">
+
+            <!-- INFORMACIÓN DEL CLIENTE -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <div class="card-icon">👤</div>
+
+                    <div>
+                        <div class="card-title">Información del cliente</div>
+                        <div class="card-subtitle">
+                            Datos generales de la orden asociada
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Cliente</div>
+
+                    <div class="info-value">
+                        <%= visita.cliente_nombre %>
+                    </div>
+                </div>
+
+                <div class="info-row">
+
+                    <div class="info-box">
+                        <div class="info-label">Teléfono</div>
+
+                        <div class="info-value">
+                            <%= visita.cliente_telefono || "No informado" %>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Email</div>
+
+                        <div class="info-value">
+                            <%= visita.cliente_email || "No informado" %>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="field">
+                    <label>Tipo de servicio</label>
+
+                    <input
+                        type="text"
+                        value="<%= visita.tipo_servicio || 'No especificado' %>"
+                        readonly
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Problema informado</label>
+
+                    <textarea readonly><%= visita.problema_reportado || "Sin descripción" %></textarea>
+                </div>
+
+            </section>
+
+            <!-- DATOS DE LA VISITA -->
+
+            <section class="card">
+
+                <div class="card-header">
+                    <div class="card-icon">📅</div>
+
+                    <div>
+                        <div class="card-title">Programación</div>
+                        <div class="card-subtitle">
+                            Datos particulares de esta visita
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="fecha_programada">
+                        Fecha y hora <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="fecha_programada"
+                        name="fecha_programada"
+                        value="<%= fechaFormulario %>"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Estado actual</label>
+
+                    <input
+                        type="text"
+                        value="<%= estados[estadoActual] || estadoActual %>"
+                        readonly
+                    >
+
+                    <div class="help">
+                        El estado se modifica desde el detalle de la visita.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="domicilio_id">Domicilio de la intervención</label>
+
+                    <select
+                        id="domicilio_id"
+                        name="domicilio_id"
+                    >
+                        <option value="">
+                            Seleccionar domicilio
+                        </option>
+
+                        <% domiciliosCliente.forEach(d => { %>
+
+                            <option
+                                value="<%= d.id %>"
+                                <%= Number(visita.domicilio_id) === Number(d.id) ? "selected" : "" %>
+                            >
+                                <%= d.alias ? d.alias + " - " : "" %>
+                                <%= d.direccion %>
+                                <%= d.localidad ? " - " + d.localidad : "" %>
+                            </option>
+
+                        <% }) %>
+
+                    </select>
+
+                    <div class="help">
+                        Solo aparecen los domicilios registrados para este cliente.
+                    </div>
+                </div>
+
+                <% if (visita.domicilio_alias || visita.direccion_servicio) { %>
+
+                    <div class="info-box">
+                        <div class="info-label">Ubicación de referencia</div>
+
+                        <div class="info-value">
+                            <%= visita.domicilio_alias || visita.direccion_servicio || "Sin domicilio" %>
+                        </div>
+
+                        <% if (visita.localidad_servicio) { %>
+                            <div class="help">
+                                <%= visita.localidad_servicio %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                <% } %>
+
+            </section>
+
+            <!-- OBSERVACIONES -->
+
+            <section class="card full">
+
+                <div class="card-header">
+                    <div class="card-icon">📝</div>
+
+                    <div>
+                        <div class="card-title">Observaciones de la visita</div>
+                        <div class="card-subtitle">
+                            Indicaciones particulares para esta intervención
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+
+                    <label for="observaciones">
+                        Observaciones
+                    </label>
+
+                    <textarea
+                        id="observaciones"
+                        name="observaciones"
+                        placeholder="Agregá indicaciones, referencias del domicilio, detalles de coordinación o cualquier información relevante..."
+                    ><%= visita.observaciones || "" %></textarea>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div class="actions">
+
+            <a
+                class="btn btn-secondary"
+                href="/panel/servicios-tecnicos/visitas/<%= visita.id %>"
+            >
+                ← Volver al detalle
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                ✓ Guardar cambios
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="footer-note">
+        AppCraft Pro · Gestión profesional de servicios técnicos
+    </div>
+
+</div>
+
+<script>
+    const themeButton = document.getElementById("themeButton");
+
+    const temaGuardado = localStorage.getItem("appcraft-theme");
+
+    if (temaGuardado === "light") {
+        document.body.classList.add("light");
+        themeButton.textContent = "☾";
+    }
+
+    themeButton.addEventListener("click", () => {
+
+        document.body.classList.toggle("light");
+
+        const esClaro = document.body.classList.contains("light");
+
+        localStorage.setItem(
+            "appcraft-theme",
+            esClaro ? "light" : "dark"
+        );
+
+        themeButton.textContent = esClaro ? "☾" : "☀";
+    });
+</script>
+
+</body>
+</html>

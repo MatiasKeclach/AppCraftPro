@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f6fb">
+    <title>Dashboard | Servicios Técnicos - AppCraft Pro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-2: #f8f9fc;
+            --surface-3: #eef1f7;
+            --text: #172033;
+            --muted: #7d879a;
+            --line: #e8ebf2;
+
+            --primary: #6258e8;
+            --primary-light: #eeedff;
+            --blue: #3985ed;
+            --blue-light: #eaf3ff;
+            --green: #17a879;
+            --green-light: #e6f8f1;
+            --orange: #e99a36;
+            --orange-light: #fff4e5;
+            --red: #e45e68;
+            --red-light: #ffedef;
+            --cyan: #18a9bb;
+            --cyan-light: #e5f8fa;
+
+            --shadow: 0 5px 24px rgba(30, 42, 70, .045);
+            --shadow-hover: 0 12px 32px rgba(30, 42, 70, .09);
+            --radius: 17px;
+            --sidebar-width: 245px;
+        }
+
+        html[data-theme="dark"] {
+            --bg: #10131b;
+            --surface: #191e2a;
+            --surface-2: #202635;
+            --surface-3: #293143;
+            --text: #f1f3f9;
+            --muted: #9ba6bb;
+            --line: #2c3445;
+
+            --primary: #958cff;
+            --primary-light: #302d50;
+            --blue: #70aaff;
+            --blue-light: #24364e;
+            --green: #49d3a3;
+            --green-light: #1e3d36;
+            --orange: #f2b65f;
+            --orange-light: #463722;
+            --red: #ff858d;
+            --red-light: #472c34;
+            --cyan: #57cbd8;
+            --cyan-light: #203d43;
+
+            --shadow: 0 5px 24px rgba(0, 0, 0, .13);
+            --shadow-hover: 0 12px 32px rgba(0, 0, 0, .22);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background .2s, color .2s;
+        }
+
+        button, a {
+            font: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--line);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 17px 18px;
+            transition: transform .25s, background .2s;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 9px 30px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 19px;
+            background: linear-gradient(135deg, #7768f3, #5144cb);
+            box-shadow: 0 6px 15px rgba(98, 88, 232, .25);
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .brand-sub {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 3px;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .nav-label {
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            padding: 0 11px;
+            margin: 12px 0 10px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 13px;
+            border-radius: 11px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .nav a i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .nav a:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 800;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .sidebar-help {
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            padding: 15px;
+            border-radius: 13px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-help i {
+            color: var(--primary);
+            font-size: 19px;
+        }
+
+        .sidebar-help strong {
+            display: block;
+            font-size: 12px;
+            margin: 10px 0 5px;
+        }
+
+        .sidebar-help p {
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .sidebar-version {
+            text-align: center;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 0 32px 35px;
+        }
+
+        .topbar {
+            height: 79px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 28px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .breadcrumb strong {
+            color: var(--text);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 39px;
+            height: 39px;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            color: var(--muted);
+            background: var(--surface);
+            display: grid;
+            place-items: center;
+            transition: .2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 11px 5px 5px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-avatar {
+            width: 29px;
+            height: 29px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(23px, 3vw, 29px);
+            letter-spacing: -1.2px;
+            font-weight: 800;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 0;
+            padding: 11px 15px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7568f2, #584bd4);
+            color: white;
+            box-shadow: 0 5px 14px rgba(98, 88, 232, .2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(98, 88, 232, .3);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--line);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* FILTER */
+
+        .period-filter {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .period-filter a {
+            padding: 7px 11px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .period-filter a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* KPI */
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .section-subtitle {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-top: 16px;
+        }
+
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 19px;
+            box-shadow: var(--shadow);
+            transition: transform .2s, box-shadow .2s;
+            min-width: 0;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .kpi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kpi-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+        }
+
+        .purple { background: var(--primary-light); color: var(--primary); }
+        .blue { background: var(--blue-light); color: var(--blue); }
+        .green { background: var(--green-light); color: var(--green); }
+        .orange { background: var(--orange-light); color: var(--orange); }
+        .red { background: var(--red-light); color: var(--red); }
+        .cyan { background: var(--cyan-light); color: var(--cyan); }
+
+        .kpi-value {
+            font-size: clamp(22px, 2.5vw, 29px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-top: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .kpi-foot {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 7px;
+        }
+
+        .kpi-foot strong {
+            color: var(--text);
+        }
+
+        /* PANELS */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(280px, .85fr);
+            gap: 17px;
+            margin-top: 24px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-width: 0;
+        }
+
+        .panel-header {
+            padding: 19px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel-header h3 {
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .panel-header p {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .panel-link {
+            color: var(--primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .panel-body {
+            padding: 19px 20px;
+        }
+
+        /* AGENDA */
+
+        .agenda-list {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px;
+            background: var(--surface-2);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            transition: .2s;
+        }
+
+        a.agenda-item:hover {
+            border-color: var(--primary);
+            transform: translateX(3px);
+        }
+
+        .agenda-date {
+            width: 43px;
+            min-width: 43px;
+            height: 45px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .agenda-date strong {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .agenda-date span {
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .agenda-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .agenda-info strong {
+            display: block;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .agenda-info small {
+            display: block;
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .agenda-status {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 6px 8px;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+
+        .status-pendiente { color: var(--orange); background: var(--orange-light); }
+        .status-programado { color: var(--blue); background: var(--blue-light); }
+        .status-en_camino { color: var(--cyan); background: var(--cyan-light); }
+        .status-en_proceso { color: var(--primary); background: var(--primary-light); }
+        .status-finalizado, .status-terminado, .status-completado {
+            color: var(--green);
+            background: var(--green-light);
+        }
+        .status-cancelado { color: var(--red); background: var(--red-light); }
+
+        /* FINANCE */
+
+        .finance-highlight {
+            background: linear-gradient(135deg, #6258e8, #4439b7);
+            border-radius: 14px;
+            padding: 19px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .finance-highlight span {
+            font-size: 10px;
+            opacity: .8;
+        }
+
+        .finance-highlight strong {
+            display: block;
+            font-size: 26px;
+            letter-spacing: -.8px;
+            margin-top: 7px;
+        }
+
+        .finance-highlight small {
+            display: block;
+            font-size: 9px;
+            opacity: .75;
+            margin-top: 5px;
+        }
+
+        .finance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .finance-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 10px;
+        }
+
+        .finance-row span {
+            color: var(--muted);
+        }
+
+        .finance-row strong {
+            font-size: 11px;
+        }
+
+        .finance-divider {
+            border-top: 1px solid var(--line);
+            margin: 2px 0;
+        }
+
+        /* CHART */
+
+        .chart-container {
+            height: 260px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* TECHNICIANS */
+
+        .technician-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .technician {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .tech-avatar {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 11px;
+            background: var(--blue-light);
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+        }
+
+        .tech-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tech-info strong {
+            font-size: 10px;
+            display: block;
+        }
+
+        .tech-info small {
+            font-size: 9px;
+            color: var(--muted);
+            display: block;
+            margin-top: 4px;
+        }
+
+        .tech-number {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* ALERTS */
+
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: 11px;
+            padding: 11px;
+            border-radius: 10px;
+            background: var(--surface-2);
+        }
+
+        .alert-icon {
+            width: 31px;
+            height: 31px;
+            min-width: 31px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: var(--orange-light);
+            color: var(--orange);
+            font-size: 12px;
+        }
+
+        .alert-item.critica .alert-icon {
+            background: var(--red-light);
+            color: var(--red);
+        }
+
+        .alert-item.info .alert-icon {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .alert-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .alert-content strong {
+            display: block;
+            font-size: 10px;
+        }
+
+        .alert-content p {
+            font-size: 9px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+
+        /* RECENT CLIENTS */
+
+        .client-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .client-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .client-avatar {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .client-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .client-info strong {
+            font-size: 10px;
+            display: block;
+        }
+
+        .client-info small {
+            font-size: 9px;
+            color: var(--muted);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* STATUS SUMMARY */
+
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 25px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-row span {
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        .status-bar {
+            height: 7px;
+            background: var(--surface-3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .status-bar div {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--primary);
+        }
+
+        .status-row strong {
+            font-size: 10px;
+            text-align: right;
+        }
+
+        /* ACTIVITY */
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+        }
+
+        .activity-icon {
+            width: 31px;
+            height: 31px;
+            min-width: 31px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--primary-light);
+            font-size: 11px;
+        }
+
+        .activity-content strong {
+            display: block;
+            font-size: 10px;
+        }
+
+        .activity-content p {
+            color: var(--muted);
+            font-size: 9px;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            padding: 30px 15px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty i {
+            font-size: 24px;
+            opacity: .5;
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            font-size: 10px;
+        }
+
+        .empty a {
+            display: inline-block;
+            color: var(--primary);
+            font-weight: 800;
+            margin-top: 10px;
+            font-size: 10px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            padding: 24px 0 5px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 9px;
+        }
+
+        .footer strong {
+            color: var(--text);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: 15px 0 40px rgba(0,0,0,.15);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 0 20px 25px;
+            }
+
+            .mobile-menu {
+                display: grid;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .main {
+                padding: 0 13px 20px;
+            }
+
+            .topbar {
+                height: 65px;
+                margin-bottom: 22px;
+            }
+
+            .page-header {
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                flex: 1;
+            }
+
+            .kpi-grid {
+                gap: 10px;
+            }
+
+            .kpi-card {
+                padding: 14px;
+            }
+
+            .kpi-value {
+                font-size: 21px;
+            }
+
+            .kpi-label {
+                font-size: 9px;
+            }
+
+            .kpi-icon {
+                width: 31px;
+                height: 31px;
+                font-size: 12px;
+            }
+
+            .panel-header,
+            .panel-body {
+                padding: 15px;
+            }
+
+            .agenda-status {
+                display: none;
+            }
+
+            .user-chip span {
+                display: none;
+            }
+
+            .period-filter {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .period-filter a {
+                flex: 1;
+                text-align: center;
+            }
+
+            .footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* BOTÓN NUEVA VISITA */
+.btn-visita {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 18px;
+    border-radius: 10px;
+
+    background: #0F9D9A;
+    border: 1px solid #0F9D9A;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-visita:hover {
+    background: #0B827F;
+    border-color: #0B827F;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(15, 157, 154, 0.25);
+}
+
+.btn-visita i {
+    font-size: 15px;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 600px) {
+    .btn-visita {
+        padding: 10px 13px;
+        font-size: 13px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+<%
+    const d = dashboard || {};
+    const k = d.kpis || {};
+    const f = d.finanzas || {};
+    const presupuestos = d.presupuestos || {};
+    const inventario = d.inventario || {};
+
+    const money = value => {
+        const n = Number(value || 0);
+        return n.toLocaleString("es-AR", {
+            style: "currency",
+            currency: "ARS",
+            maximumFractionDigits: 0
+        });
+    };
+
+    const number = value => Number(value || 0).toLocaleString("es-AR");
+
+    const safeArray = value => Array.isArray(value) ? value : [];
+
+    const agenda = safeArray(d.agenda);
+    const tecnicos = safeArray(d.tecnicos);
+    const alertas = safeArray(d.alertas);
+    const actividad = safeArray(d.actividad);
+    const clientes = safeArray(d.clientesRecientes);
+    const estados = safeArray(d.ordenesPorEstado);
+
+    const periodo = d.periodo || "month";
+
+    const estadoNombre = estado => ({
+        pendiente: "Pendiente",
+        programado: "Programado",
+        en_camino: "En camino",
+        en_proceso: "En proceso",
+        finalizado: "Finalizado",
+        terminado: "Terminado",
+        completado: "Completado",
+        cancelado: "Cancelado"
+    }[String(estado || "").toLowerCase()] || estado || "Sin estado");
+
+    const fechaCorta = fecha => {
+        if (!fecha) return "--";
+        const parsed = new Date(fecha);
+        if (isNaN(parsed.getTime())) return String(fecha).slice(0, 10);
+        return parsed.toLocaleDateString("es-AR", {
+            day: "2-digit",
+            month: "short"
+        });
+    };
+
+    const iniciales = nombre => String(nombre || "CL")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(x => x[0] || "")
+        .join("")
+        .toUpperCase();
+
+    const usuario = typeof user !== "undefined" && user ? user : {};
+%>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+            <div>
+                <div class="brand-name">AppCraft Pro</div>
+                <div class="brand-sub">Servicios técnicos</div>
+            </div>
+        </div>
+
+        <div class="nav-label">Principal</div>
+
+        <nav class="nav">
+            <a href="/panel/servicios-tecnicos" class="active">
+                <i class="fa-solid fa-chart-pie"></i>
+                Dashboard
+            </a>
+
+            <a href="/panel/servicios-tecnicos/ordenes">
+                <i class="fa-solid fa-clipboard-list"></i>
+                Órdenes de trabajo
+            </a>
+
+            <a href="/panel/servicios-tecnicos/ordenes/nueva">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nueva orden
+            </a>
+
+            <a href="/panel/servicios-tecnicos/clientes">
+                <i class="fa-solid fa-users"></i>
+                Clientes
+            </a>
+            <a class="quick" href="/panel/servicios-tecnicos/domicilios">
+    <div class="quick-icon">
+        <i class="fa-solid fa-location-dot"></i>
+    </div>
+    <div>
+        <strong>Domicilios</strong>
+        <span>Direcciones y propiedades de clientes</span>
+    </div>
+</a>
+        </nav>
+
+        <div class="nav-label">Gestión</div>
+
+        <nav class="nav">
+            <a href="/panel/servicios-tecnicos/presupuestos">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                Presupuestos
+            </a>
+
+            <a href="/panel/servicios-tecnicos/inventario">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                Inventario
+            </a>
+
+            <a href="/panel/servicios-tecnicos/compras">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Compras
+            </a>
+
+            <a href="/panel/servicios-tecnicos/tecnicos">
+                <i class="fa-solid fa-helmet-safety"></i>
+                Técnicos
+            </a>
+
+            <a href="/panel/servicios-tecnicos/caja">
+                <i class="fa-solid fa-wallet"></i>
+                Caja y finanzas
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <i class="fa-solid fa-headset"></i>
+                <strong>Centro de gestión</strong>
+                <p>Administrá clientes, trabajos, visitas, pagos y operaciones desde un solo lugar.</p>
+            </div>
+
+            <div class="sidebar-version">
+                APPCRAFT PRO · SERVICIOS TÉCNICOS
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <button class="icon-btn mobile-menu" id="menuToggle" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="breadcrumb">
+                    Servicios técnicos <span> / </span>
+                    <strong>Dashboard</strong>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="icon-btn" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="user-chip">
+                    <div class="user-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span><%= usuario.username || usuario.nombre || "Usuario" %></span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+
+            <div>
+                <h1>Panel de control</h1>
+                <p>Resumen general de la operación y actividad de servicios técnicos.</p>
+            </div>
+
+            <div class="header-actions">
+
+                <a href="/panel/servicios-tecnicos/clientes" class="btn btn-secondary">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Nuevo cliente
+                </a>
+
+                <a href="/panel/servicios-tecnicos/ordenes/nueva" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Nueva orden
+                </a>
+
+                <a href="/panel/servicios-tecnicos/visitas/nueva" class="btn btn-visita">
+    <i class="fa-solid fa-calendar-check"></i>
+    <span>Nueva visita</span>
+</a>
+
+            </div>
+
+        </section>
+
+        <!-- PERIOD FILTER -->
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;">
+
+            <div>
+                <div class="section-title">Resumen operativo</div>
+                <div class="section-subtitle">Indicadores generales del negocio.</div>
+            </div>
+
+            <div class="period-filter">
+                <a href="?periodo=week" class="<%= periodo === 'week' ? 'active' : '' %>">7 días</a>
+                <a href="?periodo=month" class="<%= periodo === 'month' ? 'active' : '' %>">Este mes</a>
+                <a href="?periodo=year" class="<%= periodo === 'year' ? 'active' : '' %>">Este año</a>
+            </div>
+
+        </div>
+
+        <!-- KPI GRID -->
+        <section class="kpi-grid">
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Clientes activos</span>
+                    <div class="kpi-icon purple">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= number(k.clientesActivos) %></div>
+                <div class="kpi-foot">
+                    <strong><%= number(k.clientesNuevosPeriodo) %></strong> nuevos en el período
+                </div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Órdenes abiertas</span>
+                    <div class="kpi-icon orange">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= number(k.ordenesAbiertas) %></div>
+                <div class="kpi-foot">
+                    <strong><%= number(k.ordenesPendientes) %></strong> pendientes
+                </div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">En proceso</span>
+                    <div class="kpi-icon blue">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= number(k.ordenesEnProceso) %></div>
+                <div class="kpi-foot">
+                    <strong><%= number(k.ordenesProgramadas) %></strong> programadas
+                </div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Trabajos terminados</span>
+                    <div class="kpi-icon green">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= number(k.ordenesTerminadas) %></div>
+                <div class="kpi-foot">
+                    <strong><%= number(k.terminadasPeriodo) %></strong> en el período
+                </div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Facturación</span>
+                    <div class="kpi-icon purple">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= money(k.facturado) %></div>
+                <div class="kpi-foot">Importe total de órdenes</div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Dinero cobrado</span>
+                    <div class="kpi-icon green">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= money(k.cobrado) %></div>
+                <div class="kpi-foot">Cobros registrados</div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Pendiente de cobro</span>
+                    <div class="kpi-icon orange">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= money(k.porCobrar) %></div>
+                <div class="kpi-foot">Saldo de clientes</div>
+            </article>
+
+            <article class="kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Resultado estimado</span>
+                    <div class="kpi-icon <%= Number(k.resultado || 0) >= 0 ? 'green' : 'red' %>">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="kpi-value"><%= money(k.resultado) %></div>
+                <div class="kpi-foot">Según movimientos registrados</div>
+            </article>
+
+        </section>
+
+        <!-- AGENDA + FINANCE -->
+        <section class="dashboard-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-regular fa-calendar-check" style="color:var(--primary);margin-right:7px;"></i>Agenda de trabajos</h3>
+                        <p>Próximos servicios programados</p>
+                    </div>
+
+                    <a href="/panel/servicios-tecnicos/ordenes" class="panel-link">
+                        Ver órdenes <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (agenda.length) { %>
+
+                        <div class="agenda-list">
+
+                            <% agenda.forEach(item => {
+                                const fecha = item.fecha_programada || item.fecha || item.fecha_visita;
+                                const estado = String(item.estado || "pendiente").toLowerCase();
+                                const ordenId = item.id || item.orden_id;
+                            %>
+
+                                <% if (ordenId) { %>
+                                    <a class="agenda-item" href="/panel/servicios-tecnicos/ordenes/<%= ordenId %>">
+                                <% } else { %>
+                                    <div class="agenda-item">
+                                <% } %>
+
+                                    <div class="agenda-date">
+                                        <strong><%= fechaCorta(fecha).split(" ")[0] %></strong>
+                                        <span><%= fechaCorta(fecha).split(" ")[1] || "" %></span>
+                                    </div>
+
+                                    <div class="agenda-info">
+                                        <strong><%= item.cliente_nombre || "Cliente sin nombre" %></strong>
+                                        <small>
+                                            <%= item.tipo_servicio || item.tipo_trabajo || "Servicio técnico" %>
+                                            <% if (item.tecnico_nombre) { %>
+                                                · <%= item.tecnico_nombre %>
+                                            <% } %>
+                                            <% if (item.direccion_servicio || item.direccion) { %>
+                                                · <%= item.direccion_servicio || item.direccion %>
+                                            <% } %>
+                                        </small>
+                                    </div>
+
+                                    <span class="agenda-status status-<%= estado.replace(/[^a-z_]/g, '') %>">
+                                        <%= estadoNombre(estado) %>
+                                    </span>
+
+                                <% if (ordenId) { %>
+                                    </a>
+                                <% } else { %>
+                                    </div>
+                                <% } %>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p>No hay trabajos próximos en la agenda.</p>
+                            <a href="/panel/servicios-tecnicos/ordenes/nueva">Programar un trabajo</a>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-wallet" style="color:var(--green);margin-right:7px;"></i>Resumen financiero</h3>
+                        <p>Situación económica registrada</p>
+                    </div>
+                    <span style="font-size:9px;color:var(--muted);">ARS</span>
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="finance-highlight">
+                        <span>Resultado estimado</span>
+                        <strong><%= money(f.resultado !== undefined ? f.resultado : k.resultado) %></strong>
+                        <small>Ingresos cobrados menos egresos considerados</small>
+                    </div>
+
+                    <div class="finance-list">
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-arrow-down" style="color:var(--green);margin-right:7px;"></i>Total cobrado</span>
+                            <strong><%= money(f.cobrado !== undefined ? f.cobrado : k.cobrado) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-file-invoice" style="color:var(--blue);margin-right:7px;"></i>Facturado</span>
+                            <strong><%= money(f.facturado !== undefined ? f.facturado : k.facturado) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-clock" style="color:var(--orange);margin-right:7px;"></i>Por cobrar</span>
+                            <strong><%= money(f.porCobrar !== undefined ? f.porCobrar : k.porCobrar) %></strong>
+                        </div>
+
+                        <div class="finance-divider"></div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-receipt" style="color:var(--red);margin-right:7px;"></i>Gastos</span>
+                            <strong><%= money(f.gastos !== undefined ? f.gastos : k.gastos) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-cart-shopping" style="color:var(--orange);margin-right:7px;"></i>Compras</span>
+                            <strong><%= money(f.compras !== undefined ? f.compras : k.compras) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-box" style="color:var(--cyan);margin-right:7px;"></i>Costo de repuestos</span>
+                            <strong><%= money(f.costoRepuestos !== undefined ? f.costoRepuestos : k.costoRepuestos) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-user-gear" style="color:var(--primary);margin-right:7px;"></i>Honorarios devengados</span>
+                            <strong><%= money(f.honorariosDevengados !== undefined ? f.honorariosDevengados : k.honorariosDevengados) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span><i class="fa-solid fa-money-bill-transfer" style="color:var(--orange);margin-right:7px;"></i>Honorarios pendientes</span>
+                            <strong><%= money(f.honorariosPendientes !== undefined ? f.honorariosPendientes : k.honorariosPendientes) %></strong>
+                        </div>
+
+                        <div class="finance-divider"></div>
+
+                        <div class="finance-row">
+                            <span><strong>Saldo de caja estimado</strong></span>
+                            <strong style="color:var(--green);font-size:13px;">
+                                <%= money(f.saldoCaja !== undefined ? f.saldoCaja : k.saldoCaja) %>
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CHART -->
+        <section class="panel" style="margin-top:17px;">
+
+            <div class="panel-header">
+                <div>
+                    <h3><i class="fa-solid fa-chart-area" style="color:var(--primary);margin-right:7px;"></i>Rendimiento financiero</h3>
+                    <p>Ingresos, gastos y resultado del período seleccionado</p>
+                </div>
+                <span class="section-subtitle">
+                    <%= periodo === "week" ? "Últimos 7 días" : periodo === "year" ? "Este año" : "Este mes" %>
+                </span>
+            </div>
+
+            <div class="panel-body">
+                <div class="chart-container">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- LOWER GRID -->
+        <section class="dashboard-grid">
+
+            <!-- TECHNICIANS -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-helmet-safety" style="color:var(--blue);margin-right:7px;"></i>Equipo técnico</h3>
+                        <p>Actividad y trabajos asignados</p>
+                    </div>
+                    <a href="/panel/servicios-tecnicos/tecnicos" class="panel-link">Ver equipo</a>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (tecnicos.length) { %>
+
+                        <div class="technician-list">
+
+                            <% tecnicos.forEach(t => { %>
+
+                                <div class="technician">
+
+                                    <div class="tech-avatar">
+                                        <i class="fa-solid fa-user-gear"></i>
+                                    </div>
+
+                                    <div class="tech-info">
+                                        <strong><%= t.nombre || "Técnico" %></strong>
+                                        <small>
+                                            <%= number(t.terminados || t.trabajosTerminados) %> terminados
+                                            · <%= Number(t.horas || 0).toLocaleString("es-AR") %> hs
+                                        </small>
+                                    </div>
+
+                                    <div class="tech-number">
+                                        <%= number(t.trabajosAsignados || t.asignados) %>
+                                        <small style="display:block;color:var(--muted);font-size:8px;font-weight:500;">asignados</small>
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-solid fa-users"></i>
+                            <p>Todavía no hay técnicos registrados.</p>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+            <!-- ALERTS -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-bell" style="color:var(--orange);margin-right:7px;"></i>Alertas y pendientes</h3>
+                        <p>Situaciones que requieren atención</p>
+                    </div>
+                    <span style="font-size:10px;font-weight:800;color:var(--orange);">
+                        <%= alertas.length %>
+                    </span>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (alertas.length) { %>
+
+                        <div class="alert-list">
+
+                            <% alertas.forEach(a => { %>
+
+                                <a href="<%= a.url || '/panel/servicios-tecnicos' %>"
+                                   class="alert-item <%= a.tipo === 'critica' ? 'critica' : a.tipo === 'info' ? 'info' : '' %>">
+
+                                    <div class="alert-icon">
+                                        <i class="<%= a.icono || 'fa-solid fa-circle-exclamation' %>"></i>
+                                    </div>
+
+                                    <div class="alert-content">
+                                        <strong><%= a.titulo || "Aviso" %></strong>
+                                        <p><%= a.detalle || "" %></p>
+                                    </div>
+
+                                </a>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-solid fa-shield-check"></i>
+                            <p>No hay alertas pendientes.</p>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECONDARY METRICS -->
+        <section class="dashboard-grid">
+
+            <!-- ORDER STATUS -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-list-check" style="color:var(--cyan);margin-right:7px;"></i>Estado de las órdenes</h3>
+                        <p>Distribución de trabajos registrados</p>
+                    </div>
+                    <a href="/panel/servicios-tecnicos/ordenes" class="panel-link">Ver todas</a>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (estados.length) {
+                        const maxEstado = Math.max(1, ...estados.map(x => Number(x.total || x.cantidad || 0)));
+                    %>
+
+                        <div class="status-list">
+
+                            <% estados.forEach((e, index) => {
+                                const total = Number(e.total || e.cantidad || 0);
+                                const porcentaje = Math.min(100, total / maxEstado * 100);
+                            %>
+
+                                <div class="status-row">
+                                    <span><%= estadoNombre(e.estado) %></span>
+                                    <div class="status-bar">
+                                        <div style="width:<%= porcentaje %>%;"></div>
+                                    </div>
+                                    <strong><%= total %></strong>
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <p>No hay órdenes para mostrar.</p>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+            <!-- INVENTORY / BUDGETS -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-boxes-stacked" style="color:var(--blue);margin-right:7px;"></i>Gestión general</h3>
+                        <p>Inventario y presupuestos</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="finance-list">
+
+                        <div class="finance-row">
+                            <span>Artículos en inventario</span>
+                            <strong><%= number(inventario.totalItems) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Artículos con stock bajo</span>
+                            <strong style="color:var(--orange);"><%= number(inventario.stockBajo) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Artículos sin stock</span>
+                            <strong style="color:var(--red);"><%= number(inventario.sinStock) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Valor del inventario</span>
+                            <strong><%= money(inventario.valor) %></strong>
+                        </div>
+
+                        <div class="finance-divider"></div>
+
+                        <div class="finance-row">
+                            <span>Presupuestos pendientes</span>
+                            <strong><%= number(presupuestos.pendientes) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Presupuestos enviados</span>
+                            <strong><%= number(presupuestos.enviados) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Presupuestos aceptados</span>
+                            <strong style="color:var(--green);"><%= number(presupuestos.aceptados) %></strong>
+                        </div>
+
+                        <div class="finance-row">
+                            <span>Compras pendientes</span>
+                            <strong><%= number(k.comprasPendientes) %></strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- RECENT CLIENTS + ACTIVITY -->
+        <section class="dashboard-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-user-plus" style="color:var(--primary);margin-right:7px;"></i>Clientes recientes</h3>
+                        <p>Últimas altas registradas</p>
+                    </div>
+                    <a href="/panel/servicios-tecnicos/clientes" class="panel-link">Ver clientes</a>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (clientes.length) { %>
+
+                        <div class="client-list">
+
+                            <% clientes.forEach(c => { %>
+
+                                <div class="client-row">
+                                    <div class="client-avatar"><%= iniciales(c.nombre) %></div>
+                                    <div class="client-info">
+                                        <strong><%= c.nombre || "Cliente" %></strong>
+                                        <small><%= c.telefono || "Sin teléfono registrado" %></small>
+                                    </div>
+                                    <span style="font-size:9px;color:var(--muted);">
+                                        <%= fechaCorta(c.created_at) %>
+                                    </span>
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-solid fa-user-group"></i>
+                            <p>Todavía no hay clientes recientes.</p>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--cyan);margin-right:7px;"></i>Actividad reciente</h3>
+                        <p>Últimos movimientos del sistema</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    <% if (actividad.length) { %>
+
+                        <div class="activity-list">
+
+                            <% actividad.forEach(a => { %>
+
+                                <div class="activity-item">
+
+                                    <div class="activity-icon">
+                                        <i class="<%= a.icono || 'fa-solid fa-circle-info' %>"></i>
+                                    </div>
+
+                                    <div class="activity-content">
+                                        <strong><%= a.titulo || a.accion || "Movimiento registrado" %></strong>
+                                        <p>
+                                            <%= a.detalle || "" %>
+                                            <% if (a.fecha) { %>
+                                                · <%= fechaCorta(a.fecha) %>
+                                            <% } %>
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="empty">
+                            <i class="fa-solid fa-clock"></i>
+                            <p>No hay actividad reciente para mostrar.</p>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            <span><strong>AppCraft Pro</strong> · Gestión de servicios técnicos</span>
+            <span>Panel de control · Datos de tu operación</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+(() => {
+    "use strict";
+
+    // ==========================================
+    // ELEMENTOS DEL DOM
+    // ==========================================
+
+    const root = document.documentElement;
+    const themeButton = document.getElementById("themeToggle");
+    const sidebar = document.getElementById("sidebar");
+    const menuButton = document.getElementById("menuToggle");
+
+    const THEME_KEY = "appcraft-servicios-theme";
+
+    // IMPORTANTE:
+    // Los gráficos se declaran antes de cualquier función
+    // que pueda intentar actualizarlos.
+    let financeChart = null;
+
+    // ==========================================
+    // CONFIGURACIÓN DEL TEMA
+    // ==========================================
+
+    let theme = "light";
+
+    try {
+        theme = localStorage.getItem(THEME_KEY) || "light";
+    } catch (error) {
+        console.warn("No se pudo leer la preferencia de tema.", error);
+    }
+
+    if (theme !== "dark" && theme !== "light") {
+        theme = "light";
+    }
+
+    // ==========================================
+    // COLORES DINÁMICOS
+    // ==========================================
+
+    function chartColors() {
+        const styles = getComputedStyle(root);
+
+        return {
+            text: styles.getPropertyValue("--muted").trim() || "#7d879a",
+            grid: styles.getPropertyValue("--line").trim() || "#e8ebf2",
+            green: styles.getPropertyValue("--green").trim() || "#17a879",
+            red: styles.getPropertyValue("--red").trim() || "#e45e68",
+            purple: styles.getPropertyValue("--primary").trim() || "#6258e8"
+        };
+    }
+
+    // ==========================================
+    // ACTUALIZAR COLORES DE LOS GRÁFICOS
+    // ==========================================
+
+    function updateChartsTheme() {
+
+        // Si el gráfico todavía no existe, no hacemos nada.
+        if (!financeChart) return;
+
+        const colors = chartColors();
+
+        financeChart.options.plugins.legend.labels.color = colors.text;
+
+        financeChart.options.scales.x.ticks.color = colors.text;
+        financeChart.options.scales.y.ticks.color = colors.text;
+
+        financeChart.options.scales.x.grid.color = colors.grid;
+        financeChart.options.scales.y.grid.color = colors.grid;
+
+        financeChart.update();
+    }
+
+    // ==========================================
+    // APLICAR TEMA
+    // ==========================================
+
+    function applyTheme() {
+
+        root.setAttribute("data-theme", theme);
+        root.style.colorScheme = theme;
+
+        if (themeButton) {
+
+            themeButton.innerHTML = theme === "dark"
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+
+            themeButton.title = theme === "dark"
+                ? "Activar modo claro"
+                : "Activar modo oscuro";
+        }
+
+        updateChartsTheme();
+    }
+
+    // ==========================================
+    // CAMBIAR TEMA
+    // ==========================================
+
+    themeButton?.addEventListener("click", () => {
+
+        theme = theme === "dark" ? "light" : "dark";
+
+        try {
+            localStorage.setItem(THEME_KEY, theme);
+        } catch (error) {
+            console.warn("No se pudo guardar la preferencia de tema.", error);
+        }
+
+        applyTheme();
+    });
+
+    // ==========================================
+    // MENÚ RESPONSIVE
+    // ==========================================
+
+    menuButton?.addEventListener("click", () => {
+        sidebar?.classList.toggle("open");
+    });
+
+    document.addEventListener("click", event => {
+
+        if (
+            window.innerWidth <= 850 &&
+            sidebar?.classList.contains("open") &&
+            !sidebar.contains(event.target) &&
+            !menuButton?.contains(event.target)
+        ) {
+            sidebar.classList.remove("open");
+        }
+    });
+
+    // ==========================================
+    // DATOS REALES DEL CONTROLADOR
+    // ==========================================
+
+    const chartData = <%- JSON.stringify({
+        labels: d.grafico?.labels || [],
+        ingresos: d.grafico?.ingresos || [],
+        gastos: d.grafico?.gastos || [],
+        resultado: d.grafico?.resultado || []
+    }).replace(/</g, "\\u003c") %>;
+
+    // ==========================================
+    // CREAR GRÁFICO FINANCIERO
+    // ==========================================
+
+    function initializeChart() {
+
+        const canvas = document.getElementById("financeChart");
+
+        if (!canvas) {
+            console.warn("No se encontró el elemento financeChart.");
+            return;
+        }
+
+        if (typeof Chart === "undefined") {
+            console.error("Chart.js no está disponible.");
+            return;
+        }
+
+        const colors = chartColors();
+
+        financeChart = new Chart(canvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: chartData.labels,
+
+                datasets: [
+
+                    {
+                        label: "Ingresos",
+                        data: chartData.ingresos,
+                        borderColor: colors.green,
+                        backgroundColor: "rgba(23,168,121,.10)",
+                        fill: true,
+                        tension: .38,
+                        borderWidth: 2.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    },
+
+                    {
+                        label: "Gastos",
+                        data: chartData.gastos,
+                        borderColor: colors.red,
+                        backgroundColor: "rgba(228,94,104,.06)",
+                        fill: true,
+                        tension: .38,
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    },
+
+                    {
+                        label: "Resultado",
+                        data: chartData.resultado,
+                        borderColor: colors.purple,
+                        backgroundColor: "transparent",
+                        fill: false,
+                        tension: .38,
+                        borderWidth: 2.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    }
+
+                ]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            color: colors.text,
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            boxWidth: 7,
+                            padding: 20,
+
+                            font: {
+                                family: "Inter",
+                                size: 10,
+                                weight: "600"
+                            }
+                        }
+                    },
+
+                    tooltip: {
+
+                        backgroundColor: "#171b28",
+
+                        titleFont: {
+                            family: "Inter",
+                            size: 11
+                        },
+
+                        bodyFont: {
+                            family: "Inter",
+                            size: 11
+                        },
+
+                        padding: 12,
+                        cornerRadius: 9,
+
+                        callbacks: {
+
+                            label: context => {
+
+                                const value = Number(context.raw || 0);
+
+                                return context.dataset.label + ": " +
+                                    value.toLocaleString("es-AR", {
+                                        style: "currency",
+                                        currency: "ARS",
+                                        maximumFractionDigits: 0
+                                    });
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+
+                    x: {
+
+                        ticks: {
+
+                            color: colors.text,
+
+                            font: {
+                                family: "Inter",
+                                size: 9
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            color: colors.text,
+
+                            font: {
+                                family: "Inter",
+                                size: 9
+                            },
+
+                            callback: value => {
+                                return "$" + Number(value).toLocaleString("es-AR");
+                            }
+                        },
+
+                        grid: {
+                            color: colors.grid
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // INICIALIZACIÓN
+    // ==========================================
+
+    // Primero aplicamos el tema.
+    applyTheme();
+
+    // Después creamos el gráfico.
+    initializeChart();
+
+})();
+</script>
+
+
+
+<!-- CHART.JS -->
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+(() => {
+    "use strict";
+
+    const root = document.documentElement;
+    const themeButton = document.getElementById("themeToggle");
+    const sidebar = document.getElementById("sidebar");
+    const menuButton = document.getElementById("menuToggle");
+
+    const THEME_KEY = "appcraft-servicios-theme";
+
+    let theme = "light";
+
+    try {
+        theme = localStorage.getItem(THEME_KEY) || "light";
+    } catch (error) {
+        console.warn("No se pudo leer la preferencia de tema.", error);
+    }
+
+    function applyTheme() {
+        root.setAttribute("data-theme", theme);
+        root.style.colorScheme = theme;
+
+        if (themeButton) {
+            themeButton.innerHTML = theme === "dark"
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+
+            themeButton.title = theme === "dark"
+                ? "Activar modo claro"
+                : "Activar modo oscuro";
+        }
+
+        updateChartsTheme();
+    }
+
+    themeButton?.addEventListener("click", () => {
+        theme = theme === "dark" ? "light" : "dark";
+
+        try {
+            localStorage.setItem(THEME_KEY, theme);
+        } catch (error) {
+            console.warn("No se pudo guardar la preferencia de tema.", error);
+        }
+
+        applyTheme();
+    });
+
+    menuButton?.addEventListener("click", () => {
+        sidebar?.classList.toggle("open");
+    });
+
+    document.addEventListener("click", event => {
+        if (
+            window.innerWidth <= 850 &&
+            sidebar?.classList.contains("open") &&
+            !sidebar.contains(event.target) &&
+            !menuButton?.contains(event.target)
+        ) {
+            sidebar.classList.remove("open");
+        }
+    });
+
+    applyTheme();
+
+    // DATOS REALES QUE ENVÍA EL CONTROLADOR
+    const chartData = <%- JSON.stringify({
+        labels: d.grafico?.labels || [],
+        ingresos: d.grafico?.ingresos || [],
+        gastos: d.grafico?.gastos || [],
+        resultado: d.grafico?.resultado || []
+    }).replace(/</g, "\\u003c") %>;
+
+    let financeChart = null;
+
+    function chartColors() {
+        const styles = getComputedStyle(root);
+
+        return {
+            text: styles.getPropertyValue("--muted").trim() || "#7d879a",
+            grid: styles.getPropertyValue("--line").trim() || "#e8ebf2",
+            green: styles.getPropertyValue("--green").trim() || "#17a879",
+            red: styles.getPropertyValue("--red").trim() || "#e45e68",
+            purple: styles.getPropertyValue("--primary").trim() || "#6258e8"
+        };
+    }
+
+    function updateChartsTheme() {
+        if (!financeChart) return;
+
+        const colors = chartColors();
+
+        financeChart.options.plugins.legend.labels.color = colors.text;
+        financeChart.options.scales.x.ticks.color = colors.text;
+        financeChart.options.scales.y.ticks.color = colors.text;
+        financeChart.options.scales.x.grid.color = colors.grid;
+        financeChart.options.scales.y.grid.color = colors.grid;
+
+        financeChart.update();
+    }
+
+    function initializeChart() {
+        const canvas = document.getElementById("financeChart");
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        const colors = chartColors();
+
+        financeChart = new Chart(canvas, {
+            type: "line",
+
+            data: {
+                labels: chartData.labels,
+
+                datasets: [
+                    {
+                        label: "Ingresos",
+                        data: chartData.ingresos,
+                        borderColor: colors.green,
+                        backgroundColor: "rgba(23,168,121,.10)",
+                        fill: true,
+                        tension: .38,
+                        borderWidth: 2.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: "Gastos",
+                        data: chartData.gastos,
+                        borderColor: colors.red,
+                        backgroundColor: "rgba(228,94,104,.06)",
+                        fill: true,
+                        tension: .38,
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: "Resultado",
+                        data: chartData.resultado,
+                        borderColor: colors.purple,
+                        backgroundColor: "transparent",
+                        fill: false,
+                        tension: .38,
+                        borderWidth: 2.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            color: colors.text,
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            boxWidth: 7,
+                            padding: 20,
+                            font: {
+                                family: "Inter",
+                                size: 10,
+                                weight: "600"
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        backgroundColor: "#171b28",
+                        titleFont: {
+                            family: "Inter",
+                            size: 11
+                        },
+                        bodyFont: {
+                            family: "Inter",
+                            size: 11
+                        },
+                        padding: 12,
+                        cornerRadius: 9,
+                        callbacks: {
+                            label: context => {
+                                const value = Number(context.raw || 0);
+
+                                return context.dataset.label + ": " +
+                                    value.toLocaleString("es-AR", {
+                                        style: "currency",
+                                        currency: "ARS",
+                                        maximumFractionDigits: 0
+                                    });
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    x: {
+                        ticks: {
+                            color: colors.text,
+                            font: {
+                                family: "Inter",
+                                size: 9
+                            }
+                        },
+                        grid: {
+                            display: false
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: colors.text,
+                            font: {
+                                family: "Inter",
+                                size: 9
+                            },
+                            callback: value => {
+                                return "$" + Number(value).toLocaleString("es-AR");
+                            }
+                        },
+                        grid: {
+                            color: colors.grid
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    initializeChart();
+
+})();
+</script>
+-->
+</body>
+</html>

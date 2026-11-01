@@ -1,0 +1,216 @@
+<%
+const fecha = (valor) => {
+if (!valor) return "—";
+const d = new Date(valor);
+return isNaN(d.getTime()) ? valor : d.toLocaleString("es-AR");
+};
+
+const moneda = (valor) =>
+"$ " + Number(valor || 0).toLocaleString("es-AR", {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+});
+
+const estado = orden.estado || orden.estado_orden || "Pendiente";
+%>
+
+<style>
+.ot-container{max-width:1200px;margin:25px auto;padding:0 18px;color:var(--text,#e8edf5)}
+.ot-header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}
+.ot-title h2{margin:0;font-size:25px}
+.ot-title p{color:#929eae;margin:7px 0 0}
+.ot-actions{display:flex;gap:9px;flex-wrap:wrap}
+.ot-btn{display:inline-block;padding:10px 15px;border-radius:9px;text-decoration:none;background:#222c39;color:#fff;border:1px solid #354254;font-size:13px}
+.ot-btn.primary{background:#2563eb;border-color:#2563eb}
+.ot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ot-card{background:var(--card,#151b24);border:1px solid var(--border,#293342);border-radius:13px;padding:19px;min-width:0}
+.ot-card h3{font-size:16px;margin:0 0 17px}
+.ot-data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.ot-field small{display:block;color:#91a0b2;font-size:12px;margin-bottom:5px}
+.ot-field strong{font-size:14px;overflow-wrap:anywhere}
+.ot-description{line-height:1.6;white-space:pre-wrap;color:#d7deea;font-size:14px}
+.ot-finance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ot-finance div{background:#202a38;border-radius:10px;padding:14px}
+.ot-finance small{display:block;color:#aab6c5;font-size:12px;margin-bottom:7px}
+.ot-finance strong{font-size:17px}
+.ot-table-wrap{overflow-x:auto}
+.ot-table{width:100%;border-collapse:collapse;min-width:600px}
+.ot-table th,.ot-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border,#293342);font-size:13px}
+.ot-table th{color:#91a0b2;font-weight:600}
+.ot-link{color:#60a5fa;text-decoration:none}
+.ot-empty{color:#929eae;padding:15px 0}
+.ot-badge{display:inline-block;padding:5px 10px;border-radius:20px;background:#263d60;color:#93c5fd;font-size:12px}
+.ot-full{grid-column:1/-1}
+@media(max-width:700px){
+ .ot-grid{grid-template-columns:1fr}
+ .ot-data{grid-template-columns:1fr 1fr}
+ .ot-finance{grid-template-columns:1fr}
+ .ot-header{align-items:flex-start}
+ .ot-full{grid-column:auto}
+}
+</style>
+
+<div class="ot-container">
+
+
+<div class="ot-header">
+    <div class="ot-title">
+        <h2>Orden #<%= orden.id %></h2>
+        <p>Ficha integral del servicio técnico</p>
+        <span class="ot-badge"><%= estado %></span>
+    </div>
+
+    <div class="ot-actions">
+        <a href="/panel/servicios-tecnicos/ordenes" class="ot-btn">← Volver a órdenes</a>
+        <a href="/panel/servicios-tecnicos/visitas/nueva" class="ot-btn primary">+ Nueva visita</a>
+    </div>
+</div>
+
+<div class="ot-grid">
+
+    <section class="ot-card">
+        <h3>👤 Datos del cliente</h3>
+        <div class="ot-data">
+            <div class="ot-field">
+                <small>Nombre</small>
+                <strong><%= orden.cliente_nombre || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Teléfono</small>
+                <strong><%= orden.cliente_telefono || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Email</small>
+                <strong><%= orden.cliente_email || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Dirección</small>
+                <strong><%= orden.cliente_direccion || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Localidad</small>
+                <strong><%= orden.cliente_localidad || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Provincia</small>
+                <strong><%= orden.cliente_provincia || "—" %></strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="ot-card">
+        <h3>🔧 Datos del servicio</h3>
+        <div class="ot-data">
+            <div class="ot-field">
+                <small>Tipo de servicio</small>
+                <strong><%= orden.tipo_servicio || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Tipo de trabajo</small>
+                <strong><%= orden.tipo_trabajo || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Equipo</small>
+                <strong><%= orden.equipo || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Marca</small>
+                <strong><%= orden.marca || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Modelo</small>
+                <strong><%= orden.modelo || "—" %></strong>
+            </div>
+            <div class="ot-field">
+                <small>Fecha programada</small>
+                <strong><%= fecha(orden.fecha_programada) %></strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="ot-card">
+        <h3>📋 Problema reportado</h3>
+        <div class="ot-description"><%= orden.problema_reportado || "Sin información registrada." %></div>
+    </section>
+
+    <section class="ot-card">
+        <h3>🛠️ Diagnóstico y trabajo realizado</h3>
+        <div class="ot-description"><%= orden.diagnostico || "Sin diagnóstico registrado." %></div>
+        <hr style="border:0;border-top:1px solid var(--border,#293342);margin:15px 0">
+        <div class="ot-description"><%= orden.trabajo_realizado || "Sin trabajos registrados." %></div>
+    </section>
+
+    <section class="ot-card ot-full">
+        <h3>💰 Resumen económico</h3>
+        <div class="ot-finance">
+            <div>
+                <small>Mano de obra</small>
+                <strong><%= moneda(orden.mano_obra) %></strong>
+            </div>
+            <div>
+                <small>Repuestos</small>
+                <strong><%= moneda(orden.costo_repuestos) %></strong>
+            </div>
+            <div>
+                <small>Total de la orden</small>
+                <strong><%= moneda(orden.total) %></strong>
+            </div>
+            <div>
+                <small>Monto cobrado</small>
+                <strong><%= moneda(orden.monto_cobrado) %></strong>
+            </div>
+            <div>
+                <small>Saldo pendiente</small>
+                <strong><%= moneda(Number(orden.total || 0) - Number(orden.monto_cobrado || 0)) %></strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="ot-card ot-full">
+        <h3>📅 Historial de visitas</h3>
+
+        <% if (visitas && visitas.length) { %>
+            <div class="ot-table-wrap">
+                <table class="ot-table">
+                    <thead>
+                        <tr>
+                            <th>Visita</th>
+                            <th>Fecha programada</th>
+                            <th>Estado</th>
+                            <th>Duración</th>
+                            <th>Trabajo realizado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% visitas.forEach(v => { %>
+                            <tr>
+                                <td>#<%= v.numero_visita || v.id %></td>
+                                <td><%= fecha(v.fecha_programada) %></td>
+                                <td><%= v.estado || "—" %></td>
+                                <td><%= v.duracion_minutos ? v.duracion_minutos + " min" : "—" %></td>
+                                <td><%= v.trabajo_realizado || "—" %></td>
+                                <td>
+                                    <a class="ot-link" href="/panel/servicios-tecnicos/visitas/<%= v.id %>">
+                                        Ver visita →
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="ot-empty">Todavía no hay visitas registradas para esta orden.</p>
+        <% } %>
+    </section>
+
+    <section class="ot-card ot-full">
+        <h3>📝 Observaciones</h3>
+        <div class="ot-description"><%= orden.observaciones || "Sin observaciones." %></div>
+    </section>
+
+</div>
+
+
+</div>

@@ -1,0 +1,1538 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101722">
+<title>Dashboard | Servicios Técnicos · AppCraft Pro</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<style>
+:root{
+ color-scheme:light;
+ --bg:#f3f5f9;
+ --surface:#fff;
+ --soft:#f8f9fc;
+ --soft2:#eef1f6;
+ --text:#182235;
+ --muted:#778196;
+ --line:#e6eaf1;
+ --orange:#ed6b2b;
+ --orange-soft:#fff0e8;
+ --green:#15966b;
+ --green-soft:#e8f7f0;
+ --blue:#3978d5;
+ --blue-soft:#edf4ff;
+ --amber:#bd841b;
+ --amber-soft:#fff6e3;
+ --red:#d94e58;
+ --red-soft:#fff0f1;
+ --purple:#8063cf;
+ --purple-soft:#f1edff;
+ --shadow:0 8px 28px rgba(28,39,60,.045);
+ --radius:17px;
+}
+
+[data-theme=dark]{
+ color-scheme:dark;
+ --bg:#0c121c;
+ --surface:#151e2b;
+ --soft:#1a2534;
+ --soft2:#223044;
+ --text:#edf2f9;
+ --muted:#9aa8bb;
+ --line:#29384c;
+ --orange:#ff8748;
+ --orange-soft:#3b291f;
+ --green:#4dcc9c;
+ --green-soft:#183a30;
+ --blue:#79aaff;
+ --blue-soft:#1d304d;
+ --amber:#e9bd5e;
+ --amber-soft:#3b321f;
+ --red:#ff7c83;
+ --red-soft:#3c252c;
+ --purple:#b39aff;
+ --purple-soft:#30294a;
+ --shadow:0 8px 28px rgba(0,0,0,.16);
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font:14px/1.45 Inter,Arial,sans-serif;
+ transition:.2s;
+}
+
+a{color:inherit;text-decoration:none}
+button,select{font:inherit}
+
+.topbar{
+ height:72px;
+ background:var(--surface);
+ border-bottom:1px solid var(--line);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 30px;
+ position:sticky;
+ top:0;
+ z-index:20;
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.brand-icon{
+ width:42px;
+ height:42px;
+ border-radius:13px;
+ background:linear-gradient(140deg,#ff9257,#df571c);
+ color:#fff;
+ display:grid;
+ place-items:center;
+ font-size:19px;
+}
+
+.brand-title{font-size:15px;font-weight:800}
+.brand-sub{
+ font-size:10px;
+ color:var(--muted);
+ letter-spacing:1px;
+ margin-top:3px;
+}
+
+.top-right{display:flex;align-items:center;gap:12px}
+
+.icon-btn{
+ width:39px;
+ height:39px;
+ border:1px solid var(--line);
+ background:var(--surface);
+ color:var(--muted);
+ border-radius:11px;
+ cursor:pointer;
+}
+
+.user{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding-left:13px;
+ border-left:1px solid var(--line);
+}
+
+.avatar{
+ width:38px;
+ height:38px;
+ border-radius:12px;
+ background:var(--orange-soft);
+ color:var(--orange);
+ display:grid;
+ place-items:center;
+ font-weight:800;
+}
+
+.user-name{font-size:12px;font-weight:700}
+.user-role{font-size:10px;color:var(--muted);margin-top:3px}
+
+.wrap{
+ max-width:1600px;
+ margin:auto;
+ padding:27px 30px 40px;
+}
+
+.welcome{
+ display:flex;
+ align-items:flex-end;
+ justify-content:space-between;
+ gap:20px;
+ margin-bottom:23px;
+}
+
+.eyebrow,.section-title{
+ font-size:10px;
+ font-weight:800;
+ letter-spacing:1.2px;
+ text-transform:uppercase;
+ color:var(--orange);
+}
+
+h1{
+ font-size:28px;
+ letter-spacing:-1px;
+ margin:7px 0 0;
+}
+
+.welcome p{
+ font-size:12px;
+ color:var(--muted);
+ margin:8px 0 0;
+}
+
+.actions{
+ display:flex;
+ gap:9px;
+ align-items:center;
+ flex-wrap:wrap;
+}
+
+.today{
+ font-size:10px;
+ color:var(--muted);
+ margin-right:7px;
+}
+
+.btn{
+ border:1px solid var(--line);
+ background:var(--surface);
+ color:var(--text);
+ border-radius:10px;
+ padding:10px 14px;
+ display:inline-flex;
+ align-items:center;
+ gap:8px;
+ font-size:11px;
+ font-weight:700;
+}
+
+.btn.primary{
+ background:var(--orange);
+ color:#fff;
+ border-color:var(--orange);
+}
+
+.section-title{
+ color:var(--muted);
+ margin:25px 0 11px;
+}
+
+.card{
+ background:var(--surface);
+ border:1px solid var(--line);
+ border-radius:var(--radius);
+ box-shadow:var(--shadow);
+ min-width:0;
+ overflow:hidden;
+}
+
+.kpis{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:13px;
+}
+
+.kpi{padding:17px 18px}
+
+.kpi-top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:8px;
+}
+
+.label{
+ font-size:11px;
+ color:var(--muted);
+ font-weight:600;
+}
+
+.ico{
+ width:35px;
+ height:35px;
+ border-radius:11px;
+ display:grid;
+ place-items:center;
+}
+
+.orange{background:var(--orange-soft);color:var(--orange)}
+.green{background:var(--green-soft);color:var(--green)}
+.blue{background:var(--blue-soft);color:var(--blue)}
+.amber{background:var(--amber-soft);color:var(--amber)}
+.purple{background:var(--purple-soft);color:var(--purple)}
+.red{background:var(--red-soft);color:var(--red)}
+
+.value{
+ font-size:25px;
+ font-weight:800;
+ letter-spacing:-.8px;
+ margin-top:13px;
+ overflow-wrap:anywhere;
+}
+
+.hint{
+ font-size:10px;
+ color:var(--muted);
+ margin-top:5px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:minmax(0,1.5fr) minmax(280px,.9fr);
+ gap:15px;
+ margin-top:15px;
+ align-items:start;
+}
+
+.two{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;
+ margin-top:15px;
+}
+
+.head{
+ padding:17px 19px;
+ border-bottom:1px solid var(--line);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+}
+
+.title{font-size:13px;font-weight:800}
+.desc{font-size:10px;color:var(--muted);margin-top:4px}
+.body{padding:14px 19px 18px}
+
+.link{
+ font-size:10px;
+ font-weight:800;
+ color:var(--orange);
+}
+
+.chart{height:225px;position:relative}
+.chart.small{height:175px}
+
+.agenda,.activity,.alert,.tech{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:12px 0;
+ border-bottom:1px solid var(--line);
+}
+
+.agenda:last-child,
+.activity:last-child,
+.alert:last-child,
+.tech:last-child{border:0}
+
+.datebox{
+ width:42px;
+ height:44px;
+ border-radius:11px;
+ background:var(--orange-soft);
+ color:var(--orange);
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ flex:none;
+}
+
+.datebox b{font-size:16px;line-height:1}
+.datebox span{
+ font-size:8px;
+ text-transform:uppercase;
+ font-weight:800;
+ margin-top:4px;
+}
+
+.main{min-width:0;flex:1}
+
+.rowtitle{
+ font-size:11px;
+ font-weight:700;
+ overflow-wrap:anywhere;
+}
+
+.meta{
+ font-size:9px;
+ color:var(--muted);
+ margin-top:4px;
+ display:flex;
+ gap:9px;
+ flex-wrap:wrap;
+}
+
+.pill{
+ display:inline-flex;
+ padding:5px 8px;
+ border-radius:20px;
+ font-size:9px;
+ font-weight:800;
+ background:var(--amber-soft);
+ color:var(--amber);
+ white-space:nowrap;
+}
+
+.pill.green{background:var(--green-soft);color:var(--green)}
+.pill.blue{background:var(--blue-soft);color:var(--blue)}
+.pill.red{background:var(--red-soft);color:var(--red)}
+
+.empty{
+ padding:25px 10px;
+ text-align:center;
+ color:var(--muted);
+ font-size:10px;
+}
+
+.empty i{
+ display:block;
+ font-size:23px;
+ margin-bottom:9px;
+ opacity:.55;
+}
+
+.quickgrid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px;
+}
+
+.quick{
+ border:1px solid var(--line);
+ border-radius:12px;
+ padding:13px;
+ transition:.18s;
+}
+
+.quick:hover{
+ border-color:var(--orange);
+ background:var(--orange-soft);
+ transform:translateY(-2px);
+}
+
+.quick i{
+ width:30px;
+ height:30px;
+ border-radius:9px;
+ background:var(--orange-soft);
+ color:var(--orange);
+ display:grid;
+ place-items:center;
+ margin-bottom:9px;
+}
+
+.quick b{font-size:10px;display:block}
+.quick small{
+ font-size:9px;
+ color:var(--muted);
+ display:block;
+ margin-top:4px;
+}
+
+.mini{
+ display:flex;
+ justify-content:space-between;
+ gap:12px;
+ padding:10px 0;
+ border-bottom:1px solid var(--line);
+ font-size:10px;
+}
+
+.mini:last-child{border:0}
+.mini span{color:var(--muted)}
+.mini strong{font-size:11px}
+
+.techavatar{
+ width:31px;
+ height:31px;
+ border-radius:10px;
+ background:var(--blue-soft);
+ color:var(--blue);
+ display:grid;
+ place-items:center;
+ font-size:10px;
+ font-weight:800;
+ flex:none;
+}
+
+.progress{
+ height:6px;
+ background:var(--soft2);
+ border-radius:8px;
+ overflow:hidden;
+ margin-top:7px;
+}
+
+.progress span{
+ display:block;
+ height:100%;
+ background:var(--orange);
+}
+
+.alerticon{
+ width:31px;
+ height:31px;
+ border-radius:10px;
+ display:grid;
+ place-items:center;
+ flex:none;
+}
+
+.note{
+ margin-top:16px;
+ padding:13px 16px;
+ background:var(--soft);
+ border:1px solid var(--line);
+ border-radius:12px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+footer{
+ text-align:center;
+ color:var(--muted);
+ font-size:9px;
+ padding:20px 0 0;
+}
+
+.period-select{
+ border:1px solid var(--line);
+ border-radius:8px;
+ background:var(--surface);
+ color:var(--text);
+ padding:7px 9px;
+ font-size:10px;
+}
+
+@media(max-width:1100px){
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid{grid-template-columns:1fr}
+}
+
+@media(max-width:700px){
+ .topbar{height:64px;padding:0 13px}
+ .brand-icon{width:37px;height:37px}
+ .brand-title{font-size:13px}
+ .brand-sub{font-size:8px}
+ .userdetails{display:none}
+ .wrap{padding:21px 13px 30px}
+ .welcome{align-items:flex-start;flex-direction:column}
+ .actions{width:100%}
+ .actions .btn{flex:1;justify-content:center}
+ .today{width:100%;margin:0}
+ h1{font-size:23px}
+ .kpis{gap:9px}
+ .kpi{padding:13px}
+ .value{font-size:20px}
+ .two{grid-template-columns:1fr}
+ .head{padding:14px}
+ .body{padding:12px 14px 15px}
+ .chart{height:200px}
+}
+
+@media(max-width:380px){
+ .kpis{grid-template-columns:1fr 1fr}
+ .quickgrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+
+<body>
+
+<%
+const d = (typeof dashboard !== "undefined" && dashboard) ? dashboard : {};
+const legacy = (typeof stats !== "undefined" && stats) ? stats : {};
+const list = v => Array.isArray(v) ? v : [];
+const n = v => Number(v || 0);
+const money = v => "$" + n(v).toLocaleString("es-AR",{maximumFractionDigits:2});
+const fmt = v => n(v).toLocaleString("es-AR");
+
+const userName = (typeof username !== "undefined" && username) ? username : "Usuario";
+const userRole = (typeof role !== "undefined" && role) ? role : "Usuario";
+
+const initials = String(userName)
+ .trim()
+ .split(/\s+/)
+ .slice(0,2)
+ .map(x=>x[0]||"")
+ .join("")
+ .toUpperCase();
+
+const k = d.kpis || {};
+const f = d.finanzas || {};
+const q = d.presupuestos || {};
+const inv = d.inventario || {};
+
+const agenda = list(
+ d.agenda ||
+ (typeof proximosTrabajos !== "undefined" ? proximosTrabajos : [])
+);
+
+const techs = list(d.tecnicos);
+const alerts = list(d.alertas);
+const activity = list(d.actividad);
+const clients = list(d.clientesRecientes);
+const states = list(d.ordenesPorEstado);
+
+const graph = d.grafico || {};
+
+const statusClass = s =>
+ ["terminado","finalizado","completado","aceptado","pagado"]
+ .includes(String(s||"").toLowerCase())
+ ? "green"
+ : ["en_proceso","en camino","programado","en_camino"]
+ .includes(String(s||"").toLowerCase())
+ ? "blue"
+ : ["cancelado","rechazado"]
+ .includes(String(s||"").toLowerCase())
+ ? "red"
+ : "";
+%>
+
+<header class="topbar">
+
+ <a class="brand" href="/panel/servicios-tecnicos">
+  <div class="brand-icon">
+   <i class="fa-solid fa-screwdriver-wrench"></i>
+  </div>
+
+  <div>
+   <div class="brand-title">Servicios Técnicos</div>
+   <div class="brand-sub">APPCRAFT PRO · CENTRO DE GESTIÓN</div>
+  </div>
+ </a>
+
+ <div class="top-right">
+
+  <button class="icon-btn" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">
+   <i class="fa-solid fa-moon"></i>
+  </button>
+
+  <div class="user">
+   <div class="avatar"><%= initials || "U" %></div>
+
+   <div class="userdetails">
+    <div class="user-name"><%= userName %></div>
+    <div class="user-role"><%= userRole %></div>
+   </div>
+  </div>
+
+ </div>
+</header>
+
+<main class="wrap">
+
+<section class="welcome">
+
+ <div>
+  <div class="eyebrow">Resumen ejecutivo · Operaciones</div>
+  <h1>Panel de control</h1>
+  <p>Actividad, equipo, trabajos y situación financiera del servicio técnico.</p>
+ </div>
+
+ <div class="actions">
+  <div class="today" id="todayDate"></div>
+
+  <a class="btn" href="/panel">
+   <i class="fa-solid fa-arrow-left"></i> AppCraft
+  </a>
+
+  <a class="btn primary" href="/panel/servicios-tecnicos/ordenes/nueva">
+   <i class="fa-solid fa-plus"></i> Nueva orden
+  </a>
+ </div>
+
+</section>
+
+<div class="section-title">Indicadores generales</div>
+
+<section class="kpis">
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Clientes activos</span>
+   <span class="ico orange"><i class="fa-solid fa-users"></i></span>
+  </div>
+  <div class="value"><%= fmt(k.clientesActivos ?? legacy.clientes) %></div>
+  <div class="hint">+<%= fmt(k.clientesNuevosPeriodo) %> nuevos en el período</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Órdenes abiertas</span>
+   <span class="ico amber"><i class="fa-solid fa-clipboard-list"></i></span>
+  </div>
+  <div class="value"><%= fmt(k.ordenesAbiertas ?? legacy.pendientes) %></div>
+  <div class="hint">
+   <%= fmt(k.ordenesProgramadas) %> programadas ·
+   <%= fmt(k.ordenesEnProceso) %> en proceso
+  </div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Trabajos terminados</span>
+   <span class="ico green"><i class="fa-solid fa-circle-check"></i></span>
+  </div>
+  <div class="value"><%= fmt(k.ordenesTerminadas ?? legacy.terminados) %></div>
+  <div class="hint"><%= fmt(k.terminadasPeriodo) %> en el período</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Presupuestos pendientes</span>
+   <span class="ico purple"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+  </div>
+  <div class="value"><%= fmt(q.pendientes) %></div>
+  <div class="hint"><%= fmt(q.porResponder) %> por responder</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Facturado</span>
+   <span class="ico blue"><i class="fa-solid fa-file-invoice"></i></span>
+  </div>
+  <div class="value"><%= money(f.facturado ?? k.facturado) %></div>
+  <div class="hint">Importes facturados registrados</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Cobrado</span>
+   <span class="ico green"><i class="fa-solid fa-wallet"></i></span>
+  </div>
+  <div class="value"><%= money(f.cobrado ?? k.cobrado ?? legacy.facturacion) %></div>
+  <div class="hint">Pagos efectivamente registrados</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Saldo por cobrar</span>
+   <span class="ico amber"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+  </div>
+  <div class="value"><%= money(f.porCobrar ?? k.porCobrar) %></div>
+  <div class="hint">Deuda pendiente de clientes</div>
+ </article>
+
+ <article class="card kpi">
+  <div class="kpi-top">
+   <span class="label">Resultado estimado</span>
+   <span class="ico purple"><i class="fa-solid fa-chart-line"></i></span>
+  </div>
+  <div class="value"><%= money(f.resultado ?? k.resultado) %></div>
+  <div class="hint">Según costos y movimientos registrados</div>
+ </article>
+
+</section>
+
+<div class="section-title">Actividad y rendimiento</div>
+
+<section class="grid">
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Evolución financiera</div>
+    <div class="desc">Ingresos, egresos y resultado por período</div>
+   </div>
+
+   <select id="periodFilter" class="period-select">
+    <option value="month">Últimos 30 días</option>
+    <option value="week">Últimos 7 días</option>
+    <option value="year">Últimos 12 meses</option>
+   </select>
+  </div>
+
+  <div class="body">
+   <div class="chart">
+    <canvas id="financeChart"></canvas>
+   </div>
+  </div>
+
+ </article>
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Estado de las órdenes</div>
+    <div class="desc">Distribución de trabajos registrados</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <div class="chart small">
+    <canvas id="ordersChart"></canvas>
+   </div>
+
+   <div class="mini">
+    <span>Total de órdenes</span>
+    <strong><%= fmt(k.totalOrdenes) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Pendientes</span>
+    <strong><%= fmt(k.ordenesPendientes ?? legacy.pendientes) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>En proceso</span>
+    <strong><%= fmt(k.ordenesEnProceso) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Terminadas</span>
+    <strong><%= fmt(k.ordenesTerminadas ?? legacy.terminados) %></strong>
+   </div>
+
+  </div>
+ </article>
+
+</section>
+
+<section class="grid">
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Agenda de trabajos</div>
+    <div class="desc">Próximas visitas y órdenes programadas</div>
+   </div>
+
+   <a class="link" href="/panel/servicios-tecnicos/ordenes">
+    Ver todas <i class="fa-solid fa-arrow-right"></i>
+   </a>
+  </div>
+
+  <div class="body">
+
+   <% if (!agenda.length) { %>
+
+    <div class="empty">
+     <i class="fa-regular fa-calendar-check"></i>
+     No hay trabajos en agenda o la ruta todavía no envía estos datos.
+    </div>
+
+   <% } else { %>
+
+    <% agenda.slice(0,8).forEach(job=>{
+
+     const dt=job.fecha_programada||job.fecha||job.fecha_visita;
+     const date=dt?new Date(dt):null;
+     const day=date&&!isNaN(date)?date.getDate():"—";
+     const month=date&&!isNaN(date)
+      ? date.toLocaleDateString("es-AR",{month:"short"})
+      : "s/f";
+
+    %>
+
+     <div class="agenda">
+
+      <div class="datebox">
+       <b><%= day %></b>
+       <span><%= month %></span>
+      </div>
+
+      <div class="main">
+
+       <div class="rowtitle">
+        <%= job.cliente_nombre||job.cliente||"Cliente" %>
+        ·
+        <%= job.tipo_servicio||job.tipo_trabajo||"Servicio técnico" %>
+       </div>
+
+       <div class="meta">
+
+        <span>
+         <i class="fa-solid fa-phone"></i>
+         <%= job.cliente_telefono||job.telefono||"Sin teléfono" %>
+        </span>
+
+        <% if(job.direccion_servicio||job.direccion){ %>
+         <span>
+          <i class="fa-solid fa-location-dot"></i>
+          <%= job.direccion_servicio||job.direccion %>
+         </span>
+        <% } %>
+
+        <% if(job.tecnico_nombre){ %>
+         <span>
+          <i class="fa-solid fa-user-gear"></i>
+          <%= job.tecnico_nombre %>
+         </span>
+        <% } %>
+
+       </div>
+      </div>
+
+      <span class="pill <%= statusClass(job.estado) %>">
+       <%= String(job.estado||"pendiente").replace(/_/g," ") %>
+      </span>
+
+     </div>
+
+    <% }) %>
+
+   <% } %>
+
+  </div>
+ </article>
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Accesos rápidos</div>
+    <div class="desc">Módulos del servicio técnico</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <div class="quickgrid">
+
+    <a class="quick" href="/panel/servicios-tecnicos/clientes">
+     <i class="fa-solid fa-users"></i>
+     <b>Clientes</b>
+     <small>Fichas e historial</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/ordenes/nueva">
+     <i class="fa-solid fa-file-circle-plus"></i>
+     <b>Nueva orden</b>
+     <small>Registrar trabajo</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/ordenes">
+     <i class="fa-solid fa-list-check"></i>
+     <b>Órdenes</b>
+     <small>Administrar trabajos</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/presupuestos">
+     <i class="fa-solid fa-file-invoice-dollar"></i>
+     <b>Presupuestos</b>
+     <small>Cotizaciones</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/inventario">
+     <i class="fa-solid fa-boxes-stacked"></i>
+     <b>Inventario</b>
+     <small>Repuestos y stock</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/compras">
+     <i class="fa-solid fa-cart-shopping"></i>
+     <b>Compras</b>
+     <small>Proveedores</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/tecnicos">
+     <i class="fa-solid fa-user-gear"></i>
+     <b>Técnicos</b>
+     <small>Equipo y asignaciones</small>
+    </a>
+
+    <a class="quick" href="/panel/servicios-tecnicos/caja">
+     <i class="fa-solid fa-cash-register"></i>
+     <b>Caja y finanzas</b>
+     <small>Cobros y gastos</small>
+    </a>
+
+   </div>
+  </div>
+ </article>
+
+</section>
+
+<div class="section-title">Administración y control</div>
+
+<section class="two">
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Resumen financiero</div>
+    <div class="desc">Saldos, costos y obligaciones</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <div class="mini">
+    <span>Facturación</span>
+    <strong><%= money(f.facturado??k.facturado) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Cobros recibidos</span>
+    <strong><%= money(f.cobrado??k.cobrado??legacy.facturacion) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Saldo de clientes</span>
+    <strong><%= money(f.porCobrar??k.porCobrar) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Gastos operativos</span>
+    <strong><%= money(f.gastos??k.gastos) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Compras realizadas</span>
+    <strong><%= money(f.compras??k.compras) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Costo de repuestos utilizados</span>
+    <strong><%= money(f.costoRepuestos??k.costoRepuestos) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Honorarios devengados</span>
+    <strong><%= money(f.honorariosDevengados??k.honorariosDevengados) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Honorarios pendientes</span>
+    <strong><%= money(f.honorariosPendientes??k.honorariosPendientes) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Saldo de caja</span>
+    <strong><%= money(f.saldoCaja??k.saldoCaja) %></strong>
+   </div>
+
+  </div>
+ </article>
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Inventario y presupuestos</div>
+    <div class="desc">Seguimiento de recursos y cotizaciones</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <div class="mini">
+    <span>Artículos en inventario</span>
+    <strong><%= fmt(inv.totalItems) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Stock bajo</span>
+    <strong><%= fmt(inv.stockBajo) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Sin stock</span>
+    <strong><%= fmt(inv.sinStock) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Valor estimado del inventario</span>
+    <strong><%= money(inv.valor) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Presupuestos enviados</span>
+    <strong><%= fmt(q.enviados) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Presupuestos aceptados</span>
+    <strong><%= fmt(q.aceptados) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Presupuestos rechazados</span>
+    <strong><%= fmt(q.rechazados) %></strong>
+   </div>
+
+   <div class="mini">
+    <span>Compras pendientes de pago</span>
+    <strong><%= money(f.comprasPendientes??k.comprasPendientes) %></strong>
+   </div>
+
+  </div>
+ </article>
+
+</section>
+
+<section class="two">
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Equipo técnico</div>
+    <div class="desc">Carga de trabajo y actividad</div>
+   </div>
+
+   <a class="link" href="/panel/servicios-tecnicos/tecnicos">
+    Ver equipo
+   </a>
+  </div>
+
+  <div class="body">
+
+   <% if(!techs.length){ %>
+
+    <div class="empty">
+     <i class="fa-solid fa-user-gear"></i>
+     El resumen del equipo aparecerá al conectar las métricas de técnicos desde las rutas.
+    </div>
+
+   <% } else { %>
+
+    <% techs.slice(0,7).forEach(t=>{
+
+     const a=n(t.trabajosAsignados??t.asignados);
+     const done=n(t.trabajosTerminados??t.terminados);
+     const pct=a+done?Math.round(done/(a+done)*100):0;
+
+    %>
+
+     <div class="tech">
+
+      <div class="techavatar">
+       <%= String(t.nombre||"T")
+        .split(/\s+/)
+        .slice(0,2)
+        .map(x=>x[0]||"")
+        .join("")
+        .toUpperCase() %>
+      </div>
+
+      <div class="main">
+
+       <div class="rowtitle"><%= t.nombre||"Técnico" %></div>
+
+       <div class="meta">
+        <%= a %> asignados ·
+        <%= done %> terminados ·
+        <%= n(t.horas) %> horas
+       </div>
+
+       <div class="progress">
+        <span style="width:<%= pct %>%"></span>
+       </div>
+
+      </div>
+
+      <strong style="font-size:10px"><%= pct %>%</strong>
+
+     </div>
+
+    <% }) %>
+
+   <% } %>
+
+  </div>
+ </article>
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Alertas y pendientes</div>
+    <div class="desc">Puntos que requieren atención</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <% if(!alerts.length){ %>
+
+    <div class="alert">
+     <div class="ico amber">
+      <i class="fa-solid fa-box-open"></i>
+     </div>
+     <div class="main">
+      <div class="rowtitle">Control de inventario</div>
+      <div class="meta">
+       <%= fmt(inv.stockBajo) %> con stock bajo ·
+       <%= fmt(inv.sinStock) %> sin stock
+      </div>
+     </div>
+    </div>
+
+    <div class="alert">
+     <div class="ico blue">
+      <i class="fa-solid fa-file-invoice-dollar"></i>
+     </div>
+     <div class="main">
+      <div class="rowtitle">Presupuestos por responder</div>
+      <div class="meta">
+       <%= fmt(q.porResponder??q.pendientes) %> requieren seguimiento
+      </div>
+     </div>
+    </div>
+
+    <div class="alert">
+     <div class="ico red">
+      <i class="fa-solid fa-hand-holding-dollar"></i>
+     </div>
+     <div class="main">
+      <div class="rowtitle">Saldos pendientes de clientes</div>
+      <div class="meta">
+       <%= money(f.porCobrar??k.porCobrar) %> por cobrar
+      </div>
+     </div>
+    </div>
+
+    <div class="alert">
+     <div class="ico amber">
+      <i class="fa-solid fa-user-clock"></i>
+     </div>
+     <div class="main">
+      <div class="rowtitle">Liquidaciones de técnicos</div>
+      <div class="meta">
+       <%= money(f.honorariosPendientes??k.honorariosPendientes) %> pendientes de pago
+      </div>
+     </div>
+    </div>
+
+   <% } else { %>
+
+    <% alerts.slice(0,8).forEach(a=>{ %>
+
+     <div class="alert">
+
+      <div class="ico <%= a.tipo==='critica'?'red':a.tipo==='info'?'blue':'amber' %>">
+       <i class="fa-solid <%= a.icono||'fa-circle-exclamation' %>"></i>
+      </div>
+
+      <div class="main">
+       <div class="rowtitle"><%= a.titulo||"Aviso" %></div>
+       <div class="meta"><%= a.detalle||"" %></div>
+      </div>
+
+      <% if(a.url){ %>
+       <a class="link" href="<%= a.url %>">Ver</a>
+      <% } %>
+
+     </div>
+
+    <% }) %>
+
+   <% } %>
+
+  </div>
+ </article>
+
+</section>
+
+<section class="two">
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Últimos movimientos</div>
+    <div class="desc">Actividad reciente del sistema</div>
+   </div>
+  </div>
+
+  <div class="body">
+
+   <% if(!activity.length){ %>
+
+    <div class="empty">
+     <i class="fa-solid fa-clock-rotate-left"></i>
+     El historial aparecerá cuando conectemos los eventos registrados.
+    </div>
+
+   <% } else { %>
+
+    <% activity.slice(0,8).forEach(x=>{ %>
+
+     <div class="activity">
+
+      <div class="ico blue">
+       <i class="fa-solid <%= x.icono||'fa-bolt' %>"></i>
+      </div>
+
+      <div class="main">
+       <div class="rowtitle"><%= x.titulo||x.accion||"Actividad" %></div>
+       <div class="meta">
+        <%= x.detalle||"" %>
+        <%= x.fecha||"" %>
+       </div>
+      </div>
+
+     </div>
+
+    <% }) %>
+
+   <% } %>
+
+  </div>
+ </article>
+
+ <article class="card">
+
+  <div class="head">
+   <div>
+    <div class="title">Nuevos clientes</div>
+    <div class="desc">Últimas altas registradas</div>
+   </div>
+
+   <a class="link" href="/panel/servicios-tecnicos/clientes">
+    Ver clientes
+   </a>
+  </div>
+
+  <div class="body">
+
+   <% if(!clients.length){ %>
+
+    <div class="empty">
+     <i class="fa-solid fa-user-plus"></i>
+     Los clientes recientes aparecerán aquí al conectar la consulta.
+    </div>
+
+   <% } else { %>
+
+    <% clients.slice(0,7).forEach(c=>{ %>
+
+     <div class="activity">
+
+      <div class="techavatar">
+       <%= String(c.nombre||"C").trim().charAt(0).toUpperCase() %>
+      </div>
+
+      <div class="main">
+       <div class="rowtitle"><%= c.nombre||"Cliente" %></div>
+       <div class="meta">
+        <%= c.telefono||"Sin teléfono" %>
+        <%= c.created_at||"" %>
+       </div>
+      </div>
+
+     </div>
+
+    <% }) %>
+
+   <% } %>
+
+  </div>
+ </article>
+
+</section>
+
+<div class="note">
+ <i class="fa-solid fa-shield-halved"></i>
+ Panel de Servicios Técnicos · Los indicadores se completarán desde las consultas de rutas.
+ Los importes deben calcularse desde pagos y movimientos reales, evitando duplicar compras y consumos de inventario.
+</div>
+
+<footer>
+ APPCRAFT PRO · SERVICIOS TÉCNICOS
+</footer>
+
+</main>
+
+<script>
+(()=>{
+ const key="appcraft-servicios-theme";
+ const root=document.documentElement;
+ const btn=document.getElementById("themeToggle");
+
+ let theme=localStorage.getItem(key)||"light";
+
+ function apply(){
+  root.setAttribute("data-theme",theme);
+
+  btn.innerHTML=theme==="dark"
+   ? '<i class="fa-solid fa-sun"></i>'
+   : '<i class="fa-solid fa-moon"></i>';
+
+  btn.title=theme==="dark"
+   ? "Activar modo claro"
+   : "Activar modo oscuro";
+
+  if(window.financeChart)window.financeChart.update();
+  if(window.ordersChart)window.ordersChart.update();
+ }
+
+ apply();
+
+ btn.addEventListener("click",()=>{
+  theme=theme==="dark"?"light":"dark";
+  localStorage.setItem(key,theme);
+  apply();
+ });
+})();
+
+document.getElementById("todayDate").textContent=
+ new Intl.DateTimeFormat("es-AR",{
+  weekday:"long",
+  day:"numeric",
+  month:"long",
+  year:"numeric"
+ }).format(new Date());
+
+const labels=<%- JSON.stringify(list(graph.labels)) %>;
+const income=<%- JSON.stringify(list(graph.ingresos)) %>;
+const expenses=<%- JSON.stringify(list(graph.gastos)) %>;
+const profit=<%- JSON.stringify(list(graph.resultado)) %>;
+
+const statusLabels=<%- JSON.stringify(states.map(x=>x.estado||"Sin estado")) %>;
+const statusValues=<%- JSON.stringify(states.map(x=>Number(x.total||x.cantidad||0))) %>;
+
+const muted=()=>getComputedStyle(document.documentElement)
+ .getPropertyValue("--muted").trim();
+
+const line=()=>getComputedStyle(document.documentElement)
+ .getPropertyValue("--line").trim();
+
+if(window.Chart){
+
+ const c=document.getElementById("financeChart");
+
+ window.financeChart=new Chart(c,{
+  type:"line",
+
+  data:{
+   labels,
+
+   datasets:[
+    {
+     label:"Ingresos",
+     data:income,
+     borderColor:"#15966b",
+     backgroundColor:"rgba(21,150,107,.08)",
+     fill:true,
+     tension:.35,
+     borderWidth:2,
+     pointRadius:2
+    },
+    {
+     label:"Egresos",
+     data:expenses,
+     borderColor:"#ed6b2b",
+     fill:false,
+     tension:.35,
+     borderWidth:2,
+     pointRadius:2
+    },
+    {
+     label:"Resultado",
+     data:profit,
+     borderColor:"#8063cf",
+     fill:false,
+     tension:.35,
+     borderWidth:2,
+     borderDash:[5,4],
+     pointRadius:2
+    }
+   ]
+  },
+
+  options:{
+   responsive:true,
+   maintainAspectRatio:false,
+
+   interaction:{
+    mode:"index",
+    intersect:false
+   },
+
+   plugins:{
+    legend:{
+     position:"bottom",
+     labels:{
+      usePointStyle:true,
+      boxWidth:7,
+      color:muted(),
+      font:{family:"Inter",size:10}
+     }
+    }
+   },
+
+   scales:{
+    x:{
+     grid:{display:false},
+     ticks:{color:muted(),font:{size:9}}
+    },
+
+    y:{
+     beginAtZero:true,
+     grid:{color:line()},
+     ticks:{
+      color:muted(),
+      font:{size:9},
+      callback:v=>"$"+Number(v).toLocaleString("es-AR")
+     }
+    }
+   }
+  }
+ });
+
+ window.ordersChart=new Chart(
+  document.getElementById("ordersChart"),
+  {
+   type:"doughnut",
+
+   data:{
+    labels:statusLabels.length
+     ? statusLabels
+     : ["Sin datos de estados"],
+
+    datasets:[{
+     data:statusValues.length
+      ? statusValues
+      : [1],
+
+     backgroundColor:statusValues.length
+      ? ["#ed6b2b","#3978d5","#15966b","#bd841b","#8063cf","#d94e58"]
+      : ["#aab2c0"],
+
+     borderWidth:0,
+     hoverOffset:5
+    }]
+   },
+
+   options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    cutout:"70%",
+
+    plugins:{
+     legend:{
+      position:"bottom",
+      labels:{
+       usePointStyle:true,
+       boxWidth:7,
+       padding:13,
+       color:muted(),
+       font:{family:"Inter",size:9}
+      }
+     }
+    }
+   }
+  }
+ );
+}
+
+document.getElementById("periodFilter").addEventListener("change",function(){
+ const url=new URL(location.href);
+ url.searchParams.set("periodo",this.value);
+ location.href=url.toString();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,773 @@
+<%
+const listaOrdenes = typeof ordenes !== "undefined" ? ordenes : [];
+const ordenActual = typeof orden !== "undefined" ? orden : null;
+const visitaActual = typeof visita !== "undefined" ? visita : null;
+const listaVisitas = typeof visitas !== "undefined" ? visitas : [];
+
+const estadosTrabajo = [
+    ["pendiente", "Pendiente"],
+    ["en_proceso", "En proceso"],
+    ["pausado", "Pausado"],
+    ["terminado", "Terminado"],
+    ["cancelado", "Cancelado"]
+];
+
+const prioridadesTrabajo = [
+    ["baja", "Baja"],
+    ["normal", "Normal"],
+    ["alta", "Alta"],
+    ["urgente", "Urgente"]
+];
+
+const rubrosTrabajo = [
+    "Plomería",
+    "Electricidad",
+    "Refrigeración",
+    "Gas",
+    "Construcción",
+    "Pintura",
+    "Carpintería",
+    "Mantenimiento",
+    "Instalación",
+    "Otros"
+];
+%>
+
+<div class="trabajo-page">
+
+    <div class="page-header">
+        <div>
+            <a href="/panel/servicios-tecnicos/trabajos" class="back-link">
+                ← Volver a trabajos
+            </a>
+
+            <h1>Nuevo trabajo</h1>
+            <p>Registrá una reparación o tarea dentro de una orden de servicio.</p>
+        </div>
+
+        <div class="header-icon">🔧</div>
+    </div>
+
+    <form action="/panel/servicios-tecnicos/trabajos" method="POST" id="formTrabajo">
+
+        <!-- VINCULACIÓN -->
+
+        <section class="form-card">
+
+            <div class="section-heading">
+                <div class="section-icon">📋</div>
+                <div>
+                    <h2>Vinculación del trabajo</h2>
+                    <p>Seleccioná la orden y, si corresponde, la visita.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Orden de servicio <span class="required">*</span></label>
+
+                    <% if (ordenActual) { %>
+
+                        <input type="hidden" name="orden_id" value="<%= ordenActual.id %>">
+
+                        <div class="readonly-field">
+                            <strong>Orden #<%= ordenActual.id %></strong>
+                            <span><%= ordenActual.tipo_servicio || "Servicio técnico" %></span>
+                        </div>
+
+                    <% } else { %>
+
+                        <select name="orden_id" id="orden_id" required>
+                            <option value="">Seleccionar orden...</option>
+
+                            <% listaOrdenes.forEach(o => { %>
+                                <option
+                                    value="<%= o.id %>"
+                                    <%= visitaActual && Number(visitaActual.orden_id) === Number(o.id) ? "selected" : "" %>>
+                                    Orden #<%= o.id %> — <%= o.tipo_servicio || "Servicio técnico" %>
+                                </option>
+                            <% }) %>
+                        </select>
+
+                        <% if (!listaOrdenes.length) { %>
+                            <small class="field-help">
+                                No hay órdenes disponibles. Primero necesitás crear una orden.
+                            </small>
+                        <% } %>
+
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label>Visita asociada</label>
+
+                    <select name="visita_id" id="visita_id">
+                        <option value="">Sin visita específica</option>
+
+                        <% listaVisitas.forEach(v => { %>
+                            <option
+                                value="<%= v.id %>"
+                                <%= visitaActual && Number(visitaActual.id) === Number(v.id) ? "selected" : "" %>>
+                                Visita #<%= v.numero_visita || v.id %>
+                                — <%= v.estado || "Sin estado" %>
+                            </option>
+                        <% }) %>
+                    </select>
+
+                    <small class="field-help">
+                        Podés vincular el trabajo a una visita ahora o hacerlo posteriormente.
+                    </small>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- DATOS DEL TRABAJO -->
+
+        <section class="form-card">
+
+            <div class="section-heading">
+                <div class="section-icon">🛠️</div>
+                <div>
+                    <h2>Datos del trabajo</h2>
+                    <p>Identificación y clasificación de la reparación.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Rubro <span class="required">*</span></label>
+
+                    <select name="rubro" required>
+                        <option value="">Seleccionar rubro...</option>
+
+                        <% rubrosTrabajo.forEach(r => { %>
+                            <option value="<%= r.toLowerCase() %>">
+                                <%= r %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Título del trabajo <span class="required">*</span></label>
+
+                    <input
+                        type="text"
+                        name="titulo"
+                        placeholder="Ej: Reparación de pérdida de agua"
+                        maxlength="200"
+                        required>
+                </div>
+
+                <div class="form-group full">
+                    <label>Descripción</label>
+
+                    <textarea
+                        name="descripcion"
+                        rows="3"
+                        placeholder="Describí el trabajo que se debe realizar..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Equipo</label>
+                    <input type="text" name="equipo" placeholder="Ej: Aire acondicionado">
+                </div>
+
+                <div class="form-group">
+                    <label>Marca</label>
+                    <input type="text" name="marca" placeholder="Marca del equipo">
+                </div>
+
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" name="modelo" placeholder="Modelo del equipo">
+                </div>
+
+                <div class="form-group">
+                    <label>Prioridad</label>
+
+                    <select name="prioridad">
+                        <% prioridadesTrabajo.forEach(p => { %>
+                            <option value="<%= p[0] %>" <%= p[0] === "normal" ? "selected" : "" %>>
+                                <%= p[1] %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado inicial</label>
+
+                    <select name="estado">
+                        <% estadosTrabajo.forEach(e => { %>
+                            <option value="<%= e[0] %>" <%= e[0] === "pendiente" ? "selected" : "" %>>
+                                <%= e[1] %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- DIAGNÓSTICO Y EJECUCIÓN -->
+
+        <section class="form-card">
+
+            <div class="section-heading">
+                <div class="section-icon">🔍</div>
+                <div>
+                    <h2>Diagnóstico y ejecución</h2>
+                    <p>Información técnica de la intervención.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label>Diagnóstico técnico</label>
+
+                    <textarea
+                        name="diagnostico"
+                        rows="4"
+                        placeholder="Describí el problema detectado, sus causas y las verificaciones realizadas..."></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label>Trabajo realizado</label>
+
+                    <textarea
+                        name="trabajo_realizado"
+                        rows="4"
+                        placeholder="Describí las tareas realizadas, reparaciones y soluciones aplicadas..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de inicio</label>
+                    <input type="date" name="fecha_inicio">
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de finalización</label>
+                    <input type="date" name="fecha_finalizacion">
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- IMPORTES -->
+
+        <section class="form-card">
+
+            <div class="section-heading">
+                <div class="section-icon">💰</div>
+                <div>
+                    <h2>Información económica</h2>
+                    <p>Importes asociados a este trabajo.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Mano de obra</label>
+
+                    <div class="money-input">
+                        <span>$</span>
+                        <input
+                            type="number"
+                            name="mano_obra"
+                            id="mano_obra"
+                            min="0"
+                            step="0.01"
+                            value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Costo de repuestos</label>
+
+                    <div class="money-input">
+                        <span>$</span>
+                        <input
+                            type="number"
+                            name="costo_repuestos"
+                            id="costo_repuestos"
+                            min="0"
+                            step="0.01"
+                            value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Total del trabajo</label>
+
+                    <div class="money-input total-input">
+                        <span>$</span>
+                        <input
+                            type="number"
+                            name="total"
+                            id="total"
+                            min="0"
+                            step="0.01"
+                            value="0">
+                    </div>
+
+                    <small class="field-help">
+                        Se calcula inicialmente con mano de obra y repuestos. Podés modificarlo.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Importe cobrado</label>
+
+                    <div class="money-input">
+                        <span>$</span>
+                        <input
+                            type="number"
+                            name="monto_cobrado"
+                            id="monto_cobrado"
+                            min="0"
+                            step="0.01"
+                            value="0">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="economic-summary">
+                <div>
+                    <span>Total del trabajo</span>
+                    <strong id="resumenTotal">$ 0,00</strong>
+                </div>
+
+                <div>
+                    <span>Importe cobrado</span>
+                    <strong id="resumenCobrado">$ 0,00</strong>
+                </div>
+
+                <div class="balance">
+                    <span>Saldo pendiente</span>
+                    <strong id="resumenSaldo">$ 0,00</strong>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- OBSERVACIONES -->
+
+        <section class="form-card">
+
+            <div class="section-heading">
+                <div class="section-icon">📝</div>
+                <div>
+                    <h2>Observaciones</h2>
+                    <p>Información adicional del trabajo.</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <textarea
+                    name="observaciones"
+                    rows="4"
+                    placeholder="Notas internas, aclaraciones, recomendaciones o información importante..."></textarea>
+            </div>
+
+        </section>
+
+
+        <!-- ACCIONES -->
+
+        <div class="form-actions">
+
+            <a href="/panel/servicios-tecnicos/trabajos" class="btn-cancel">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn-save" <%= !ordenActual && !listaOrdenes.length ? "disabled" : "" %>>
+                <span>✓</span>
+                Registrar trabajo
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+.trabajo-page {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 25px;
+    color: var(--text-color, #202938);
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.back-link {
+    display: inline-block;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.back-link:hover {
+    color: #2563eb;
+}
+
+.page-header h1 {
+    font-size: 27px;
+    font-weight: 750;
+    margin: 0 0 6px;
+}
+
+.page-header p {
+    color: #8490a2;
+    margin: 0;
+    font-size: 14px;
+}
+
+.header-icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    background: #eff6ff;
+    border-radius: 16px;
+    font-size: 27px;
+}
+
+.form-card {
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #e5eaf1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 24px;
+}
+
+.section-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #eff6ff;
+    font-size: 19px;
+}
+
+.section-heading h2 {
+    font-size: 17px;
+    margin: 0 0 4px;
+    font-weight: 700;
+}
+
+.section-heading p {
+    margin: 0;
+    color: #94a0b1;
+    font-size: 12px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text-color, #374151);
+}
+
+.required {
+    color: #ef4444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 13px;
+    border: 1px solid var(--border-color, #dce2ea);
+    border-radius: 9px;
+    background: var(--input-bg, #fff);
+    color: var(--text-color, #263244);
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: .2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, .10);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.field-help {
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.readonly-field {
+    min-height: 43px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color, #dce2ea);
+    background: var(--input-bg, #f8fafc);
+    border-radius: 9px;
+    padding: 10px 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.readonly-field span {
+    color: #8490a2;
+}
+
+.money-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color, #dce2ea);
+    border-radius: 9px;
+    overflow: hidden;
+    background: var(--input-bg, #fff);
+}
+
+.money-input span {
+    padding: 0 13px;
+    color: #64748b;
+    background: #f1f5f9;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.money-input input {
+    border: none;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.total-input {
+    border-color: #93c5fd;
+}
+
+.economic-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 25px;
+    padding: 18px;
+    background: #f8fafc;
+    border-radius: 11px;
+}
+
+.economic-summary div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.economic-summary span {
+    color: #8490a2;
+    font-size: 12px;
+}
+
+.economic-summary strong {
+    font-size: 18px;
+    color: #334155;
+}
+
+.economic-summary .balance strong {
+    color: #2563eb;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 5px 0 35px;
+}
+
+.btn-cancel,
+.btn-save {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-cancel {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+.btn-save {
+    color: #fff;
+    background: #2563eb;
+}
+
+.btn-save:hover {
+    background: #1d4ed8;
+}
+
+.btn-save:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+@media(max-width: 700px) {
+    .trabajo-page {
+        padding: 15px;
+    }
+
+    .page-header h1 {
+        font-size: 23px;
+    }
+
+    .form-card {
+        padding: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .economic-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions a,
+    .form-actions button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+</style>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const manoObra = document.getElementById("mano_obra");
+    const repuestos = document.getElementById("costo_repuestos");
+    const total = document.getElementById("total");
+    const cobrado = document.getElementById("monto_cobrado");
+
+    const resumenTotal = document.getElementById("resumenTotal");
+    const resumenCobrado = document.getElementById("resumenCobrado");
+    const resumenSaldo = document.getElementById("resumenSaldo");
+
+    let totalModificadoManualmente = false;
+
+    function valor(input) {
+        return Math.max(0, Number(input.value) || 0);
+    }
+
+    function formato(numero) {
+        return new Intl.NumberFormat("es-AR", {
+            style: "currency",
+            currency: "ARS",
+            minimumFractionDigits: 2
+        }).format(numero);
+    }
+
+    function actualizarResumen() {
+
+        const importeTotal = valor(total);
+        const importeCobrado = valor(cobrado);
+        const saldo = importeTotal - importeCobrado;
+
+        resumenTotal.textContent = formato(importeTotal);
+        resumenCobrado.textContent = formato(importeCobrado);
+        resumenSaldo.textContent = formato(saldo);
+
+        resumenSaldo.style.color = saldo > 0 ? "#2563eb" :
+            saldo < 0 ? "#dc2626" : "#16a34a";
+    }
+
+    function calcularTotal() {
+
+        if (!totalModificadoManualmente) {
+            total.value = (
+                valor(manoObra) + valor(repuestos)
+            ).toFixed(2);
+        }
+
+        actualizarResumen();
+    }
+
+    manoObra.addEventListener("input", calcularTotal);
+    repuestos.addEventListener("input", calcularTotal);
+
+    total.addEventListener("input", function () {
+        totalModificadoManualmente = true;
+        actualizarResumen();
+    });
+
+    cobrado.addEventListener("input", actualizarResumen);
+
+    calcularTotal();
+});
+</script>

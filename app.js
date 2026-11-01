@@ -18,10 +18,15 @@ const isAuthenticated = require("./middleware/authMiddleware");
 // BASE DE DATOS
 // ==================================================
 
-const db = require("./models/db");
+const db = require("./models/db.js");
 
 require("./models/initDB-funciona.JS");
 
+require("./models/migracionServiciosVisitas.js");
+
+require("./models/migracionDomicilios.js");
+
+require("./models/migracionDomiciliosCampos.js");
 
 // ==================================================
 // APP
@@ -84,6 +89,25 @@ app.use(
     })
 );
 
+
+// ==================================================
+// USUARIO GLOBAL PARA TODAS LAS VISTAS
+// ==================================================
+
+app.use((req, res, next) => {
+
+    res.locals.user =
+        req.session.user || null;
+
+    res.locals.username =
+        req.session.user?.username || "Usuario";
+
+    res.locals.role =
+        req.session.user?.role || "usuario";
+
+    next();
+
+});
 
 // ==================================================
 // ARCHIVOS PUBLICOS
@@ -541,6 +565,77 @@ app.use(
     "/panel/potenciales-clientes",
     isAuthenticated,
     potencialesClientesRoutes
+);
+
+
+
+// ==================================================
+// SERVICIOS TÉCNICOS
+// ==================================================
+/*
+const serviciosDomiciliosRoutes = require("./routes/serviciosDomicilios.js");
+
+app.use(
+    "/panel/servicios-tecnicos/domicilios",
+    isAuthenticated,
+    serviciosDomiciliosRoutes
+);
+
+
+
+const serviciosTecnicosRoutes =
+    require("./routes/serviciosTecnicos.js");
+
+app.use(
+    "/panel/servicios-tecnicos",
+    isAuthenticated,
+    serviciosTecnicosRoutes
+);*/
+
+// ==================================================
+// SERVICIOS TÉCNICOS
+// ==================================================
+
+const serviciosDomiciliosRoutes = require("./routes/serviciosDomicilios.js");
+
+app.use(
+    "/panel/servicios-tecnicos/domicilios",
+    isAuthenticated,
+    serviciosDomiciliosRoutes
+);
+
+
+// ==================================================
+// VISITAS TÉCNICAS
+// ==================================================
+const visitasRoutes = require("./routes/serviciosVisitas.js");
+
+app.use(
+    "/panel/servicios-tecnicos/visitas",
+    isAuthenticated,
+    visitasRoutes
+);
+
+
+const serviciosTrabajosRoutes = require("./routes/serviciosTrabajos.js");
+
+app.use(
+    "/panel/servicios-tecnicos/trabajos",
+    isAuthenticated,
+    serviciosTrabajosRoutes
+);
+
+// ==================================================
+// SERVICIOS TÉCNICOS GENERAL
+// ==================================================
+
+const serviciosTecnicosRoutes =
+    require("./routes/serviciosTecnicos.js");
+
+app.use(
+    "/panel/servicios-tecnicos",
+    isAuthenticated,
+    serviciosTecnicosRoutes
 );
 // ==================================================
 // INICIAR SERVIDOR

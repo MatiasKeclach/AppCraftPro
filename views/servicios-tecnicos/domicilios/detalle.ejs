@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha del domicilio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f5fa;font-family:Inter,sans-serif;color:#24243a}
+.container{max-width:1100px;margin:35px auto;padding:0 18px}
+.panel{background:white;border:1px solid #e8e8ef;border-radius:14px;padding:23px;margin-bottom:18px}
+.top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+h1{font-size:24px;margin:0 0 8px}
+h2{font-size:16px;margin:0 0 18px}
+p{font-size:13px;color:#77798a;line-height:1.7}
+.btn{display:inline-block;padding:11px 15px;border-radius:9px;text-decoration:none;font-size:12px;font-weight:700}
+.primary{background:#6558df;color:white}
+.light{background:#eeeef4;color:#44445a}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.item{background:#f7f7fb;border-radius:10px;padding:13px}
+.item small{display:block;color:#858597;font-size:10px;margin-bottom:7px}
+.item strong{font-size:13px;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #eeeef3}
+th{color:#858597;font-size:10px;text-transform:uppercase}
+.empty{padding:20px;color:#858597;font-size:13px}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}.table-wrap{overflow-x:auto}}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="panel">
+    <div class="top">
+        <div>
+            <h1><%= domicilio.alias || "Ficha del domicilio" %></h1>
+            <p><strong><%= domicilio.cliente_nombre %></strong></p>
+        </div>
+
+        <a class="btn primary" href="/panel/servicios-tecnicos/domicilios/<%= domicilio.id %>/editar">
+            Editar domicilio
+        </a>
+    </div>
+
+    <div class="grid">
+
+        <div class="item">
+            <small>TIPO DE INMUEBLE</small>
+            <strong><%= domicilio.tipo_inmueble || "No especificado" %></strong>
+        </div>
+
+        <div class="item">
+            <small>DIRECCIÓN</small>
+            <strong><%= domicilio.direccion %> <%= domicilio.altura || "" %></strong>
+        </div>
+
+        <div class="item">
+            <small>LOCALIDAD</small>
+            <strong><%= domicilio.localidad || "No especificada" %></strong>
+        </div>
+
+        <div class="item">
+            <small>TORRE / PISO</small>
+            <strong><%= domicilio.torre || "-" %> / <%= domicilio.piso || "-" %></strong>
+        </div>
+
+        <div class="item">
+            <small>DEPARTAMENTO / UNIDAD</small>
+            <strong><%= domicilio.departamento || "-" %> / <%= domicilio.unidad || "-" %></strong>
+        </div>
+
+        <div class="item">
+            <small>TELÉFONO DEL CLIENTE</small>
+            <strong><%= domicilio.cliente_telefono || "No registrado" %></strong>
+        </div>
+
+    </div>
+
+    <% if (domicilio.entre_calles) { %>
+        <p><strong>Entre calles:</strong> <%= domicilio.entre_calles %></p>
+    <% } %>
+
+    <% if (domicilio.referencia) { %>
+        <p><strong>Referencias:</strong> <%= domicilio.referencia %></p>
+    <% } %>
+
+    <% if (domicilio.observaciones) { %>
+        <p><strong>Observaciones:</strong> <%= domicilio.observaciones %></p>
+    <% } %>
+</div>
+
+<div class="panel">
+    <h2>Órdenes de trabajo</h2>
+
+    <% if (ordenes.length) { %>
+        <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>N.º</th>
+                    <th>Servicio</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% ordenes.forEach(o => { %>
+                    <tr>
+                        <td>#<%= o.id %></td>
+                        <td><%= o.tipo_servicio || "General" %></td>
+                        <td><%= o.estado || "-" %></td>
+                        <td><%= o.created_at || "-" %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        </div>
+    <% } else { %>
+        <div class="empty">Todavía no hay órdenes asociadas a este domicilio.</div>
+    <% } %>
+</div>
+
+<div class="panel">
+    <h2>Historial de visitas</h2>
+
+    <% if (visitas.length) { %>
+        <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Visita</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Diagnóstico</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% visitas.forEach(v => { %>
+                    <tr>
+                        <td>#<%= v.id %></td>
+                        <td><%= v.tipo_servicio || "General" %></td>
+                        <td><%= v.fecha_programada || v.created_at || "-" %></td>
+                        <td><%= v.estado || "-" %></td>
+                        <td><%= v.diagnostico || "-" %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        </div>
+    <% } else { %>
+        <div class="empty">Todavía no hay visitas registradas en este domicilio.</div>
+    <% } %>
+</div>
+
+<a class="btn light" href="/panel/servicios-tecnicos/domicilios">
+    Volver a domicilios
+</a>
+
+</div>
+</body>
+</html>
